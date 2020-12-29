@@ -17,13 +17,30 @@ class TurboMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($this->isTurboNativeVisit($request)) {
+        if ($this->turboNativeVisit($request)) {
             TurboLaravelFacade::setVisitingFromTurboNative();
         }
 
-        $response = $next($request);
+        return $this->turboResponse($next($request), $request);
+    }
 
-        if (!$this->turboVisit($request)) {
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return bool
+     */
+    private function turboNativeVisit($request): bool
+    {
+        return Str::contains($request->userAgent(), 'Turbo Native');
+    }
+
+    /**
+     * @param mixed $next
+     * @param Request $request
+     * @return RedirectResponse|mixed
+     */
+    private function turboResponse($response, Request $request)
+    {
+        if ( ! $this->turboVisit($request) && ! $this->turboNativeVisit($request)) {
             return $response;
         }
 
@@ -42,14 +59,5 @@ class TurboMiddleware
     private function turboVisit($request)
     {
         return Str::contains($request->header('Accept', ''), 'turbo-stream');
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @return bool
-     */
-    private function isTurboNativeVisit($request): bool
-    {
-        return Str::contains($request->userAgent(), 'Turbo Native');
     }
 }
