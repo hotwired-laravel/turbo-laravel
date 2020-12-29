@@ -33,6 +33,9 @@ class TurboLaravelServiceProvider extends ServiceProvider
         Blade::if('turbonative', function () {
             return TurboLaravelFacade::isTurboNativeVisit();
         });
+        Blade::directive('domid', function ($expression) {
+            return "<?php echo e(\Tonysm\TurboLaravel\NamesResolver::resourceIdFor($expression)); ?>";
+        });
 
         ResponseFactory::macro('turboStream', function (Model $model) {
             if ($model->exists) {

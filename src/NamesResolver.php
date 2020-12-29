@@ -43,10 +43,19 @@ class NamesResolver
         return "{$path}.{$id}";
     }
 
-    public static function resourceId($modelClass, $modelId): string
+    public static function resourceId($modelClass, $modelId, $prefix = ""): string
     {
+        $prefix = $prefix !== ""
+            ? "{$prefix}_"
+            : "";
+
         $resource = static::resourceNameSingularFor(class_basename($modelClass));
 
-        return "{$resource}_{$modelId}";
+        return "{$prefix}{$resource}_{$modelId}";
+    }
+
+    public static function resourceIdFor(Model $model, string $prefix = ""): string
+    {
+        return static::resourceId(class_basename($model), $model->id, $prefix);
     }
 }
