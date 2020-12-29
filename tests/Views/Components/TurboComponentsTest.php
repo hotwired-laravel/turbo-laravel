@@ -12,8 +12,6 @@ class TurboComponentsTest extends TestCase
     /** @test */
     public function renders_frame_component()
     {
-        $this->markTestSkipped('Not sure why this is not passing.');
-
         $expected = <<<'HTML'
 <turbo-frame id="my_frame">
     <h1>Hello from Frame!</h1>
@@ -22,7 +20,7 @@ HTML;
 
         $rendered = View::file(__DIR__.'/fixtures/frame.blade.php')->render();
 
-        $this->assertEquals($expected, $rendered);
+        $this->assertEquals($expected, trim($rendered));
     }
 
     /** @test */

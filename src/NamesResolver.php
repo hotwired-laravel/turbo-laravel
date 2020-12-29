@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class NamesResolver
 {
-    private static function resourceName(Model $model, bool $plural = true): string
+    public static function resourceName(Model $model, bool $plural = true): string
     {
         return static::resourceNameFor(class_basename($model), $plural);
     }

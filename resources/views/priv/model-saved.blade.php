@@ -1,5 +1,5 @@
 <x-turbo::stream target="{{ $target }}" action="{{ $action }}">
     <template>
-        @include($children, $data)
+        @include($resourcePartialName, $data)
     </template>
 </x-turbo::stream>
