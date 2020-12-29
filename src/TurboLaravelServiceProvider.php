@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Tonysm\TurboLaravel\Commands\TurboLaravelCommand;
 
@@ -24,6 +25,10 @@ class TurboLaravelServiceProvider extends ServiceProvider
         }
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'turbo-laravel');
+
+        Blade::if('turbonative', function () {
+            return TurboLaravelFacade::isTurboNativeVisit();
+        });
     }
 
     public function register()
