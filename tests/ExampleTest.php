@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\Skeleton\Tests;
+namespace Tonysm\TurboLaravel\Tests;
 
 class ExampleTest extends TestCase
 {

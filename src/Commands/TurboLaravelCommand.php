@@ -1,12 +1,12 @@
 <?php
 
-namespace Spatie\Skeleton\Commands;
+namespace Tonysm\TurboLaravel\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class TurboLaravelCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'turbo-laravel';
 
     public $description = 'My command';
 
