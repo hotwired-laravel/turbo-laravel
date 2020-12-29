@@ -8,15 +8,6 @@ use Tonysm\TurboLaravel\TurboLaravelServiceProvider;
 
 class TestCase extends Orchestra
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Tonysm\\TurboLaravel\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
-    }
-
     protected function getPackageProviders($app)
     {
         return [
@@ -32,10 +23,5 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
-
-        /*
-        include_once __DIR__.'/../database/migrations/create_turbo_laravel_table.php.stub';
-        (new \CreatePackageTable())->up();
-        */
     }
 }

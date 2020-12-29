@@ -1,5 +1,3 @@
-<turbo-frame
-    {{ $attributes }}
->
+<turbo-frame {{ $attributes }}>
     {{ $slot }}
 </turbo-frame>

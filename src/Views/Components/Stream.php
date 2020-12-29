@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\View\Components;
+namespace Tonysm\TurboLaravel\Views\Components;
 
 use Illuminate\View\Component;
 
