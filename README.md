@@ -29,8 +29,35 @@ return [
 
 ## Usage
 
+TODOS:
+
+- Document using `Broadcasts` trait in a model
+- Document overriding the `$broadcastsTo` in the model to point to a related model
+- Document overriding conventions
+- Document conventions (partials, variable names, dom IDs...)
+- Extract "extension" point to contracts
+
 ```php
-// TODO.
+
+use Illuminate\Database\Eloquent\Model;
+use Tonysm\TurboLaravel\Models\Broadcasts;
+
+class TaskList extends Model
+{
+    use Broadcasts;
+}
+
+class Task extends Model
+{
+    use Broadcasts;
+    
+    public $broadcastsTo = 'taskList';
+    
+    public function taskList()
+    {
+        return $this->belongsTo(TaskList::class);
+    }
+}
 ```
 
 ## Testing
