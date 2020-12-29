@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Models;
 
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
+use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\TurboLaravelDefaultBroadcaster;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelChanged;
 
@@ -53,7 +54,7 @@ trait Broadcasts
 
     public function hotwireTargetDomId()
     {
-        return NamesResolver::resourceId(static::class, $this->id);
+        return $this->hotwireResolveNamesUsing()->resourceId(static::class, $this->id);
     }
 
     public function hotwireBrodcastingTargets()
@@ -78,9 +79,9 @@ trait Broadcasts
         );
     }
 
-    public function hotwireResolveNamesUsing(): \Tonysm\TurboLaravel\NamesResolver
+    public function hotwireResolveNamesUsing(): NamesResolver
     {
-        return resolve(\Tonysm\TurboLaravel\NamesResolver::class);
+        return resolve(NamesResolver::class);
     }
 
     public function hotwirePartialName()

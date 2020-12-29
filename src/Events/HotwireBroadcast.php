@@ -39,7 +39,7 @@ class HotwireBroadcast implements ShouldBroadcast
     private function render()
     {
         if ($this->action === "remove") {
-            return View::file(__DIR__.'/../../resources/views/model-removed.blade.php', [
+            return View::file(__DIR__ . '/../../resources/views/priv/model-removed.blade.php', [
                 'target' => (new $this->model)->forceFill(['id' => $this->modelId])->hotwireTargetDomId(),
                 'action' => 'remove',
             ])->render();
@@ -47,7 +47,7 @@ class HotwireBroadcast implements ShouldBroadcast
 
         $model = $this->model::findOrFail($this->model->id);
 
-        return View::file(__DIR__.'/../../resources/views/model-saved.blade.php', [
+        return View::file(__DIR__ . '/../../resources/views/priv/model-saved.blade.php', [
             'target' => $model->hotwireTargetDomId(),
             'action' => $this->action,
             'resourcePartialName' => $model->hotwirePartialName(),

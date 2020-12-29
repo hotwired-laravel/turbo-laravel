@@ -24,7 +24,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
             ]);
         }
 
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'turbo');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views/pub', 'turbo');
         Blade::componentNamespace('Tonysm\\Views\\Components', 'turbo');
 
         Blade::if('turbonative', function () {

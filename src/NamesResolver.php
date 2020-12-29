@@ -42,4 +42,11 @@ class NamesResolver
 
         return "{$path}.{$id}";
     }
+
+    public static function resourceId($modelClass, $modelId): string
+    {
+        $resource = static::resourceNameSingularFor(class_basename($modelClass));
+
+        return "{$resource}_{$modelId}";
+    }
 }
