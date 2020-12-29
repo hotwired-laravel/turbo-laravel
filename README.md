@@ -36,7 +36,8 @@ TODOS:
 - Document overriding conventions
 - Document conventions (partials, variable names, dom IDs...)
 - Extract "extension" point to contracts
-
+- Document using the `@turbonative` directive
+- Document Turbo Stream responses from the browser
 
 If you want a model to automatically publish Turbo Stream messages over WebSockets using Laravel Echo, you can use the trait that ships with this package, like so:
 
