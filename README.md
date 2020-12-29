@@ -17,6 +17,7 @@ composer require tonysm/turbo-laravel
 You can publish the config file with:
 ```bash
 php artisan vendor:publish --provider="Tonysm\TurboLaravel\TurboLaravelServiceProvider" --tag="config"
+php artisan turbo:install
 ```
 
 This is the contents of the published config file:
