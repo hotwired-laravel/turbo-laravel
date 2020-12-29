@@ -6,11 +6,12 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \Tonysm\TurboLaravel\TurboLaravel
+ * @mixin \Tonysm\TurboLaravel\TurboLaravel
  */
 class TurboLaravelFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'turbo-laravel';
+        return TurboLaravel::class;
     }
 }

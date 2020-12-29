@@ -4,8 +4,9 @@ namespace Tonysm\TurboLaravel\Tests\Http\Middleware;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\TestCase;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
+use Tonysm\TurboLaravel\Tests\TestCase;
+use Tonysm\TurboLaravel\TurboLaravelFacade;
 
 class TurboMiddlewareTest extends TestCase
 {
@@ -43,5 +44,28 @@ class TurboMiddlewareTest extends TestCase
 
         $this->assertEquals($response->getTargetUrl(), $result->getTargetUrl());
         $this->assertEquals(303, $result->getStatusCode());
+    }
+
+    /** @test */
+    public function can_detect_turbo_native_visits()
+    {
+        $this->assertFalse(
+            TurboLaravelFacade::isTurboNativeVisit(),
+            'Expected to not have started saying it is a Turbo Native visit, but it said it is.'
+        );
+
+        $request = Request::create('/source');
+        $request->headers->add([
+            'User-Agent' => 'Turbo Native Android',
+        ]);
+        $next = function () {
+        };
+
+        (new TurboMiddleware())->handle($request, $next);
+
+        $this->assertTrue(
+            TurboLaravelFacade::isTurboNativeVisit(),
+            'Expected to have detected a Turbo Native visit, but it did not.'
+        );
     }
 }
