@@ -4,7 +4,7 @@ namespace Tonysm\TurboLaravel;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Tonysm\TurboLaravel\Commands\TurboLaravelCommand;
+use Tonysm\TurboLaravel\Commands\TurboLaravelInstallCommand;
 
 class TurboLaravelServiceProvider extends ServiceProvider
 {
@@ -20,7 +20,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
             ], 'views');
 
             $this->commands([
-                TurboLaravelCommand::class,
+                TurboLaravelInstallCommand::class,
             ]);
         }
 
