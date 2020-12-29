@@ -37,6 +37,9 @@ TODOS:
 - Document conventions (partials, variable names, dom IDs...)
 - Extract "extension" point to contracts
 
+
+If you want a model to automatically publish Turbo Stream messages over WebSockets using Laravel Echo, you can use the trait that ships with this package, like so:
+
 ```php
 
 use Illuminate\Database\Eloquent\Model;
@@ -58,6 +61,25 @@ class Task extends Model
         return $this->belongsTo(TaskList::class);
     }
 }
+```
+
+This package also ships with some Blade Components to help you building the turbo tags. They are probably very simple, but using the package components will make it easy to upgrade in the future, as the package will handle upgrading for you. You can use the blade components like so:
+
+```html
+<x-turbo::stream target="my_frame" action="append">
+    <template>
+        <h1>Here's the you want appended at the #my_frame elemenet.</h1>
+    </template>
+</x-turbo::stream>
+
+<x-turbo::frame id="my_frame">
+    <h1>Here's an example of a frame.</h1>
+</x-turbo::frame>
+
+<x-turbo::frame id="my_frame" src="{{ route('my.routes') }}">
+    <h1>Loading...</h1>
+    <p>This is an example of a lazy-loading frame. It will replace this content with a matching frame after the AJAX request is sent to the `src` location above.</p>
+</x-turbo::frame>
 ```
 
 ## Testing
