@@ -31,6 +31,7 @@ return [
 
 TODOS:
 
+- Handle form validation (not sure yet what's the best way to use this)
 - Document using `Broadcasts` trait in a model
 - Document overriding the `$broadcastsTo` in the model to point to a related model
 - Document overriding conventions
@@ -38,6 +39,7 @@ TODOS:
 - Extract "extension" point to contracts
 - Document using the `@turbonative` directive
 - Document Turbo Stream responses from the browser
+- ~Update Livewire to work with Turbo~ (PRs sent [here](https://github.com/livewire/livewire/pull/2279) and [here](https://github.com/livewire/turbolinks/pull/12))
 
 If you want a model to automatically publish Turbo Stream messages over WebSockets using Laravel Echo, you can use the trait that ships with this package, like so:
 
@@ -67,20 +69,20 @@ class Task extends Model
 This package also ships with some Blade Components to help you building the turbo tags. They are probably very simple, but using the package components will make it easy to upgrade in the future, as the package will handle upgrading for you. You can use the blade components like so:
 
 ```html
-<x-turbo::stream target="my_frame" action="append">
+<turbo-stream target="my_frame" action="append">
     <template>
         <h1>Here's the you want appended at the #my_frame elemenet.</h1>
     </template>
-</x-turbo::stream>
+</turbo-stream>
 
-<x-turbo::frame id="my_frame">
+<turbo-frame id="my_frame">
     <h1>Here's an example of a frame.</h1>
-</x-turbo::frame>
+</turbo-frame>
 
-<x-turbo::frame id="my_frame" src="{{ route('my.routes') }}">
+<turbo-frame id="my_frame" src="{{ route('my.routes') }}">
     <h1>Loading...</h1>
     <p>This is an example of a lazy-loading frame. It will replace this content with a matching frame after the AJAX request is sent to the `src` location above.</p>
-</x-turbo::frame>
+</turbo-frame>
 ```
 
 ## Testing
