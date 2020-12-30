@@ -39,7 +39,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
 
         ResponseFactory::macro('turboStream', function (Model $model) {
             if ($model->exists) {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__.'/../resources/views/priv/model-saved.blade.php', [
+                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/priv/model-saved.blade.php', [
                     'target' => method_exists($model, 'hotwireTargetDomId')
                         ? $model->hotwireTargetDomId()
                         : NamesResolver::resourceName($model),
@@ -52,7 +52,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
                         : [ NamesResolver::resourceNameSingular($model) => $model ],
                 ]));
             } else {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__.'/../resources/views/priv/model-removed.blade.php', [
+                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/priv/model-removed.blade.php', [
                     'target' => method_exists($model, 'hotwireTargetDomId')
                         ? $model->hotwireTargetDomId()
                         : NamesResolver::resourceId($model, $model->id),

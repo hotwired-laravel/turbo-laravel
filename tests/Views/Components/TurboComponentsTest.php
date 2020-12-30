@@ -11,20 +11,6 @@ use Tonysm\TurboLaravel\TurboLaravelFacade;
 class TurboComponentsTest extends TestCase
 {
     /** @test */
-    public function renders_frame_component()
-    {
-        $expected = <<<'HTML'
-<turbo-frame id="my_frame">
-    <h1>Hello from Frame!</h1>
-</turbo-frame>
-HTML;
-
-        $rendered = View::file(__DIR__ . '/fixtures/frame.blade.php')->render();
-
-        $this->assertEquals($expected, trim($rendered));
-    }
-
-    /** @test */
     public function renders_turbo_native_correctly()
     {
         $this->assertFalse(TurboLaravelFacade::isTurboNativeVisit());
