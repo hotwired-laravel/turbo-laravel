@@ -8,7 +8,8 @@ use Illuminate\Queue\SerializesModels;
 
 class BroadcastModelChanged
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $model;
     public $action;

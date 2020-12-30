@@ -40,7 +40,7 @@ class TurboMiddleware
      */
     private function turboResponse($response, Request $request)
     {
-        if ( ! $this->turboVisit($request) && ! $this->turboNativeVisit($request)) {
+        if (! $this->turboVisit($request) && ! $this->turboNativeVisit($request)) {
             return $response;
         }
 

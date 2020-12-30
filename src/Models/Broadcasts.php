@@ -4,9 +4,9 @@ namespace Tonysm\TurboLaravel\Models;
 
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
+use Tonysm\TurboLaravel\Jobs\BroadcastModelChanged;
 use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\TurboLaravelDefaultBroadcaster;
-use Tonysm\TurboLaravel\Jobs\BroadcastModelChanged;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -27,7 +27,7 @@ trait Broadcasts
 
     public function queueBroadcastToHotwire()
     {
-        if (!config('turbo-laravel.queue')) {
+        if (! config('turbo-laravel.queue')) {
             return $this->hotwireBroadcastUsing()->update(
                 $this,
                 $this->hotwireBroadcastingRule()
@@ -64,7 +64,7 @@ trait Broadcasts
     {
         if ($this->exists && property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
-                ->map(fn($attr) => data_get($this, $attr))
+                ->map(fn ($attr) => data_get($this, $attr))
                 ->all();
         }
 
