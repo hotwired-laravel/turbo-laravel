@@ -39,6 +39,9 @@ trait Broadcasts
 
     public function queueBroadcastRemovalToHotwire()
     {
+        // Removals cannot be cached because we need to gather the broadcasting targets
+        // using the model instance's relationships before the entity is "gone".
+
         $this->hotwireBroadcastUsing()->remove($this);
     }
 
