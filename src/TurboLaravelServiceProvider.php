@@ -30,27 +30,8 @@ class TurboLaravelServiceProvider extends ServiceProvider
             return "<?php echo e(\Tonysm\TurboLaravel\NamesResolver::resourceIdFor($expression)); ?>";
         });
 
-        ResponseFactory::macro('turboStream', function (Model $model) {
-            if ($model->exists) {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-saved.blade.php', [
-                    'target' => method_exists($model, 'hotwireTargetDomId')
-                        ? $model->hotwireTargetDomId()
-                        : NamesResolver::resourceName($model),
-                    'action' => $model->wasRecentlyCreated ? 'append' : 'update',
-                    'resourcePartialName' => method_exists($model, 'hotwirePartialName')
-                        ? $model->hotwirePartialName()
-                        : NamesResolver::partialNameFor($model),
-                    'data' => method_exists($model, 'hotwirePartialData')
-                        ? $model->hotwirePartialData()
-                        : [ NamesResolver::resourceNameSingular($model) => $model ],
-                ]));
-            } else {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-removed.blade.php', [
-                    'target' => method_exists($model, 'hotwireTargetDomId')
-                        ? $model->hotwireTargetDomId()
-                        : NamesResolver::resourceId($model, $model->id),
-                ]));
-            }
+        ResponseFactory::macro('turboStream', function (Model $model, string $action = null) {
+            return (new TurboStreamResponseMacro())->handle($model, $action);
         });
     }
 
