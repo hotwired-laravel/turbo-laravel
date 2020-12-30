@@ -18,17 +18,10 @@ class TurboLaravelServiceProvider extends ServiceProvider
                 __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
             ], 'config');
 
-            $this->publishes([
-                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
-            ], 'views');
-
             $this->commands([
                 TurboLaravelInstallCommand::class,
             ]);
         }
-
-        $this->loadViewsFrom(__DIR__ . '/../resources/views/pub', 'turbo');
-        Blade::componentNamespace('Tonysm\\TurboLaravel\\Views\\Components', 'turbo');
 
         Blade::if('turbonative', function () {
             return TurboLaravelFacade::isTurboNativeVisit();
@@ -39,7 +32,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
 
         ResponseFactory::macro('turboStream', function (Model $model) {
             if ($model->exists) {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/priv/model-saved.blade.php', [
+                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-saved.blade.php', [
                     'target' => method_exists($model, 'hotwireTargetDomId')
                         ? $model->hotwireTargetDomId()
                         : NamesResolver::resourceName($model),
@@ -52,7 +45,7 @@ class TurboLaravelServiceProvider extends ServiceProvider
                         : [ NamesResolver::resourceNameSingular($model) => $model ],
                 ]));
             } else {
-                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/priv/model-removed.blade.php', [
+                return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-removed.blade.php', [
                     'target' => method_exists($model, 'hotwireTargetDomId')
                         ? $model->hotwireTargetDomId()
                         : NamesResolver::resourceId($model, $model->id),
