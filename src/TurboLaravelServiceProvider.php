@@ -7,7 +7,6 @@ use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Tonysm\TurboLaravel\Commands\TurboLaravelInstallCommand;
-use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 
 class TurboLaravelServiceProvider extends ServiceProvider
 {

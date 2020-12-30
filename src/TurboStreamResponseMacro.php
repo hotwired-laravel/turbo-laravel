@@ -9,7 +9,7 @@ class TurboStreamResponseMacro
 {
     public function handle(Model $model, string $action = null)
     {
-        if (!$model->exists) {
+        if (! $model->exists) {
             return $this->renderModelRemovedStream($model);
         }
 
