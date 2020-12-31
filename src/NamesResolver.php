@@ -27,6 +27,11 @@ class NamesResolver
         return static::resourceNameSingularFor(class_basename($model));
     }
 
+    public static function resourceVariableName(Model $model): string
+    {
+        return Str::camel(static::resourceNameSingular($model));
+    }
+
     public static function partialNameFor(Model $model): string
     {
         $root = static::resourceName($model);

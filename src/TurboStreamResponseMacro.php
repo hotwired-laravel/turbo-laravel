@@ -52,7 +52,7 @@ class TurboStreamResponseMacro
                 : NamesResolver::partialNameFor($model),
             'data' => method_exists($model, 'hotwirePartialData')
                 ? $model->hotwirePartialData()
-                : [NamesResolver::resourceNameSingular($model) => $model],
+                : [NamesResolver::resourceVariableName($model) => $model],
         ]));
     }
 
@@ -62,13 +62,13 @@ class TurboStreamResponseMacro
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceId($model::class, $model->id),
-            'action' => 'update',
+            'action' => 'replace',
             'resourcePartialName' => method_exists($model, 'hotwirePartialName')
                 ? $model->hotwirePartialName()
                 : NamesResolver::partialNameFor($model),
             'data' => method_exists($model, 'hotwirePartialData')
                 ? $model->hotwirePartialData()
-                : [NamesResolver::resourceNameSingular($model) => $model],
+                : [NamesResolver::resourceVariableName($model) => $model],
         ]));
     }
 }
