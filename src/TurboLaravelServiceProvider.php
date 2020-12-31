@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Tonysm\TurboLaravel\Commands\TurboLaravelInstallCommand;
 
@@ -37,6 +38,10 @@ class TurboLaravelServiceProvider extends ServiceProvider
 
         ResponseFactory::macro('turboStreamView', function (View $view) {
             return TurboResponseFactory::makeStream($view->render());
+        });
+
+        Request::macro('wantsTurboStream', function () {
+            return Str::contains($this->header('Accept'), TurboLaravel::TURBO_STREAM_FORMAT);
         });
     }
 
