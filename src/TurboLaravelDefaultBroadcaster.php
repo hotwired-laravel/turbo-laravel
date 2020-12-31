@@ -11,10 +11,10 @@ class TurboLaravelDefaultBroadcaster
     {
         foreach ($model->hotwireBrodcastingTargets() as $target) {
             broadcast(new HotwireBroadcast(
-                $model::class,
+                get_class($model),
                 $model->id,
                 $action,
-                $target::class,
+                get_class($target),
                 $target->id
             ));
         }
@@ -24,10 +24,10 @@ class TurboLaravelDefaultBroadcaster
     {
         foreach ($model->hotwireBrodcastingTargets() as $target) {
             broadcast(new HotwireBroadcast(
-                $model::class,
+                get_class($model),
                 $model->id,
                 'remove',
-                $target::class,
+                get_class($target),
                 $target->id
             ));
         }

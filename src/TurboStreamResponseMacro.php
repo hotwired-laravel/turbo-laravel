@@ -61,7 +61,7 @@ class TurboStreamResponseMacro
         return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-saved.blade.php', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
-                : NamesResolver::resourceId($model::class, $model->id),
+                : NamesResolver::resourceId(get_class($model), $model->id),
             'action' => 'replace',
             'resourcePartialName' => method_exists($model, 'hotwirePartialName')
                 ? $model->hotwirePartialName()

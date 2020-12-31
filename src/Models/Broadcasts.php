@@ -78,7 +78,7 @@ trait Broadcasts
     public function hotwireBroadcastsOn()
     {
         return new PrivateChannel(
-            $this->hotwireResolveNamesUsing()->modelPathToChannelName($this::class, $this->id)
+            $this->hotwireResolveNamesUsing()->modelPathToChannelName(get_class($this), $this->id)
         );
     }
 
