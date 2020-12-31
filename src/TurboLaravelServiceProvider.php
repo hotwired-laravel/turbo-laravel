@@ -3,9 +3,11 @@
 namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\View;
 use Tonysm\TurboLaravel\Commands\TurboLaravelInstallCommand;
 
 class TurboLaravelServiceProvider extends ServiceProvider
@@ -31,6 +33,10 @@ class TurboLaravelServiceProvider extends ServiceProvider
 
         ResponseFactory::macro('turboStream', function (Model $model, string $action = null) {
             return (new TurboStreamResponseMacro())->handle($model, $action);
+        });
+
+        ResponseFactory::macro('turboStreamView', function (View $view) {
+            return TurboResponseFactory::makeStream($view->render());
         });
     }
 
