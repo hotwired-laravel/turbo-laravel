@@ -11,7 +11,7 @@
         {
             "name": "Tony Messias",
             "email": "tonysm@hey.com",
-            "homepage": "https://spatie.be",
+            "homepage": "https://tonysm.com",
             "role": "Developer"
         }
     ],
@@ -53,15 +53,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/spatie"
-        },
-        {
-            "type": "other",
-            "url": "https://spatie.be/open-source/support-us"
-        }
-    ]
+    "prefer-stable": true
 }

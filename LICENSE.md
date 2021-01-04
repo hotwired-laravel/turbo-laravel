@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) Tonysm bvba <info@spatie.be>
+Copyright (c) Tony Messias <tonysm@hey.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
