@@ -68,4 +68,24 @@ class TurboMiddlewareTest extends TestCase
             'Expected to have detected a Turbo Native visit, but it did not.'
         );
     }
+
+    /** @test */
+    public function respects_the_redirects_to_property_of_the_validation_failed_exception()
+    {
+    }
+
+    /** @test */
+    public function redirects_back_to_resource_create_routes_on_failed_validation_follows_laravel_conventions()
+    {
+    }
+
+    /** @test */
+    public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions()
+    {
+    }
+
+    /** @test */
+    public function lets_it_crash_when_redirect_route_does_not_exist()
+    {
+    }
 }
