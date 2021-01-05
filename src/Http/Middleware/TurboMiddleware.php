@@ -55,11 +55,9 @@ class TurboMiddleware
         $response->setStatusCode(303);
 
         if ($response->exception instanceof ValidationException && !$response->exception->redirectTo) {
-            $sendTo = $this->guessRedirectingRoute($request);
-
-            if ($sendTo) {
-                $response->setTargetUrl($sendTo);
-            }
+            $response->setTargetUrl(
+                $this->guessRedirectingRoute($request) ?: $response->getTargetUrl()
+            );
         }
 
         return $response;
