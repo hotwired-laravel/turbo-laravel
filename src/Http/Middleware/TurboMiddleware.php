@@ -51,7 +51,10 @@ class TurboMiddleware
             return $response;
         }
 
-        // Turbo expects a 303 redirect status code.
+        // Turbo expects a 303 redirect. We are also changing the default behavior of Laravel's failed
+        // validation redirection to send the user to a page where the form of the current resource
+        // is rendered (instead of just "back"), since Frames could have been used in many pages.
+
         $response->setStatusCode(303);
 
         if ($response->exception instanceof ValidationException && !$response->exception->redirectTo) {
@@ -86,8 +89,9 @@ class TurboMiddleware
 
         $formRouteName = NamesResolver::formRouteNameFor($name);
 
+        // If the guessed route doesn't exist, send it back to the Laravel detected route.
+
         if (!Route::has($formRouteName)) {
-            // @TODO: Not sure if we should just silently fail here or if we should throw another exception.
             return null;
         }
 
