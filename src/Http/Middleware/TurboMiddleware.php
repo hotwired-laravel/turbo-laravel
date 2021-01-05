@@ -47,13 +47,15 @@ class TurboMiddleware
             return $response;
         }
 
-        // Turbo expects a 303 redirect status code.
-        if ($response instanceof RedirectResponse) {
-            $response->setStatusCode(303);
+        if (!$response instanceof RedirectResponse) {
+            return $response;
+        }
 
-            if ($response->exception instanceof ValidationException && !$response->exception->redirectTo) {
-                $response->setTargetUrl($this->guessRedirectingRoute($request));
-            }
+        // Turbo expects a 303 redirect status code.
+        $response->setStatusCode(303);
+
+        if ($response->exception instanceof ValidationException && !$response->exception->redirectTo) {
+            $response->setTargetUrl($this->guessRedirectingRoute($request));
         }
 
         return $response;
@@ -76,7 +78,7 @@ class TurboMiddleware
         $route = $request->route();
         $name = optional($route)->getName();
 
-        if (! $route || !$name) {
+        if (!$route || !$name) {
             return null;
         }
 
