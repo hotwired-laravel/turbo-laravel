@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Tests\TestCase;
+use Tonysm\TurboLaravel\Tests\TestModel;
 use Tonysm\TurboLaravel\TurboLaravelFacade;
 
 class TurboMiddlewareTest extends TestCase
@@ -124,6 +125,22 @@ class TurboMiddlewareTest extends TestCase
     /** @test */
     public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions()
     {
+        Route::get('/test-models/{testModel}/edit', function () {
+            return 'show form';
+        })->name('test-models.edit');
+
+        Route::put('/test-models/{testModel}', function (TestModel $model) {
+            request()->validate(['name' => 'required']);
+        })->name('test-models.update')->middleware(TurboMiddleware::class);
+
+        $testModel = TestModel::create(['name' => 'Dummy model']);
+
+        $response = $this->from('/source')->put(route('test-models.update', $testModel), [], [
+            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+        ]);
+
+        $response->assertRedirect(route('test-models.edit', $testModel));
+        $response->assertStatus(303);
     }
 
     /** @test */

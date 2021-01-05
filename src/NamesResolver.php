@@ -42,6 +42,10 @@ class NamesResolver
 
     public static function formRouteNameFor(string $routeName)
     {
+        if (Str::endsWith($routeName, '.update')) {
+            return str_replace('.update', '.edit', $routeName);
+        }
+
         return str_replace('.store', '.create', $routeName);
     }
 
