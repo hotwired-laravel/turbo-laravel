@@ -4,6 +4,8 @@ namespace Tonysm\TurboLaravel\Tests\Http\Middleware;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\TurboLaravelFacade;
@@ -72,11 +74,51 @@ class TurboMiddlewareTest extends TestCase
     /** @test */
     public function respects_the_redirects_to_property_of_the_validation_failed_exception()
     {
+        Route::get('/test-models/create', function () {
+            return 'show form';
+        })->name('test-models.create');
+
+        $request = Request::create('/test-models', 'POST');
+
+        $request->headers->add([
+            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+        ]);
+
+        $next = function () {
+            $resp = redirect();
+
+            $resp->exception = ValidationException::withMessages([
+                'field' => ['Something failed.'],
+            ]);
+
+            $resp->exception->redirectTo('/forced-destination');
+
+            return $resp->to('/destination');
+        };
+
+        $response = (new TurboMiddleware())->handle($request, $next);
+
+        $this->assertNotEquals($response->getTargetUrl(), route('test-models.create'));
+        $this->assertEquals(303, $response->getStatusCode());
     }
 
     /** @test */
     public function redirects_back_to_resource_create_routes_on_failed_validation_follows_laravel_conventions()
     {
+        Route::get('/test-models/create', function () {
+            return 'show form';
+        })->name('test-models.create');
+
+        Route::post('/test-models', function () {
+            request()->validate(['name' => 'required']);
+        })->name('test-models.store')->middleware(TurboMiddleware::class);
+
+        $response = $this->from('/source')->post(route('test-models.store'), [], [
+            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+        ]);
+
+        $response->assertRedirect(route('test-models.create'));
+        $response->assertStatus(303);
     }
 
     /** @test */
