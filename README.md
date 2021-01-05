@@ -31,7 +31,7 @@ return [
 
 TODOS:
 
-- Handle form validation (not sure yet what's the best way to use this)
+- ~Handle form validation (not sure yet what's the best way to use this)~
 - Document using `Broadcasts` trait in a model
 - Document overriding the `$broadcastsTo` in the model to point to a related model
 - Document overriding conventions
