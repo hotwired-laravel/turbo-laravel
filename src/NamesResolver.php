@@ -42,11 +42,17 @@ class NamesResolver
 
     public static function formRouteNameFor(string $routeName)
     {
-        if (Str::endsWith($routeName, '.update')) {
-            return str_replace('.update', '.edit', $routeName);
-        }
+        $creating = Str::endsWith($routeName, '.store');
 
-        return str_replace('.store', '.create', $routeName);
+        $lookFor = $creating
+            ? '.store'
+            : '.update';
+
+        $replaceWith = $creating
+            ? '.create'
+            : '.edit';
+
+        return str_replace($lookFor, $replaceWith, $routeName);
     }
 
     public function modelPathToChannelName(string $model, $id)
