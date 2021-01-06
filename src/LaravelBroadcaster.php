@@ -3,33 +3,46 @@
 namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
-use Tonysm\TurboLaravel\Events\HotwireBroadcast;
+use Illuminate\Support\Arr;
+use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
+use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
 
 class LaravelBroadcaster
 {
-    public function update($model, string $action)
+    public function create($model)
     {
-        foreach ($model->hotwireBrodcastingTargets() as $target) {
-            broadcast(new HotwireBroadcast(
-                get_class($model),
-                $model->id,
-                $action,
-                get_class($target),
-                $target->id
-            ));
-        }
+        $action = method_exists($model, 'turboStreamCreatedAction')
+            ? $model->turboStreamCreatedAction
+            : 'append';
+
+        broadcast(new TurboStreamModelCreated(
+            $model,
+            $action
+        ));
+    }
+
+    public function update($model)
+    {
+        $action = method_exists($model, 'turboStreamUpdatedAction')
+            ? $model->turboStreamUpdatedAction
+            : 'update';
+
+        broadcast(new TurboStreamModelUpdated(
+            $model,
+            $action,
+        ));
     }
 
     public function remove(Model $model)
     {
-        foreach ($model->hotwireBrodcastingTargets() as $target) {
-            broadcast(new HotwireBroadcast(
-                get_class($model),
-                $model->id,
-                'remove',
-                get_class($target),
-                $target->id
-            ));
-        }
+        $action = method_exists($model, 'turboStreamDeletedAction')
+            ? $model->turboStreamDeletedAction
+            : 'remove';
+
+        broadcast(new TurboStreamModelDeleted(
+            $model,
+            $action
+        ));
     }
 }

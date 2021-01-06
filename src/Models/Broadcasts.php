@@ -4,7 +4,8 @@ namespace Tonysm\TurboLaravel\Models;
 
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
-use Tonysm\TurboLaravel\Jobs\BroadcastModelChanged;
+use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
+use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
 use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
 
@@ -25,16 +26,25 @@ trait Broadcasts
         static::observe(new ModelObserver());
     }
 
-    public function queueBroadcastToHotwire()
+    public function queueBroadcastCreatedToHotwire()
     {
         if (! config('turbo-laravel.queue')) {
-            return $this->hotwireBroadcastUsing()->update(
-                $this,
-                $this->hotwireBroadcastingRule()
-            );
+            $this->hotwireBroadcastUsing()->create($this);
+            return;
         }
 
-        dispatch(new BroadcastModelChanged($this, $this->hotwireBroadcastingRule()));
+        dispatch(new BroadcastModelCreated($this));
+    }
+
+
+    public function queueBroadcastUpdatedToHotwire()
+    {
+        if (! config('turbo-laravel.queue')) {
+            $this->hotwireBroadcastUsing()->update($this);
+            return;
+        }
+
+        dispatch(new BroadcastModelUpdated($this));
     }
 
     public function queueBroadcastRemovalToHotwire()
@@ -52,12 +62,17 @@ trait Broadcasts
 
     public function hotwireBroadcastingRule(): string
     {
-        return $this->exists ? 'append' : 'update';
+        return $this->wasRecentlyCreated ? 'append' : 'update';
     }
 
     public function hotwireTargetDomId()
     {
         return $this->hotwireResolveNamesUsing()->resourceId(static::class, $this->id);
+    }
+
+    public function hotwireTargetResourcesName()
+    {
+        return $this->hotwireResolveNamesUsing()->resourceName($this);
     }
 
     public function hotwireBrodcastingTargets()

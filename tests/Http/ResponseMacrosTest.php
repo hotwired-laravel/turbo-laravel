@@ -20,7 +20,7 @@ class ResponseMacrosTest extends TestCase
         $testModel = TestModel::create(['name' => 'test']);
 
         $expected = <<<html
-<turbo-stream target="test_models" action="append">
+<turbo-stream target="broadcast_test_models" action="append">
     <template>
         <div id="test_model_{$testModel->id}">hello</div>
     </template>

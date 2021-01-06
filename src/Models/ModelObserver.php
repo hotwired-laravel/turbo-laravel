@@ -9,9 +9,17 @@ class ModelObserver
     /**
      * @param Model|Broadcasts $model
      */
-    public function saved(Model $model)
+    public function created(Model $model)
     {
-        $model->queueBroadcastToHotwire();
+        $model->queueBroadcastCreatedToHotwire();
+    }
+
+    /**
+     * @param Model|Broadcasts $model
+     */
+    public function updated(Model $model)
+    {
+        $model->queueBroadcastUpdatedToHotwire();
     }
 
     /**

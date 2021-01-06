@@ -35,7 +35,7 @@ class TestCase extends Orchestra
 
     private function setUpDatabase(Application $app): void
     {
-        $app['db']->connection()->getSchemaBuilder()->create('test_models', function (Blueprint $table) {
+        $app['db']->connection()->getSchemaBuilder()->create('broadcast_test_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->timestamps();
