@@ -36,13 +36,9 @@ class LaravelBroadcaster
 
     public function remove(Model $model)
     {
-        $action = property_exists($model, 'turboStreamDeletedAction')
-            ? $model->turboStreamDeletedAction
-            : 'remove';
-
         broadcast(new TurboStreamModelDeleted(
             $model,
-            $action
+            'remove'
         ));
     }
 }

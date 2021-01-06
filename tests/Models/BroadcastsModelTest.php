@@ -137,11 +137,13 @@ blade;
     /** @test */
     public function broadcasts_using_override_action()
     {
-        Event::fake([TurboStreamModelCreated::class]);
+        Event::fake([TurboStreamModelCreated::class, TurboStreamModelUpdated::class]);
 
-        $model = BroadcastTestModelDifferentAction::create(['name' => 'My model']);
+        $model = tap(tap(BroadcastTestModelDifferentAction::create(['name' => 'My model'])->fresh())->update([
+            'name' => 'Changed',
+        ]))->delete();
 
-        $expectedPartialRender = <<<'blade'
+        $expectedPartialRenderForCreate = <<<'blade'
 <turbo-stream target="broadcast_test_model_different_actions" action="prepend">
     <template>
         <h1>Hello from a different partial</h1>
@@ -149,10 +151,29 @@ blade;
 </turbo-stream>
 blade;
 
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
             return $model->is($event->model)
                 && $event->action === "prepend"
-                && trim($event->render()) === $expectedPartialRender
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
+
+        $expectedPartialRenderForUpdate = <<<blade
+<turbo-stream target="broadcast_test_model_different_action_{$model->id}" action="replace">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRenderForUpdate) {
+            return $model->is($event->model)
+                && $event->action === "replace"
+                && trim($event->render()) === $expectedPartialRenderForUpdate
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
@@ -389,6 +410,7 @@ class BroadcastTestModelDifferentPartial extends BroadcastTestModel
 class BroadcastTestModelDifferentAction extends BroadcastTestModelDifferentPartial
 {
     public $turboStreamCreatedAction = "prepend";
+    public $turboStreamUpdatedAction = "replace";
 }
 
 class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPartial
