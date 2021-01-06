@@ -25,11 +25,11 @@ php artisan turbo:install
 TODOS:
 
 - ~Handle form validation (not sure yet what's the best way to use this)~
+- ~Test the `Broadcasts` trait~
 - Document using `Broadcasts` trait in a model
 - Document overriding the `$broadcastsTo` in the model to point to a related model
 - Document overriding conventions
 - Document conventions (partials, variable names, dom IDs...)
-- Extract "extension" point to contracts
 - Document using the `@turbonative` directive
 - Document Turbo Stream responses from the browser
 - ~Update Livewire to work with Turbo~ (PRs sent [here](https://github.com/livewire/livewire/pull/2279) and [here](https://github.com/livewire/turbolinks/pull/12))
