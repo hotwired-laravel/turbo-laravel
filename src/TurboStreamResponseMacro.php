@@ -26,7 +26,7 @@ class TurboStreamResponseMacro
      */
     private function renderModelRemovedStream(Model $model)
     {
-        return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-removed.blade.php', [
+        return TurboResponseFactory::makeStream(view('turbo-laravel::model-removed', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceId($model, $model->id),
@@ -43,7 +43,7 @@ class TurboStreamResponseMacro
     {
         $action = $action ?: 'append';
 
-        return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-saved.blade.php', [
+        return TurboResponseFactory::makeStream(view('turbo-laravel::model-saved', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceName($model),
@@ -59,7 +59,7 @@ class TurboStreamResponseMacro
 
     private function renderModelUpdatedStream(Model $model)
     {
-        return TurboResponseFactory::makeStream(view()->file(__DIR__ . '/../resources/views/model-saved.blade.php', [
+        return TurboResponseFactory::makeStream(view('turbo-laravel::model-saved', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceId(get_class($model), $model->id),
