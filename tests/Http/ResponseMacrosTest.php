@@ -74,7 +74,6 @@ html;
         $this->assertEquals('text/html; turbo-stream', $resp->headers->get('Content-Type'));
     }
 
-
     /** @test */
     public function streams_broadcastable_models_for_update()
     {
@@ -110,7 +109,6 @@ html;
         $this->assertEquals($expected, trim($resp->getContent()));
         $this->assertEquals('text/html; turbo-stream', $resp->headers->get('Content-Type'));
     }
-
 
     /** @test */
     public function streams_broadcastable_models_for_deleted()

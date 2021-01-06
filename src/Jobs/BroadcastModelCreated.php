@@ -10,7 +10,8 @@ use Tonysm\TurboLaravel\Models\Broadcasts;
 
 class BroadcastModelCreated implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue;
+    use SerializesModels;
 
     public Model $model;
 

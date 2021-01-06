@@ -7,8 +7,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
-use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
+use Tonysm\TurboLaravel\NamesResolver;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -31,17 +31,18 @@ trait Broadcasts
     {
         if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastUsing()->create($this);
+
             return;
         }
 
         dispatch(new BroadcastModelCreated($this));
     }
 
-
     public function queueBroadcastUpdatedToHotwire()
     {
         if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastUsing()->update($this);
+
             return;
         }
 

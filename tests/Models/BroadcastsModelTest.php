@@ -314,7 +314,6 @@ blade;
         });
     }
 
-
     /** @test */
     public function broadcasts_to_related_model_using_override_method_array()
     {
@@ -419,7 +418,6 @@ class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPar
     {
         return "hello-{$this->id}";
     }
-
 
     public function hotwireTargetResourcesName()
     {

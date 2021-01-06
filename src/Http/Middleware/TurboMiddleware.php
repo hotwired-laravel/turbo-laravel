@@ -43,11 +43,11 @@ class TurboMiddleware
      */
     private function turboResponse($response, Request $request)
     {
-        if (!$this->turboVisit($request) && !$this->turboNativeVisit($request)) {
+        if (! $this->turboVisit($request) && ! $this->turboNativeVisit($request)) {
             return $response;
         }
 
-        if (!$response instanceof RedirectResponse) {
+        if (! $response instanceof RedirectResponse) {
             return $response;
         }
 
@@ -57,7 +57,7 @@ class TurboMiddleware
 
         $response->setStatusCode(303);
 
-        if ($response->exception instanceof ValidationException && !$response->exception->redirectTo) {
+        if ($response->exception instanceof ValidationException && ! $response->exception->redirectTo) {
             $response->setTargetUrl(
                 $this->guessRedirectingRoute($request) ?: $response->getTargetUrl()
             );
@@ -83,7 +83,7 @@ class TurboMiddleware
         $route = $request->route();
         $name = optional($route)->getName();
 
-        if (!$route || !$name) {
+        if (! $route || ! $name) {
             return null;
         }
 
@@ -91,7 +91,7 @@ class TurboMiddleware
 
         // If the guessed route doesn't exist, send it back to the Laravel detected route.
 
-        if (!Route::has($formRouteName)) {
+        if (! Route::has($formRouteName)) {
             return null;
         }
 

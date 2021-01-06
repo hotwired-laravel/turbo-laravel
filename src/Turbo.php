@@ -44,6 +44,7 @@ class Turbo
     {
         if (is_bool($toOthers)) {
             $this->broadcastToOthersOnly = $toOthers;
+
             return;
         }
 

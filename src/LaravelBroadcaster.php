@@ -3,7 +3,6 @@
 namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
 use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
 use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
