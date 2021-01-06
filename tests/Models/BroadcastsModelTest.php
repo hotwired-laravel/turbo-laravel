@@ -107,13 +107,105 @@ blade;
     }
 
     /** @test */
-    public function broadcasts_using_override_action()
+    public function broadcasts_using_override_partial_name()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $model = BroadcastTestModelDifferentPartial::create(['name' => 'My model']);
+
+        $expectedPartialRender = <<<'blade'
+<turbo-stream target="broadcast_test_model_different_partials" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
+            return $model->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRender
+                && $event->broadcastOn()->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
     }
 
     /** @test */
-    public function broadcasts_using_override_target_id()
+    public function broadcasts_using_override_action()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $model = BroadcastTestModelDifferentAction::create(['name' => 'My model']);
+
+        $expectedPartialRender = <<<'blade'
+<turbo-stream target="broadcast_test_model_different_actions" action="prepend">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
+            return $model->is($event->model)
+                && $event->action === "prepend"
+                && trim($event->render()) === $expectedPartialRender
+                && $event->broadcastOn()->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
+    }
+
+    /** @test */
+    public function broadcasts_using_override_target_id_on_update()
+    {
+        Event::fake([TurboStreamModelCreated::class, TurboStreamModelUpdated::class]);
+
+        $model = tap(BroadcastTestModelDifferentTargetId::create(['name' => 'My model'])->fresh())->update([
+            'name' => 'Changed',
+        ]);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="changed-resource-name" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
+            return $model->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
+
+        $expectedPartialRenderForUpdate = <<<blade
+<turbo-stream target="hello-{$model->id}" action="update">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRenderForUpdate) {
+            return $model->is($event->model)
+                && $event->action === "update"
+                && trim($event->render()) === $expectedPartialRenderForUpdate
+                && $event->broadcastOn()->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
     }
 
     /** @test */
@@ -132,11 +224,6 @@ blade;
     }
 
     /** @test */
-    public function broadcasts_using_override_partial_name()
-    {
-    }
-
-    /** @test */
     public function broadcasts_using_override_partial_data()
     {
     }
@@ -145,4 +232,31 @@ blade;
 class BroadcastTestModel extends TestModel
 {
     use Broadcasts;
+}
+
+class BroadcastTestModelDifferentPartial extends BroadcastTestModel
+{
+    public function hotwirePartialName()
+    {
+        return "_override_partial_name";
+    }
+}
+
+class BroadcastTestModelDifferentAction extends BroadcastTestModelDifferentPartial
+{
+    public $turboStreamCreatedAction = "prepend";
+}
+
+class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPartial
+{
+    public function hotwireTargetDomId()
+    {
+        return "hello-{$this->id}";
+    }
+
+
+    public function hotwireTargetResourcesName()
+    {
+        return "changed-resource-name";
+    }
 }

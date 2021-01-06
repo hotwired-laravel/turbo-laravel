@@ -60,11 +60,6 @@ trait Broadcasts
         return resolve(LaravelBroadcaster::class);
     }
 
-    public function hotwireBroadcastingRule(): string
-    {
-        return $this->wasRecentlyCreated ? 'append' : 'update';
-    }
-
     public function hotwireTargetDomId()
     {
         return $this->hotwireResolveNamesUsing()->resourceId(static::class, $this->id);

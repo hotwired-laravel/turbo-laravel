@@ -12,7 +12,7 @@ class LaravelBroadcaster
 {
     public function create($model)
     {
-        $action = method_exists($model, 'turboStreamCreatedAction')
+        $action = property_exists($model, 'turboStreamCreatedAction')
             ? $model->turboStreamCreatedAction
             : 'append';
 
@@ -24,7 +24,7 @@ class LaravelBroadcaster
 
     public function update($model)
     {
-        $action = method_exists($model, 'turboStreamUpdatedAction')
+        $action = property_exists($model, 'turboStreamUpdatedAction')
             ? $model->turboStreamUpdatedAction
             : 'update';
 
@@ -36,7 +36,7 @@ class LaravelBroadcaster
 
     public function remove(Model $model)
     {
-        $action = method_exists($model, 'turboStreamDeletedAction')
+        $action = property_exists($model, 'turboStreamDeletedAction')
             ? $model->turboStreamDeletedAction
             : 'remove';
 
