@@ -2,6 +2,8 @@
 
 namespace Tonysm\TurboLaravel;
 
+use Closure;
+
 class Turbo
 {
     const TURBO_STREAM_FORMAT = 'text/html; turbo-stream';
@@ -14,6 +16,13 @@ class Turbo
      */
     private bool $visitFromTurboNative = false;
 
+    /**
+     * Whether or not the events should broadcast to other users only or to all.
+     *
+     * @var bool
+     */
+    private bool $broadcastToOthersOnly = false;
+
     public function isTurboNativeVisit(): bool
     {
         return $this->visitFromTurboNative;
@@ -24,5 +33,31 @@ class Turbo
         $this->visitFromTurboNative = true;
 
         return $this;
+    }
+
+    /**
+     * @param bool|Closure $toOthers
+     *
+     * @return \Illuminate\Support\HigherOrderTapProxy|mixed
+     */
+    public function broadcastToOthers($toOthers = null)
+    {
+        if (is_bool($toOthers)) {
+            $this->broadcastToOthersOnly = $toOthers;
+            return;
+        }
+
+        $this->broadcastToOthersOnly = true;
+
+        if ($toOthers instanceof Closure) {
+            return tap($toOthers(), function () {
+                $this->broadcastToOthersOnly = false;
+            });
+        }
+    }
+
+    public function shouldBroadcastToOthers(): bool
+    {
+        return $this->broadcastToOthersOnly;
     }
 }
