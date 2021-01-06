@@ -107,16 +107,6 @@ blade;
     }
 
     /** @test */
-    public function broadcasts_on_soft_deleted()
-    {
-    }
-
-    /** @test */
-    public function broadcasts_on_hard_delete_using_soft_deletes_trait()
-    {
-    }
-
-    /** @test */
     public function broadcasts_using_override_action()
     {
     }
