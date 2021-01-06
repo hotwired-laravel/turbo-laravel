@@ -38,6 +38,7 @@ class TestCase extends Orchestra
         $app['db']->connection()->getSchemaBuilder()->create('broadcast_test_models', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->foreignId('parent_id')->nullable();
             $table->timestamps();
         });
     }

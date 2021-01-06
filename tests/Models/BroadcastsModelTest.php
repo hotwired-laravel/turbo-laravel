@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Tests\Models;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
@@ -39,7 +40,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "append"
                 && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -71,7 +72,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "update"
                 && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -98,7 +99,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "remove"
                 && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -125,7 +126,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "append"
                 && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -152,7 +153,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "prepend"
                 && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -181,7 +182,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "append"
                 && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -200,7 +201,7 @@ blade;
             return $model->is($event->model)
                 && $event->action === "update"
                 && trim($event->render()) === $expectedPartialRenderForUpdate
-                && $event->broadcastOn()->name === sprintf(
+                && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
@@ -211,21 +212,164 @@ blade;
     /** @test */
     public function broadcasts_to_related_model_using_override_property()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $parent = RelatedModelParent::create(['name' => 'Parent']);
+        $child = RelatedModelChildArr::create(['name' => 'Child', 'parent_id' => $parent->id]);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="related_model_child_arrs" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
+            return $child->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($parent)),
+                    $parent->id
+                );
+        });
+    }
+
+    /** @test */
+    public function broadcasts_to_related_model_using_override_property_array()
+    {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $parent = RelatedModelParent::create(['name' => 'Parent']);
+        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->id]);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="related_model_children" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
+            return $child->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($parent)),
+                    $parent->id
+                );
+        });
     }
 
     /** @test */
     public function broadcasts_to_related_model_using_override_method()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $parent = RelatedModelParent::create(['name' => 'Parent']);
+        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->id]);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="related_model_child_methods" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
+            return $child->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($parent)),
+                    $parent->id
+                );
+        });
+    }
+
+
+    /** @test */
+    public function broadcasts_to_related_model_using_override_method_array()
+    {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $parent = RelatedModelParent::create(['name' => 'Parent']);
+        $child = RelatedModelChildMethodArray::create(['name' => 'Child', 'parent_id' => $parent->id]);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="related_model_child_method_arrays" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
+            return $child->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($parent)),
+                    $parent->id
+                );
+        });
     }
 
     /** @test */
     public function broadcasts_using_another_channel()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $model = BroadcastTestModelUsingChannel::create(['name' => 'Switch Channel']);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="broadcast_test_model_using_channels" action="append">
+    <template>
+        <h1>Hello from a different partial</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
+            return $model->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === 'lorem.ipsum';
+        });
     }
 
     /** @test */
     public function broadcasts_using_override_partial_data()
     {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $model = BroadcastTestModelDifferentPartialData::create(['name' => 'Switch Channel']);
+
+        $expectedPartialRenderForCreate = <<<blade
+<turbo-stream target="broadcast_test_model_different_partial_datas" action="append">
+    <template>
+        <h2>Hello, John Doe</h2>
+    </template>
+</turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
+            return $model->is($event->model)
+                && $event->action === "append"
+                && trim($event->render()) === $expectedPartialRenderForCreate
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->id
+                );
+        });
     }
 }
 
@@ -258,5 +402,82 @@ class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPar
     public function hotwireTargetResourcesName()
     {
         return "changed-resource-name";
+    }
+}
+
+class RelatedModelParent extends TestModel
+{
+}
+
+class RelatedModelChild extends BroadcastTestModelDifferentPartial
+{
+    public $broadcastsTo = 'parent';
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class RelatedModelChildArr extends BroadcastTestModelDifferentPartial
+{
+    public $broadcastsTo = [
+        'parent',
+    ];
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class RelatedModelChildMethod extends BroadcastTestModelDifferentPartial
+{
+    public function broadcastsTo()
+    {
+        return $this->parent;
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class RelatedModelChildMethodArray extends BroadcastTestModelDifferentPartial
+{
+    public function broadcastsTo()
+    {
+        return [
+            $this->parent,
+        ];
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class BroadcastTestModelUsingChannel extends BroadcastTestModelDifferentPartial
+{
+    public function broadcastsTo()
+    {
+        return new Channel('lorem.ipsum');
+    }
+}
+
+class BroadcastTestModelDifferentPartialData extends BroadcastTestModel
+{
+    public function hotwirePartialName()
+    {
+        return "_override_partial_data";
+    }
+
+    public function hotwirePartialData()
+    {
+        return [
+            'name' => 'John Doe',
+        ];
     }
 }

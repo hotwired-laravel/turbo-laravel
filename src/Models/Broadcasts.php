@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Models;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
@@ -87,9 +88,17 @@ trait Broadcasts
 
     public function hotwireBroadcastsOn()
     {
-        return new PrivateChannel(
-            $this->hotwireResolveNamesUsing()->modelPathToChannelName(get_class($this), $this->id)
-        );
+        return Collection::wrap($this->hotwireBrodcastingTargets())
+            ->map(function ($item) {
+                if ($item instanceof Channel) {
+                    return $item;
+                }
+
+                return new PrivateChannel(
+                    $this->hotwireResolveNamesUsing()->modelPathToChannelName(get_class($item), $item->id)
+                );
+            })
+            ->all();
     }
 
     public function hotwireResolveNamesUsing(): NamesResolver

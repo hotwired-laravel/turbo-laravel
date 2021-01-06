@@ -30,6 +30,7 @@ class TurboStreamResponseMacro
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceId($model, $model->id),
+            'action' => 'remove',
         ]));
     }
 
