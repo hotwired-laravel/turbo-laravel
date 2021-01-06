@@ -44,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-              "TurboServiceProvider"
+              "\\Tonysm\\TurboLaravel\\TurboServiceProvider"
             ],
             "aliases": {
-                "Turbo": "TurboFacade"
+                "Turbo": "\\Tonysm\\TurboLaravel\\TurboFacade"
             }
         }
     },

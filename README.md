@@ -4,7 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/run-tests?label=tests)](https://github.com/tonysm/turbo-laravel/actions?query=workflow%3ATests+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/tonysm/turbo-laravel.svg?style=flat-square)](https://packagist.org/packages/tonysm/turbo-laravel)
 
-This package gives you a set of conventions to make the most out of the Hotwire stack (inspired by turbo-rails gem).
+This package gives you a set of conventions to make the most out of the Hotwire stack in Laravel (inspired by turbo-rails gem).
 
 ## Installation
 
@@ -14,17 +14,10 @@ You can install the package via composer:
 composer require tonysm/turbo-laravel
 ```
 
-You can publish the config file with:
+You can publish the asset files with:
+
 ```bash
-php artisan vendor:publish --provider="Tonysm\TurboLaravel\TurboLaravelServiceProvider" --tag="config"
 php artisan turbo:install
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
 ```
 
 ## Usage
