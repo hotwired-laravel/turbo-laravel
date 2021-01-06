@@ -114,7 +114,7 @@ trait Broadcasts
     public function hotwirePartialData()
     {
         return [
-            $this->hotwireResolveNamesUsing()->resourceNameSingular($this) => $this,
+            $this->hotwireResolveNamesUsing()->resourceVariableName($this) => $this,
         ];
     }
 }

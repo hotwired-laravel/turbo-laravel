@@ -17,7 +17,7 @@ class TurboStreamResponseMacro
             return $this->renderModelAddedStream($model, $action);
         }
 
-        return $this->renderModelUpdatedStream($model);
+        return $this->renderModelUpdatedStream($model, $action);
     }
 
     /**
@@ -44,8 +44,8 @@ class TurboStreamResponseMacro
         $action = $action ?: 'append';
 
         return TurboResponseFactory::makeStream(view('turbo-laravel::model-saved', [
-            'target' => method_exists($model, 'hotwireTargetDomId')
-                ? $model->hotwireTargetDomId()
+            'target' => method_exists($model, 'hotwireTargetResourcesName')
+                ? $model->hotwireTargetResourcesName()
                 : NamesResolver::resourceName($model),
             'action' => $action,
             'resourcePartialName' => method_exists($model, 'hotwirePartialName')
@@ -57,13 +57,15 @@ class TurboStreamResponseMacro
         ]));
     }
 
-    private function renderModelUpdatedStream(Model $model)
+    private function renderModelUpdatedStream(Model $model, $action)
     {
+        $action = $action ?: 'update';
+
         return TurboResponseFactory::makeStream(view('turbo-laravel::model-saved', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : NamesResolver::resourceId(get_class($model), $model->id),
-            'action' => 'replace',
+            'action' => $action,
             'resourcePartialName' => method_exists($model, 'hotwirePartialName')
                 ? $model->hotwirePartialName()
                 : NamesResolver::partialNameFor($model),
