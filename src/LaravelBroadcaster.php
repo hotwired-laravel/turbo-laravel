@@ -5,7 +5,7 @@ namespace Tonysm\TurboLaravel;
 use Illuminate\Database\Eloquent\Model;
 use Tonysm\TurboLaravel\Events\HotwireBroadcast;
 
-class TurboLaravelDefaultBroadcaster
+class LaravelBroadcaster
 {
     public function update($model, string $action)
     {

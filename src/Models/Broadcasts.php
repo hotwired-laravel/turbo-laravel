@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelChanged;
 use Tonysm\TurboLaravel\NamesResolver;
-use Tonysm\TurboLaravel\TurboLaravelDefaultBroadcaster;
+use Tonysm\TurboLaravel\LaravelBroadcaster;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -47,7 +47,7 @@ trait Broadcasts
 
     public function hotwireBroadcastUsing()
     {
-        return resolve(TurboLaravelDefaultBroadcaster::class);
+        return resolve(LaravelBroadcaster::class);
     }
 
     public function hotwireBroadcastingRule(): string

@@ -5,7 +5,7 @@ namespace Tonysm\TurboLaravel\Tests;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Tonysm\TurboLaravel\TurboLaravelServiceProvider;
+use Tonysm\TurboLaravel\TurboServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -19,7 +19,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            TurboLaravelServiceProvider::class,
+            TurboServiceProvider::class,
         ];
     }
 

@@ -6,19 +6,19 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
-use Tonysm\TurboLaravel\TurboLaravelFacade;
+use Tonysm\TurboLaravel\TurboFacade;
 
 class TurboComponentsTest extends TestCase
 {
     /** @test */
     public function renders_turbo_native_correctly()
     {
-        $this->assertFalse(TurboLaravelFacade::isTurboNativeVisit());
+        $this->assertFalse(TurboFacade::isTurboNativeVisit());
         $rendered = View::file(__DIR__ . '/fixtures/turbo_native.blade.php')->render();
         $this->assertTrue(Str::contains($rendered, 'Without Turbo Native'));
 
-        TurboLaravelFacade::setVisitingFromTurboNative();
-        $this->assertTrue(TurboLaravelFacade::isTurboNativeVisit());
+        TurboFacade::setVisitingFromTurboNative();
+        $this->assertTrue(TurboFacade::isTurboNativeVisit());
         $rendered = View::file(__DIR__ . '/fixtures/turbo_native.blade.php')->render();
         $this->assertTrue(Str::contains($rendered, 'With Turbo Native'));
     }

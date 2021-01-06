@@ -25,8 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Tonysm\\TurboLaravel\\": "src",
-            "Tonysm\\TurboLaravel\\Database\\Factories\\": "database/factories"
+            "Tonysm\\TurboLaravel\\": "src"
         }
     },
     "autoload-dev": {
@@ -45,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Tonysm\\TurboLaravel\\TurboLaravelServiceProvider"
+              "TurboServiceProvider"
             ],
             "aliases": {
-                "TurboLaravel": "Tonysm\\TurboLaravel\\TurboLaravelFacade"
+                "Turbo": "TurboFacade"
             }
         }
     },

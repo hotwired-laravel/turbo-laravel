@@ -5,7 +5,7 @@ namespace Tonysm\TurboLaravel\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class TurboLaravelInstallCommand extends Command
+class TurboInstallCommand extends Command
 {
     public $signature = 'turbo:install';
     public $description = 'Install the Turbo resources';

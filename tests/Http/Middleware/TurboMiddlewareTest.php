@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
-use Tonysm\TurboLaravel\TurboLaravelFacade;
+use Tonysm\TurboLaravel\TurboFacade;
 
 class TurboMiddlewareTest extends TestCase
 {
@@ -53,7 +53,7 @@ class TurboMiddlewareTest extends TestCase
     public function can_detect_turbo_native_visits()
     {
         $this->assertFalse(
-            TurboLaravelFacade::isTurboNativeVisit(),
+            TurboFacade::isTurboNativeVisit(),
             'Expected to not have started saying it is a Turbo Native visit, but it said it is.'
         );
 
@@ -67,7 +67,7 @@ class TurboMiddlewareTest extends TestCase
         (new TurboMiddleware())->handle($request, $next);
 
         $this->assertTrue(
-            TurboLaravelFacade::isTurboNativeVisit(),
+            TurboFacade::isTurboNativeVisit(),
             'Expected to have detected a Turbo Native visit, but it did not.'
         );
     }

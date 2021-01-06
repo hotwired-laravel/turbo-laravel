@@ -2,7 +2,7 @@
 
 namespace Tonysm\TurboLaravel;
 
-class TurboLaravel
+class Turbo
 {
     const TURBO_STREAM_FORMAT = 'text/html; turbo-stream';
 
