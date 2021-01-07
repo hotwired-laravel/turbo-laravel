@@ -2,14 +2,11 @@
 
 namespace Tonysm\TurboLaravel\Tests\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\TurboFacade;
 
 class BroadcastsToOthersTest extends TestCase
 {
-    use RefreshDatabase;
-
     /** @test */
     public function should_broadcast_to_others()
     {
