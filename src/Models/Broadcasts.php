@@ -72,7 +72,7 @@ trait Broadcasts
         return $this->hotwireResolveNamesUsing()->resourceName($this);
     }
 
-    public function hotwireBrodcastingTargets()
+    public function hotwireBroadcastingTargets()
     {
         if ($this->exists && property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
@@ -89,7 +89,7 @@ trait Broadcasts
 
     public function hotwireBroadcastsOn()
     {
-        return Collection::wrap($this->hotwireBrodcastingTargets())
+        return Collection::wrap($this->hotwireBroadcastingTargets())
             ->map(function ($item) {
                 if ($item instanceof Channel) {
                     return $item;
