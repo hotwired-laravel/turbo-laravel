@@ -330,7 +330,7 @@ public function store()
 
 ## Turbo Native
 
-Turbo Visits made by the Turbo Native library will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments on and off depending on whether your page is being rendered for a Native app or a web app:
+Turbo Visits made by the Turbo Native library will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments or assets (like mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a web app:
 
 ```html
 @turbonative
