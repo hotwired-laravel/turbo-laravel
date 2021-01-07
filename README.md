@@ -87,7 +87,7 @@ This will generate a `comment_123` DOM ID. You can also give it a context, such 
 <turbo-frame id="@domid($post, 'comments_count')">(99)</turbo-frame>
 ```
 
-Which will generate a `post_123_comments_count` ID. This API was borrowed from Rails.
+Which will generate a `comments_count_post_123` ID. This API was borrowed from Rails.
 
 If you want to replace multiple fragments of your page after a form submission, for instance, you need Turbo Streams.
 
