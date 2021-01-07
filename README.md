@@ -299,7 +299,7 @@ class Comment extends Model
 
 You can return either a single model, an of models, or a broadcasting *channel*, or an array of broadcasting channels. This last bit gives you full control over how the channel will be named. The trait will also use the same conventions of partial namings as the `response()->turboStream()`. You can also override them in the exact same way here.
 
-### Validation Responses
+## Validation Responses
 
 By default, Laravel a failed exception back to the page that sent the request. This is a bit problematic when it comes to Turbo, since a form might be included in tha Turbo Frame that inherits the context of the page where it was inserted, and the form isn't part the page itself (it was included via Turbo Frame afterwards), we can't really redirect "back". Instead, we have two options:
 
@@ -328,7 +328,7 @@ public function store()
 }
 ```
 
-### Turbo Native
+## Turbo Native
 
 Turbo Visits made by the Turbo Native library will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments on and off depending on whether your page is being rendered for a Native app or a web app:
 
