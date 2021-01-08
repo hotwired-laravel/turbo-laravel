@@ -13,6 +13,7 @@ class ResponseMacrosTest extends TestCase
         parent::setUp();
 
         View::addNamespace('test-stubs', __DIR__ . '/stubs/');
+        View::addLocation(__DIR__ . '/stubs');
     }
 
     /** @test */
@@ -143,6 +144,25 @@ html;
         $this->assertEquals($expected, trim($resp->getContent()));
         $this->assertEquals('text/html; turbo-stream', $resp->headers->get('Content-Type'));
     }
+
+    /** @test */
+    public function uses_turbo_stream_specific_views_when_they_exist()
+    {
+        $testModel = TestModelWithTurboPartial::create(['name' => 'test']);
+
+        $expected = <<<'blade'
+<turbo-stream target="full_control_over_targets" action="append">
+    <template>
+        <h1>Hello</h1>
+    </template>
+</turbo-stream>
+blade;
+
+        $resp = response()->turboStream($testModel);
+
+        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals('text/html; turbo-stream', $resp->headers->get('Content-Type'));
+    }
 }
 
 class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
@@ -161,4 +181,8 @@ class BroadcastTestModel extends \Tonysm\TurboLaravel\Tests\TestModel
     {
         return "test-stubs::_broadcast_test_model";
     }
+}
+
+class TestModelWithTurboPartial extends TestModel
+{
 }

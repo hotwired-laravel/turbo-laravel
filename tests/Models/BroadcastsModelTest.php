@@ -37,14 +37,19 @@ class BroadcastsModelTest extends TestCase
 blade;
 
         Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
-            return $model->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()[0]->name === sprintf(
+            $this->assertTrue($model->is($event->model));
+            $this->assertEquals('append', $event->action);
+            $this->assertEquals($expectedPartialRender, trim($event->render()));
+            $this->assertEquals(
+                sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
-                );
+                ),
+                $event->broadcastOn()[0]->name
+            );
+
+            return true;
         });
     }
 
@@ -405,6 +410,65 @@ blade;
                 );
         });
     }
+
+    /** @test */
+    public function prefers_custom_turbo_stream_views_when_creating_models()
+    {
+        Event::fake([TurboStreamModelCreated::class]);
+
+        $model = BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
+
+        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model) {
+            $this->assertEquals(
+                sprintf('created custom partial for %s', $model->name),
+                trim($event->render())
+            );
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function prefers_custom_turbo_stream_views_when_updating_models()
+    {
+        Event::fake([TurboStreamModelUpdated::class]);
+
+        $model = BroadcastsUsingCustomTurboStreamView::withoutEvents(function () {
+            return BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
+        });
+
+        $model->update(['name' => 'changed']);
+
+        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model) {
+            $this->assertEquals(
+                sprintf('updated custom partial for %s', $model->name),
+                trim($event->render())
+            );
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function prefers_custom_turbo_stream_views_when_deleting_models()
+    {
+        Event::fake([TurboStreamModelDeleted::class]);
+
+        $model = BroadcastsUsingCustomTurboStreamView::withoutEvents(function () {
+            return BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
+        });
+
+        $model->delete();
+
+        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model) {
+            $this->assertEquals(
+                sprintf('deleted custom partial for %s', $model->name),
+                trim($event->render())
+            );
+
+            return true;
+        });
+    }
 }
 
 class BroadcastTestModel extends TestModel
@@ -514,4 +578,9 @@ class BroadcastTestModelDifferentPartialData extends BroadcastTestModel
             'name' => 'John Doe',
         ];
     }
+}
+
+class BroadcastsUsingCustomTurboStreamView extends TestModel
+{
+    use Broadcasts;
 }

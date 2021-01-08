@@ -7,6 +7,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Models\Broadcasts;
+use Tonysm\TurboLaravel\NamesResolver;
 
 class TurboStreamModelCreated implements ShouldBroadcastNow
 {
@@ -39,13 +40,30 @@ class TurboStreamModelCreated implements ShouldBroadcastNow
         ];
     }
 
-    public function render()
+    public function render(): string
     {
+        if ($turboView = $this->turboStreamView($this->model, 'created')) {
+            return View::make($turboView, $this->model->hotwirePartialData())->render();
+        }
+
         return View::make('turbo-laravel::model-saved', [
             'target' => $this->model->hotwireTargetResourcesName(),
             'action' => $this->action,
             'resourcePartialName' => $this->model->hotwirePartialName(),
             'data' => $this->model->hotwirePartialData(),
         ])->render();
+    }
+
+    private function turboStreamView(Model $model, string $event): ?string
+    {
+        $resourceName = NamesResolver::resourceName($model);
+
+        $view = "{$resourceName}.turbo.{$event}_stream";
+
+        if (! view()->exists($view)) {
+            return null;
+        }
+
+        return $view;
     }
 }
