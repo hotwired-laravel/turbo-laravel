@@ -85,6 +85,7 @@ blade;
                 ),
                 $event->broadcastOn()[0]->name
             );
+
             return true;
         });
     }

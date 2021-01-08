@@ -31,7 +31,7 @@ trait Broadcasts
 
     public function queueBroadcastCreatedToHotwire()
     {
-        if (!config('turbo-laravel.queue')) {
+        if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastUsing()
                 ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
                 ->create($this);
@@ -47,7 +47,7 @@ trait Broadcasts
 
     public function queueBroadcastUpdatedToHotwire()
     {
-        if (!config('turbo-laravel.queue')) {
+        if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastUsing()
                 ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
                 ->update($this);
