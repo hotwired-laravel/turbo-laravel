@@ -7,20 +7,29 @@ use Illuminate\Filesystem\Filesystem;
 
 class TurboInstallCommand extends Command
 {
-    public $signature = 'turbo:install';
+    public $signature = 'turbo:install {--jet}';
     public $description = 'Install the Turbo resources';
 
     public function handle()
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                    '@hotwired/turbo' => '^7.0.0-beta.1',
-                    'stimulus' => '^2.0.0',
-                    '@stimulus/webpack-helpers' => '^2.0.0',
-                    'laravel-echo' => '^1.10.0',
-                    'pusher-js' => '^7.0.2',
-                ] + $packages;
+                '@hotwired/turbo' => '^7.0.0-beta.1',
+                'stimulus' => '^2.0.0',
+                '@stimulus/webpack-helpers' => '^2.0.0',
+                'laravel-echo' => '^1.10.0',
+                'pusher-js' => '^7.0.2',
+            ] + $packages;
         });
+
+        if ($this->hasOption('jet')) {
+            $this->updateNodePackages(function ($packages) {
+                return [
+                    'alpine-turbo-drive-adapter' => '^1.0.1',
+                    'alpinejs' => '^2.8.0',
+                ] + $packages;
+            });
+        }
 
         // JS scaffold...
         (new Filesystem())->ensureDirectoryExists(resource_path('js/controllers'));
@@ -43,7 +52,7 @@ class TurboInstallCommand extends Command
      */
     protected static function updateNodePackages(callable $callback, $dev = true)
     {
-        if (! file_exists(base_path('package.json'))) {
+        if (!file_exists(base_path('package.json'))) {
             return;
         }
 
