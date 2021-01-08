@@ -1,5 +1,5 @@
 <turbo-stream target="{{ $target }}" action="{{ $action }}">
     <template>
-        @include($resourcePartialName, $data)
+        @include($resourcePartial, $resourcePartialData)
     </template>
 </turbo-stream>

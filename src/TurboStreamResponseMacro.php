@@ -7,6 +7,13 @@ use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 
 class TurboStreamResponseMacro
 {
+    private TurboStreamModelRenderer $renderer;
+
+    public function __construct(TurboStreamModelRenderer $renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
     public function handle(Model $model, string $action = null)
     {
         if (! $model->exists) {
@@ -26,14 +33,9 @@ class TurboStreamResponseMacro
      */
     private function renderModelDeletedStream(Model $model)
     {
-        $view = $this->turboStreamView($model, 'deleted', 'turbo-laravel::model-removed');
-
-        return TurboResponseFactory::makeStream(view($view, [
-            'target' => method_exists($model, 'hotwireTargetDomId')
-                ? $model->hotwireTargetDomId()
-                : NamesResolver::resourceId($model, $model->id),
-            'action' => 'remove',
-        ]));
+        return TurboResponseFactory::makeStream(
+            $this->renderer->renderDeleted($model, 'remove')->render()
+        );
     }
 
     /**
@@ -45,52 +47,17 @@ class TurboStreamResponseMacro
     {
         $action = $action ?: 'append';
 
-        $view = $this->turboStreamView($model, 'created', 'turbo-laravel::model-saved');
-
-        return TurboResponseFactory::makeStream(view($view, [
-            'target' => method_exists($model, 'hotwireTargetResourcesName')
-                ? $model->hotwireTargetResourcesName()
-                : NamesResolver::resourceName($model),
-            'action' => $action,
-            'resourcePartialName' => method_exists($model, 'hotwirePartialName')
-                ? $model->hotwirePartialName()
-                : NamesResolver::partialNameFor($model),
-            'data' => method_exists($model, 'hotwirePartialData')
-                ? $model->hotwirePartialData()
-                : [NamesResolver::resourceVariableName($model) => $model],
-        ]));
+        return TurboResponseFactory::makeStream(
+            $this->renderer->renderCreated($model, $action)->render()
+        );
     }
 
     private function renderModelUpdatedStream(Model $model, $action)
     {
         $action = $action ?: 'replace';
 
-        $view = $this->turboStreamView($model, 'created', 'turbo-laravel::model-saved');
-
-        return TurboResponseFactory::makeStream(view($view, [
-            'target' => method_exists($model, 'hotwireTargetDomId')
-                ? $model->hotwireTargetDomId()
-                : NamesResolver::resourceId(get_class($model), $model->id),
-            'action' => $action,
-            'resourcePartialName' => method_exists($model, 'hotwirePartialName')
-                ? $model->hotwirePartialName()
-                : NamesResolver::partialNameFor($model),
-            'data' => method_exists($model, 'hotwirePartialData')
-                ? $model->hotwirePartialData()
-                : [NamesResolver::resourceVariableName($model) => $model],
-        ]));
-    }
-
-    private function turboStreamView(Model $model, string $event, string $default): string
-    {
-        $resourceName = NamesResolver::resourceName($model);
-
-        $view = "{$resourceName}.turbo.{$event}_stream";
-
-        if (! view()->exists($view)) {
-            return $default;
-        }
-
-        return $view;
+        return TurboResponseFactory::makeStream(
+            $this->renderer->renderUpdated($model, $action)->render()
+        );
     }
 }

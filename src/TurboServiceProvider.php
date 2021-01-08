@@ -57,7 +57,7 @@ class TurboServiceProvider extends ServiceProvider
     private function registerRequestAndResponseMacros(): void
     {
         ResponseFactory::macro('turboStream', function (Model $model, string $action = null) {
-            return (new TurboStreamResponseMacro())->handle($model, $action);
+            return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
         });
 
         ResponseFactory::macro('turboStreamView', function (View $view) {
