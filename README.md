@@ -352,6 +352,11 @@ Try the package out. Use your Browser's DevTools to inspect the responses. You w
 
 Make something awesome!
 
+## RoadMap
+
+- [ ] Find a way to broadcast the deleted model messages only after the request is sent to the browser
+- [ ] Document using just the broadcast events (without the broadcasting trait)
+
 ## Testing
 
 ```bash
