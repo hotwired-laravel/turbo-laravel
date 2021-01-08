@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
@@ -100,6 +101,8 @@ blade;
         );
 
         $model->delete();
+
+        App::terminate();
 
         $expectedPartialRender = <<<'blade'
 <turbo-stream target="broadcast_test_model_1" action="remove"></turbo-stream>
@@ -460,6 +463,8 @@ blade;
         });
 
         $model->delete();
+
+        App::terminate();
 
         Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model) {
             $this->assertEquals(
