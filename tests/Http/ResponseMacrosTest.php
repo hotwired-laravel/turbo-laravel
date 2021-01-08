@@ -61,7 +61,7 @@ html;
         $testModel = TestModel::create(['name' => 'test'])->fresh();
 
         $expected = <<<html
-<turbo-stream target="test_model_{$testModel->id}" action="update">
+<turbo-stream target="test_model_{$testModel->id}" action="replace">
     <template>
         <div id="test_model_{$testModel->id}">hello</div>
     </template>
@@ -82,7 +82,7 @@ html;
         });
 
         $expected = <<<html
-<turbo-stream target="broadcast_test_model_{$testModel->id}" action="update">
+<turbo-stream target="broadcast_test_model_{$testModel->id}" action="replace">
     <template>
         <div id="broadcast_test_model_{$testModel->id}">hello</div>
     </template>

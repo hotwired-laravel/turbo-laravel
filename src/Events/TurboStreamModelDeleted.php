@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Events;
 
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
@@ -9,6 +10,8 @@ use Tonysm\TurboLaravel\Models\Broadcasts;
 
 class TurboStreamModelDeleted implements ShouldBroadcastNow
 {
+    use InteractsWithSockets;
+
     public Model $model;
     public string $action;
 

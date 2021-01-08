@@ -61,7 +61,7 @@ blade;
         $model->update(['name' => 'Changed']);
 
         $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_model_1" action="update">
+<turbo-stream target="broadcast_test_model_1" action="replace">
     <template>
         <h1>Hello from TestModel partial</h1>
     </template>
@@ -69,14 +69,18 @@ blade;
 blade;
 
         Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRender) {
-            return $model->is($event->model)
-                && $event->action === "update"
-                && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()[0]->name === sprintf(
+            $this->assertTrue($model->is($event->model));
+            $this->assertEquals('replace', $event->action);
+            $this->assertEquals($expectedPartialRender, trim($event->render()));
+            $this->assertEquals(
+                sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
-                );
+                ),
+                $event->broadcastOn()[0]->name
+            );
+            return true;
         });
     }
 
@@ -200,18 +204,23 @@ blade;
 blade;
 
         Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            return $model->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
+            $this->assertTrue($model->is($event->model));
+            $this->assertEquals('append', $event->action);
+            $this->assertEquals($expectedPartialRenderForCreate, trim($event->render()));
+            $this->assertEquals(
+                sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
-                );
+                ),
+                $event->broadcastOn()[0]->name
+            );
+
+            return true;
         });
 
         $expectedPartialRenderForUpdate = <<<blade
-<turbo-stream target="hello-{$model->id}" action="update">
+<turbo-stream target="hello-{$model->id}" action="replace">
     <template>
         <h1>Hello from a different partial</h1>
     </template>
@@ -219,14 +228,19 @@ blade;
 blade;
 
         Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRenderForUpdate) {
-            return $model->is($event->model)
-                && $event->action === "update"
-                && trim($event->render()) === $expectedPartialRenderForUpdate
-                && $event->broadcastOn()[0]->name === sprintf(
+            $this->assertTrue($model->is($event->model));
+            $this->assertEquals('replace', $event->action);
+            $this->assertEquals($expectedPartialRenderForUpdate, trim($event->render()));
+            $this->assertEquals(
+                sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
-                );
+                ),
+                $event->broadcastOn()[0]->name
+            );
+
+            return true;
         });
     }
 

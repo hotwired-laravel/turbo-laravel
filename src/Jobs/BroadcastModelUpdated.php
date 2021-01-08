@@ -14,19 +14,24 @@ class BroadcastModelUpdated implements ShouldQueue
     use SerializesModels;
 
     public Model $model;
+    private ?string $exceptForSocket;
 
     /**
      * BroadcastModelUpdated constructor.
      *
      * @param Model|Broadcasts $model
+     * @param string|null $exceptForSocket
      */
-    public function __construct(Model $model)
+    public function __construct(Model $model, string $exceptForSocket = null)
     {
         $this->model = $model;
+        $this->exceptForSocket = $exceptForSocket;
     }
 
     public function handle()
     {
-        $this->model->hotwireBroadcastUsing()->update($this->model);
+        $this->model->hotwireBroadcastUsing()
+            ->exceptForSocket($this->exceptForSocket)
+            ->update($this->model);
     }
 }

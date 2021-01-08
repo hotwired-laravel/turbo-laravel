@@ -5,10 +5,12 @@ namespace Tonysm\TurboLaravel\Models;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
 use Tonysm\TurboLaravel\NamesResolver;
+use Tonysm\TurboLaravel\TurboFacade;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -29,24 +31,34 @@ trait Broadcasts
 
     public function queueBroadcastCreatedToHotwire()
     {
-        if (! config('turbo-laravel.queue')) {
-            $this->hotwireBroadcastUsing()->create($this);
+        if (!config('turbo-laravel.queue')) {
+            $this->hotwireBroadcastUsing()
+                ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
+                ->create($this);
 
             return;
         }
 
-        dispatch(new BroadcastModelCreated($this));
+        dispatch(new BroadcastModelCreated(
+            $this,
+            TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null
+        ));
     }
 
     public function queueBroadcastUpdatedToHotwire()
     {
-        if (! config('turbo-laravel.queue')) {
-            $this->hotwireBroadcastUsing()->update($this);
+        if (!config('turbo-laravel.queue')) {
+            $this->hotwireBroadcastUsing()
+                ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
+                ->update($this);
 
             return;
         }
 
-        dispatch(new BroadcastModelUpdated($this));
+        dispatch(new BroadcastModelUpdated(
+            $this,
+            TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null
+        ));
     }
 
     public function queueBroadcastRemovalToHotwire()
@@ -54,7 +66,9 @@ trait Broadcasts
         // Removals cannot be cached because we need to gather the broadcasting targets
         // using the model instance's relationships before the entity is "gone".
 
-        $this->hotwireBroadcastUsing()->remove($this);
+        $this->hotwireBroadcastUsing()
+            ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
+            ->remove($this);
     }
 
     public function hotwireBroadcastUsing()
@@ -76,7 +90,9 @@ trait Broadcasts
     {
         if ($this->exists && property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
-                ->map(fn ($attr) => data_get($this, $attr))
+                ->map(function ($attr) {
+                    return data_get($this, $attr);
+                })
                 ->all();
         }
 

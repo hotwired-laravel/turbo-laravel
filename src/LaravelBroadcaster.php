@@ -9,7 +9,16 @@ use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
 
 class LaravelBroadcaster
 {
-    public function create($model)
+    private ?string $exceptSocket;
+
+    public function exceptForSocket(string $socket = null): self
+    {
+        $this->exceptSocket = $socket;
+
+        return $this;
+    }
+
+    public function create($model): void
     {
         $action = property_exists($model, 'turboStreamCreatedAction')
             ? $model->turboStreamCreatedAction
@@ -21,19 +30,16 @@ class LaravelBroadcaster
         ));
     }
 
-    public function update($model)
+    public function update($model): void
     {
         $action = property_exists($model, 'turboStreamUpdatedAction')
             ? $model->turboStreamUpdatedAction
-            : 'update';
+            : 'replace';
 
-        $this->broadcast(new TurboStreamModelUpdated(
-            $model,
-            $action,
-        ));
+        $this->broadcast(new TurboStreamModelUpdated($model, $action));
     }
 
-    public function remove(Model $model)
+    public function remove(Model $model): void
     {
         $this->broadcast(new TurboStreamModelDeleted(
             $model,
@@ -41,12 +47,12 @@ class LaravelBroadcaster
         ));
     }
 
-    private function broadcast($event)
+    private function broadcast($event): void
     {
-        $pending = broadcast($event);
-
-        if (TurboFacade::shouldBroadcastToOthers()) {
-            $pending->toOthers();
+        if ($this->exceptSocket ?? false && property_exists($event, 'socket')) {
+            $event->socket = $this->exceptSocket;
         }
+
+        broadcast($event);
     }
 }

@@ -59,7 +59,7 @@ class TurboStreamResponseMacro
 
     private function renderModelUpdatedStream(Model $model, $action)
     {
-        $action = $action ?: 'update';
+        $action = $action ?: 'replace';
 
         return TurboResponseFactory::makeStream(view('turbo-laravel::model-saved', [
             'target' => method_exists($model, 'hotwireTargetDomId')

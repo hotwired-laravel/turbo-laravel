@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel;
 
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 
 class Turbo
 {
@@ -40,7 +41,7 @@ class Turbo
      *
      * @return \Illuminate\Support\HigherOrderTapProxy|mixed
      */
-    public function broadcastToOthers($toOthers = null)
+    public function broadcastToOthers($toOthers = true)
     {
         if (is_bool($toOthers)) {
             $this->broadcastToOthersOnly = $toOthers;
@@ -60,5 +61,10 @@ class Turbo
     public function shouldBroadcastToOthers(): bool
     {
         return $this->broadcastToOthersOnly;
+    }
+
+    public function domId(Model $model, string $prefix = ""): string
+    {
+        return NamesResolver::resourceId(get_class($model), $model->id, $prefix);
     }
 }

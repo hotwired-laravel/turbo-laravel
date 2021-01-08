@@ -50,7 +50,7 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         Blade::directive('domid', function ($expression) {
-            return "<?php echo e(\Tonysm\TurboLaravel\NamesResolver::resourceIdFor($expression)); ?>";
+            return "<?php echo e(\Tonysm\TurboLaravel\TurboFacade::domId($expression)); ?>";
         });
     }
 
