@@ -50,7 +50,7 @@ class TurboStreamModelRenderer
 
         $view = "{$resourceName}.turbo.{$event}_stream";
 
-        if (!view()->exists($view)) {
+        if (! view()->exists($view)) {
             return null;
         }
 
