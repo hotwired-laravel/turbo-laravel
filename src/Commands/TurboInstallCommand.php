@@ -22,7 +22,7 @@ class TurboInstallCommand extends Command
             ] + $packages;
         });
 
-        if ($this->hasOption('jet')) {
+        if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
                     'alpinejs' => '^2.8.0',
