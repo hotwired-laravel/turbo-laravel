@@ -25,10 +25,20 @@ class TurboInstallCommand extends Command
         if ($this->hasOption('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpine-turbo-drive-adapter' => '^1.0.1',
                     'alpinejs' => '^2.8.0',
                 ] + $packages;
             });
+
+            if ((new Filesystem())->exists(resource_path('views/layouts/app.blade.php'))) {
+                (new Filesystem())->put(
+                    resource_path('views/layouts/app.blade.php'),
+                    str_replace(
+                        '        @livewireScripts',
+                        "        @livewireScripts\n" . '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>',
+                        (new Filesystem())->get(resource_path('views/layouts/app.blade.php'))
+                    )
+                );
+            }
         }
 
         // JS scaffold...

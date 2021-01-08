@@ -356,7 +356,6 @@ Make something awesome!
 
 - [ ] Find a way to broadcast the deleted model messages only after the request is sent to the browser
 - [ ] Document using just the broadcast events (without the broadcasting trait)
-- [ ] Jetstream with Livewire doesn't seem to be working properly (maybe it's Alpine? There is an Alpine+Turbo bridge https://github.com/SimoTod/alpine-turbo-drive-adapter)
 
 ## Testing
 
