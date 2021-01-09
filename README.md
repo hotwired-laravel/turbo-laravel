@@ -7,6 +7,14 @@
 This package gives you a set of conventions to make the most out of the Hotwire stack in Laravel (inspired by
 turbo-rails gem).
 
+<a name="documentation"></a>
+## Documentation Index
+
+* [Installation](#installation)
+* [Conventions](#conventions)
+* [Getting Started](#getting-started)
+
+<a name="installation"></a>
 ## Installation
 
 You can install the package via composer:
@@ -21,16 +29,38 @@ You can publish the asset files with:
 php artisan turbo:install
 ```
 
+You can also use Turbo Laravel with Jetstream if you use the Livewire stack. If you want to do so, publish the assets with a `--jet` flag:
+
+```bash
+php artisan turbo:install --jet
+```
+
 This will publish the JavaScript files to your application. You must install and compile the assets before continuing.
 
-<a name="usage"></a>
-## Usage
+<a name="conventions"></a>
+## Conventions
+
+Before we get started, it's important to note that the package doesn't impose any convention on your application. All conventions used are aimed at reducing the amount of boilerplate you have to write yourself. However, if you don't want to follow them, you don't have to. Most pieces allow you to override the default behavior with either implementing some Hotwire specific methods on your models or, you know, simply not using any goodies the package provide.
+
+However, I do think that conventions over configuration is an important goal, so here's a list with the conventions you can follow to make your life easier using the package:
+
+* You might want to have your controllers using the resource routes for most things, or follow the resource routes naming convention (`posts.index`, `posts.store`, ...)
+* You might want to have your views decoupled using partials (small portions of HTML for specific fragments, such as `comments/_comment.blade.php` for displaying a specific comment, or `comments/_form.blade.php` to display the comments form)
+* Your model partial (`comments/_comment.blade.php` for a `Comment` model, for example) should only rely on having a `$comment` variable on it (which will be passed when we process the view in background)
+* Your Broadcasting channel authorization should use a dotted version of the model's FQCN ending with a `.{id}` at the end (such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models`)
+
+In the [Getting Started section](#getting-started) you can see how to override most of the default behaviors, if you want to.
+
+Again, you don't have to follow of these conventions. Also, feel free to suggest any change you think makes sense.
+
+<a name="getting-started"></a>
+## Getting Started
 
 Once your assets are compiled, you will have some new custom HTML tags that you can use to annotate your frames and streams. This is vanilla Hotwire stuff. There is not a lot in the tech itself. Once you understand how the few underlying pieces work together, the challenge will be in decomposing your pages to work as you want them to.
 
 This package aims to make the integration seamlessly. It offers a couple macros, some traits, and some conventions borrowed from Rails itself to find a partial for a respective model, but it also allows you to override these conventions per model or not use the convenient bits at all, if you want to.
 
-## Turbo Drive
+### Turbo Drive
 
 Turbo Drive is the spiritual successor of Turbolinks. It will hijack your links and forms and turn them into AJAX requests, updating your browser history, and caching visited pages (so it can serve from cache on a second visit while loading new content). The main difference here is that Turbolinks didn't place well with regular forms. Turbo Drive does.
 
@@ -38,7 +68,7 @@ You can use Turbo Drive just for its Turbolinks behavior, if you want to.
 
 If you want to persist certain pieces of content across visits, you must annotate them with `data-turbo-permanent` attribute and the element must have an ID. If a matching element exists on the next Turbo visit, Turbo Drive won't touch the element. Otherwise, the whole page will be changed. This is used in Basecamp's navigation bar, for instance.
 
-## Turbo Frames
+### Turbo Frames
 
 This is a Turbo Frame:
 
@@ -91,7 +121,7 @@ Which will generate a `comments_count_post_123` ID. This API was borrowed from R
 
 If you want to replace multiple fragments of your page after a form submission, for instance, you need Turbo Streams.
 
-## Turbo Streams
+### Turbo Streams
 
 A Turbo Stream response consists of one or many `<turbo-stream>` tags and the correct header of `Content-Type: text/html; turbo-stream`. If these are returned from a Turbo Visit from, let's say, your controllers, then Turbo will do the rest to apply your changes.
 
@@ -200,7 +230,7 @@ An example from a model that was updated:
 </turbo-stream>
 ```
 
-And an example of a model that was deleted:
+An example of a model that was deleted:
 
 ```html
 <turbo-stream target="comment_123" action="remove"></turbo-stream>
@@ -230,7 +260,7 @@ That view is a regular blade view that you can add place your `<turbo-stream>` t
 
 The `turboStreamView` Response macro will take your view, render it and apply the correct `Content-Type` for you.
 
-## Turbo Streams and Laravel Echo
+### Turbo Streams and Laravel Echo
 
 So far, we have been using Turbo Streams over HTTP. That's also OK. However, you may also want to broadcast model changes over WebSockets. You can do that per model and per event, like so:
 
@@ -374,7 +404,7 @@ This assumes you have your Laravel Echo properly configured. By default, it expe
 />
 ```
 
-## Validation Responses
+### Validation Responses
 
 By default, Laravel a failed exception back to the page that sent the request. This is a bit problematic when it comes to Turbo, since a form might be included in tha Turbo Frame that inherits the context of the page where it was inserted, and the form isn't part the page itself (it was included via Turbo Frame afterwards), we can't really redirect "back". Instead, we have two options:
 
@@ -403,7 +433,7 @@ public function store()
 }
 ```
 
-## Turbo Native
+### Turbo Native
 
 Turbo Visits made by the Turbo Native library will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments or assets (like mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a web app:
 
