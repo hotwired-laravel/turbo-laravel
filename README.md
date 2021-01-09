@@ -4,8 +4,7 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/run-tests?label=tests)](https://github.com/tonysm/turbo-laravel/actions?query=workflow%3ATests+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/tonysm/turbo-laravel.svg?style=flat-square)](https://packagist.org/packages/tonysm/turbo-laravel)
 
-This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by
-[turbo-rails](https://github.com/hotwired/turbo-rails) gem).
+This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a companion application that shows how to use this package and the conventions in your application.
 
 <a name="documentation"></a>
 ## Documentation Index
