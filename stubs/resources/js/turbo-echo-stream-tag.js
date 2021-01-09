@@ -1,4 +1,4 @@
-import { connectStreamSource, disconnectStreamSource } from "@hotwired/turbo"
+import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo'
 import Echo from './echo'
 
 const subscribeTo = (type, channel) => {

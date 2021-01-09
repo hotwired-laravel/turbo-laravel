@@ -1,10 +1,10 @@
 import {
     start as startTurbo
-} from "@hotwired/turbo";
+} from '@hotwired/turbo';
 import('./bootstrap');
 import('./turbo-echo-stream-tag');
-import { Application } from "stimulus"
-import { definitionsFromContext } from "@stimulus/webpack-helpers"
+import { Application } from 'stimulus'
+import { definitionsFromContext } from '@stimulus/webpack-helpers'
 import 'alpinejs';
 
 startTurbo();
