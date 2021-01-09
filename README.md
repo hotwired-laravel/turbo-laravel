@@ -34,7 +34,7 @@ You can also use Turbo Laravel with Jetstream if you use the Livewire stack. If 
 php artisan turbo:install --jet
 ```
 
-This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the `livewire/turbolinks` bridge to your `app.blade.php` layout for you.
+This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the [`livewire/turbolinks`](https://github.com/livewire/turbolinks) bridge to your `app.blade.php` layout for you.
 
 <a name="conventions"></a>
 ## Conventions
