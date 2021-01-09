@@ -5,7 +5,6 @@ namespace Tonysm\TurboLaravel\Models;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
@@ -67,7 +66,7 @@ trait Broadcasts
         // Removals cannot be cached because we need to gather the broadcasting targets
         // using the model instance's relationships before the entity is "gone".
 
-        App::terminating(function () {
+        app()->terminating(function () {
             $this->hotwireBroadcastUsing()
                 ->exceptForSocket(TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null)
                 ->remove($this);
@@ -91,7 +90,7 @@ trait Broadcasts
 
     public function hotwireBroadcastingTargets()
     {
-        if ($this->exists && property_exists($this, 'broadcastsTo')) {
+        if (property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
                 ->map(function ($attr) {
                     return data_get($this, $attr);
@@ -99,7 +98,7 @@ trait Broadcasts
                 ->all();
         }
 
-        if ($this->exists && method_exists($this, 'broadcastsTo')) {
+        if (method_exists($this, 'broadcastsTo')) {
             return $this->broadcastsTo();
         }
 
@@ -109,6 +108,7 @@ trait Broadcasts
     public function hotwireBroadcastsOn()
     {
         return Collection::wrap($this->hotwireBroadcastingTargets())
+            ->filter()
             ->map(function ($item) {
                 if ($item instanceof Channel) {
                     return $item;

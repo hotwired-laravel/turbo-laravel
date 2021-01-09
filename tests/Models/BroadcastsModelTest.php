@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
@@ -404,14 +405,19 @@ blade;
 blade;
 
         Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            return $model->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
+            $this->assertTrue($model->is($event->model));
+            $this->assertEquals('append', $event->action);
+            $this->assertEquals($expectedPartialRenderForCreate, trim($event->render()));
+            $this->assertEquals(
+                sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
                     $model->id
-                );
+                ),
+                $event->broadcastOn()[0]->name
+            );
+
+            return true;
         });
     }
 
@@ -475,6 +481,38 @@ blade;
             return true;
         });
     }
+
+    /** @test */
+    public function broadcasts_to_related_model_when_deleting()
+    {
+        Event::fake([TurboStreamModelDeleted::class]);
+
+        $parent = null;
+        $child = null;
+
+        Model::withoutEvents(function () use (&$parent, &$child) {
+            $parent = RelatedModelParent::create(['name' => 'test']);
+            $child = RelatedModelChildUsingBroadcasts::create(['name' => 'child', 'parent_id' => $parent->id]);
+        });
+
+        $child->delete();
+
+        App::terminate();
+
+        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($parent, $child) {
+            $this->assertTrue($event->model->is($child));
+            $this->assertEquals(
+                sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($parent)),
+                    $parent->id
+                ),
+                $event->broadcastOn()[0]->name
+            );
+
+            return true;
+        });
+    }
 }
 
 class BroadcastTestModel extends TestModel
@@ -514,6 +552,16 @@ class RelatedModelParent extends TestModel
 }
 
 class RelatedModelChild extends BroadcastTestModelDifferentPartial
+{
+    public $broadcastsTo = 'parent';
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class RelatedModelChildUsingBroadcasts extends BroadcastTestModelDifferentPartial
 {
     public $broadcastsTo = 'parent';
 
