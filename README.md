@@ -435,7 +435,7 @@ if (\Tonysm\TurboLaravel\TurboFacade::isTurboNativeVisit()) {
 }
 ```
 
-### Final Words
+### Closing Notes
 
 Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
 
