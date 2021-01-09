@@ -39,7 +39,7 @@ This will publish the JavaScript files to your application. You must install and
 <a name="conventions"></a>
 ## Conventions
 
-Before we get started, it's important to note that the package doesn't impose any convention on your application. All conventions used are aimed at reducing the amount of boilerplate you have to write yourself. However, if you don't want to follow them, you don't have to. Most pieces allow you to override the default behavior with either implementing some Hotwire specific methods on your models or, you know, simply not using any goodies the package provide.
+Before we get started, it's important to note that the package does not enforce any convention over your application. All conventions used are aimed at reducing the amount of boilerplate you would have to write yourself. However, if you don't want to follow them, you don't have to. Most pieces allow you to override the default behavior with either implementing some Hotwire specific methods on your models or, you know, simply not using the goodies the package provide.
 
 However, I do think that conventions over configuration is an important goal, so here's a list with the conventions you can follow to make your life easier using the package:
 
