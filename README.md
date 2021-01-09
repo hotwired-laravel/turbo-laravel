@@ -427,10 +427,6 @@ Try the package out. Use your Browser's DevTools to inspect the responses. You w
 
 Make something awesome!
 
-## RoadMap
-
-- [ ] Document using just the broadcast events (without the broadcasting trait)
-
 ## Testing
 
 ```bash
