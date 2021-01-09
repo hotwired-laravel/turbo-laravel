@@ -2,9 +2,6 @@
 
 namespace Tonysm\TurboLaravel\Models;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
@@ -86,39 +83,6 @@ trait Broadcasts
     public function hotwireTargetResourcesName()
     {
         return $this->hotwireResolveNamesUsing()->resourceName($this);
-    }
-
-    public function hotwireBroadcastingTargets()
-    {
-        if (property_exists($this, 'broadcastsTo')) {
-            return Collection::wrap($this->broadcastsTo)
-                ->map(function ($attr) {
-                    return data_get($this, $attr);
-                })
-                ->all();
-        }
-
-        if (method_exists($this, 'broadcastsTo')) {
-            return $this->broadcastsTo();
-        }
-
-        return $this;
-    }
-
-    public function hotwireBroadcastsOn()
-    {
-        return Collection::wrap($this->hotwireBroadcastingTargets())
-            ->filter()
-            ->map(function ($item) {
-                if ($item instanceof Channel) {
-                    return $item;
-                }
-
-                return new PrivateChannel(
-                    $this->hotwireResolveNamesUsing()->modelPathToChannelName(get_class($item), $item->id)
-                );
-            })
-            ->all();
     }
 
     public function hotwireResolveNamesUsing(): NamesResolver

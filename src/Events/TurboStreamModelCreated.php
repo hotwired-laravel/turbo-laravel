@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Database\Eloquent\Model;
 use Tonysm\TurboLaravel\Models\Broadcasts;
+use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
 use Tonysm\TurboLaravel\TurboStreamModelRenderer;
 
 class TurboStreamModelCreated implements ShouldBroadcastNow
@@ -29,7 +30,7 @@ class TurboStreamModelCreated implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return $this->model->hotwireBroadcastsOn();
+        return resolve(TurboStreamChannelsResolver::class)->hotwireBroadcastsOn($this->model);
     }
 
     public function broadcastWith()
