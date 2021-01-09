@@ -249,7 +249,7 @@ You can also have `updated_stream.blade.php` and `deleted_stream.blade.php` (thi
 
 ### Turbo Streams and Laravel Echo
 
-So far, we have been using Turbo Streams over HTTP to update multiple parts of your page after a Turbo Visit. However, you may want to also broadcast Turbo Stream changes for your model's over WebSockets to other users on the same pages. Although nice, **you don't have to use WebSockets in your app if you don't have the need for it. You can rely on only returning Turbo Stream responses from your controller.**
+So far, we have been using Turbo Streams over HTTP to update multiple parts of your page after a Turbo Visit. However, you may want to also broadcast Turbo Stream changes for your model's over WebSockets to other users on the same pages. Although nice, **you don't have to use WebSockets in your app if you don't have the need for it. You can rely on only returning Turbo Stream responses from your controller.** You can also mix HTTP Turbo Stream responses with Turbo Stream Broadcasts sent over WebSockets to other users.
 
 If you want to augment your app with WebSockets continue reading.
 
@@ -390,6 +390,32 @@ public function store()
   }
 }
 ```
+
+If you want to take the "mixed" approach I mentioned earlier, you can tell Turbo Laravel to only broadcast changes _to other_ users, and feed the current user's with Turbo Stream messages in the HTTP response they triggered. Do tell Turbo Laravel to broadast only to others, add the following like to your `AppServiceProvider` in the `boot` method:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Tonysm\TurboLaravel\TurboFacade;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        TurboFacade::broadcastToOthers(true);
+    }
+}
+```
+
+That's Turbo Stream over WebSockets using Laravel Echo.
 
 ### Turbo Native
 
