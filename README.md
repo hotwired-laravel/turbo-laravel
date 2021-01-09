@@ -232,7 +232,119 @@ The `turboStreamView` Response macro will take your view, render it and apply th
 
 ## Turbo Streams and Laravel Echo
 
-If you want to broadcast the changes to a model to everyone over WebSockets, we provide a trait named `Tonysm\TurboLaravel\Models\Brodcasts` that you can apply to your model. Something like:
+So far, we have been using Turbo Streams over HTTP. That's also OK. However, you may also want to broadcast model changes over WebSockets. You can do that per model and per event, like so:
+
+```php
+use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
+
+class Comment extends Model
+{
+    protected $dispatchesEvents = [
+        'created' => TurboStreamModelCreated::class,
+        'updated' => TurboStreamModelUpdated::class,
+        'deleted' => TurboStreamModelDeleted::class,
+    ];
+}
+```
+
+This will automatically propagate your model changes to this model's channel following the convention of using the model's FQCN using a dotted notation suffixed with the model ID. To follow our Comment example, the changes would broadcast to the channel: `App.Models.Comment.{id}` (assuming the FQCN is `App\\Models\\Comment`). You can pick only the events you want to broadcast.
+
+If you want to control the channel you're broadcasting to, maybe passing it to a related model, or send it out to a couple different related models, you can also do like so:
+
+```php
+use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
+
+class Comment extends Model
+{
+    public $broadcastsTo = [
+        'post',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => TurboStreamModelCreated::class,
+        'updated' => TurboStreamModelUpdated::class,
+        'deleted' => TurboStreamModelDeleted::class,
+    ];
+    
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+}
+```
+
+This will broadcast the comment's changes to `App.Models.Post.{id}` where `{id}` would be the Post ID (again, assuming your FQCN is `App\\Models\\Post`). You can also do it using a `broadcastsTo()` method:
+
+```php
+use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
+use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
+
+class Comment extends Model
+{
+    protected $dispatchesEvents = [
+        'created' => TurboStreamModelCreated::class,
+        'updated' => TurboStreamModelUpdated::class,
+        'deleted' => TurboStreamModelDeleted::class,
+    ];
+    
+    public function broadcastsTo()
+    {
+        return $this->post;
+    }
+    
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+}
+```
+
+You can return a model, an array or a collection of models, or an array or a collection of _Channels_, giving you full control over where you want the broadcasting to be sent to.
+
+The package will look for a partial following the convention: `resources/views/{plural}/_{singular}.blade.php`. So for the comment example, you would need a `resources/views/comments/_comment.blade.php` partial. That would be used for created and updated streams. Removed streams don't need a template. Your partial will be given a variable named after you model's class basename in camelCase. Our comment example would pass a `$comment` variable with the model instance to the partial. If you want to control which data is passed to the partial, you can implement the `hotwirePartialData` method in your model, something like:
+
+```php
+use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
+
+class Comment extends Model
+{
+    protected $dispatchesEvents = [
+        'created' => TurboStreamModelCreated::class,
+    ];
+    
+    public function hotwirePartialData()
+    {
+        return [
+            'lorem' => 'ipsum',
+            'showAlert' => false,
+            'comment' => $this,
+        ];
+    }
+}
+```
+
+If you want to get full control over the Turbo Stream message, you can implement one turbo stream blade template for each model event you want to control. So if you want to have a fancier Turbo Stream that not just appends the comment to the post, but also updates the comments counter, you can create a `resources/views/comments/turbo/created_stream.blade.php` partial (you can also have the "updated" or "deleted", if you want to). Inside these templates, you can place the `<turbo-stream>` tags as you want:
+
+```html
+<turbo-stream target="@domid($comment->post, 'comments')" action="append">
+    <template>
+        @include('comments._comment', ['comment' => $comment])
+    </template>
+</turbo-stream>
+
+<turbo-stream target="@domid($comment->post, 'comments_count')" action="update">
+    <template>
+        @include('posts._post_comments_count', ['post' => $comment->post])
+    </template>
+</turbo-stream>
+```
+
+If you want to broadcast all changes of a model, we provide a trait named `Tonysm\TurboLaravel\Models\Brodcasts` that you can apply to your model. Something like:
 
 ```php
 use Tonysm\TurboLaravel\Models\Broadcasts;
@@ -243,9 +355,9 @@ class Comment extends Model
 }
 ```
 
-This will apply some conventions too. It will broadcast a message to channel named after your model FQCN using the dot notation sufixed with the model's ID. For a `App\Models\Comment` model of ID 123, the expected channel will be `App.Models.Comment.{comment}`.
+This will apply the same conventions mentioned for the model events, and it will also dispatch the broadcasting to background automatically for you.
 
-We also ship with a custom `<turbo-echo-stream-source>` tag that you can add to any page. This custom HTML tag will connect to the channel you provide to it and will start receiving streams over WebSockets and applying them to the page. When you leave the page, it will also leave the socket. Here's an example of how you can use it:
+To listen for the events, we ship with a custom HTML tag `<turbo-echo-stream-source>` that you can add to any page. This tag will connect to the channel you provide to it and will start receiving streams over WebSockets and applying them to the page. When you leave the page, it will also leave the socket. Here's an example of how you can use it:
 
 ```html
 <turbo-echo-stream-source
@@ -253,51 +365,14 @@ We also ship with a custom `<turbo-echo-stream-source>` tag that you can add to 
 />
 ```
 
-This assumes you have your Laravel Echo properly configured. By default, it expects a private channel, so the tag must be used in a page for already authenticated users.
+This assumes you have your Laravel Echo properly configured. By default, it expects a private channel, so the tag must be used in a page for already authenticated users. You can control the type of the channel in the tag with a `type` attribute.
 
-You can also choose to send the broadcasting information to relationships of your model. You can do it like so:
-
-```php
-use Tonysm\TurboLaravel\Models\Broadcasts;
-
-class Comment extends Model
-{
-  use Broadcasts;
-  
-  protected $broadcastsTo = [
-    'post',
-  ];
-  
-  public function post()
-  {
-    return $this->belongsTo(Post::class);
-  }
-}
+```html
+<turbo-echo-stream-source
+    channel="App.Models.Comments.{{ $comment->id }}"
+    type="presence"
+/>
 ```
-
-This tells our package that you want to use the related Post model to guess the channel name, not the comment. So it will broadcast to `App.Models.Post.{post}` instead. You can also use a method:
-
-
-```php
-use Tonysm\TurboLaravel\Models\Broadcasts;
-
-class Comment extends Model
-{
-  use Broadcasts;
-  
-  public function broadcastsTo()
-  {
-    return $this->post;
-  }
-  
-  public function post()
-  {
-    return $this->belongsTo(Post::class);
-  }
-}
-```
-
-You can return either a single model, an of models, or a broadcasting *channel*, or an array of broadcasting channels. This last bit gives you full control over how the channel will be named. The trait will also use the same conventions of partial namings as the `response()->turboStream()`. You can also override them in the exact same way here.
 
 ## Validation Responses
 
