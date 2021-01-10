@@ -30,8 +30,10 @@ class TurboComponentsTest extends TestCase
 
         $renderedDomId = View::file(__DIR__ . '/fixtures/domid.blade.php', ['model' => $testModel])->render();
         $renderedDomIdWithPrefix = View::file(__DIR__ . '/fixtures/domid_with_prefix.blade.php', ['model' => $testModel])->render();
+        $rendersDomIdOfNewModel = View::file(__DIR__ . '/fixtures/domid.blade.php', ['model' => new TestModel()])->render();
 
         $this->assertEquals('<div id="test_model_1"></div>', trim($renderedDomId));
         $this->assertEquals('<div id="favorites_test_model_1"></div>', trim($renderedDomIdWithPrefix));
+        $this->assertEquals('<div id="test_model_new"></div>', trim($rendersDomIdOfNewModel));
     }
 }
