@@ -124,7 +124,7 @@ That's essentially what you can do with Turbo Frames. Turbo Drive and Turbo Fram
 
 ### Turbo Streams
 
-Sometimes you do need to update multiple different parts of your application at some point. For instance, maybe after a form submission to create a comment in a post, you might want to append the comment to the comment's list and also update the comment's count. You can do that with Turbo Streams. A Turbo Stream response consists of one or many `<turbo-stream>` tags and the correct header of `Content-Type: text/vnd.turbo-stream.html`. If these are returned from a Turbo Visit from a controller, then Turbo will do the rest to apply your changes.
+Sometimes you do need to update multiple different parts of your application at the same time (not just a single Frame). For instance, maybe after a form submission to create a comment in a post, you might want to append the comment to the comment's list and also update the comment's count. You can do that with Turbo Streams. A Turbo Stream response consists of one or more `<turbo-stream>` tags and the correct header of `Content-Type: text/vnd.turbo-stream.html`. If these are returned from a Turbo Visit from a controller, then Turbo will do the rest to apply your changes.
 
 A Turbo Visit is annotated by Turbo itself with an `Accept` header that indicates that you can return a Turbo Stream response. You can check that using the `wantsTurboStream` macro in the Request class, passing it any given Eloquent Model:
 
