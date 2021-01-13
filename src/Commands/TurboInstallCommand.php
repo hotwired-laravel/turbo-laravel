@@ -43,10 +43,11 @@ class TurboInstallCommand extends Command
 
         // JS scaffold...
         (new Filesystem())->ensureDirectoryExists(resource_path('js/controllers'));
+        (new Filesystem())->ensureDirectoryExists(resource_path('js/elements'));
         copy(__DIR__ . '/../../stubs/resources/js/app.js', resource_path('js/app.js'));
         copy(__DIR__ . '/../../stubs/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
         copy(__DIR__ . '/../../stubs/resources/js/echo.js', resource_path('js/echo.js'));
-        copy(__DIR__ . '/../../stubs/resources/js/turbo-echo-stream-tag.js', resource_path('js/turbo-echo-stream-tag.js'));
+        copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
         copy(__DIR__ . '/../../stubs/resources/js/controllers/hello_controller.js', resource_path('js/controllers/hello_controller.js'));
 
         $this->info('Turbo Laravel scaffolding installed successfully.');

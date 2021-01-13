@@ -1,5 +1,5 @@
 import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo'
-import Echo from './echo'
+import Echo from '../echo'
 
 const subscribeTo = (type, channel) => {
     if (type === "presence") {
