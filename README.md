@@ -71,7 +71,7 @@ That's essentially what Turbo Drive does.
 
 Sometimes you don't want to replace the entire page, but instead wants to have more granular control of a fragment of your page. You can do that with Turbo Frames. This is what a Turbo Frame looks like:
 
-```html
+```blade
 <turbo-frame id="my_frame">
     <h1>Hello, World!</h1>
     <a href="/somewhere">I'm a trigger. My response must have a matching Turbo Frame tag (same ID)</a>
@@ -80,7 +80,7 @@ Sometimes you don't want to replace the entire page, but instead wants to have m
 
 Turbo Frames can also lazy-load content:
 
-```html
+```blade
 <turbo-frame id="my_frame" src="{{ route('my.page') }}">
     <p>Loading...</p>
 </turbo-frame>
@@ -89,7 +89,7 @@ Turbo Frames can also lazy-load content:
 This will essentially replace the contents of the frame with a matching frame in the page specified as the `src=`
 attribute. You can also trigger a frame visit with a link outside the frame itself:
 
-```html
+```blade
 <div>
     <a href="/somewhere" data-turbo-frame="my_frame">I'm a link</a>
 
@@ -104,7 +104,7 @@ So far, all vanilla Hotwire stuff.
 
 Since Turbo Frames rely a lot on DOM IDs, there is a helper for generating DOM IDs for your models:
 
-```html
+```blade
 <turbo-frame id="@domid($comment)">
     <!-- More stuff -->
 </turbo-frame>
@@ -112,7 +112,7 @@ Since Turbo Frames rely a lot on DOM IDs, there is a helper for generating DOM I
 
 This will generate a `comment_123` DOM ID. You can also give it a context, such as:
 
-```html
+```blade
 <turbo-frame id="@domid($post, 'comments_count')">(99)</turbo-frame>
 ```
 
@@ -195,7 +195,7 @@ class Comment extends Model
 
 One example for a recently created comment model would be:
 
-```html
+```blade
 <turbo-stream target="comments" action="append">
   <template>
     @include('comments._comment', ['comment' => $comment'])
@@ -205,7 +205,7 @@ One example for a recently created comment model would be:
 
 An example for a model that was updated:
 
-```html
+```blade
 <turbo-stream target="comment_123" action="update">
   <template>
     @include('comments._comment', ['comment' => $comment])
@@ -215,7 +215,7 @@ An example for a model that was updated:
 
 An example for a model that was deleted:
 
-```html
+```blade
 <turbo-stream target="comment_123" action="remove"></turbo-stream>
 ```
 
@@ -229,7 +229,7 @@ return response()->turboStreamView(view('comments.turbo_created_stream', [
 
 That view is a regular blade view that you can add your `<turbo-stream>` tags yourself. One example of such a view that appends the comment to the page and updates the comments count in the page:
 
-```html
+```blade
 <turbo-stream target="@domid($comment->post, 'comments_count')" action="update">
     <template>({{ $comment->post->comments()->count() }})</template>
 </turbo-stream>
@@ -362,7 +362,7 @@ This will apply the same conventions mentioned for the model events, and doing i
 
 To listen for the events, we ship with a custom HTML tag `<turbo-echo-stream-source>` that you can add to any page you want to receive broadcasts. This tag will connect to the `channel` attribute you provide to it and will start receiving Turbo Streams messages over WebSockets and applying them to the page. When you leave the page, it will also leave the channel. Here's an example of how you can use it:
 
-```html
+```blade
 <turbo-echo-stream-source
     channel="App.Models.Comments.{{ $comment->id }}"
 />
@@ -370,7 +370,7 @@ To listen for the events, we ship with a custom HTML tag `<turbo-echo-stream-sou
 
 This assumes you have your Laravel Echo properly configured. By default, it expects a private channel, so the tag must be used in a page for already authenticated users. You can control the type of the channel in the tag with a `type` attribute.
 
-```html
+```blade
 <turbo-echo-stream-source
     channel="App.Models.Comments.{{ $comment->id }}"
     type="presence"
@@ -439,7 +439,7 @@ That's Turbo Stream over WebSockets using Laravel Echo.
 
 Turbo Visits made by the Turbo Native client will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments or assets (like mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a web app:
 
-```html
+```blade
 @turbonative
     <h1>Hello, Mobile Users!</h1>
 @endturbonative
