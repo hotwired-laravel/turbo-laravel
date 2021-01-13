@@ -61,9 +61,9 @@ This package aims to make the integration seamlessly. It offers a couple macros,
 
 ### Turbo Drive
 
-Turbo Drive is the spiritual successor of Turbolinks. It will hijack your links and forms and turn them into AJAX requests, updating your browser history, and caching visited pages, so it can serve from it again from Cache on a second visit while loading an updated version of the page. The main difference here is that Turbolinks didn't play well with regular forms. Turbo Drive does.
+Turbo Drive is the spiritual successor of Turbolinks. It will hijack your links and forms and turn them into AJAX requests, updating your browser history, and caching visited pages, so it can serve from it again from Cache on a second visit while loading an updated version of the page. The main difference here is that Turbolinks didn't play well with regular forms. Turbo Drive does. You can use it just for its SPA behavior.
 
-You can use Turbo Drive just for its SPA behavior. If you want to persist certain pieces of content across visits, you can annotate them with a `data-turbo-permanent` attribute and the element must have an ID. If a matching element exists on the next Turbo visit, Turbo Drive won't touch that specific element. Otherwise, the whole page will be changed. This is used in Basecamp's navigation bar, for instance.
+It replaces the page with the response from new visits without a browser fresh. That's useful when you want to navigate to other completely different pages, but if you want to persist certain pieces of HTML (with its state!) across visits, you can annotate them with a `data-turbo-permanent` attribute and some ID. If a matching element exists on the next Turbo visit, Turbo Drive won't touch that specific element. Otherwise, the whole page will be changed. This is used in Basecamp's navigation bar, for instance.
 
 That's essentially what Turbo Drive does.
 
@@ -124,7 +124,7 @@ That's essentially what you can do with Turbo Frames. Turbo Drive and Turbo Fram
 
 ### Turbo Streams
 
-Sometimes you do need to update multiple different parts of your application at some point. For instance, maybe after a form submission to create a comment in a post, you might want to append the comment to the comment's list and also update the comment's count. You can do that with Turbo Streams. A Turbo Stream response consists of one or many `<turbo-stream>` tags and the correct header of `Content-Type: text/html; turbo-stream`. If these are returned from a Turbo Visit from a controller, then Turbo will do the rest to apply your changes.
+Sometimes you do need to update multiple different parts of your application at some point. For instance, maybe after a form submission to create a comment in a post, you might want to append the comment to the comment's list and also update the comment's count. You can do that with Turbo Streams. A Turbo Stream response consists of one or many `<turbo-stream>` tags and the correct header of `Content-Type: text/vnd.turbo-stream.html`. If these are returned from a Turbo Visit from a controller, then Turbo will do the rest to apply your changes.
 
 A Turbo Visit is annotated by Turbo itself with an `Accept` header that indicates that you can return a Turbo Stream response. You can check that using the `wantsTurboStream` macro in the Request class, passing it any given Eloquent Model:
 
@@ -253,7 +253,25 @@ So far, we have been using Turbo Streams over HTTP to update multiple parts of y
 
 If you want to augment your app with WebSockets continue reading.
 
-You can broadcast changes from your models using WebSockets for each "created", "updated", or "deleted" events, like so:
+First, you need to make sure your Laravel Echo set up is properly done, should be something like this:
+
+```dotenv
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_APP_CLUSTER=us2
+PUSHER_APP_HOST=websockets.test
+
+MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+MIX_PUSHER_HOST="localhost"
+MIX_PUSHER_PORT="${LARAVEL_WEBSOCKETS_PORT}"
+MIX_PUSHER_USE_SSL=false
+```
+
+These settings are assuming you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package locally. Check out the [resources/js/echo.js](resources/js/echo.js) for the suggested dotenv credentials you need. You can also set up [Pusher](https://pusher.com/), if you want to.
+
+With that out of the way, you can broadcast changes from your models using WebSockets for each "created", "updated", or "deleted" events, like so:
 
 ```php
 use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
