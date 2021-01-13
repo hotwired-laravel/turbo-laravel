@@ -86,8 +86,7 @@ Turbo Frames can also lazy-load content:
 </turbo-frame>
 ```
 
-This will essentially replace the contents of the frame with a matching frame in the page specified as the `src=`
-attribute. You can also trigger a frame visit with a link outside the frame itself:
+This will essentially replace the contents of the frame with a matching frame in the page specified as the `src=` attribute. The request will be made as soon as the Frame renders. You can also annotate it with `loading="lazy"` and the request will only be sent when the frame appears in the viewport (when visible). You could also trigger a frame visit with a link outside the frame itself:
 
 ```blade
 <div>
