@@ -5,6 +5,7 @@ namespace Tonysm\TurboLaravel\Tests\Http;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
+use Tonysm\TurboLaravel\Turbo;
 
 class ResponseMacrosTest extends TestCase
 {
@@ -32,7 +33,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -53,7 +54,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -72,7 +73,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -93,7 +94,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -108,7 +109,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -125,7 +126,7 @@ html;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -142,7 +143,7 @@ html;
         ]));
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
     /** @test */
@@ -161,7 +162,7 @@ blade;
         $resp = response()->turboStream($testModel);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals('text/vnd.turbo-stream.html', $resp->headers->get('Content-Type'));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 }
 

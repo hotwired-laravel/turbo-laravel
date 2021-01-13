@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Turbo
 {
-    const TURBO_STREAM_FORMAT = 'text/html; turbo-stream';
+    const TURBO_STREAM_FORMAT = 'text/vnd.turbo-stream.html';
 
     /**
      * This will be used to detect if the request being made is coming from a Turbo Native visit
