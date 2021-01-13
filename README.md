@@ -198,7 +198,7 @@ One example for a recently created comment model would be:
 ```blade
 <turbo-stream target="comments" action="append">
   <template>
-    @include('comments._comment', ['comment' => $comment'])
+    @include('comments._comment', ['comment' => $comment])
   </template>
 </turbo-stream>
 ```
