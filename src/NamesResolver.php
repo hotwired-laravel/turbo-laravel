@@ -74,9 +74,9 @@ class NamesResolver
         return "{$prefix}{$resource}_{$modelId}";
     }
 
-    public static function resourceIdFor(Model $model = null, string $prefix = ""): string
+    public static function resourceIdFor(Model $model, string $prefix = ""): string
     {
-        $id = $model && $model->id ? $model->id : "new";
+        $id = $model->id ?: "new";
 
         return static::resourceId(class_basename($model), $id, $prefix);
     }

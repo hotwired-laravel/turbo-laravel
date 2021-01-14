@@ -65,6 +65,6 @@ class Turbo
 
     public function domId(Model $model, string $prefix = ""): string
     {
-        return NamesResolver::resourceId(get_class($model), $model->id, $prefix);
+        return NamesResolver::resourceIdFor($model, $prefix);
     }
 }
