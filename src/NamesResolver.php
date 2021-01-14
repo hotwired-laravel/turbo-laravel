@@ -76,7 +76,7 @@ class NamesResolver
 
     public static function resourceIdFor(Model $model, string $prefix = ""): string
     {
-        $id = $model->id ?: "new";
+        $id = $model->getKey() ?: "new";
 
         return static::resourceId(class_basename($model), $id, $prefix);
     }

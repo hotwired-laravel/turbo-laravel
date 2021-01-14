@@ -42,7 +42,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($testModel)),
-                    $testModel->id
+                    $testModel->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -63,7 +63,7 @@ blade;
         $testModel->update(['name' => 'updated']);
 
         $expectedTurboStream = <<<blade
-<turbo-stream target="test_model_using_event_{$testModel->id}" action="replace">
+<turbo-stream target="test_model_using_event_{$testModel->getKey()}" action="replace">
     <template>
         <h1>Hello Turbo Stream TestModelUsingEvents</h1>
     </template>
@@ -78,7 +78,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($testModel)),
-                    $testModel->id
+                    $testModel->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -99,7 +99,7 @@ blade;
         $testModel->delete();
 
         $expectedTurboStream = <<<blade
-<turbo-stream target="test_model_using_event_{$testModel->id}" action="remove"></turbo-stream>
+<turbo-stream target="test_model_using_event_{$testModel->getKey()}" action="remove"></turbo-stream>
 blade;
 
         Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($testModel, $expectedTurboStream) {
@@ -110,7 +110,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($testModel)),
-                    $testModel->id
+                    $testModel->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );

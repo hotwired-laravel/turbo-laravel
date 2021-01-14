@@ -25,7 +25,7 @@ class ResponseMacrosTest extends TestCase
         $expected = <<<html
 <turbo-stream target="test_models" action="append">
     <template>
-        <div id="test_model_{$testModel->id}">hello</div>
+        <div id="test_model_{$testModel->getKey()}">hello</div>
     </template>
 </turbo-stream>
 html;
@@ -46,7 +46,7 @@ html;
         $expected = <<<html
 <turbo-stream target="broadcast_test_models" action="append">
     <template>
-        <div id="broadcast_test_model_{$testModel->id}">hello</div>
+        <div id="broadcast_test_model_{$testModel->getKey()}">hello</div>
     </template>
 </turbo-stream>
 html;
@@ -63,9 +63,9 @@ html;
         $testModel = TestModel::create(['name' => 'test'])->fresh();
 
         $expected = <<<html
-<turbo-stream target="test_model_{$testModel->id}" action="replace">
+<turbo-stream target="test_model_{$testModel->getKey()}" action="replace">
     <template>
-        <div id="test_model_{$testModel->id}">hello</div>
+        <div id="test_model_{$testModel->getKey()}">hello</div>
     </template>
 </turbo-stream>
 html;
@@ -84,9 +84,9 @@ html;
         });
 
         $expected = <<<html
-<turbo-stream target="broadcast_test_model_{$testModel->id}" action="replace">
+<turbo-stream target="broadcast_test_model_{$testModel->getKey()}" action="replace">
     <template>
-        <div id="broadcast_test_model_{$testModel->id}">hello</div>
+        <div id="broadcast_test_model_{$testModel->getKey()}">hello</div>
     </template>
 </turbo-stream>
 html;
@@ -103,7 +103,7 @@ html;
         $testModel = tap(TestModel::create(['name' => 'test']))->delete();
 
         $expected = <<<html
-<turbo-stream target="test_model_{$testModel->id}" action="remove"></turbo-stream>
+<turbo-stream target="test_model_{$testModel->getKey()}" action="remove"></turbo-stream>
 html;
 
         $resp = response()->turboStream($testModel);
@@ -120,7 +120,7 @@ html;
         });
 
         $expected = <<<html
-<turbo-stream target="broadcast_test_model_{$testModel->id}" action="remove"></turbo-stream>
+<turbo-stream target="broadcast_test_model_{$testModel->getKey()}" action="remove"></turbo-stream>
 html;
 
         $resp = response()->turboStream($testModel);
@@ -135,7 +135,7 @@ html;
         $testModel = TestModel::create(['name' => 'test']);
 
         $expected = <<<html
-<div id="test_model_{$testModel->id}">hello</div>
+<div id="test_model_{$testModel->getKey()}">hello</div>
 html;
 
         $resp = response()->turboStreamView(View::file(__DIR__ . '/stubs/_test_model.blade.php', [
