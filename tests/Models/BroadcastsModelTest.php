@@ -46,7 +46,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -61,7 +61,7 @@ blade;
         Event::fake([TurboStreamModelUpdated::class]);
 
         $model = BroadcastTestModel::find(
-            BroadcastTestModel::create(['name' => 'My model'])->id
+            BroadcastTestModel::create(['name' => 'My model'])->getKey()
         );
 
         $this->assertFalse($model->wasRecentlyCreated);
@@ -83,7 +83,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -98,7 +98,7 @@ blade;
         Event::fake([TurboStreamModelDeleted::class]);
 
         $model = BroadcastTestModel::find(
-            BroadcastTestModel::create(['name' => 'My model'])->id
+            BroadcastTestModel::create(['name' => 'My model'])->getKey()
         );
 
         $model->delete();
@@ -116,7 +116,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 );
         });
     }
@@ -143,7 +143,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 );
         });
     }
@@ -172,12 +172,12 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 );
         });
 
         $expectedPartialRenderForUpdate = <<<blade
-<turbo-stream target="broadcast_test_model_different_action_{$model->id}" action="replace">
+<turbo-stream target="broadcast_test_model_different_action_{$model->getKey()}" action="replace">
     <template>
         <h1>Hello from a different partial</h1>
     </template>
@@ -191,7 +191,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 );
         });
     }
@@ -221,7 +221,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -230,7 +230,7 @@ blade;
         });
 
         $expectedPartialRenderForUpdate = <<<blade
-<turbo-stream target="hello-{$model->id}" action="replace">
+<turbo-stream target="hello-{$model->getKey()}" action="replace">
     <template>
         <h1>Hello from a different partial</h1>
     </template>
@@ -245,7 +245,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -260,7 +260,7 @@ blade;
         Event::fake([TurboStreamModelCreated::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildArr::create(['name' => 'Child', 'parent_id' => $parent->id]);
+        $child = RelatedModelChildArr::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
 
         $expectedPartialRenderForCreate = <<<blade
 <turbo-stream target="related_model_child_arrs" action="append">
@@ -277,7 +277,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($parent)),
-                    $parent->id
+                    $parent->getKey()
                 );
         });
     }
@@ -288,7 +288,7 @@ blade;
         Event::fake([TurboStreamModelCreated::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->id]);
+        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
 
         $expectedPartialRenderForCreate = <<<blade
 <turbo-stream target="related_model_children" action="append">
@@ -305,7 +305,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($parent)),
-                    $parent->id
+                    $parent->getKey()
                 );
         });
     }
@@ -316,7 +316,7 @@ blade;
         Event::fake([TurboStreamModelCreated::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->id]);
+        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
 
         $expectedPartialRenderForCreate = <<<blade
 <turbo-stream target="related_model_child_methods" action="append">
@@ -333,7 +333,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($parent)),
-                    $parent->id
+                    $parent->getKey()
                 );
         });
     }
@@ -344,7 +344,7 @@ blade;
         Event::fake([TurboStreamModelCreated::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildMethodArray::create(['name' => 'Child', 'parent_id' => $parent->id]);
+        $child = RelatedModelChildMethodArray::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
 
         $expectedPartialRenderForCreate = <<<blade
 <turbo-stream target="related_model_child_method_arrays" action="append">
@@ -361,7 +361,7 @@ blade;
                 && $event->broadcastOn()[0]->name === sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($parent)),
-                    $parent->id
+                    $parent->getKey()
                 );
         });
     }
@@ -412,7 +412,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($model)),
-                    $model->id
+                    $model->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -492,7 +492,7 @@ blade;
 
         Model::withoutEvents(function () use (&$parent, &$child) {
             $parent = RelatedModelParent::create(['name' => 'test']);
-            $child = RelatedModelChildUsingBroadcasts::create(['name' => 'child', 'parent_id' => $parent->id]);
+            $child = RelatedModelChildUsingBroadcasts::create(['name' => 'child', 'parent_id' => $parent->getKey()]);
         });
 
         $child->delete();
@@ -505,7 +505,7 @@ blade;
                 sprintf(
                     'private-%s.%s',
                     str_replace('\\', '.', get_class($parent)),
-                    $parent->id
+                    $parent->getKey()
                 ),
                 $event->broadcastOn()[0]->name
             );
@@ -538,7 +538,7 @@ class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPar
 {
     public function hotwireTargetDomId()
     {
-        return "hello-{$this->id}";
+        return "hello-{$this->getKey()}";
     }
 
     public function hotwireTargetResourcesName()
