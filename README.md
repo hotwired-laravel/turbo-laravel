@@ -12,6 +12,12 @@ This package gives you a set of conventions to make the most out of [Hotwire](ht
 * [Installation](#installation)
 * [Conventions](#conventions)
 * [Getting Started](#getting-started)
+    * [Turbo Drive](#turbo-drive)
+    * [Turbo Frames](#turbo-frames)
+    * [Turbo Streams](#turbo-streams)
+    * [Turbo Streams and Laravel Echo](#turbo-streams-and-laravel-echo)
+    * [Validation Responses](#validation-responses)
+    * [Turbo Native](#turbo-native)
 
 <a name="installation"></a>
 ## Installation
@@ -80,6 +86,7 @@ After your assets are compiled, you will have some new custom HTML tags that you
 
 This package offers a couple macros, a trait for your models, and some conventions borrowed from Rails to find a partial for its respective model, but it allows you to override these conventions per model or not use the convenient bits at all.
 
+<a name="turbo-drive"></a>
 ### Turbo Drive
 
 Turbo Drive is the spiritual successor of Turbolinks. It will hijack your links and form submissions and turn them into AJAX requests, updating your browser history, and caching visited pages for you, so it can serve them from faster again on a second visit while loading an updated version in simultaneously. The main difference here is that Turbolinks didn't play well with regular forms. Turbo Drive does. You can use it just for the SPA behavior.
@@ -88,6 +95,7 @@ Essentially, it replaces the page with the response from new visits without a br
 
 That's what Turbo Drive does.
 
+<a name="turbo-frames"></a>
 ### Turbo Frames
 
 Sometimes you don't want to replace the entire page, but instead you want to have more granular control of a specific fragment of your page. You can do that with Turbo Frames. This is what a Turbo Frame looks like:
@@ -143,6 +151,7 @@ When you have a link or form inside a Turbo Frame, Turbo Drive will make a visit
 
 That's essentially what you can do with Turbo Frames. Turbo Drive and Turbo Frames can get you 80% there.
 
+<a name="turbo-streams"></a>
 ### Turbo Streams
 
 Sometimes you may want to update multiple different parts of your page at the same time (not just a single Frame). For instance, maybe after a form submission to create a comment in a post, you want to append the comment to the comment's list and also update the comment's counter. You can do that with Turbo Streams. A Turbo Stream response consists of one or more `<turbo-stream>` tags and the correct header of `Content-Type: text/vnd.turbo-stream.html`. If these are returned from a Turbo Visit, then Turbo will do the rest to apply your changes.
@@ -266,6 +275,7 @@ The `turboStreamView` Response macro will take your view, render it and apply th
 
 If you name these views after the model event names `created_stream.blade.php`, `updated_stream.blade.php`, and `deleted_stream.blade.php` and keep them inside a `turbo` folder of your resource's view (such as `resources/views/comments/turbo/created_stream.blade.php`), the package will always favor those over generating the default Turbo Stream behavior. The same conventions apply there for the given variables passed to the view. Try to use only the resource itself and its relationships, or override the `hotwirePartialData` method. **It's important to note that these views will be used when generating Turbo Stream responses in background**, when you're using broadcasting capabilities.
 
+<a name="turbo-streams-and-laravel-echo"></a>
 ### Turbo Streams and Laravel Echo
 
 So far, we have seen Turbo Streams over HTTP to update multiple parts of your page after a Turbo Visit. However, you may want to also broadcast Turbo Stream changes for your model's over WebSockets to other users on the same page. Although nice, **you don't have to use WebSockets in your app if you don't have the need for it. You can rely on only returning Turbo Stream responses from your controller.** You can also mix HTTP Turbo Stream responses with Turbo Stream Broadcasts sent over WebSockets to other users, this will provide an instant feedback for the user making the request compared to waiting for the background job to broadcast your changes back to you.
@@ -396,6 +406,7 @@ This assumes you have Laravel Echo properly configured. By default, it expects a
 
 You might want to read [Laravel's Broadcasting](https://laravel.com/docs/8.x/broadcasting) documentation.
 
+<a name="validation-responses"></a>
 ### Validation Responses
 
 By default, Laravel's failed exception redirects the user back to the page that sent the request. This is a bit problematic when it comes to Turbo Frames, since a form might be included in tha Turbo Frame that inherits the context of the page where it was inserted in, and the form isn't part that page itself by default. We can't redirect "back" to display the form again with the error messages, because "back" might not have the form or might not even have a matching Turbo Frame. Instead, we have two options:
@@ -455,6 +466,7 @@ TurboFacade::broadcastToOthers(function () {
 
 That's Turbo Stream over WebSockets using Laravel Echo and Queued Jobs.
 
+<a name="turbo-native"></a>
 ### Turbo Native
 
 Turbo Visits made by the Turbo Native client will send a custom `User-Agent` header. So we added another Blade helper you can use to toggle fragments or assets (like mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a web app:
