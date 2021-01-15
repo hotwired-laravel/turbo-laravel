@@ -8,7 +8,7 @@ use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
 use Tonysm\TurboLaravel\TurboFacade;
 
-class TurboComponentsTest extends TestCase
+class ViewHelpersTest extends TestCase
 {
     /** @test */
     public function renders_turbo_native_correctly()
