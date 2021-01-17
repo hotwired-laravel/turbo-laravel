@@ -77,7 +77,7 @@ trait Broadcasts
 
     public function hotwireTargetDomId()
     {
-        return $this->hotwireResolveNamesUsing()->resourceId(static::class, $this->getKey());
+        return $this->hotwireResolveNamesUsing()->resourceIdFor($this);
     }
 
     public function hotwireTargetResourcesName()

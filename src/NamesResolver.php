@@ -14,7 +14,7 @@ class NamesResolver
 
     private static function resourceNameFor(string $modelName, bool $plural = true): string
     {
-        return (string)strtolower(implode('_', preg_split('/(?=[A-Z])/', Str::of($modelName)->camel()->plural($plural ? 2 : 1))));
+        return (string)strtolower(implode('_', preg_split('/(?=[A-Z])/', Str::of($modelName)->replace('\\', ' ')->camel()->plural($plural ? 2 : 1))));
     }
 
     private static function resourceNameSingularFor(string $modelName): string
@@ -63,21 +63,32 @@ class NamesResolver
         return "{$path}.{$id}";
     }
 
-    public static function resourceId($modelClass, $modelId, $prefix = ""): string
+    public static function resourceIdFor(Model $model, string $prefix = ""): string
     {
         $prefix = $prefix !== ""
             ? "{$prefix}_"
             : "";
 
-        $resource = static::resourceNameSingularFor(class_basename($modelClass));
+        $resource = static::resourceNameSingularFor(static::getModelWithoutRootNamespaces($model));
 
-        return "{$prefix}{$resource}_{$modelId}";
+        if (!($modelId = $model->getKey())) {
+            return "{$prefix}create_{$resource}";
+        }
+
+        return trim("{$prefix}{$resource}_{$modelId}", '_');
     }
 
-    public static function resourceIdFor(Model $model, string $prefix = ""): string
+    private static function getModelWithoutRootNamespaces(Model $model): string
     {
-        $id = $model->getKey() ?: "new";
+        $className = get_class($model);
 
-        return static::resourceId(class_basename($model), $id, $prefix);
+        foreach (config('turbo-laravel.models_namespace') as $rootNs) {
+            if (Str::startsWith($className, $rootNs)) {
+                return Str::replaceFirst($rootNs, '', $className);
+            }
+        }
+
+        // If none of the previous matchers work, we use the class_basename helper instead.
+        return class_basename($model);
     }
 }
