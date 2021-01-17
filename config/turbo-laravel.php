@@ -19,10 +19,10 @@ return [
      | Root Model Namespaces
      |--------------------------------------------------------------------------
      |
-     | When generating the DOM ID for models, we need to strip out parts of the namespace, so we
-     | can more accurate DOM IDs. If you happen to use a different convention for where you place
-     | your models, please, add the model namespace prefixes here. We'll strip out the first one that
-     | matches a "Str:startsWith()" check, so sort them from more specific to less specific.
+     | When generating DOM IDs for models, we need to strip out the root namespaces from the model's FQCN. Please,
+     | if you use non-conventional folder structures, make sure you add your custom namespaces to this list. The
+     | first one that matches a "starts with" check will be used and removed from the model's FQCN for DOM IDs.
+     |
      */
     'models_namespace' => [
         'App\\Models\\',

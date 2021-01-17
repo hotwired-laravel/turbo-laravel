@@ -80,6 +80,10 @@ class NamesResolver
 
     private static function getModelWithoutRootNamespaces(Model $model): string
     {
+        // We will attempt to strip out only the root namespace from the model's FQCN. For that, we will use
+        // the configured namespaces, stripping out the first one that matches on a Str::startsWith check.
+        // Namespaces are configurable. We'll default back to class_basename when no namespace matches.
+
         $className = get_class($model);
 
         foreach (config('turbo-laravel.models_namespace') as $rootNs) {
@@ -88,7 +92,6 @@ class NamesResolver
             }
         }
 
-        // If none of the previous matchers work, we use the class_basename helper instead.
         return class_basename($model);
     }
 }
