@@ -48,7 +48,7 @@ You can publish the asset files with:
 php artisan turbo:install
 ```
 
-You can also use Turbo Laravel with Jetstream if you use the Livewire stack. If you want to do so, publish the assets with a `--jet` flag:
+You can also use Turbo Laravel with Jetstream if you use the Livewire stack (requires Livewire `dev-master` as support for Turbo wasn't tagged yet). If you want to do so, publish the assets with a `--jet` flag:
 
 ```bash
 php artisan turbo:install --jet
