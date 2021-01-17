@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
 use Tonysm\TurboLaravel\TurboFacade;
+use function Tonysm\TurboLaravel\dom_id;
 
 class ViewHelpersTest extends TestCase
 {
@@ -35,5 +36,14 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div id="test_model_1"></div>', trim($renderedDomId));
         $this->assertEquals('<div id="favorites_test_model_1"></div>', trim($renderedDomIdWithPrefix));
         $this->assertEquals('<div id="test_model_new"></div>', trim($rendersDomIdOfNewModel));
+    }
+
+    /** @test */
+    public function can_use_helper_function()
+    {
+        $testModel = TestModel::create(['name' => 'lorem']);
+
+        $this->assertEquals("test_model_1", dom_id($testModel));
+        $this->assertEquals("my_context_test_model_1", dom_id($testModel, "my_context"));
     }
 }
