@@ -71,7 +71,7 @@ class NamesResolver
 
         $resource = static::resourceNameSingularFor(static::getModelWithoutRootNamespaces($model));
 
-        if (!($modelId = $model->getKey())) {
+        if (! ($modelId = $model->getKey())) {
             return "{$prefix}create_{$resource}";
         }
 

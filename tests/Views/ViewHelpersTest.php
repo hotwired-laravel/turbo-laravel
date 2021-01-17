@@ -4,7 +4,6 @@ namespace Tonysm\TurboLaravel\Tests\Views;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Tonysm\TurboLaravel\Tests\Views\Models;
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\TurboFacade;
