@@ -6,20 +6,32 @@
 
 This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and the conventions in your application.
 
-There is a testing helper package that you can add as a dev dependency of your application, check it out: [`tonysm/turbo-laravel-test-helpers`](https://github.com/tonysm/turbo-laravel-test-helpers).
-
 <a name="documentation"></a>
 ## Documentation
 
 * [Installation](#installation)
+    * [Middleware](#middleware)
 * [Conventions](#conventions)
 * [Getting Started](#getting-started)
     * [Turbo Drive](#turbo-drive)
+        * [Permanent Fragments](#turbo-drive-permanent)
     * [Turbo Frames](#turbo-frames)
+        * [Generating DOM IDs from Models](#dom-ids)
     * [Turbo Streams](#turbo-streams)
+        * [request()->wantsTurboStream()](#wants-turbo-stream)
+        * [response()->turboStream()](#turbo-stream-response)
+        * [Overriding Default Partial and Data](#override-turbo-stream-partials-and-data)
+        * [Overriding Default Resource Name and DOM ID for a Model](#override-turbo-stream-resource-and-dom-id)
+        * [response()->turboStreamView()](#turbo-stream-view)
+        * [Overriding Default Turbo Streams Views](#override-turbo-stream-views)
     * [Turbo Streams and Laravel Echo](#turbo-streams-and-laravel-echo)
+        * [Broadcasting Turbo Streams with Model Events](#turbo-stream-broadcasting-with-events)
+        * [Broadcasting Turbo Streams to related Model or Channels](#turbo-stream-broadcasting-destination)
+        * [Broadcasting Turbo Streams with the Broadcasts trait](#turbo-stream-broadcasting-using-trait)
+        * [Listening to Broadcasting from Laravel Echo](#turbo-streams-listening-to-echo-events)
     * [Validation Responses](#validation-responses)
     * [Turbo Native](#turbo-native)
+    * [Testing Helpers](#testing-helpers)
 
 <a name="installation"></a>
 ## Installation
@@ -44,6 +56,7 @@ php artisan turbo:install --jet
 
 This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the [`livewire/turbolinks`](https://github.com/livewire/turbolinks) bridge to your `app.blade.php` layout for you.
 
+<a name="middleware"></a>
 The package ships with a middleware that applies some conventions on your redirects, specially around how failed validations are redirected automatically by Laravel. We will discuss all this in the [Getting Started](#getting-started) section below. You can register the middleware like so:
 
 ```php
@@ -93,6 +106,7 @@ This package offers a couple macros, a trait for your models, and some conventio
 
 Turbo Drive is the spiritual successor of Turbolinks. It will hijack your links and form submissions and turn them into AJAX requests, updating your browser history, and caching visited pages for you, so it can serve them from faster again on a second visit while loading an updated version in simultaneously. The main difference here is that Turbolinks didn't play well with regular forms. Turbo Drive does. You can use it just for the SPA behavior.
 
+<a name="turbo-drive-permanent"></a>
 Essentially, it replaces the page with the response from new visits without a browser fresh. That's useful when you want to navigate to another completely different page, but if you want to persist certain pieces of HTML (with its state!) across visits, you can annotate them with a `data-turbo-permanent` attribute and an ID. If a matching element exists on the next Turbo visit, Turbo Drive won't touch that specific element in the DOM. Otherwise, the whole page will be changed. This is used in Basecamp's navigation bar, for instance.
 
 That's what Turbo Drive does.
@@ -111,6 +125,7 @@ Sometimes you don't want to replace the entire page, but instead you want to hav
 </turbo-frame>
 ```
 
+<a name="turbo-frame-lazy"></a>
 A Turbo Frame can also lazy-load its content:
 
 ```blade
@@ -133,6 +148,7 @@ When that link is clicked (either by the user or programmatically using JavaScri
 
 So far, all vanilla Hotwire.
 
+<a name="dom-ids"></a>
 Since Turbo Frames rely a lot on DOM IDs, the package offers a helper for generating DOM IDs for your models:
 
 ```blade
@@ -164,6 +180,7 @@ That's essentially what you can do with Turbo Frames. Turbo Drive and Turbo Fram
 
 Sometimes you may want to update multiple different parts of your page at the same time (not just a single Frame). For instance, maybe after a form submission to create a comment in a post, you want to append the comment to the comment's list and also update the comment's counter. You can do that with Turbo Streams. A Turbo Stream response consists of one or more `<turbo-stream>` tags and the correct header of `Content-Type: text/vnd.turbo-stream.html`. If these are returned from a Turbo Visit, then Turbo will do the rest to apply your changes.
 
+<a name="wants-turbo-stream"></a>
 A Turbo Visit is annotated by Turbo itself with an `Accept` header that indicates that you can return a Turbo Stream response. You may check if the request accepts Turbo Streams using the `wantsTurboStream` macro in the Request class. And you may auto-generate the Turbo Stream response for a model using the `turboStream` macro in the Response factory (which you can use via the `response()` helper function), like so:
 
 ```php
@@ -183,10 +200,12 @@ class PostCommentsController
 }
 ```
 
+<a name="turbo-stream-response"></a>
 The `turbosStream` macro in the ResponseFactory will generate a Turbo Stream response for the changes made to your model (it was either created, updated, or deleted). We try to follow Rails' conventions to find partials for your models. In the example above, by default, we'll look for a partial located at `resources/views/comments/_comment.blade.php`. This follows the convention of *plural resource name* for the folders and *singular resource name* for the partial itself, prefixed with an underscore.
 
 Your partial will receive a variable named after your class basename in _camelCase_. So, in this case, it will receive a `$comment` variable that you can use.
 
+<a name="override-turbo-stream-partials-and-data"></a>
 If you want to control the partial name by implementing the `hotwirePartialName` in your Comment model. You can also have more control over the data passed to the partial by implementing the `hotwirePartialData` method, like so:
 
 ```php
@@ -214,6 +233,7 @@ If the model was recently created (created during the request), the `target` of 
 
 In this example, a model named `App\\Models\\Comment` will look for its partial inside `resources/views/comments/_comment.blade.php`. To that partial, a reference of the model itself will be passed down having the model's basename as name for the variable (in _camelCase_). So, for a `App\\Models\\Comment` model, you will have a `$comment` variable available inside the partial.
 
+<a name="override-turbo-stream-resource-and-dom-id"></a>
 Both the partial name and the data can be overwritten, as you saw earlier. The resource name used as the Turbo Stream `target` can also be overwritten, as well as the DOM ID for the model when you're generating the Turbo Stream response for an already existing, but updated model, like so:
 
 ```php
@@ -257,6 +277,7 @@ An example for a model that was deleted:
 <turbo-stream target="comment_123" action="remove"></turbo-stream>
 ```
 
+<a name="turbo-stream-view"></a>
 If you want to have full control over your Turbo Stream response, for instance, you can use the `response()->turboStreamView()` macro. Here's an example:
 
 ```php
@@ -281,6 +302,7 @@ That view is a regular Blade view that you can add your `<turbo-stream>` tags to
 
 The `turboStreamView` Response macro will take your view, render it and apply the correct `Content-Type` for you.
 
+<a name="override-turbo-stream-views"></a>
 If you name these views after the model event names `created_stream.blade.php`, `updated_stream.blade.php`, and `deleted_stream.blade.php` and keep them inside a `turbo` folder of your resource's view (such as `resources/views/comments/turbo/created_stream.blade.php`), the package will always favor those over generating the default Turbo Stream behavior. The same conventions apply there for the given variables passed to the view. Try to use only the resource itself and its relationships, or override the `hotwirePartialData` method. **It's important to note that these views will be used when generating Turbo Stream responses in background**, when you're using broadcasting capabilities.
 
 <a name="turbo-streams-and-laravel-echo"></a>
@@ -308,6 +330,7 @@ MIX_PUSHER_USE_SSL=false
 
 These settings are assuming you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package. Check out the [resources/js/echo.js](resources/js/echo.js) for the suggested dotenv credentials you need. You can also set up [Pusher](https://pusher.com/) instead of the Laravel WebSockets package, if you want to.
 
+<a name="turbo-stream-broadcasting-with-events"></a>
 With that out of the way, you can broadcast changes from your models using WebSockets by attaching a specific event to the "created", "updated", or "deleted" events on the model, like so:
 
 ```php
@@ -327,6 +350,7 @@ class Comment extends Model
 
 This will automatically propagate changes of this model to its desired channels following the convention of using the model's FQCN using a dotted notation suffixed with the model ID. To follow our `App\\Models\\Comment` example, the changes would broadcast to the channel named: `App.Models.Comment.{id}` (the name of the wildcard is not enforced, you can use whatever you want, but we'll use the model's ID as its value). You may pick only the events you want to broadcast.
 
+<a name="turbo-stream-broadcasting-destination"></a>
 If you want to control the channel you're broadcasting to, maybe passing it to a related model instead of the current model, or send it out to a couple different related models or channels, you may do that like so:
 
 ```php
@@ -382,6 +406,7 @@ class Comment extends Model
 
 You can return a model, an array or a collection of models, or an array or a collection of broadcasting _Channels_, giving you full control on where you want the broadcasting to be sent to. The same partial conventions apply here as well (for namings and data provided, including the `resources/views/{resource}/turbo/` folder).
 
+<a name="turbo-stream-broadcasting-using-trait"></a>
 If you want to broadcast all changes of a model (created, updated, and deleted events), we provide a trait named `Tonysm\TurboLaravel\Models\Broadcasts` that you can use in your model. Something like:
 
 ```php
@@ -395,6 +420,7 @@ class Comment extends Model
 
 This will apply the same conventions mentioned for the model events, and doing it this way will automatically dispatch the broadcasting in background, using queued jobs.
 
+<a name="turbo-streams-listening-to-echo-events"></a>
 To listen to the events in the frontend, we export a custom HTML tag `<turbo-echo-stream-source>` that you can add to any page you want to receive broadcasts on. This tag will connect to the `channel` attribute you provide to it and will start receiving Turbo Streams messages over WebSockets and applying them to the page. When you leave the page, it will also leave the channel. Here's an example of how you can use it:
 
 ```blade
@@ -464,7 +490,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-You can also pass a callback to it, so any Turbo Stream broadcast triggered inside that callback will be sent only _to other_ users, returning back to the default behavior of broadcasting to all users after that. The callback version looks like this:
+You can also pass a callback to it, so any Turbo Stream broadcast triggered inside that callback will be sent only _to other_ users, resuming back to the default behavior of broadcasting to all users after that. The callback version looks like this:
 
 ```php
 TurboFacade::broadcastToOthers(function () {
@@ -492,6 +518,50 @@ if (\Tonysm\TurboLaravel\TurboFacade::isTurboNativeVisit()) {
     // Do something for mobile specific requests.
 }
 ```
+
+<a name="testing-helpers"></a>
+### Testing Helpers
+
+There is a companion package that you can add as a dev dependency of your application to help you testing your apps using Turbo Laravel. First, install the package:
+
+```bash
+composer require tonysm/turbo-laravel-test-helpers --dev
+```
+
+And then you will be able to test your application like:
+
+``` php
+use Tonysm\TurboLaravelTestHelpers\Testing\InteractsWithTurbo;
+
+class ExampleTest extends TestCase
+{
+    use InteractsWithTurbo;
+    
+    /** @test */
+    public function turbo_stream_test()
+    {
+        $response = $this->turbo()->post('my-route');
+
+        $response->assertTurboStream();
+
+        // Checks if one of the Turbo Stream responses matches this criteria.
+        $response->assertHasTurboStream($target = 'users', $action = 'append');
+
+        // Checks if there is no Turbo Stream tag for the criteria.
+        $response->assertDoesntHaveTurboStream($target = 'empty_users', $action = 'remove');
+    }
+
+    /** @test */
+    public function turbo_native_shows()
+    {
+        $response = $this->turboNative()->get('my-route');
+
+        $response->assertSee('Only rendered in Turbo Native');
+    }
+}
+```
+
+Check out the package repository if you want to know more about it.
 
 ### Closing Notes
 
