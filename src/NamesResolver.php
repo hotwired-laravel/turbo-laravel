@@ -75,7 +75,7 @@ class NamesResolver
             return "{$prefix}create_{$resource}";
         }
 
-        return trim("{$prefix}{$resource}_{$modelId}", '_');
+        return "{$prefix}{$resource}_{$modelId}";
     }
 
     private static function getModelWithoutRootNamespaces(Model $model): string
