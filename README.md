@@ -6,6 +6,8 @@
 
 This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and the conventions in your application.
 
+There is a testing helper package that you can add as a dev dependency of your application, check it out: [`tonysm/turbo-laravel-test-helpers`](https://github.com/tonysm/turbo-laravel-test-helpers).
+
 <a name="documentation"></a>
 ## Documentation
 
@@ -145,7 +147,13 @@ This will generate a `comment_123` DOM ID. You can also give it a context, such 
 <turbo-frame id="@domid($post, 'comments_count')">(99)</turbo-frame>
 ```
 
-Which will generate a `comments_count_post_123` ID. This API was borrowed from Rails.
+Which will generate a `comments_count_post_123` ID. This API was borrowed from Rails. There is also a namespaced `dom_id` function that you can use outside your views:
+
+```php
+use function Tonysm\TurboLaravel\dom_id;
+
+dom_id($comment);
+```
 
 When you have a link or form inside a Turbo Frame, Turbo Drive will make a visit and look for matching Turbo Frame (using its ID) in the response, and only replace that portion of the page. Everything else gets to keep their current state (like other form fields, for instance).
 
