@@ -24,6 +24,7 @@ return [
      | first one that matches a "starts with" check will be used and removed from the model's FQCN for DOM IDs.
      |
      */
+
     'models_namespace' => [
         'App\\Models\\',
         'App\\',
