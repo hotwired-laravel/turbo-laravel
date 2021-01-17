@@ -171,6 +171,8 @@ use function Tonysm\TurboLaravel\dom_id;
 dom_id($comment);
 ```
 
+If a new instance is passed to any of the `dom_id` helpers, it will prefix the resource with `create` instead of suffixing with the resource ID (which doesn't exist). So a new instance of `App\\Models\\Comment` will generate `create_comment`. This will only strip out the root namespaces of the model's FQCN (see [config/turbo-laravel.php](config/turbo-laravel.php)).
+
 When you have a link or form inside a Turbo Frame, Turbo Drive will make a visit and look for matching Turbo Frame (using its ID) in the response, and only replace that portion of the page. Everything else gets to keep their current state (like other form fields, for instance).
 
 That's essentially what you can do with Turbo Frames. Turbo Drive and Turbo Frames can get you 80% there.
