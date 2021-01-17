@@ -524,7 +524,7 @@ if (\Tonysm\TurboLaravel\TurboFacade::isTurboNativeVisit()) {
 <a name="testing-helpers"></a>
 ### Testing Helpers
 
-There is a companion package that you can add as a dev dependency of your application to help you testing your apps using Turbo Laravel. First, install the package:
+There is a [companion package](https://github.com/tonysm/turbo-laravel-test-helpers) that you can add as a dev dependency of your application to help you testing your apps using Turbo Laravel. First, install the package:
 
 ```bash
 composer require tonysm/turbo-laravel-test-helpers --dev
@@ -563,7 +563,7 @@ class ExampleTest extends TestCase
 }
 ```
 
-Check out the package repository if you want to know more about it.
+Check out the [package repository](https://github.com/tonysm/turbo-laravel-test-helpers) if you want to know more about it.
 
 ### Closing Notes
 
