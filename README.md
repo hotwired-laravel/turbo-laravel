@@ -54,7 +54,13 @@ You can also use Turbo Laravel with Jetstream if you use the Livewire stack. If 
 php artisan turbo:install --jet
 ```
 
-This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the [`livewire/turbolinks`](https://github.com/livewire/turbolinks) bridge to your `app.blade.php` layout for you.
+This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the [`livewire/turbolinks`](https://github.com/livewire/turbolinks) bridge to your `app.blade.php` and `guest.blade.php` layouts for you.
+
+You can optionally also install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command. It's optional because we can either use Alpine or Stimulus (or both /shrug):
+
+```bash
+php artisan turbo:install --jet --stimulus
+```
 
 <a name="middleware"></a>
 The package ships with a middleware that applies some conventions on your redirects, specially around how failed validations are redirected automatically by Laravel. We will discuss all this in the [Getting Started](#getting-started) section below. You can register the middleware like so:
