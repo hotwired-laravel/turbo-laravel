@@ -112,7 +112,9 @@ class TurboInstallCommand extends Command
         (new Filesystem())->put(
             $inFile,
             (string)Str::of((new Filesystem())->get($inFile))
-                ->replace($lookFor, $replaceWith
+                ->replace(
+                    $lookFor,
+                    $replaceWith
                 )
         );
     }
