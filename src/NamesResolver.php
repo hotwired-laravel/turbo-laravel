@@ -70,6 +70,7 @@ class NamesResolver
         if ($modelId = $model->getKey()) {
             $delimiter = static::$modelNameDelimiter;
             $class = static::domClassFor($model, $prefix);
+
             return trim("{$class}{$delimiter}{$modelId}", $delimiter);
         }
 
