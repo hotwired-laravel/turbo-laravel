@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class NamesResolver
 {
+    public static $modelNameDelimiter = '_';
+
     public static function resourceName(Model $model, bool $plural = true): string
     {
         return static::resourceNameFor(class_basename($model), $plural);
@@ -63,19 +65,23 @@ class NamesResolver
         return "{$path}.{$id}";
     }
 
-    public static function resourceIdFor(Model $model, string $prefix = ""): string
+    public static function domIdFor(Model $model, string $prefix = ""): string
     {
-        $prefix = $prefix !== ""
-            ? "{$prefix}_"
-            : "";
-
-        $resource = static::resourceNameSingularFor(static::getModelWithoutRootNamespaces($model));
-
-        if (! ($modelId = $model->getKey())) {
-            return "{$prefix}create_{$resource}";
+        if ($modelId = $model->getKey()) {
+            $delimiter = static::$modelNameDelimiter;
+            $class = static::domClassFor($model, $prefix);
+            return trim("{$class}{$delimiter}{$modelId}", $delimiter);
         }
 
-        return "{$prefix}{$resource}_{$modelId}";
+        return static::domClassFor($model, $prefix ?: "create");
+    }
+
+    public static function domClassFor(Model $model, string $prefix = ""): string
+    {
+        $delimiter = static::$modelNameDelimiter;
+        $resource = static::resourceNameSingularFor(static::getModelWithoutRootNamespaces($model));
+
+        return trim("{$prefix}{$delimiter}{$resource}", $delimiter);
     }
 
     private static function getModelWithoutRootNamespaces(Model $model): string

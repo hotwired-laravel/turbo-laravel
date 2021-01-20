@@ -21,7 +21,7 @@ class TurboStreamModelRenderer
     {
         $target = method_exists($model, 'hotwireTargetDomId')
             ? $model->hotwireTargetDomId()
-            : NamesResolver::resourceIdFor($model);
+            : NamesResolver::domIdFor($model);
 
         return $this->renderSaved($model, $action, $target, 'updated');
     }
@@ -39,7 +39,7 @@ class TurboStreamModelRenderer
         return View::make('turbo-laravel::model-removed', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
-                : NamesResolver::resourceIdFor($model),
+                : NamesResolver::domIdFor($model),
             'action' => $action,
         ]);
     }
