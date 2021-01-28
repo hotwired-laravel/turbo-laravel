@@ -18,7 +18,7 @@ class LaravelBroadcaster
         return $this;
     }
 
-    public function create($model): void
+    public function create(Model $model): void
     {
         $action = property_exists($model, 'turboStreamCreatedAction')
             ? $model->turboStreamCreatedAction
@@ -30,7 +30,7 @@ class LaravelBroadcaster
         ));
     }
 
-    public function update($model): void
+    public function update(Model $model): void
     {
         $action = property_exists($model, 'turboStreamUpdatedAction')
             ? $model->turboStreamUpdatedAction

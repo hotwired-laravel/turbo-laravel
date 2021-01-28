@@ -60,8 +60,9 @@ trait Broadcasts
 
     public function queueBroadcastRemovalToHotwire()
     {
-        // Removals cannot be cached because we need to gather the broadcasting targets
-        // using the model instance's relationships before the entity is "gone".
+        // We cannot queue removal broadcasts because the model will be gone once the worker
+        // picks up the job to process the broadcasting. So we are broadcasting after the
+        // response is sent to back to the user, before the PHP process is terminated.
 
         app()->terminating(function () {
             $this->hotwireBroadcastUsing()
@@ -73,32 +74,5 @@ trait Broadcasts
     public function hotwireBroadcastUsing()
     {
         return resolve(LaravelBroadcaster::class);
-    }
-
-    public function hotwireTargetDomId()
-    {
-        return $this->hotwireResolveNamesUsing()->domIdFor($this);
-    }
-
-    public function hotwireTargetResourcesName()
-    {
-        return $this->hotwireResolveNamesUsing()->resourceName($this);
-    }
-
-    public function hotwireResolveNamesUsing(): NamesResolver
-    {
-        return resolve(NamesResolver::class);
-    }
-
-    public function hotwirePartialName()
-    {
-        return $this->hotwireResolveNamesUsing()->partialNameFor($this);
-    }
-
-    public function hotwirePartialData()
-    {
-        return [
-            $this->hotwireResolveNamesUsing()->resourceVariableName($this) => $this,
-        ];
     }
 }
