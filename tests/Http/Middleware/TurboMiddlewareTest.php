@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
+use Tonysm\TurboLaravel\Turbo;
 use Tonysm\TurboLaravel\TurboFacade;
 
 class TurboMiddlewareTest extends TestCase
@@ -36,7 +37,7 @@ class TurboMiddlewareTest extends TestCase
     {
         $request = Request::create('/source');
         $request->headers->add([
-            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
         $response = new RedirectResponse('/destination');
         $next = function () use ($response) {
@@ -82,7 +83,7 @@ class TurboMiddlewareTest extends TestCase
         $request = Request::create('/test-models', 'POST');
 
         $request->headers->add([
-            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
         $next = function () {
@@ -115,7 +116,7 @@ class TurboMiddlewareTest extends TestCase
         })->name('test-models.store')->middleware(TurboMiddleware::class);
 
         $response = $this->from('/source')->post(route('test-models.store'), [], [
-            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
         $response->assertRedirect(route('test-models.create'));
@@ -136,7 +137,7 @@ class TurboMiddlewareTest extends TestCase
         $testModel = TestModel::create(['name' => 'Dummy model']);
 
         $response = $this->from('/source')->put(route('test-models.update', $testModel), [], [
-            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
         $response->assertRedirect(route('test-models.edit', $testModel));
@@ -153,7 +154,7 @@ class TurboMiddlewareTest extends TestCase
         $testModel = TestModel::create(['name' => 'Dummy model']);
 
         $response = $this->from('/source')->put(route('test-models.update', $testModel), [], [
-            'Accept' => 'text/html; turbo-stream, text/html, application/xhtml+xml',
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
         $response->assertRedirect('/source');

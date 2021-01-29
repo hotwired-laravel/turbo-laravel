@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\NamesResolver;
+use Tonysm\TurboLaravel\Turbo;
 use Tonysm\TurboLaravel\TurboFacade;
 
 class TurboMiddleware
@@ -72,7 +73,7 @@ class TurboMiddleware
      */
     private function turboVisit($request)
     {
-        return Str::contains($request->header('Accept', ''), 'turbo-stream');
+        return Str::contains($request->header('Accept', ''), Turbo::TURBO_STREAM_FORMAT);
     }
 
     /**

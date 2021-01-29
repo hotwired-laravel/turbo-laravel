@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
-use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\TurboFacade;
 
 /**
