@@ -145,6 +145,27 @@ class TurboMiddlewareTest extends TestCase
     }
 
     /** @test */
+    public function redirects_include_query_params()
+    {
+        Route::get('/test-models/{testModel}/edit', function () {
+            return 'show form';
+        })->name('test-models.edit');
+
+        Route::put('/test-models/{testModel}', function (TestModel $model) {
+            request()->validate(['name' => 'required']);
+        })->name('test-models.update')->middleware(TurboMiddleware::class);
+
+        $testModel = TestModel::create(['name' => 'Dummy model']);
+
+        $response = $this->from('/source')->put(route('test-models.update', ['testModel' => $testModel, 'frame' => 'lorem']), [], [
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+        ]);
+
+        $response->assertRedirect(route('test-models.edit', ['testModel' => $testModel, 'frame' => 'lorem']));
+        $response->assertStatus(303);
+    }
+
+    /** @test */
     public function lets_it_crash_when_redirect_route_does_not_exist()
     {
         Route::put('/test-models/{testModel}', function (TestModel $model) {

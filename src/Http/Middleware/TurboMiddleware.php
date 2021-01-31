@@ -96,6 +96,6 @@ class TurboMiddleware
             return null;
         }
 
-        return route($formRouteName, $route->parameters());
+        return route($formRouteName, $route->parameters() + request()->query());
     }
 }
