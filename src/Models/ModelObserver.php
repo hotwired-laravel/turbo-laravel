@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class ModelObserver
 {
     /**
+     * Only dispatch the observer's events after all database transactions have committed.
+     *
+     * @var bool
+     */
+    public $afterCommit = true;
+
+    /**
      * @param Model|Broadcasts $model
      */
     public function created(Model $model)

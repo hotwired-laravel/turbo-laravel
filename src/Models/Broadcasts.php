@@ -13,13 +13,6 @@ use Tonysm\TurboLaravel\TurboFacade;
  */
 trait Broadcasts
 {
-    /**
-     * Only dispatch the observer's events after all database transactions have committed.
-     *
-     * @var bool
-     */
-    public $afterCommit = true;
-
     public static function bootBroadcasts()
     {
         static::observe(new ModelObserver());
