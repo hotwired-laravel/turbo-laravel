@@ -4,42 +4,23 @@ namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Tonysm\TurboLaravel\Models\Naming\Name;
 
 class NamesResolver
 {
-    public static $modelNameDelimiter = '_';
-
-    public static function resourceName(Model $model, bool $plural = true): string
-    {
-        return static::resourceNameFor(class_basename($model), $plural);
-    }
-
-    private static function resourceNameFor(string $modelName, bool $plural = true): string
-    {
-        return (string)strtolower(implode('_', preg_split('/(?=[A-Z])/', Str::of($modelName)->replace('\\', ' ')->camel()->plural($plural ? 2 : 1))));
-    }
-
-    private static function resourceNameSingularFor(string $modelName): string
-    {
-        return static::resourceNameFor($modelName, false);
-    }
-
-    public static function resourceNameSingular(Model $model): string
-    {
-        return static::resourceNameSingularFor(class_basename($model));
-    }
-
     public static function resourceVariableName(Model $model): string
     {
-        return Str::camel(static::resourceNameSingular($model));
+        return Str::camel(Name::forModel($model)->singular);
     }
 
     public static function partialNameFor(Model $model): string
     {
-        $root = static::resourceName($model);
-        $partial = static::resourceNameSingular($model);
+        $name = Name::forModel($model);
 
-        return "{$root}._{$partial}";
+        $resource = $name->plural;
+        $partial = $name->element;
+
+        return "{$resource}._{$partial}";
     }
 
     public function modelPathToChannelName(string $model, $id)
@@ -48,42 +29,5 @@ class NamesResolver
         $path = str_replace('\\', '.', $model);
 
         return "{$path}.{$id}";
-    }
-
-    public static function domIdFor(Model $model, string $prefix = ""): string
-    {
-        if ($modelId = $model->getKey()) {
-            $delimiter = static::$modelNameDelimiter;
-            $class = static::domClassFor($model, $prefix);
-
-            return trim("{$class}{$delimiter}{$modelId}", $delimiter);
-        }
-
-        return static::domClassFor($model, $prefix ?: "create");
-    }
-
-    public static function domClassFor(Model $model, string $prefix = ""): string
-    {
-        $delimiter = static::$modelNameDelimiter;
-        $resource = static::resourceNameSingularFor(static::getModelWithoutRootNamespaces($model));
-
-        return trim("{$prefix}{$delimiter}{$resource}", $delimiter);
-    }
-
-    private static function getModelWithoutRootNamespaces(Model $model): string
-    {
-        // We will attempt to strip out only the root namespace from the model's FQCN. For that, we will use
-        // the configured namespaces, stripping out the first one that matches on a Str::startsWith check.
-        // Namespaces are configurable. We'll default back to class_basename when no namespace matches.
-
-        $className = get_class($model);
-
-        foreach (config('turbo-laravel.models_namespace') as $rootNs) {
-            if (Str::startsWith($className, $rootNs)) {
-                return Str::replaceFirst($rootNs, '', $className);
-            }
-        }
-
-        return class_basename($model);
     }
 }

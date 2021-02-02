@@ -1,0 +1,63 @@
+<?php
+
+namespace Tonysm\TurboLaravel\Tests\Views;
+
+use Tonysm\TurboLaravel\Tests\TestCase;
+use Tonysm\TurboLaravel\Tests\TestModel;
+use Tonysm\TurboLaravel\Views\RecordIdentifier;
+
+class RecordIdentifierTest extends TestCase
+{
+    private $model;
+    private $singular;
+    private $plural;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->model = new TestModel(['name' => 'Hello']);
+        $this->singular = "test_model";
+        $this->plural = "test_models";
+    }
+
+    /** @test */
+    public function dom_id_of_new_record()
+    {
+        $this->assertEquals("create_{$this->singular}", (new RecordIdentifier($this->model))->domId());
+    }
+
+    /** @test */
+    public function dom_id_of_new_record_with_custom_prefix()
+    {
+        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domId("custom_prefix"));
+    }
+
+    /** @test */
+    public function dom_id_of_saved_record()
+    {
+        $this->model->save();
+
+        $this->assertEquals("{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId());
+    }
+
+    /** @test */
+    public function dom_id_of_saved_record_with_custom_prefix()
+    {
+        $this->model->save();
+
+        $this->assertEquals("custom_prefix_{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId("custom_prefix"));
+    }
+
+    /** @test */
+    public function dom_class()
+    {
+        $this->assertEquals($this->singular, (new RecordIdentifier($this->model))->domClass());
+    }
+
+    /** @test */
+    public function dom_class_with_custom_prefix()
+    {
+        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domClass("custom_prefix"));
+    }
+}

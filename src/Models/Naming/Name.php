@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Models\Naming;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Name
@@ -50,6 +51,11 @@ class Name
      */
     public string $element;
 
+    public static function forModel(Model $model)
+    {
+        return static::build(get_class($model));
+    }
+
     public static function build(string $className)
     {
         $name = new static();
@@ -76,5 +82,10 @@ class Name
         }
 
         return class_basename($className);
+    }
+
+    private function __construct()
+    {
+        // This is only instantiated using the build factory method.
     }
 }

@@ -5,6 +5,8 @@ namespace Tonysm\TurboLaravel;
 use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
+use Tonysm\TurboLaravel\Models\Naming\Name;
+use Tonysm\TurboLaravel\Views\RecordIdentifier;
 
 class TurboStreamModelRenderer
 {
@@ -12,7 +14,7 @@ class TurboStreamModelRenderer
     {
         $target = method_exists($model, 'hotwireTargetResourcesName')
             ? $model->hotwireTargetResourcesName()
-            : NamesResolver::resourceName($model);
+            : Name::forModel($model)->plural;
 
         return $this->renderSaved($model, $action, $target, 'created');
     }
@@ -21,7 +23,7 @@ class TurboStreamModelRenderer
     {
         $target = method_exists($model, 'hotwireTargetDomId')
             ? $model->hotwireTargetDomId()
-            : NamesResolver::domIdFor($model);
+            : (new RecordIdentifier($model))->domId();
 
         return $this->renderSaved($model, $action, $target, 'updated');
     }
@@ -39,14 +41,14 @@ class TurboStreamModelRenderer
         return View::make('turbo-laravel::model-removed', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
-                : NamesResolver::domIdFor($model),
+                : (new RecordIdentifier($model))->domId(),
             'action' => $action,
         ]);
     }
 
     private function turboStreamView(Model $model, string $event): ?string
     {
-        $resourceName = NamesResolver::resourceName($model);
+        $resourceName = Name::forModel($model)->plural;
 
         $view = "{$resourceName}.turbo.{$event}_stream";
 

@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
+use Tonysm\TurboLaravel\Views\RecordIdentifier;
 
 /**
  * Generates the DOM ID for a specific model.
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 function dom_id(Model $model, string $prefix = ""): string
 {
-    return NamesResolver::domIdFor($model, $prefix);
+    return (new RecordIdentifier($model))->domId($prefix);
 }
 
 /**
@@ -26,5 +27,5 @@ function dom_id(Model $model, string $prefix = ""): string
  */
 function dom_class(Model $model, string $prefix = ""): string
 {
-    return NamesResolver::domClassFor($model, $prefix);
+    return (new RecordIdentifier($model))->domClass($prefix);
 }
