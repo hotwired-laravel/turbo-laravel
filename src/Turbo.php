@@ -3,8 +3,6 @@
 namespace Tonysm\TurboLaravel;
 
 use Closure;
-use Illuminate\Database\Eloquent\Model;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
 
 class Turbo
 {
@@ -63,5 +61,4 @@ class Turbo
     {
         return $this->broadcastToOthersOnly;
     }
-
 }

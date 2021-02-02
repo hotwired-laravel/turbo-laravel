@@ -4,7 +4,6 @@ namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestModel;
 
 class NamingTest extends TestCase
 {
