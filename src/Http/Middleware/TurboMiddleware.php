@@ -9,11 +9,20 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\NamesResolver;
+use Tonysm\TurboLaravel\Http\Middleware\RouteRedirectGuesser;
 use Tonysm\TurboLaravel\Turbo;
 use Tonysm\TurboLaravel\TurboFacade;
 
 class TurboMiddleware
 {
+    /** @var \Tonysm\TurboLaravel\Http\Middleware\RouteRedirectGuesser */
+    private $redirectGuesser;
+
+    public function __construct(RouteRedirectGuesser $redirectGuesser)
+    {
+        $this->redirectGuesser = $redirectGuesser;
+    }
+
     /**
      * @param \Illuminate\Http\Request $request
      * @param Closure $next
@@ -88,9 +97,9 @@ class TurboMiddleware
             return null;
         }
 
-        $formRouteName = NamesResolver::formRouteNameFor($name);
+        $formRouteName = $this->redirectGuesser->guess($name);
 
-        // If the guessed route doesn't exist, send it back to the Laravel detected route.
+        // If the guessed route doesn't exist, send it back to wherever Laravel defaults to.
 
         if (! Route::has($formRouteName)) {
             return null;

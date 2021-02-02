@@ -42,21 +42,6 @@ class NamesResolver
         return "{$root}._{$partial}";
     }
 
-    public static function formRouteNameFor(string $routeName)
-    {
-        $creating = Str::endsWith($routeName, '.store');
-
-        $lookFor = $creating
-            ? '.store'
-            : '.update';
-
-        $replaceWith = $creating
-            ? '.create'
-            : '.edit';
-
-        return str_replace($lookFor, $replaceWith, $routeName);
-    }
-
     public function modelPathToChannelName(string $model, $id)
     {
         // Converts the name path to a dot-notation. So "App\\Models\\Task" becomes "App.Models.Task"

@@ -15,57 +15,60 @@ use Tonysm\TurboLaravel\TurboFacade;
 class TurboMiddlewareTest extends TestCase
 {
     /** @test */
-    public function doesnt_change_response_when_not_turbo_visit()
+    public function doesnt_change_redirect_response_when_not_turbo_visit()
     {
-        $request = Request::create('/source');
-        $request->headers->add([
-            'Accept' => 'text/html;',
-        ]);
-        $response = new RedirectResponse('/destination');
-        $next = function () use ($response) {
-            return $response;
-        };
+        Route::get('/test-models/create', function () {
+            return 'show form';
+        })->name('test-models.create');
 
-        $result = (new TurboMiddleware())->handle($request, $next);
+        Route::post('/test-models', function () {
+            request()->validate(['name' => 'required']);
+        })->name('test-models.store')->middleware(TurboMiddleware::class);
 
-        $this->assertEquals($response->getTargetUrl(), $result->getTargetUrl());
-        $this->assertEquals(302, $result->getStatusCode());
+        $response = $this->from('/source')->post('/test-models', []);
+
+        $response->assertRedirect('/source');
+        $response->assertStatus(302);
     }
 
     /** @test */
     public function handles_redirect_responses()
     {
-        $request = Request::create('/source');
-        $request->headers->add([
+        Route::get('/test-models/create', function () {
+            return 'show form';
+        })->name('test-models.create');
+
+        Route::post('/test-models', function () {
+            request()->validate(['name' => 'required']);
+        })->name('test-models.store')->middleware(TurboMiddleware::class);
+
+        $response = $this->from('/source')->post('/test-models', [], [
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
-        $response = new RedirectResponse('/destination');
-        $next = function () use ($response) {
-            return $response;
-        };
 
-        $result = (new TurboMiddleware())->handle($request, $next);
-
-        $this->assertEquals($response->getTargetUrl(), $result->getTargetUrl());
-        $this->assertEquals(303, $result->getStatusCode());
+        $response->assertRedirect('/test-models/create');
+        $response->assertStatus(303);
     }
 
     /** @test */
     public function can_detect_turbo_native_visits()
     {
+        Route::get('/test-models', function () {
+            if (TurboFacade::isTurboNativeVisit()) {
+                return 'hello turbo native';
+            }
+
+            return 'hello not turbo native';
+        })->name('test-models.index')->middleware(TurboMiddleware::class);
+
         $this->assertFalse(
             TurboFacade::isTurboNativeVisit(),
             'Expected to not have started saying it is a Turbo Native visit, but it said it is.'
         );
 
-        $request = Request::create('/source');
-        $request->headers->add([
+        $this->get('/test-models', [
             'User-Agent' => 'Turbo Native Android',
-        ]);
-        $next = function () {
-        };
-
-        (new TurboMiddleware())->handle($request, $next);
+        ])->assertSee('hello turbo native');
 
         $this->assertTrue(
             TurboFacade::isTurboNativeVisit(),
@@ -76,32 +79,24 @@ class TurboMiddlewareTest extends TestCase
     /** @test */
     public function respects_the_redirects_to_property_of_the_validation_failed_exception()
     {
+        Route::get('/somewhere-else', function () {
+            return 'show form';
+        })->name('somewhere-else');
+
         Route::get('/test-models/create', function () {
             return 'show form';
         })->name('test-models.create');
 
-        $request = Request::create('/test-models', 'POST');
+        Route::post('/test-models', function () {
+            throw ValidationException::withMessages(['field' => ['Failed field']])->redirectTo(route('somewhere-else'));
+        })->name('test-models.store')->middleware(TurboMiddleware::class);
 
-        $request->headers->add([
+        $response = $this->from('/source')->post('/test-models', [], [
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $next = function () {
-            $resp = redirect();
-
-            $resp->exception = ValidationException::withMessages([
-                'field' => ['Something failed.'],
-            ]);
-
-            $resp->exception->redirectTo('/forced-destination');
-
-            return $resp->to('/destination');
-        };
-
-        $response = (new TurboMiddleware())->handle($request, $next);
-
-        $this->assertNotEquals($response->getTargetUrl(), route('test-models.create'));
-        $this->assertEquals(303, $response->getStatusCode());
+        $response->assertRedirect('/somewhere-else');
+        $response->assertStatus(303);
     }
 
     /** @test */
