@@ -6,10 +6,48 @@ use Illuminate\Support\Str;
 
 class Name
 {
+    /**
+     * The FQCN of the class.
+     *
+     * @var string
+     */
     public string $className;
+
+    /**
+     * The Class name without the root namespace configured in `turbo-laravel.models_namespace`.
+     *
+     * @var string
+     */
     public string $classNameWithoutRootNamespace;
+
+    /**
+     * The singular version of the model name (without the root namespace).
+     *
+     * Example A: "Account\\TestModel" becomes "account_test_model"
+     * Example B: "TestModel" becomes "test_model"
+     *
+     * @var string
+     */
     public string $singular;
+
+    /**
+     * The plural version of the model name (without the root namespace).
+     *
+     * Example A: "Account\\TestModel" becomes "account_test_models"
+     * Example B: "TestModel" becomes "test_models"
+     *
+     * @var string
+     */
     public string $plural;
+
+    /**
+     * The element name is the single resource name of the model. In general, it's the class base name in snake_case.
+     *
+     * Example A: "Account" becomes "account"
+     * Example B: "TestModel" becomes "test_model"
+     *
+     * @var string
+     */
     public string $element;
 
     public static function build(string $className)
