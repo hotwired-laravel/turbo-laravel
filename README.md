@@ -272,7 +272,7 @@ One example for a recently created comment model would be:
 An example for a model that was updated:
 
 ```blade
-<turbo-stream target="comment_123" action="update">
+<turbo-stream target="comment_123" action="replace">
   <template>
     @include('comments._comment', ['comment' => $comment])
   </template>
