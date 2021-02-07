@@ -5,8 +5,10 @@ namespace Tonysm\TurboLaravel\Models;
 use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
+use Tonysm\TurboLaravel\LaravelBroadcastChannelResolver;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
 use Tonysm\TurboLaravel\TurboFacade;
+use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -66,5 +68,10 @@ trait Broadcasts
     public function hotwireBroadcastUsing()
     {
         return resolve(LaravelBroadcaster::class);
+    }
+
+    public function hotwireResolveBroadcastChannelNamesUsing()
+    {
+        return resolve(TurboStreamChannelsResolver::class);
     }
 }
