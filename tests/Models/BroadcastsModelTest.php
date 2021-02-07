@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
@@ -107,6 +108,37 @@ blade;
 
         $expectedPartialRender = <<<'blade'
 <turbo-stream target="broadcast_test_model_1" action="remove"></turbo-stream>
+blade;
+
+        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model, $expectedPartialRender) {
+            return $model->is($event->model)
+                && $event->action === "remove"
+                && trim($event->render()) === $expectedPartialRender
+                && $event->broadcastOn()[0]->name === sprintf(
+                    'private-%s.%s',
+                    str_replace('\\', '.', get_class($model)),
+                    $model->getKey()
+                );
+        });
+    }
+
+    /** @test */
+    public function broadcasting_soft_deleted_models_works_as_regular_delete_by_default()
+    {
+        Event::fake([TurboStreamModelDeleted::class]);
+
+        $model = BroadcastTestModelSoftDelete::withoutEvents(function () {
+            return BroadcastTestModelSoftDelete::find(
+                BroadcastTestModelSoftDelete::create(['name' => 'My model'])->getKey()
+            );
+        });
+
+        $model->delete();
+
+        App::terminate();
+
+        $expectedPartialRender = <<<'blade'
+<turbo-stream target="broadcast_test_model_soft_delete_1" action="remove"></turbo-stream>
 blade;
 
         Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model, $expectedPartialRender) {
@@ -518,6 +550,11 @@ blade;
 class BroadcastTestModel extends TestModel
 {
     use Broadcasts;
+}
+
+class BroadcastTestModelSoftDelete extends BroadcastTestModel
+{
+    use SoftDeletes;
 }
 
 class BroadcastTestModelDifferentPartial extends BroadcastTestModel
