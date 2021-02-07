@@ -1,4 +1,4 @@
-<center>
+<p align="center">
 
 # ⚡ Turbo Laravel
 
@@ -15,7 +15,7 @@
     <img src="https://img.shields.io/packagist/l/tonysm/turbo-laravel" alt="License">
 </a>
 
-</center>
+</p>
 
 **This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel** (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
 
