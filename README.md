@@ -1,20 +1,18 @@
+# <p align="center">⚡ Turbo Laravel</p>
+
 <p align="center">
-
-# ⚡ Turbo Laravel
-
-<a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
-    <img src="https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/Tests?label=tests" />
-</a>
-<a href="https://packagist.org/packages/tonysm/turbo-laravel">
-    <img src="https://img.shields.io/packagist/dt/tonysm/turbo-laravel" alt="Total Downloads">
-</a>
-<a href="https://packagist.org/packages/tonysm/turbo-laravel">
-    <img src="https://img.shields.io/packagist/v/tonysm/turbo-laravel" alt="Latest Stable Version">
-</a>
-<a href="https://packagist.org/packages/tonysm/turbo-laravel">
-    <img src="https://img.shields.io/packagist/l/tonysm/turbo-laravel" alt="License">
-</a>
-
+    <a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
+        <img src="https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/Tests?label=tests" />
+    </a>
+    <a href="https://packagist.org/packages/tonysm/turbo-laravel">
+        <img src="https://img.shields.io/packagist/dt/tonysm/turbo-laravel" alt="Total Downloads">
+    </a>
+    <a href="https://packagist.org/packages/tonysm/turbo-laravel">
+        <img src="https://img.shields.io/packagist/v/tonysm/turbo-laravel" alt="Latest Stable Version">
+    </a>
+    <a href="https://packagist.org/packages/tonysm/turbo-laravel">
+        <img src="https://img.shields.io/packagist/l/tonysm/turbo-laravel" alt="License">
+    </a>
 </p>
 
 **This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel** (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
