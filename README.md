@@ -72,8 +72,16 @@ class Kernel extends HttpKernel
 
 Keep reading the documentation to have a full picture on how you can make the most out of the technique.
 
+### Closing Notes
+
+Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
+
+> "The proof of the pudding is in the eating."
+
+Make something awesome!
+
 <a name="documentation"></a>
-## Documentation
+## 🧐 Documentation
 
 * [Conventions](./docs/01-CONVENTIONS.md#conventions)
 * [Overview](./docs/02-OVERVIEW.md#overview)
@@ -83,14 +91,6 @@ Keep reading the documentation to have a full picture on how you can make the mo
     * [Validation Response Redirects](./docs/02-OVERVIEW.md#validation-responses)
     * [Turbo Native](./docs/02-OVERVIEW.md#turbo-native)
     * [Testing Helpers](./docs/02-OVERVIEW.md#testing-helpers)
-
-### Closing Notes
-
-Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
-
-> "The proof of the pudding is in the eating."
-
-Make something awesome!
 
 ## Testing
 
@@ -102,20 +102,20 @@ composer test
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing
+## 🙏 Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-## Security Vulnerabilities
+## 🛡 Security Vulnerabilities
 
 Drop me an email at [tonysm@hey.com](mailto:tonysm@hey.com?subject=Security%20Vulnerability) if you want to report
 security vulnerabilities.
+
+## 📝 License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ## Credits
 
 - [Tony Messias](https://github.com/tonysm)
 - [All Contributors](./CONTRIBUTORS.md)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
