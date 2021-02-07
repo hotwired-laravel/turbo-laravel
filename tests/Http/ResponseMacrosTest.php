@@ -147,6 +147,23 @@ html;
     }
 
     /** @test */
+    public function streams_custom_view_with_alternative_syntax_passing_view_string_and_data()
+    {
+        $testModel = TestModel::create(['name' => 'test']);
+
+        $expected = <<<html
+<div id="test_model_{$testModel->getKey()}">hello</div>
+html;
+
+        $resp = response()->turboStreamView('_test_model', [
+            'testModel' => $testModel,
+        ]);
+
+        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function uses_turbo_stream_specific_views_when_they_exist()
     {
         $testModel = TestModelWithTurboPartial::create(['name' => 'test']);

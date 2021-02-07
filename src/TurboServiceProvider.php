@@ -64,7 +64,11 @@ class TurboServiceProvider extends ServiceProvider
             return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
         });
 
-        ResponseFactory::macro('turboStreamView', function (View $view) {
+        ResponseFactory::macro('turboStreamView', function ($view, array $data = []) {
+            if (! $view instanceof View) {
+                $view = view($view, $data);
+            }
+
             return TurboResponseFactory::makeStream($view->render());
         });
 
