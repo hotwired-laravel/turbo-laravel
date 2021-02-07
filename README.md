@@ -1,16 +1,80 @@
-# Turbo Laravel
+<center>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/tonysm/turbo-laravel.svg?style=flat-square)](https://packagist.org/packages/tonysm/turbo-laravel)
-[![GitHub Tests Action Status](https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg)](https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg)
-[![Total Downloads](https://img.shields.io/packagist/dt/tonysm/turbo-laravel.svg?style=flat-square)](https://packagist.org/packages/tonysm/turbo-laravel)
+# ⚡ Turbo Laravel
 
-This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and the conventions in your application.
+<a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
+    <img src="https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/Tests?label=tests" />
+</a>
+<a href="https://packagist.org/packages/tonysm/turbo-laravel">
+    <img src="https://img.shields.io/packagist/dt/tonysm/turbo-laravel" alt="Total Downloads">
+</a>
+<a href="https://packagist.org/packages/tonysm/turbo-laravel">
+    <img src="https://img.shields.io/packagist/v/tonysm/turbo-laravel" alt="Latest Stable Version">
+</a>
+<a href="https://packagist.org/packages/tonysm/turbo-laravel">
+    <img src="https://img.shields.io/packagist/l/tonysm/turbo-laravel" alt="License">
+</a>
+
+</center>
+
+This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
+
+<a name="installation"></a>
+## Installation
+
+You may install the package via composer:
+
+```bash
+composer require tonysm/turbo-laravel
+```
+
+You may publish the asset files with:
+
+```bash
+php artisan turbo:install
+```
+
+You may also use Turbo Laravel with Jetstream if you use the Livewire stack. If you want to do so, you may want to publish the assets using the `--jet` flag:
+
+```bash
+php artisan turbo:install --jet
+```
+
+The install command will require and publish a couple JS files to your application. By default, it will add `@hotwired/turbo` to your `package.json` file and publish another custom HTML tag to integrate Turbo with Laravel Echo. With the `--jet` flag, it will also add a couple bridges libs needed to make sure you can use Hotwire with Jetstream, these are:
+
+* [Alpine Turbo Bridge](https://github.com/SimoTod/alpine-turbo-drive-adapter), needed so Alpine.js works nicely; and
+* [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts (both `app.blade.php` and `guest.blade.php`)
+
+You can optionally also install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command. It's optional because we can either use Alpine.js or Stimulus (or both /shrug):
+
+```bash
+php artisan turbo:install --jet --stimulus
+```
+
+The package ships with a middleware that applies some conventions on your redirects, specially around how failed validations are redirected automatically by Laravel. To read more about this, check out the [Conventions](./docs/01-CONVENTIONS.md) section documentation. You may register the middleware like so:
+
+```php
+
+namespace App\Http;
+
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
+
+class Kernel extends HttpKernel
+{
+    protected $middlewareGroups = [
+        'web' => [
+            // ...
+            \Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
+        ],
+    ];
+}
+```
+
+Check out the [Documentation](./docs/README.md) to see how you can use 
 
 <a name="documentation"></a>
 ## Documentation
 
-* [Installation](#installation)
-    * [Middleware](#middleware)
 * [Conventions](#conventions)
 * [Getting Started](#getting-started)
     * [Turbo Drive](#turbo-drive)
@@ -32,57 +96,6 @@ This package gives you a set of conventions to make the most out of [Hotwire](ht
     * [Validation Responses](#validation-responses)
     * [Turbo Native](#turbo-native)
     * [Testing Helpers](#testing-helpers)
-
-<a name="installation"></a>
-## Installation
-
-You can install the package via composer:
-
-```bash
-composer require tonysm/turbo-laravel
-```
-
-You can publish the asset files with:
-
-```bash
-php artisan turbo:install
-```
-
-You can also use Turbo Laravel with Jetstream if you use the Livewire stack. If you want to do so, publish the assets with a `--jet` flag:
-
-```bash
-php artisan turbo:install --jet
-```
-
-This will publish the JavaScript files to your application. You must install and compile the assets before continuing. The `--jet` flag will also install alpine and add the [`livewire/turbolinks`](https://github.com/livewire/turbolinks) bridge to your `app.blade.php` and `guest.blade.php` layouts for you.
-
-You can optionally also install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command. It's optional because we can either use Alpine or Stimulus (or both /shrug):
-
-```bash
-php artisan turbo:install --jet --stimulus
-```
-
-<a name="middleware"></a>
-The package ships with a middleware that applies some conventions on your redirects, specially around how failed validations are redirected automatically by Laravel. We will discuss all this in the [Getting Started](#getting-started) section below. You can register the middleware like so:
-
-```php
-
-namespace App\Http;
-
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
-
-class Kernel extends HttpKernel
-{
-    protected $middlewareGroups = [
-        'web' => [
-            // ...
-            \Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
-        ],
-    ];
-}
-```
-
-Keep reading to have a full picture of how it all works.
 
 <a name="conventions"></a>
 ## Conventions
