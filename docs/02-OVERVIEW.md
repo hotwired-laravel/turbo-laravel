@@ -219,6 +219,14 @@ An example for a model that was deleted:
 You may use the `response()->turboStreamView()` macro to return a custom Turbo Stream view instead of relying on the `response()->turboStream()` macro. Here's an example:
 
 ```php
+return response()->turboStreamView('comments.turbo_created_stream', [
+  'comment' => $comment,
+]);
+```
+
+You may also pass a view instance, like so (useful for auto-complete reasons):
+
+```php
 return response()->turboStreamView(view('comments.turbo_created_stream', [
   'comment' => $comment,
 ]));
