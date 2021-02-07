@@ -30,8 +30,6 @@ class BroadcastModelCreated implements ShouldQueue
 
     public function handle()
     {
-        $this->model->hotwireBroadcastUsing()
-            ->exceptForSocket($this->exceptSocket)
-            ->create($this->model);
+        $this->model->hotwireBroadcastCreatedNow($this->exceptSocket);
     }
 }

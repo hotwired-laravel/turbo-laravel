@@ -18,7 +18,7 @@ class ModelObserver
      */
     public function created(Model $model)
     {
-        $model->queueBroadcastCreatedToHotwire();
+        $model->hotwireBroadcastCreatedLater();
     }
 
     /**
@@ -26,7 +26,7 @@ class ModelObserver
      */
     public function updated(Model $model)
     {
-        $model->queueBroadcastUpdatedToHotwire();
+        $model->hotwireBroadcastUpdatedLater();
     }
 
     /**
@@ -34,6 +34,6 @@ class ModelObserver
      */
     public function deleted(Model $model)
     {
-        $model->queueBroadcastRemovalToHotwire();
+        $model->hotwireBroadcastRemovalLater();
     }
 }
