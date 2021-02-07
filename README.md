@@ -77,23 +77,22 @@ Keep reading the documentation to have a full picture on how you can make the mo
 
 * [Conventions](#conventions)
 * [Overview](#overview)
-    * [Turbo Drive](#turbo-drive)
-        * [Permanent Fragments](#turbo-drive-permanent)
+    * [Notes on Turbo Drive and Turbo Frames](#notes-on-turbo-drive-and-turbo-frames)
     * [Turbo Frames](#turbo-frames)
-        * [Generating DOM IDs from Models](#dom-ids)
     * [Turbo Streams](#turbo-streams)
-        * [request()->wantsTurboStream()](#wants-turbo-stream)
-        * [response()->turboStream()](#turbo-stream-response)
-        * [Overriding Default Partial and Data](#override-turbo-stream-partials-and-data)
-        * [Overriding Default Resource Name and DOM ID for a Model](#override-turbo-stream-resource-and-dom-id)
-        * [response()->turboStreamView()](#turbo-stream-view)
-        * [Overriding Default Turbo Streams Views](#override-turbo-stream-views)
-    * [Turbo Streams and Laravel Echo](#turbo-streams-and-laravel-echo)
-        * [Broadcasting Turbo Streams with Model Events](#turbo-stream-broadcasting-with-events)
-        * [Broadcasting Turbo Streams to related Model or Channels](#turbo-stream-broadcasting-destination)
-        * [Broadcasting Turbo Streams with the Broadcasts trait](#turbo-stream-broadcasting-using-trait)
-        * [Listening to Broadcasting from Laravel Echo](#turbo-streams-listening-to-echo-events)
-    * [Validation Responses](#validation-responses)
+        * [Turbo Stream Request Macro](#wants-turbo-stream)
+        * [Turbo Stream Responses](#turbo-stream-response)
+        * [Override Model's Partial Names and Partial Data](#override-turbo-stream-partials-and-data)
+        * [Override Model's Resource Name and DOM ID](#override-turbo-stream-resource-and-dom-id)
+        * [Custom Turbo Stream View](#turbo-stream-view)
+        * [Override Turbo Streams Views](#override-turbo-stream-views)
+        * [Turbo Streams and Laravel Echo](#turbo-streams-and-laravel-echo)
+        * [Broadcasting Turbo Streams on Model Changes](#turbo-stream-broadcasting-with-events)
+        * [Override Turbo Stream Broadcasting Channel](#turbo-stream-broadcasting-destination)
+        * [The Broadcasts Trait for Models](#turbo-stream-broadcasting-using-trait)
+        * [Listening to Turbo Stream Broadcasts](#turbo-streams-listening-to-echo-events)
+        * [Broadcasting Turbo Streams to Other Users Only](#broadcast-to-others)
+    * [Validation Response Redirects](#validation-responses)
     * [Turbo Native](#turbo-native)
     * [Testing Helpers](#testing-helpers)
 
@@ -421,7 +420,7 @@ By default, Turbo Streams will be broadcast to the Model's channel. Channels may
 To follow our `App\\Models\\Comment` example, the changes would broadcast to a channel named: `App.Models.Comment.{id}` (the name of the wildcard is not enforced, you can use whatever you want, but we'll use the model's ID as its value). You may pick only the events you want to broadcast.
 
 <a name="turbo-stream-broadcasting-destination"></a>
-### Overriding Turbo Stream Broadcasting Channels
+### Override Turbo Stream Broadcasting Channels
 
 You may control where your model's broadcasts are sent to in a couple different ways.
 
