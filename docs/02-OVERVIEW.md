@@ -1,4 +1,3 @@
-
 <a name="overview"></a>
 # Overview
 
@@ -11,15 +10,11 @@ This package offers a couple macros, a trait for your models, and some conventio
 
 Again, checkout [Turbo's documentation](https://turbo.hotwire.dev/handbook/introduction) to read mode on how Turbo Drive and Turbo Frames work. These are essentially front-end techniques and will work the same on any web application.
 
-<a name="turbo-drive"></a>
 Essentially, Turbo Drive will turn links and form submissions in AJAX requests and will replace the page with its response. That's useful when you want to navigate to another page completely, but if you want to persist certain pieces of HTML (and its state!) across visits, you can annotate them with a `data-turbo-permanent` attribute and an ID. If a matching element exists on the next Turbo visit, Turbo Drive won't touch that specific element in the DOM. Otherwise, the entire page will be replaced. This is used in Basecamp's navigation bar, for instance.
 
 That's what Turbo Drive does.
 
-<a name="turbo-frames"></a>
-## Turbo Frames
-
-[Turbo Frames](https://turbo.hotwire.dev/handbook/frames) allow you to decompose your UI. Any links or form submissions inside a Turbo Frame will still get hijacked by Turbo Drive, but instead of replace the entire page, it will look for a matching Turbo Frame on the response (following any possible redirect) and replace just that Turbo Frame.
+[Turbo Frames](https://turbo.hotwire.dev/handbook/frames) allows you to decompose your UI. Any links or form submissions inside a Turbo Frame will still get hijacked by Turbo Drive, but instead of replacing the entire page, it will look for a matching Turbo Frame on the response (following any possible redirect) and replace just that Turbo Frame.
 
 This is how you can annotate Turbo Frames:
 

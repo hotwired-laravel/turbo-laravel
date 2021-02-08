@@ -38,12 +38,12 @@ You may also use Turbo Laravel with Jetstream if you use the Livewire stack. If 
 php artisan turbo:install --jet
 ```
 
-The install command will require and publish a couple JS files to your application. By default, it will add `@hotwired/turbo` to your `package.json` file and publish another custom HTML tag to integrate Turbo with Laravel Echo. With the `--jet` flag, it will also add a couple bridges libs needed to make sure you can use Hotwire with Jetstream, these are:
+The *turbo:install* command will require and publish a couple JS files to your application. By default, it will add `@hotwired/turbo` to your `package.json` file and publish another custom HTML tag to integrate Turbo with Laravel Echo. With the `--jet` flag, it will also add a couple bridge libs needed to make sure you can use Hotwire with Jetstream, these are:
 
 * [Alpine Turbo Bridge](https://github.com/SimoTod/alpine-turbo-drive-adapter), needed so Alpine.js works nicely; and
-* [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts (both `app.blade.php` and `guest.blade.php`)
+* [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`)
 
-You can optionally also install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command. It's optional because we can either use Alpine.js or Stimulus (or both /shrug):
+You may also optionally install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command. It's optional because we can either use Alpine.js or Stimulus (or both /shrug):
 
 ```bash
 php artisan turbo:install --jet --stimulus
@@ -84,7 +84,6 @@ Make something awesome!
 * [Conventions](./docs/01-CONVENTIONS.md#conventions)
 * [Overview](./docs/02-OVERVIEW.md#overview)
     * [Notes on Turbo Drive and Turbo Frames](./docs/02-OVERVIEW.md#notes-on-turbo-drive-and-turbo-frames)
-    * [Turbo Frames](./docs/02-OVERVIEW.md#turbo-frames)
     * [Turbo Streams](./docs/02-OVERVIEW.md#turbo-streams)
     * [Validation Response Redirects](./docs/02-OVERVIEW.md#validation-responses)
     * [Turbo Native](./docs/02-OVERVIEW.md#turbo-native)
