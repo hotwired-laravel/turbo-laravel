@@ -1,4 +1,4 @@
-# <p align="center">⚡ Turbo Laravel</p>
+<p align="center"><img src="/art/turbo-laravel-logo.svg" alt="Logo Turbo Laravel" /></p>
 
 <p align="center">
     <a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
@@ -18,7 +18,7 @@
 **This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel** (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
 
 <a name="installation"></a>
-## 🛠 Installation
+## Installation
 
 You may install the package via composer:
 
@@ -79,7 +79,7 @@ Try the package out. Use your Browser's DevTools to inspect the responses. You w
 Make something awesome!
 
 <a name="documentation"></a>
-## 🧐 Documentation
+## Documentation
 
 * [Conventions](./docs/01-CONVENTIONS.md#conventions)
 * [Overview](./docs/02-OVERVIEW.md#overview)
@@ -99,16 +99,16 @@ composer test
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## 🙏 Contributing
+## Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-## 🛡 Security Vulnerabilities
+## Security Vulnerabilities
 
 Drop me an email at [tonysm@hey.com](mailto:tonysm@hey.com?subject=Security%20Vulnerability) if you want to report
 security vulnerabilities.
 
-## 📝 License
+## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
