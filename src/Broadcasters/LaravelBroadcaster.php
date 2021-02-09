@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace Tonysm\TurboLaravel\Broadcasters;
 
 use Illuminate\Database\Eloquent\Model;
 use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
