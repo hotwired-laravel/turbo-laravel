@@ -11,7 +11,7 @@ trait TurboStreamBroadcasts
 {
     public function broadcastOn()
     {
-        if (method_exists($this->model, 'hotwireBroadcastChannelsUsing')) {
+        if (method_exists($this->model, 'hotwireResolveBroadcastChannelNamesUsing')) {
             return $this->model->hotwireResolveBroadcastChannelNamesUsing()->hotwireBroadcastsOn($this->model);
         }
 

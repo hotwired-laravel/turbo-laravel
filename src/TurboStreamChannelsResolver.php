@@ -19,7 +19,7 @@ class TurboStreamChannelsResolver
                 }
 
                 return new PrivateChannel(
-                    $this->hotwireResolveNamesUsing($item)->broadcastingChannelForModel($item)
+                    $this->broadcastingChannelForModel($item)
                 );
             })
             ->all();
@@ -42,12 +42,8 @@ class TurboStreamChannelsResolver
         return $model;
     }
 
-    private function hotwireResolveNamesUsing(Model $model)
+    private function broadcastingChannelForModel(Model $model): string
     {
-        if (method_exists($model, 'hotwireResolveNamesUsing')) {
-            return $model->hotwireResolveNamesUsing();
-        }
-
-        return resolve(NamesResolver::class);
+        return resolve(NamesResolver::class)->broadcastingChannelForModel($model);
     }
 }
