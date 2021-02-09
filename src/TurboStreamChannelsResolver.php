@@ -19,8 +19,7 @@ class TurboStreamChannelsResolver
                 }
 
                 return new PrivateChannel(
-                    $this->hotwireResolveNamesUsing($item)
-                        ->modelPathToChannelName(get_class($item), $item->getKey())
+                    $this->hotwireResolveNamesUsing($item)->broadcastingChannelForModel($item)
                 );
             })
             ->all();
