@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
+use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 
 class TurboServiceProvider extends ServiceProvider

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Turbo;
-use Tonysm\TurboLaravel\TurboFacade;
+use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 
 class TurboMiddleware
 {

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
 use Tonysm\TurboLaravel\LaravelBroadcaster;
-use Tonysm\TurboLaravel\TurboFacade;
+use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
 
 /**
@@ -21,7 +21,7 @@ trait Broadcasts
 
     public function hotwireBroadcastCreatedLater()
     {
-        $exceptSocket = TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null;
+        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
 
         if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastCreatedNow($exceptSocket);
@@ -44,7 +44,7 @@ trait Broadcasts
 
     public function hotwireBroadcastUpdatedLater()
     {
-        $exceptSocket = TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null;
+        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
 
         if (! config('turbo-laravel.queue')) {
             $this->hotwireBroadcastUpdatedNow($exceptSocket);
@@ -67,7 +67,7 @@ trait Broadcasts
 
     public function hotwireBroadcastRemovalLater()
     {
-        $exceptSocket = TurboFacade::shouldBroadcastToOthers() ? Broadcast::socket() : null;
+        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
 
         // We cannot queue removal broadcasts because the model will be gone once the worker
         // picks up the job to process the broadcasting. So we are broadcasting after the

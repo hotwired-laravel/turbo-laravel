@@ -3,29 +3,29 @@
 namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\TurboFacade;
+use Tonysm\TurboLaravel\Facades\Turbo;
 
 class BroadcastsToOthersTest extends TestCase
 {
     /** @test */
     public function should_broadcast_to_others()
     {
-        $this->assertFalse(TurboFacade::shouldBroadcastToOthers());
+        $this->assertFalse(Turbo::shouldBroadcastToOthers());
 
-        TurboFacade::broadcastToOthers(function () {
-            $this->assertTrue(TurboFacade::shouldBroadcastToOthers());
+        Turbo::broadcastToOthers(function () {
+            $this->assertTrue(Turbo::shouldBroadcastToOthers());
         });
 
-        $this->assertFalse(TurboFacade::shouldBroadcastToOthers());
+        $this->assertFalse(Turbo::shouldBroadcastToOthers());
     }
 
     /** @test */
     public function should_broadcast_to_others_forever()
     {
-        $this->assertFalse(TurboFacade::shouldBroadcastToOthers());
+        $this->assertFalse(Turbo::shouldBroadcastToOthers());
 
-        TurboFacade::broadcastToOthers();
+        Turbo::broadcastToOthers();
 
-        $this->assertTrue(TurboFacade::shouldBroadcastToOthers());
+        $this->assertTrue(Turbo::shouldBroadcastToOthers());
     }
 }

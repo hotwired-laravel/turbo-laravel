@@ -48,7 +48,7 @@
               "\\Tonysm\\TurboLaravel\\TurboServiceProvider"
             ],
             "aliases": {
-                "Turbo": "\\Tonysm\\TurboLaravel\\TurboFacade"
+                "Turbo": "\\Tonysm\\TurboLaravel\\Facades\\Turbo"
             }
         }
     },

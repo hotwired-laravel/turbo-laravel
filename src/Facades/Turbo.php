@@ -1,9 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace Tonysm\TurboLaravel\Facades;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
+use Tonysm\TurboLaravel\Turbo as BaseTurbo;
 
 /**
  * @see \Tonysm\TurboLaravel\Turbo
@@ -15,10 +16,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool shouldBroadcastToOthers
  * @method static string domId(Model $model, string $prefix = "")
  */
-class TurboFacade extends Facade
+class Turbo extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return Turbo::class;
+        return BaseTurbo::class;
     }
 }

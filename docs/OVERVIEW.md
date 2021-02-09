@@ -420,13 +420,13 @@ If you want to take the "mixed" approach I mentioned earlier, you can tell Turbo
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Tonysm\TurboLaravel\TurboFacade;
+use Tonysm\TurboLaravel\Facades\Turbo;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        TurboFacade::broadcastToOthers();
+        Turbo::broadcastToOthers();
     }
 }
 ```
@@ -492,7 +492,7 @@ Turbo Visits made by a Turbo Native client will send a custom `User-Agent` heade
 You may also check if the request was made from a Turbo Native visit using the TurboFacade, like so:
 
 ```php
-if (\Tonysm\TurboLaravel\TurboFacade::isTurboNativeVisit()) {
+if (\Tonysm\TurboLaravel\Facades\Turbo::isTurboNativeVisit()) {
     // Do something for mobile specific requests.
 }
 ```
