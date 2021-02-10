@@ -3,9 +3,9 @@
 namespace Tonysm\TurboLaravel\Models;
 
 use Illuminate\Support\Facades\Broadcast;
+use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
-use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
 
@@ -87,7 +87,7 @@ trait Broadcasts
 
     public function hotwireBroadcastUsing()
     {
-        return resolve(LaravelBroadcaster::class);
+        return resolve(Broadcaster::class);
     }
 
     public function hotwireResolveBroadcastChannelNamesUsing()

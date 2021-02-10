@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
+use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
@@ -42,6 +44,7 @@ class TurboServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/turbo-laravel.php', 'turbo-laravel');
 
         $this->app->singleton(Turbo::class);
+        $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
     }
 
     private function registerBladeMacros(): void

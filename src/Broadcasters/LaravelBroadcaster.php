@@ -7,7 +7,7 @@ use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
 use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
 use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
 
-class LaravelBroadcaster
+class LaravelBroadcaster implements Broadcaster
 {
     private ?string $exceptSocket;
 
