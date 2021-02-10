@@ -13,8 +13,7 @@ class ResponseMacrosTest extends TestCase
     {
         parent::setUp();
 
-        View::addNamespace('test-stubs', __DIR__ . '/stubs/');
-        View::addLocation(__DIR__ . '/stubs');
+        View::addLocation(__DIR__ . '/../Stubs/views');
     }
 
     /** @test */
@@ -138,7 +137,7 @@ html;
 <div id="test_model_{$testModel->getKey()}">hello</div>
 html;
 
-        $resp = response()->turboStreamView(View::file(__DIR__ . '/stubs/_test_model.blade.php', [
+        $resp = response()->turboStreamView(View::file(__DIR__ . '/../Stubs/views/_test_model.blade.php', [
             'testModel' => $testModel,
         ]));
 
@@ -187,7 +186,7 @@ class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
 {
     public function hotwirePartialName()
     {
-        return "test-stubs::_test_model";
+        return "_test_model";
     }
 }
 
@@ -197,7 +196,7 @@ class BroadcastTestModel extends \Tonysm\TurboLaravel\Tests\TestModel
 
     public function hotwirePartialName()
     {
-        return "test-stubs::_broadcast_test_model";
+        return "_broadcast_test_model";
     }
 }
 
