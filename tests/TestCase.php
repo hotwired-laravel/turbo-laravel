@@ -31,6 +31,9 @@ class TestCase extends Orchestra
             'database' => ':memory:',
             'prefix' => '',
         ]);
+        $app['config']->set('turbo-laravel.models_namespace', [
+            __NAMESPACE__.'\\Stubs\\Models\\',
+        ]);
     }
 
     private function setUpDatabase(Application $app): void

@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Tests\Views;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Tonysm\TurboLaravel\Tests\Stubs\Models;
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Facades\Turbo;
@@ -63,10 +64,6 @@ class ViewHelpersTest extends TestCase
     /** @test */
     public function generates_model_ids_for_models_in_nested_folders()
     {
-        config()->set('turbo-laravel.models_namespace', [
-            __NAMESPACE__.'\\Models\\',
-        ]);
-
         $testModel = Models\TestModel::create(['name' => 'lorem']);
 
         $this->assertEquals("test_model_1", dom_id($testModel));
