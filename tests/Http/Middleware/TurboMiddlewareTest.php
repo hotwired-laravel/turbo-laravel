@@ -12,7 +12,7 @@ use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 
 class TurboMiddlewareTest extends TestCase
 {
-    public function routesTestModelWithValidation()
+    public function usesTestModelResourceRoutes()
     {
         Route::get('/test-models/create', function () {
             return 'show form';
@@ -33,7 +33,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routesTestModelWithValidation
+     * @define-route usesTestModelResourceRoutes
      */
     public function doesnt_change_redirect_response_when_not_turbo_visit()
     {
@@ -45,7 +45,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routesTestModelWithValidation
+     * @define-route usesTestModelResourceRoutes
      */
     public function handles_redirect_responses()
     {
@@ -57,7 +57,7 @@ class TurboMiddlewareTest extends TestCase
         $response->assertStatus(303);
     }
 
-    public function routeForTurboNative()
+    public function usesTurboNativeRoute()
     {
         Route::get('/test-models', function () {
             if (TurboFacade::isTurboNativeVisit()) {
@@ -70,7 +70,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routeForTurboNative
+     * @define-route usesTurboNativeRoute
      */
     public function can_detect_turbo_native_visits()
     {
@@ -89,7 +89,7 @@ class TurboMiddlewareTest extends TestCase
         );
     }
 
-    public function routeRedirectAfterValidationWithProperty()
+    public function usesTestModelRoutesWithCustomRedirect()
     {
         Route::get('/somewhere-else', function () {
             return 'show form';
@@ -106,7 +106,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routeRedirectAfterValidationWithProperty
+     * @define-route usesTestModelRoutesWithCustomRedirect
      */
     public function respects_the_redirects_to_property_of_the_validation_failed_exception()
     {
@@ -120,7 +120,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routesTestModelWithValidation
+     * @define-route usesTestModelResourceRoutes
      */
     public function redirects_back_to_resource_create_routes_on_failed_validation_follows_laravel_conventions()
     {
@@ -134,7 +134,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routesTestModelWithValidation
+     * @define-route usesTestModelResourceRoutes
      */
     public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions()
     {
@@ -150,7 +150,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routesTestModelWithValidation
+     * @define-route usesTestModelResourceRoutes
      */
     public function redirects_include_query_params()
     {
@@ -164,7 +164,7 @@ class TurboMiddlewareTest extends TestCase
         $response->assertStatus(303);
     }
 
-    public function routeTestModelWithoutCreate()
+    public function usesTestModelUpdateRouteWithoutEdit()
     {
         Route::put('/test-models/{testModel}', function (TestModel $model) {
             request()->validate(['name' => 'required']);
@@ -173,7 +173,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
-     * @define-route routeTestModelWithoutCreate
+     * @define-route usesTestModelUpdateRouteWithoutEdit
      */
     public function lets_it_crash_when_redirect_route_does_not_exist()
     {
