@@ -16,7 +16,7 @@ class ModelsUsingEventsTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/stubs/views');
+        View::addLocation(__DIR__ . '/../Stubs/views');
     }
 
     /** @test */
