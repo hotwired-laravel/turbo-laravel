@@ -4,10 +4,10 @@ namespace Tonysm\TurboLaravel\Tests\Views;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Tonysm\TurboLaravel\Tests\Stubs\Models;
 use function Tonysm\TurboLaravel\dom_id;
-use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Facades\Turbo;
+use Tonysm\TurboLaravel\Tests\Stubs\Models;
+use Tonysm\TurboLaravel\Tests\TestCase;
 
 class ViewHelpersTest extends TestCase
 {

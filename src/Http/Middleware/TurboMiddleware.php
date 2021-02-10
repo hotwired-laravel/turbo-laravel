@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Tonysm\TurboLaravel\Turbo;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
+use Tonysm\TurboLaravel\Turbo;
 
 class TurboMiddleware
 {

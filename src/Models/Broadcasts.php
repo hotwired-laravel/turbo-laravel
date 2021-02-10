@@ -4,9 +4,9 @@ namespace Tonysm\TurboLaravel\Models;
 
 use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
+use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
 use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
-use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
 
 /**

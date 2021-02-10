@@ -2,8 +2,8 @@
 
 namespace Tonysm\TurboLaravel\Tests\Models;
 
-use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Facades\Turbo;
+use Tonysm\TurboLaravel\Tests\TestCase;
 
 class BroadcastsToOthersTest extends TestCase
 {
