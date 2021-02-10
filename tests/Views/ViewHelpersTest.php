@@ -14,12 +14,12 @@ class ViewHelpersTest extends TestCase
     public function renders_turbo_native_correctly()
     {
         $this->assertFalse(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__ . '/fixtures/turbo_native.blade.php')->render();
+        $rendered = View::file(__DIR__ . '/../Stubs/views/turbo_native.blade.php')->render();
         $this->assertTrue(Str::contains($rendered, 'Without Turbo Native'));
 
         Turbo::setVisitingFromTurboNative();
         $this->assertTrue(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__ . '/fixtures/turbo_native.blade.php')->render();
+        $rendered = View::file(__DIR__ . '/../Stubs/views/turbo_native.blade.php')->render();
         $this->assertTrue(Str::contains($rendered, 'With Turbo Native'));
     }
 
@@ -28,9 +28,9 @@ class ViewHelpersTest extends TestCase
     {
         $testModel = Models\TestModel::create(['name' => 'lorem']);
 
-        $renderedDomId = View::file(__DIR__ . '/fixtures/domid.blade.php', ['model' => $testModel])->render();
-        $renderedDomIdWithPrefix = View::file(__DIR__ . '/fixtures/domid_with_prefix.blade.php', ['model' => $testModel])->render();
-        $rendersDomIdOfNewModel = View::file(__DIR__ . '/fixtures/domid.blade.php', ['model' => new Models\TestModel()])->render();
+        $renderedDomId = View::file(__DIR__ . '/../Stubs/views/domid.blade.php', ['model' => $testModel])->render();
+        $renderedDomIdWithPrefix = View::file(__DIR__ . '/../Stubs/views/domid_with_prefix.blade.php', ['model' => $testModel])->render();
+        $rendersDomIdOfNewModel = View::file(__DIR__ . '/../Stubs/views/domid.blade.php', ['model' => new Models\TestModel()])->render();
 
         $this->assertEquals('<div id="test_model_1"></div>', trim($renderedDomId));
         $this->assertEquals('<div id="favorites_test_model_1"></div>', trim($renderedDomIdWithPrefix));
@@ -42,9 +42,9 @@ class ViewHelpersTest extends TestCase
     {
         $testModel = Models\TestModel::create(['name' => 'lorem']);
 
-        $renderedDomClass = View::file(__DIR__ . '/fixtures/domclass.blade.php', ['model' => $testModel])->render();
-        $renderedDomClassWithPrefix = View::file(__DIR__ . '/fixtures/domclass_with_prefix.blade.php', ['model' => $testModel])->render();
-        $rendersDomClassOfNewModel = View::file(__DIR__ . '/fixtures/domclass.blade.php', ['model' => new Models\TestModel()])->render();
+        $renderedDomClass = View::file(__DIR__ . '/../Stubs/views/domclass.blade.php', ['model' => $testModel])->render();
+        $renderedDomClassWithPrefix = View::file(__DIR__ . '/../Stubs/views/domclass_with_prefix.blade.php', ['model' => $testModel])->render();
+        $rendersDomClassOfNewModel = View::file(__DIR__ . '/../Stubs/views/domclass.blade.php', ['model' => new Models\TestModel()])->render();
 
         $this->assertEquals('<div class="test_model"></div>', trim($renderedDomClass));
         $this->assertEquals('<div class="favorites_test_model"></div>', trim($renderedDomClassWithPrefix));
