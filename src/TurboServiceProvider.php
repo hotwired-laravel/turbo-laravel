@@ -60,6 +60,10 @@ class TurboServiceProvider extends ServiceProvider
         Blade::directive('domclass', function ($expression) {
             return "<?php echo e(\Tonysm\TurboLaravel\dom_class($expression)); ?>";
         });
+
+        Blade::directive('channel', function ($expression) {
+            return "<?php echo e(\Tonysm\TurboLaravel\channel_name($expression)); ?>";
+        });
     }
 
     private function registerRequestAndResponseMacros(): void

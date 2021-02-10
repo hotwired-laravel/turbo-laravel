@@ -76,4 +76,17 @@ class ViewHelpersTest extends TestCase
 
         $this->assertEquals("create_account_test_model", dom_id(new Models\Account\TestModel()));
     }
+
+    /** @test */
+    public function generates_channel_for_model()
+    {
+        $testModel = Models\TestModel::create(['name' => 'lorem']);
+
+        $renderedChannelName = View::file(__DIR__ . '/../Stubs/views/channelname.blade.php', ['model' => $testModel])->render();
+
+        $this->assertStringContainsString(
+            sprintf('channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.%s"', $testModel->getKey()),
+            $renderedChannelName
+        );
+    }
 }
