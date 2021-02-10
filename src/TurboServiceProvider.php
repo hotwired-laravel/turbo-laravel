@@ -35,8 +35,8 @@ class TurboServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'turbo-laravel');
 
-        $this->registerBladeMacros();
-        $this->registerRequestAndResponseMacros();
+        $this->bindBladeMacros();
+        $this->bindRequestAndResponseMacros();
     }
 
     public function register()
@@ -47,7 +47,7 @@ class TurboServiceProvider extends ServiceProvider
         $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
     }
 
-    private function registerBladeMacros(): void
+    private function bindBladeMacros(): void
     {
         Blade::if('turbonative', function () {
             return TurboFacade::isTurboNativeVisit();
@@ -66,7 +66,7 @@ class TurboServiceProvider extends ServiceProvider
         });
     }
 
-    private function registerRequestAndResponseMacros(): void
+    private function bindRequestAndResponseMacros(): void
     {
         Response::macro('turboStream', function (Model $model, string $action = null) {
             return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
