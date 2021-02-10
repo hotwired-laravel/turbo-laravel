@@ -4,8 +4,8 @@ namespace Tonysm\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -64,11 +64,11 @@ class TurboServiceProvider extends ServiceProvider
 
     private function registerRequestAndResponseMacros(): void
     {
-        ResponseFactory::macro('turboStream', function (Model $model, string $action = null) {
+        Response::macro('turboStream', function (Model $model, string $action = null) {
             return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
         });
 
-        ResponseFactory::macro('turboStreamView', function ($view, array $data = []) {
+        Response::macro('turboStreamView', function ($view, array $data = []) {
             if (! $view instanceof View) {
                 $view = view($view, $data);
             }
