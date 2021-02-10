@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Tonysm\TurboLaravel\Views\RecordIdentifier;
 
 class TurboStreamChannelsResolver
 {
@@ -19,7 +20,7 @@ class TurboStreamChannelsResolver
                 }
 
                 return new PrivateChannel(
-                    $this->broadcastingChannelForModel($item)
+                    (new RecordIdentifier($item))->channelName()
                 );
             })
             ->all();
@@ -40,10 +41,5 @@ class TurboStreamChannelsResolver
         }
 
         return $model;
-    }
-
-    private function broadcastingChannelForModel(Model $model): string
-    {
-        return resolve(NamesResolver::class)->broadcastingChannelForModel($model);
     }
 }

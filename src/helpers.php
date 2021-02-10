@@ -29,3 +29,27 @@ function dom_class(Model $model, string $prefix = ""): string
 {
     return (new RecordIdentifier($model))->domClass($prefix);
 }
+
+/**
+ * Generates the channel name for a given model, using its key (identifier).
+ *
+ * @param Model $model
+ * @return string
+ */
+function channel_name(Model $model): string
+{
+    return (new RecordIdentifier($model))->channelName();
+}
+
+/**
+ * Generates the channel auth key to be used when registering the Broadcasting
+ * Channel for a model class and wil.
+ *
+ * @param string $className
+ * @param string|null $wildcard
+ * @return string
+ */
+function channel_auth(string $className, string $wildcard = null): string
+{
+    return RecordIdentifier::channelAuthKey($className, $wildcard ?: "{id}");
+}

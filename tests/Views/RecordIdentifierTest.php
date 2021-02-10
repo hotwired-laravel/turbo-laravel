@@ -60,4 +60,20 @@ class RecordIdentifierTest extends TestCase
     {
         $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domClass("custom_prefix"));
     }
+
+    /** @test */
+    public function channel_name_for_model()
+    {
+        $this->model->save();
+
+        $this->assertEquals(
+            sprintf('Tonysm.TurboLaravel.Tests.TestModel.%s', $this->model->getKey()),
+            (new RecordIdentifier($this->model))->channelName()
+        );
+
+        $this->assertEquals(
+            'Tonysm.TurboLaravel.Tests.TestModel.{testModel}',
+            RecordIdentifier::channelAuthKey(get_class($this->model), "{testModel}")
+        );
+    }
 }

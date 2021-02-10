@@ -34,4 +34,16 @@ class RecordIdentifier
 
         return trim("{$prefix}{$delimiter}{$singular}", $delimiter);
     }
+
+    public function channelName(): string
+    {
+        return static::channelAuthKey(get_class($this->record), $this->record->getKey());
+    }
+
+    public static function channelAuthKey(string $className, string $key): string
+    {
+        $path = str_replace('\\', '.', $className);
+
+        return "{$path}.{$key}";
+    }
 }
