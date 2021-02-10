@@ -36,9 +36,9 @@ function dom_class(Model $model, string $prefix = ""): string
  * @param Model $model
  * @return string
  */
-function channel_name(Model $model): string
+function turbo_channel(Model $model): string
 {
-    return (new RecordIdentifier($model))->channelName();
+    return turbo_channel_auth(get_class($model), $model->getKey());
 }
 
 /**
@@ -49,7 +49,7 @@ function channel_name(Model $model): string
  * @param string|null $wildcard
  * @return string
  */
-function channel_auth(string $className, string $wildcard = null): string
+function turbo_channel_auth(string $className, string $wildcard = null): string
 {
     return RecordIdentifier::channelAuthKey($className, $wildcard ?: "{id}");
 }

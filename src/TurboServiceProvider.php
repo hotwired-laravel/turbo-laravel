@@ -54,15 +54,15 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         Blade::directive('domid', function ($expression) {
-            return "<?php echo e(\Tonysm\TurboLaravel\dom_id($expression)); ?>";
+            return "<?php echo e(\\Tonysm\\TurboLaravel\\dom_id($expression)); ?>";
         });
 
         Blade::directive('domclass', function ($expression) {
-            return "<?php echo e(\Tonysm\TurboLaravel\dom_class($expression)); ?>";
+            return "<?php echo e(\\Tonysm\\TurboLaravel\\dom_class($expression)); ?>";
         });
 
         Blade::directive('channel', function ($expression) {
-            return "<?php echo e(\Tonysm\TurboLaravel\channel_name($expression)); ?>";
+            return "<?php echo e(\\Tonysm\\TurboLaravel\\turbo_channel($expression)); ?>";
         });
     }
 
