@@ -70,14 +70,6 @@ class Kernel extends HttpKernel
 
 Keep reading the documentation to have a full picture on how you can make the most out of the technique.
 
-### Closing Notes
-
-Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
-
-> "The proof of the pudding is in the eating."
-
-Make something awesome!
-
 <a name="documentation"></a>
 ## Documentation
 
@@ -104,6 +96,14 @@ Checkout the documentation to see everything that is possible and then try the p
     * [Validation Response Redirects](./docs/OVERVIEW.md#validation-responses)
     * [Turbo Native](./docs/OVERVIEW.md#turbo-native)
     * [Testing Helpers](./docs/OVERVIEW.md#testing-helpers)
+
+### Closing Notes
+
+Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
+
+> "The proof of the pudding is in the eating."
+
+Make something awesome!
 
 ## Testing
 
