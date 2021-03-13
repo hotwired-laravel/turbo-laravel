@@ -128,6 +128,14 @@ The `turbosStream` macro in the ResponseFactory will generate a Turbo Stream res
 
 This follows the convention of using the *plural resource name* for the folder and *singular resource name* for the partial itself, prefixed with an underscore. Your partial will receive a variable named after your class name (without the root namespace) in _camelCase_. So, in this case, it will receive a `$comment` variable that you can use.
 
+In order for replace, update and remove actions to work as expected, make sure you include the dom id in your partial so Turbo Streams knows what to target like in the following example: 
+
+```blade
+<div id="@domid($comment)">
+    {{$comment->author}}
+</div>
+```
+
 <a name="override-turbo-stream-partials-and-data"></a>
 ## Override Model's Partial Name and Partial Data
 
