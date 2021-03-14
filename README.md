@@ -73,29 +73,29 @@ Keep reading the documentation to have a full picture on how you can make the mo
 <a name="documentation"></a>
 ## Documentation
 
-It's highly recommended reading the [Turbo documentation](https://turbo.hotwire.dev/) (it's small). Out of everything Turbo provides, it's the Turbo Streams that can benefit from a tight integration with Laravel. We can generate [Turbo Stream](./docs/OVERVIEW.md#turbo-streams) from your models and either [return them from HTTP responses](./docs/OVERVIEW.md#turbo-stream-request-macro) or *broadcasting* your model changes to all users over [WebSockets using Laravel Echo](./docs/OVERVIEW.md#turbo-streams-and-laravel-echo).
+It's highly recommended reading the [Turbo documentation](https://turbo.hotwire.dev/) (it's small). Out of everything Turbo provides, it's the Turbo Streams that can benefit from a tight integration with Laravel. We can generate [Turbo Stream](docs/GUIDE.md#turbo-streams) from your models and either [return them from HTTP responses](docs/GUIDE.md#turbo-stream-request-macro) or *broadcasting* your model changes to all users over [WebSockets using Laravel Echo](docs/GUIDE.md#turbo-streams-and-laravel-echo).
 
 Checkout the documentation to see everything that is possible and then try the package.
 
-* [Conventions](./docs/CONVENTIONS.md#conventions)
-* [Overview](./docs/OVERVIEW.md#overview)
-    * [Notes on Turbo Drive and Turbo Frames](./docs/OVERVIEW.md#notes-on-turbo-drive-and-turbo-frames)
-    * [Turbo Streams](./docs/OVERVIEW.md#turbo-streams)
-        * [Turbo Stream Request Macro](./docs/OVERVIEW.md#wants-turbo-stream)
-        * [Turbo Stream Responses](./docs/OVERVIEW.md#turbo-stream-response)
-        * [Override Model's Partial Names and Partial Data](./docs/OVERVIEW.md#override-turbo-stream-partials-and-data)
-        * [Override Model's Resource Name and DOM ID](./docs/OVERVIEW.md#override-turbo-stream-resource-and-dom-id)
-        * [Custom Turbo Stream View](./docs/OVERVIEW.md#turbo-stream-view)
-        * [Override Turbo Streams Views](./docs/OVERVIEW.md#override-turbo-stream-views)
-        * [Turbo Streams and Laravel Echo](./docs/OVERVIEW.md#turbo-streams-and-laravel-echo)
-        * [Broadcasting Turbo Streams on Model Changes](./docs/OVERVIEW.md#turbo-stream-broadcasting-with-events)
-        * [Override Turbo Stream Broadcasting Channel](./docs/OVERVIEW.md#turbo-stream-broadcasting-destination)
-        * [The Broadcasts Trait for Models](./docs/OVERVIEW.md#turbo-stream-broadcasting-using-trait)
-        * [Listening to Turbo Stream Broadcasts](./docs/OVERVIEW.md#turbo-streams-listening-to-echo-events)
-        * [Broadcasting Turbo Streams to Other Users Only](./docs/OVERVIEW.md#broadcast-to-others)
-    * [Validation Response Redirects](./docs/OVERVIEW.md#validation-responses)
-    * [Turbo Native](./docs/OVERVIEW.md#turbo-native)
-    * [Testing Helpers](./docs/OVERVIEW.md#testing-helpers)
+* [Overview](docs/GUIDE.md#overview)
+    * [Conventions](docs/GUIDE.md#conventions)
+    * [Notes on Turbo Drive and Turbo Frames](docs/GUIDE.md#notes-on-turbo-drive-and-turbo-frames)
+    * [Turbo Streams](docs/GUIDE.md#turbo-streams)
+        * [Turbo Stream Request Macro](docs/GUIDE.md#wants-turbo-stream)
+        * [Turbo Stream Responses](docs/GUIDE.md#turbo-stream-response)
+        * [Override Model's Partial Names and Partial Data](docs/GUIDE.md#override-turbo-stream-partials-and-data)
+        * [Override Model's Resource Name and DOM ID](docs/GUIDE.md#override-turbo-stream-resource-and-dom-id)
+        * [Custom Turbo Stream View](docs/GUIDE.md#turbo-stream-view)
+        * [Override Turbo Streams Views](docs/GUIDE.md#override-turbo-stream-views)
+        * [Turbo Streams and Laravel Echo](docs/GUIDE.md#turbo-streams-and-laravel-echo)
+        * [Broadcasting Turbo Streams on Model Changes](docs/GUIDE.md#turbo-stream-broadcasting-with-events)
+        * [Override Turbo Stream Broadcasting Channel](docs/GUIDE.md#turbo-stream-broadcasting-destination)
+        * [The Broadcasts Trait for Models](docs/GUIDE.md#turbo-stream-broadcasting-using-trait)
+        * [Listening to Turbo Stream Broadcasts](docs/GUIDE.md#turbo-streams-listening-to-echo-events)
+        * [Broadcasting Turbo Streams to Other Users Only](docs/GUIDE.md#broadcast-to-others)
+    * [Validation Response Redirects](docs/GUIDE.md#validation-responses)
+    * [Turbo Native](docs/GUIDE.md#turbo-native)
+    * [Testing Helpers](docs/GUIDE.md#testing-helpers)
 
 ### Closing Notes
 
