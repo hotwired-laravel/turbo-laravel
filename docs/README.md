@@ -1,6 +1,6 @@
 # Documentation
 
-It's highly recommended reading the [Turbo documentation](https://turbo.hotwire.dev/) (it's small). Out of everything Turbo provides, it's the Turbo Streams that can benefit from a tight integration with Laravel. We can generate [Turbo Stream](GUIDE.md#turbo-streams) from your models and either [return them from HTTP responses](GUIDE.md#turbo-stream-request-macro) or *broadcasting* your model changes to all users over [WebSockets using Laravel Echo](GUIDE.md#turbo-streams-and-laravel-echo).
+It's highly recommended reading the [Turbo Handbook](https://turbo.hotwire.dev/). Out of everything Turbo provides, it's the Turbo Streams that benefits the most from a tight integration with Laravel. We can generate [Turbo Stream](GUIDE.md#turbo-streams) from your models and either [return them from HTTP responses](GUIDE.md#turbo-stream-request-macro) or *broadcasting* your model changes to all users over [WebSockets using Laravel Echo](GUIDE.md#turbo-streams-and-laravel-echo).
 
 Checkout the documentation to see everything that is possible and then try the package.
 
