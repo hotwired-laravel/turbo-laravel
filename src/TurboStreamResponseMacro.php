@@ -16,9 +16,11 @@ class TurboStreamResponseMacro
 
     public function handle(Model $model, string $action = null)
     {
-        if (! $model->exists ||
-            (method_exists($model, 'trashed') && $model->trashed())
-        ) {
+        // We're treating soft-deleted models as they were deleted. In other words, we
+        // will render the deleted Turbo Stream. If you need to treat a soft-deleted
+        // model differently, you can do that on your deleted Turbo Stream view.
+
+        if (! $model->exists || (method_exists($model, 'trashed') && $model->trashed())) {
             return $this->renderModelDeletedStream($model);
         }
 
