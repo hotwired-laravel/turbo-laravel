@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Tests\Http;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
@@ -112,6 +113,21 @@ html;
     }
 
     /** @test */
+    public function streams_model_on_soft_delete()
+    {
+        $testModelSoftDelete = tap(TestModelSoftDelete::create(['name' => 'test']))->delete();
+
+        $expected = <<<html
+<turbo-stream target="test_model_soft_delete_{$testModelSoftDelete->getKey()}" action="remove"></turbo-stream>
+html;
+
+        $resp = response()->turboStream($testModelSoftDelete);
+
+        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function streams_broadcastable_models_for_deleted()
     {
         $testModel = BroadcastTestModel::withoutEvents(function () {
@@ -187,6 +203,16 @@ class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
     public function hotwirePartialName()
     {
         return "_test_model";
+    }
+}
+
+class TestModelSoftDelete extends TestModel
+{
+    use SoftDeletes;
+
+    public function hotwirePartialName()
+    {
+        return "_test_model_soft_delete";
     }
 }
 

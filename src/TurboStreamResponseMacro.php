@@ -16,7 +16,9 @@ class TurboStreamResponseMacro
 
     public function handle(Model $model, string $action = null)
     {
-        if (! $model->exists) {
+        if (! $model->exists ||
+            (method_exists($model, 'trashed') && $model->trashed())
+        ) {
             return $this->renderModelDeletedStream($model);
         }
 
