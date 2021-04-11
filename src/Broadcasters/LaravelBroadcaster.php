@@ -23,7 +23,7 @@ class LaravelBroadcaster implements Broadcaster
         string $action,
         ?string $partial = null,
         ?array $partialData = [],
-        ?string $exceptSocket = null,
+        ?string $exceptSocket = null
     ): void {
         $job = new BroadcastAction(
             $channels,
