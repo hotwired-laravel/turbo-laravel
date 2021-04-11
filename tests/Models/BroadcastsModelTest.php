@@ -234,6 +234,26 @@ class BroadcastsModelTest extends TestCase
             return true;
         });
     }
+
+    /** @test */
+    public function combines_both_properties()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $parent = RelatedModelParent::create(['name' => 'Parent']);
+        $child = CombinedPropertiesTestModel::create(['name' => 'Combined', 'parent_id' => $parent->id]);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals('combined_properties_test_models', $job->target);
+            $this->assertEquals('prepend', $job->action);
+            $this->assertEquals('combined_properties_test_models._combined_properties_test_model', $job->partial);
+            $this->assertEquals(['combinedPropertiesTestModel' => $child], $job->partialData);
+
+            return true;
+        });
+    }
 }
 
 class BroadcastTestModel extends TestModel
@@ -299,5 +319,18 @@ class BroadcastTestModelUsingChannel extends TestModel
     public function broadcastsTo()
     {
         return static::$TEST_CHANNEL ??= new Channel('testing');
+    }
+}
+
+class CombinedPropertiesTestModel extends TestModel
+{
+    use Broadcasts;
+
+    protected $broadcasts = ['insertsBy' => 'prepend'];
+    protected $broadcastsTo = 'parent';
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
     }
 }
