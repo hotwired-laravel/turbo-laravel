@@ -2,12 +2,16 @@
 
 namespace Tonysm\TurboLaravel\Models;
 
-use Illuminate\Support\Facades\Broadcast;
-use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
-use Tonysm\TurboLaravel\Facades\Turbo;
-use Tonysm\TurboLaravel\Jobs\BroadcastModelCreated;
-use Tonysm\TurboLaravel\Jobs\BroadcastModelUpdated;
-use Tonysm\TurboLaravel\TurboStreamChannelsResolver;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Support\Collection;
+use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
+use Tonysm\TurboLaravel\Broadcasting\Rendering;
+use function Tonysm\TurboLaravel\dom_id;
+use Tonysm\TurboLaravel\Models\Naming\Name;
+use Tonysm\TurboLaravel\NamesResolver;
+
+use Tonysm\TurboLaravel\Views\RecordIdentifier;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -19,79 +23,133 @@ trait Broadcasts
         static::observe(new ModelObserver());
     }
 
-    public function hotwireBroadcastCreatedLater()
+    public function broadcastAppend(): PendingBroadcast
     {
-        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
+        return $this->broadcastAppendTo(
+            $this->broadcastDetaultTargets()
+        );
+    }
 
-        if (! config('turbo-laravel.queue')) {
-            $this->hotwireBroadcastCreatedNow($exceptSocket);
+    public function broadcastPrepend(): PendingBroadcast
+    {
+        return $this->broadcastPrependTo(
+            $this->broadcastDetaultTargets()
+        );
+    }
 
-            return;
+    public function broadcastInsert(): PendingBroadcast
+    {
+        $action = is_array($this->broadcasts)
+            ? $this->broadcasts['insertsBy']
+            : 'append';
+
+        return $this->broadcastActionTo(
+            $this->broadcastDetaultTargets(),
+            $action,
+            Rendering::forModel($this),
+        );
+    }
+
+    public function broadcastReplace(): PendingBroadcast
+    {
+        return $this->broadcastReplaceTo(
+            $this->broadcastDetaultTargets()
+        );
+    }
+
+    public function broadcastUpdate(): PendingBroadcast
+    {
+        return $this->broadcastUpdateTo(
+            $this->broadcastDetaultTargets()
+        );
+    }
+
+    public function broadcastRemove(): PendingBroadcast
+    {
+        return $this->broadcastRemoveTo(
+            $this->broadcastDetaultTargets()
+        );
+    }
+
+    public function broadcastAppendTo($streamable): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'append', Rendering::forModel($this));
+    }
+
+    public function broadcastPrependTo($streamable): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'prepend', Rendering::forModel($this));
+    }
+
+    public function broadcastReplaceTo($streamable): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'replace', Rendering::forModel($this));
+    }
+
+    public function broadcastUpdateTo($streamable): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'update', Rendering::forModel($this));
+    }
+
+    public function broadcastRemoveTo($streamable): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'remove', Rendering::empty());
+    }
+
+    protected function broadcastActionTo($streamables, string $action, Rendering $rendering): PendingBroadcast
+    {
+        return new PendingBroadcast(
+            $this->toChannels(Collection::wrap($streamables)),
+            $action,
+            $this->broadcastDefaultTarget($action),
+            $rendering,
+        );
+    }
+
+    protected function broadcastDetaultTargets()
+    {
+        if (property_exists($this, 'broadcastsTo')) {
+            return Collection::wrap($this->broadcastsTo)
+                ->map(fn ($related) => $this->{$related})
+                ->values()
+                ->all();
         }
 
-        dispatch(new BroadcastModelCreated(
-            $this,
-            $exceptSocket
-        ));
-    }
-
-    public function hotwireBroadcastCreatedNow(string $exceptSocket = null): void
-    {
-        $this->hotwireBroadcastUsing()
-            ->exceptForSocket($exceptSocket)
-            ->create($this);
-    }
-
-    public function hotwireBroadcastUpdatedLater()
-    {
-        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
-
-        if (! config('turbo-laravel.queue')) {
-            $this->hotwireBroadcastUpdatedNow($exceptSocket);
-
-            return;
+        if (method_exists($this, 'broadcastsTo')) {
+            return $this->broadcastsTo();
         }
 
-        dispatch(new BroadcastModelUpdated(
-            $this,
-            $exceptSocket
-        ));
+        return $this;
     }
 
-    public function hotwireBroadcastUpdatedNow(string $exceptSocket = null)
+    protected function toChannels(Collection $streamables): array
     {
-        $this->hotwireBroadcastUsing()
-            ->exceptForSocket($exceptSocket)
-            ->update($this);
+        return $streamables->filter()->map(function ($streamable) {
+            if ($streamable instanceof Channel) {
+                return $streamable;
+            }
+
+            return new PrivateChannel(
+                (new RecordIdentifier($streamable))->channelName()
+            );
+        })->values()->all();
     }
 
-    public function hotwireBroadcastRemovalLater()
+    protected function broadcastDefaultTarget(string $action): string
     {
-        $exceptSocket = Turbo::shouldBroadcastToOthers() ? Broadcast::socket() : null;
+        // Inserting the new element in the DOM will affect
+        // the parent container, while the other actions
+        // will, by default, only affect the element.
 
-        // We cannot queue removal broadcasts because the model will be gone once the worker
-        // picks up the job to process the broadcasting. So we are broadcasting after the
-        // response is sent to back to the user, before the PHP process is terminated.
+        if (in_array($action, ['append', 'prepend'])) {
+            return Name::forModel($this)->plural;
+        }
 
-        app()->terminating(function () use ($exceptSocket) {
-            $this->hotwireBroadcastRemovalNow($exceptSocket);
-        });
+        return dom_id($this);
     }
 
-    public function hotwireBroadcastRemovalNow(string $exceptSocket = null): void
+    protected function broadcastDefaultPartial(): string
     {
-        $this->hotwireBroadcastUsing()
-            ->exceptForSocket($exceptSocket)
-            ->remove($this);
-    }
-
-    public function hotwireBroadcastUsing()
-    {
-        return resolve(Broadcaster::class);
-    }
-
-    public function hotwireResolveBroadcastChannelNamesUsing()
-    {
-        return resolve(TurboStreamChannelsResolver::class);
+        return NamesResolver::partialNameFor($this);
     }
 }

@@ -2,57 +2,42 @@
 
 namespace Tonysm\TurboLaravel\Broadcasters;
 
-use Illuminate\Database\Eloquent\Model;
-use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
-use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
-use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
+use Illuminate\Broadcasting\Channel;
+use Tonysm\TurboLaravel\Jobs\BroadcastAction;
 
 class LaravelBroadcaster implements Broadcaster
 {
-    private ?string $exceptSocket;
+    /**
+     * @param Channel[] $channels
+     * @param bool $later
+     * @param string $target
+     * @param string $action
+     * @param ?string $partial = null
+     * @param ?array $partialData = []
+     * @param ?string $exceptSocket = null
+     */
+    public function broadcast(
+        array $channels,
+        bool $later,
+        string $target,
+        string $action,
+        ?string $partial = null,
+        ?array $partialData = [],
+        ?string $exceptSocket = null,
+    ): void {
+        $job = new BroadcastAction(
+            $channels,
+            $target,
+            $action,
+            $partial,
+            $partialData,
+            $exceptSocket,
+        );
 
-    public function exceptForSocket(string $socket = null): self
-    {
-        $this->exceptSocket = $socket;
-
-        return $this;
-    }
-
-    public function create(Model $model): void
-    {
-        $action = property_exists($model, 'turboStreamCreatedAction')
-            ? $model->turboStreamCreatedAction
-            : 'append';
-
-        $this->broadcast(new TurboStreamModelCreated(
-            $model,
-            $action
-        ));
-    }
-
-    public function update(Model $model): void
-    {
-        $action = property_exists($model, 'turboStreamUpdatedAction')
-            ? $model->turboStreamUpdatedAction
-            : 'replace';
-
-        $this->broadcast(new TurboStreamModelUpdated($model, $action));
-    }
-
-    public function remove(Model $model): void
-    {
-        $this->broadcast(new TurboStreamModelDeleted(
-            $model,
-            'remove'
-        ));
-    }
-
-    private function broadcast($event): void
-    {
-        if ($this->exceptSocket ?? false && property_exists($event, 'socket')) {
-            $event->socket = $this->exceptSocket;
+        if ($later) {
+            dispatch($job);
+        } else {
+            dispatch_now($job);
         }
-
-        broadcast($event);
     }
 }
