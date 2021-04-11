@@ -1,5 +1,5 @@
 <turbo-stream target="{{ $target }}" action="{{ $action }}">
-    @if ($partial)
+    @if ($partial ?? false)
     <template>
         @include($partial, $partialData)
     </template>
