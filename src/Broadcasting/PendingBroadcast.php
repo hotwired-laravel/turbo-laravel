@@ -30,24 +30,28 @@ class PendingBroadcast
     public function to($channel): self
     {
         $this->channels = Arr::wrap($channel);
+
         return $this;
     }
 
     public function action(string $action): self
     {
         $this->action = $action;
+
         return $this;
     }
 
     public function target(string $target): self
     {
         $this->target = $target;
+
         return $this;
     }
 
     public function toOthers(bool $toOthers = true): self
     {
         $this->sendToOthers = $toOthers;
+
         return $this;
     }
 
@@ -55,12 +59,14 @@ class PendingBroadcast
     {
         $this->partialView = $partial;
         $this->partialData = $data;
+
         return $this;
     }
 
     public function later(bool $later = true): self
     {
         $this->sendLater = $later;
+
         return $this;
     }
 
