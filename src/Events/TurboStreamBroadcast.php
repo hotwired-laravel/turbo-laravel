@@ -41,11 +41,11 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
 
     public function render(): string
     {
-        return View::file('turbo-laravel::turbo-stream', [
+        return View::make('turbo-laravel::turbo-stream', [
             'target' => $this->target,
             'action' => $this->action,
             'partial' => $this->partial ?: null,
-            'data' => $this->partialData ?: [],
+            'partialData' => $this->partialData ?: [],
         ])->render();
     }
 }
