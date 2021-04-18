@@ -739,6 +739,8 @@ class CreatesCommentsTest extends TestCase
 }
 ```
 
+**Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.**
+
 <a name="closing-notes"></a>
 ### Closing Notes
 
