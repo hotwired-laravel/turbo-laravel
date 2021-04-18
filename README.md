@@ -704,6 +704,41 @@ class ExampleTest extends TestCase
 
 Check out the [package repository](https://github.com/tonysm/turbo-laravel-test-helpers) if you want to know more about it.
 
+All model's broadcast will dispatch a `Tonysm\TurboLaravel\Jobs\BroadcastAction` job (either to a worker or process them immediately). You may also use that to test your broadcasts like so:
+
+```php
+use App\Models\Post;
+use Tonysm\TurboLaravel\Jobs\BroadcastAction;
+
+use function Tonysm\TurboLaravel\turbo_channel;
+
+class CreatesCommentsTest extends TestCase
+{
+    /** @test */
+    public function creates_comments()
+    {
+        Bus::fake(BroadcastAction::class);
+
+        $post = Post::factory()->create();
+
+        $this->turbo()->post(route('posts.comments.store', $post), [
+            'content' => 'Hello, World',
+        ])->assertTurboStream();
+
+        Bus::assertDispatched(function (BroadcastAction $job) use($post) {
+            return count($job->channels) === 1
+                && $job->channels[0]->name === turbo_channel($post)
+                && $job->target === 'comments'
+                && $job->action === 'append'
+                && $job->partial === 'comments._comment'
+                && $job->partialData['comment']->is(
+                    $post->comments->first()
+                );
+        });
+    }
+}
+```
+
 <a name="closing-notes"></a>
 ### Closing Notes
 
