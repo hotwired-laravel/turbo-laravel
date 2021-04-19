@@ -365,7 +365,7 @@ Route::post('posts/{post}/comments', function (Post $post) {
 });
 ```
 
-Here's the methods now available to your model:
+Here are the methods now available to your model:
 
 ```php
 $comment->broadcastAppend();
@@ -375,7 +375,7 @@ $comment->broadcastUpdate();
 $comment->broadcastRemove();
 ```
 
-These methods will assume you want to broadcast the Turbo Streams to your model's channel. However, you will also find the alternative methods where you can specify either a model or the broadcasting channels you want to send the broadcasts to:
+These methods will assume you want to broadcast the Turbo Streams to your model's channel. However, you will also find alternative methods where you can specify either a model or the broadcasting channels you want to send the broadcasts to:
 
 ```php
 $comment->broadcastAppendTo($post);
