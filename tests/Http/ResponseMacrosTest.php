@@ -4,8 +4,10 @@ namespace Tonysm\TurboLaravel\Tests\Http;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\View;
+use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
+
 use Tonysm\TurboLaravel\Turbo;
 
 class ResponseMacrosTest extends TestCase
@@ -15,6 +17,7 @@ class ResponseMacrosTest extends TestCase
         parent::setUp();
 
         View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__ . '/../../resources/views/');
     }
 
     /** @test */
@@ -22,17 +25,16 @@ class ResponseMacrosTest extends TestCase
     {
         $testModel = TestModel::create(['name' => 'test']);
 
-        $expected = <<<html
-<turbo-stream target="test_models" action="append">
-    <template>
-        <div id="test_model_{$testModel->getKey()}">hello</div>
-    </template>
-</turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'append',
+            'target' => 'test_models',
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -43,17 +45,16 @@ html;
             return BroadcastTestModel::create(['name' => 'test']);
         });
 
-        $expected = <<<html
-<turbo-stream target="broadcast_test_models" action="append">
-    <template>
-        <div id="broadcast_test_model_{$testModel->getKey()}">hello</div>
-    </template>
-</turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'append',
+            'target' => 'broadcast_test_models',
+            'partial' => '_broadcast_test_model',
+            'partialData' => ['broadcastTestModel' => $testModel],
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -62,17 +63,16 @@ html;
     {
         $testModel = TestModel::create(['name' => 'test'])->fresh();
 
-        $expected = <<<html
-<turbo-stream target="test_model_{$testModel->getKey()}" action="replace">
-    <template>
-        <div id="test_model_{$testModel->getKey()}">hello</div>
-    </template>
-</turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'replace',
+            'target' => dom_id($testModel),
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -83,17 +83,16 @@ html;
             return BroadcastTestModel::create(['name' => 'test'])->fresh();
         });
 
-        $expected = <<<html
-<turbo-stream target="broadcast_test_model_{$testModel->getKey()}" action="replace">
-    <template>
-        <div id="broadcast_test_model_{$testModel->getKey()}">hello</div>
-    </template>
-</turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'replace',
+            'target' => dom_id($testModel),
+            'partial' => $testModel->hotwirePartialName(),
+            'partialData' => ['broadcastTestModel' => $testModel],
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -102,13 +101,14 @@ html;
     {
         $testModel = tap(TestModel::create(['name' => 'test']))->delete();
 
-        $expected = <<<html
-<turbo-stream target="test_model_{$testModel->getKey()}" action="remove"></turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'remove',
+            'target' => dom_id($testModel),
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -117,13 +117,14 @@ html;
     {
         $testModelSoftDelete = tap(TestModelSoftDelete::create(['name' => 'test']))->delete();
 
-        $expected = <<<html
-<turbo-stream target="test_model_soft_delete_{$testModelSoftDelete->getKey()}" action="remove"></turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'remove',
+            'target' => dom_id($testModelSoftDelete),
+        ])->render();
 
         $resp = response()->turboStream($testModelSoftDelete);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -134,13 +135,14 @@ html;
             return tap(BroadcastTestModel::create(['name' => 'test']))->delete();
         });
 
-        $expected = <<<html
-<turbo-stream target="broadcast_test_model_{$testModel->getKey()}" action="remove"></turbo-stream>
-html;
+        $expected = view('turbo-stream', [
+            'action' => 'remove',
+            'target' => dom_id($testModel),
+        ])->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
@@ -150,8 +152,8 @@ html;
         $testModel = TestModel::create(['name' => 'test']);
 
         $expected = <<<html
-<div id="test_model_{$testModel->getKey()}">hello</div>
-html;
+        <div id="test_model_{$testModel->getKey()}">hello</div>
+        html;
 
         $resp = response()->turboStreamView(View::file(__DIR__ . '/../Stubs/views/_test_model.blade.php', [
             'testModel' => $testModel,
@@ -167,8 +169,8 @@ html;
         $testModel = TestModel::create(['name' => 'test']);
 
         $expected = <<<html
-<div id="test_model_{$testModel->getKey()}">hello</div>
-html;
+        <div id="test_model_{$testModel->getKey()}">hello</div>
+        html;
 
         $resp = response()->turboStreamView('_test_model', [
             'testModel' => $testModel,
@@ -183,17 +185,11 @@ html;
     {
         $testModel = TestModelWithTurboPartial::create(['name' => 'test']);
 
-        $expected = <<<'blade'
-<turbo-stream target="full_control_over_targets" action="append">
-    <template>
-        <h1>Hello</h1>
-    </template>
-</turbo-stream>
-blade;
+        $expected = view('test_model_with_turbo_partials.turbo.created_stream')->render();
 
         $resp = response()->turboStream($testModel);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 }

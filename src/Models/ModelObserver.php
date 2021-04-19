@@ -11,14 +11,23 @@ class ModelObserver
      *
      * @var bool
      */
-    public $afterCommit = true;
+    public $afterCommit;
+
+    public function __construct()
+    {
+        $this->afterCommit = config('turbo-laravel.queue');
+    }
 
     /**
      * @param Model|Broadcasts $model
      */
     public function created(Model $model)
     {
-        $model->hotwireBroadcastCreatedLater();
+        if (! $this->shouldBroadcast($model)) {
+            return;
+        }
+
+        $model->broadcastInsert()->later();
     }
 
     /**
@@ -26,7 +35,11 @@ class ModelObserver
      */
     public function updated(Model $model)
     {
-        $model->hotwireBroadcastUpdatedLater();
+        if (! $this->shouldBroadcast($model)) {
+            return;
+        }
+
+        $model->broadcastReplace()->later();
     }
 
     /**
@@ -34,6 +47,23 @@ class ModelObserver
      */
     public function deleted(Model $model)
     {
-        $model->hotwireBroadcastRemovalLater();
+        if (! $this->shouldBroadcast($model)) {
+            return;
+        }
+
+        $model->broadcastRemove()->later();
+    }
+
+    private function shouldBroadcast(Model $model): bool
+    {
+        if (property_exists($model, 'broadcasts')) {
+            return true;
+        }
+
+        if (property_exists($model, 'broadcastsTo')) {
+            return true;
+        }
+
+        return method_exists($model, 'broadcastsTo');
     }
 }

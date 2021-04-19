@@ -38,7 +38,7 @@ class TurboStreamModelRenderer
             return View::make($turboView, $partialData);
         }
 
-        return View::make('turbo-laravel::model-removed', [
+        return View::make('turbo-laravel::turbo-stream', [
             'target' => method_exists($model, 'hotwireTargetDomId')
                 ? $model->hotwireTargetDomId()
                 : (new RecordIdentifier($model))->domId(),
@@ -69,13 +69,13 @@ class TurboStreamModelRenderer
             return View::make($turboView, $partialData);
         }
 
-        return View::make('turbo-laravel::model-saved', [
+        return View::make('turbo-laravel::turbo-stream', [
             'target' => $target,
             'action' => $action,
-            'resourcePartial' => method_exists($model, 'hotwirePartialName')
+            'partial' => method_exists($model, 'hotwirePartialName')
                 ? $model->hotwirePartialName()
                 : NamesResolver::partialNameFor($model),
-            'resourcePartialData' => $partialData,
+            'partialData' => $partialData,
         ]);
     }
 }

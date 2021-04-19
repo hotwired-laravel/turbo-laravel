@@ -10,9 +10,13 @@ return [
     | will be queued or not. When this is set to "true" then all the broadcast
     | operations will be queued for a better performance of your main code.
     |
+    | By default, it will use queues (if available, because you may use the sync
+    | driver) unless you're in testing mode. That's because during a test the
+    | app is running inside a transaction, so broadcasts wouldn't dispatch.
+    |
     */
 
-    'queue' => true,
+    'queue' => env('APP_ENV', 'production') !== 'testing',
 
     /*
      |--------------------------------------------------------------------------

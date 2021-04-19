@@ -2,18 +2,14 @@
 
 namespace Tonysm\TurboLaravel\Tests\Models;
 
+use Bus;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Events\TurboStreamModelCreated;
-use Tonysm\TurboLaravel\Events\TurboStreamModelDeleted;
-use Tonysm\TurboLaravel\Events\TurboStreamModelUpdated;
+use Tonysm\TurboLaravel\Jobs\BroadcastAction;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
+
+use function Tonysm\TurboLaravel\turbo_channel;
 
 class BroadcastsModelTest extends TestCase
 {
@@ -21,526 +17,239 @@ class BroadcastsModelTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        config(['turbo-laravel.queue' => false]);
     }
 
     /** @test */
-    public function broadcasts_on_create()
+    public function manually_broadcast_append()
     {
-        Event::fake([TurboStreamModelCreated::class]);
+        Bus::fake([BroadcastAction::class]);
 
-        $model = BroadcastTestModel::create(['name' => 'My model']);
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
 
-        $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_models" action="append">
-    <template>
-        <h1>Hello from TestModel partial</h1>
-    </template>
-</turbo-stream>
-blade;
+        Bus::assertNotDispatched(BroadcastAction::class);
 
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
-            $this->assertTrue($model->is($event->model));
-            $this->assertEquals('append', $event->action);
-            $this->assertEquals($expectedPartialRender, trim($event->render()));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
+        $model->broadcastAppend();
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals('broadcast_test_models', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
+            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
 
             return true;
         });
     }
 
     /** @test */
-    public function broadcasts_on_update()
+    public function manually_append_with_overrides()
     {
-        Event::fake([TurboStreamModelUpdated::class]);
+        Bus::fake([BroadcastAction::class]);
 
-        $model = BroadcastTestModel::find(
-            BroadcastTestModel::create(['name' => 'My model'])->getKey()
-        );
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
 
-        $this->assertFalse($model->wasRecentlyCreated);
-        $model->update(['name' => 'Changed']);
+        Bus::assertNotDispatched(BroadcastAction::class);
 
-        $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_model_1" action="replace">
-    <template>
-        <h1>Hello from TestModel partial</h1>
-    </template>
-</turbo-stream>
-blade;
+        $model->broadcastAppend()
+            ->to($channel = new Channel('hello'))
+            ->target('some_other_target')
+            ->partial('another_partial', ['lorem' => 'ipsum']);
 
-        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRender) {
-            $this->assertTrue($model->is($event->model));
-            $this->assertEquals('replace', $event->action);
-            $this->assertEquals($expectedPartialRender, trim($event->render()));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
+        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($channel, $job->channels[0]);
+            $this->assertEquals('some_other_target', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('another_partial', $job->partial);
+            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
 
             return true;
         });
     }
 
     /** @test */
-    public function broadcasts_on_delete()
+    public function manually_broadcast_replace()
     {
-        Event::fake([TurboStreamModelDeleted::class]);
+        Bus::fake([BroadcastAction::class]);
 
-        $model = BroadcastTestModel::find(
-            BroadcastTestModel::create(['name' => 'My model'])->getKey()
-        );
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
 
-        $model->delete();
+        Bus::assertNotDispatched(BroadcastAction::class);
 
-        App::terminate();
+        $model->broadcastReplace();
 
-        $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_model_1" action="remove"></turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model, $expectedPartialRender) {
-            return $model->is($event->model)
-                && $event->action === "remove"
-                && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasting_soft_deleted_models_works_as_regular_delete_by_default()
-    {
-        Event::fake([TurboStreamModelDeleted::class]);
-
-        $model = BroadcastTestModelSoftDelete::withoutEvents(function () {
-            return BroadcastTestModelSoftDelete::find(
-                BroadcastTestModelSoftDelete::create(['name' => 'My model'])->getKey()
-            );
-        });
-
-        $model->delete();
-
-        App::terminate();
-
-        $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_model_soft_delete_1" action="remove"></turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model, $expectedPartialRender) {
-            return $model->is($event->model)
-                && $event->action === "remove"
-                && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasts_using_override_partial_name()
-    {
-        Event::fake([TurboStreamModelCreated::class]);
-
-        $model = BroadcastTestModelDifferentPartial::create(['name' => 'My model']);
-
-        $expectedPartialRender = <<<'blade'
-<turbo-stream target="broadcast_test_model_different_partials" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRender) {
-            return $model->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRender
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasts_using_override_action()
-    {
-        Event::fake([TurboStreamModelCreated::class, TurboStreamModelUpdated::class]);
-
-        $model = tap(tap(BroadcastTestModelDifferentAction::create(['name' => 'My model'])->fresh())->update([
-            'name' => 'Changed',
-        ]))->delete();
-
-        $expectedPartialRenderForCreate = <<<'blade'
-<turbo-stream target="broadcast_test_model_different_actions" action="prepend">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            return $model->is($event->model)
-                && $event->action === "prepend"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                );
-        });
-
-        $expectedPartialRenderForUpdate = <<<blade
-<turbo-stream target="broadcast_test_model_different_action_{$model->getKey()}" action="replace">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRenderForUpdate) {
-            return $model->is($event->model)
-                && $event->action === "replace"
-                && trim($event->render()) === $expectedPartialRenderForUpdate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasts_using_override_target_id_on_update()
-    {
-        Event::fake([TurboStreamModelCreated::class, TurboStreamModelUpdated::class]);
-
-        $model = tap(BroadcastTestModelDifferentTargetId::create(['name' => 'My model'])->fresh())->update([
-            'name' => 'Changed',
-        ]);
-
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="changed-resource-name" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            $this->assertTrue($model->is($event->model));
-            $this->assertEquals('append', $event->action);
-            $this->assertEquals($expectedPartialRenderForCreate, trim($event->render()));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
-
-            return true;
-        });
-
-        $expectedPartialRenderForUpdate = <<<blade
-<turbo-stream target="hello-{$model->getKey()}" action="replace">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model, $expectedPartialRenderForUpdate) {
-            $this->assertTrue($model->is($event->model));
-            $this->assertEquals('replace', $event->action);
-            $this->assertEquals($expectedPartialRenderForUpdate, trim($event->render()));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
+            $this->assertEquals('replace', $job->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
+            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
 
             return true;
         });
     }
 
     /** @test */
-    public function broadcasts_to_related_model_using_override_property()
+    public function manually_broadcast_remove()
     {
-        Event::fake([TurboStreamModelCreated::class]);
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastRemove();
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
+            $this->assertEquals('remove', $job->action);
+            $this->assertNull($job->partial);
+            $this->assertEquals([], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function can_configure_to_auto_broadcast()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastReplace();
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
+            $this->assertEquals('replace', $job->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
+            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function can_configure_auto_broadcast_with_broadcasts_to_property()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = AutoBroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals('auto_broadcast_test_models', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('auto_broadcast_test_models._auto_broadcast_test_model', $job->partial);
+            $this->assertEquals(['autoBroadcastTestModel' => $model], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function auto_broadcasts_with_custom_inserts()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $modelWithCustomInsert = AutoBroadcastWithCustomInsertsTestModel::create(['name' => 'Testing']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($modelWithCustomInsert) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($modelWithCustomInsert)), $job->channels[0]->name);
+            $this->assertEquals('auto_broadcast_with_custom_inserts_test_models', $job->target);
+            $this->assertEquals('prepend', $job->action);
+            $this->assertEquals('auto_broadcast_with_custom_inserts_test_models._auto_broadcast_with_custom_inserts_test_model', $job->partial);
+            $this->assertEquals(['autoBroadcastWithCustomInsertsTestModel' => $modelWithCustomInsert], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function can_configure_auto_wire_to_parent_model_using_property()
+    {
+        Bus::fake([BroadcastAction::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildArr::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
+        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->id]);
 
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="related_model_child_arrs" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
+        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals('related_model_children', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('related_model_children._related_model_child', $job->partial);
+            $this->assertEquals(['relatedModelChild' => $child], $job->partialData);
 
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
-            return $child->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($parent)),
-                    $parent->getKey()
-                );
+            return true;
         });
     }
 
     /** @test */
-    public function broadcasts_to_related_model_using_override_property_array()
+    public function can_configure_auto_broadcast_to_parent_model_using_a_method()
     {
-        Event::fake([TurboStreamModelCreated::class]);
+        Bus::fake([BroadcastAction::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
+        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->id]);
 
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="related_model_children" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
+        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals('related_model_child_methods', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('related_model_child_methods._related_model_child_method', $job->partial);
+            $this->assertEquals(['relatedModelChildMethod' => $child], $job->partialData);
 
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
-            return $child->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($parent)),
-                    $parent->getKey()
-                );
+            return true;
         });
     }
 
     /** @test */
-    public function broadcasts_to_related_model_using_override_method()
+    public function can_configure_auto_broadcast_to_channel()
     {
-        Event::fake([TurboStreamModelCreated::class]);
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModelUsingChannel::create(['name' => 'Testing']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($model::$TEST_CHANNEL, $job->channels[0]);
+            $this->assertEquals('broadcast_test_model_using_channels', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('broadcast_test_model_using_channels._broadcast_test_model_using_channel', $job->partial);
+            $this->assertEquals(['broadcastTestModelUsingChannel' => $model], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function combines_both_properties()
+    {
+        Bus::fake([BroadcastAction::class]);
 
         $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
+        $child = CombinedPropertiesTestModel::create(['name' => 'Combined', 'parent_id' => $parent->id]);
 
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="related_model_child_methods" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
-            return $child->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($parent)),
-                    $parent->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasts_to_related_model_using_override_method_array()
-    {
-        Event::fake([TurboStreamModelCreated::class]);
-
-        $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildMethodArray::create(['name' => 'Child', 'parent_id' => $parent->getKey()]);
-
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="related_model_child_method_arrays" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($parent, $child, $expectedPartialRenderForCreate) {
-            return $child->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($parent)),
-                    $parent->getKey()
-                );
-        });
-    }
-
-    /** @test */
-    public function broadcasts_using_another_channel()
-    {
-        Event::fake([TurboStreamModelCreated::class]);
-
-        $model = BroadcastTestModelUsingChannel::create(['name' => 'Switch Channel']);
-
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="broadcast_test_model_using_channels" action="append">
-    <template>
-        <h1>Hello from a different partial</h1>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            return $model->is($event->model)
-                && $event->action === "append"
-                && trim($event->render()) === $expectedPartialRenderForCreate
-                && $event->broadcastOn()[0]->name === 'lorem.ipsum';
-        });
-    }
-
-    /** @test */
-    public function broadcasts_using_override_partial_data()
-    {
-        Event::fake([TurboStreamModelCreated::class]);
-
-        $model = BroadcastTestModelDifferentPartialData::create(['name' => 'Switch Channel']);
-
-        $expectedPartialRenderForCreate = <<<blade
-<turbo-stream target="broadcast_test_model_different_partial_datas" action="append">
-    <template>
-        <h2>Hello, John Doe</h2>
-    </template>
-</turbo-stream>
-blade;
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model, $expectedPartialRenderForCreate) {
-            $this->assertTrue($model->is($event->model));
-            $this->assertEquals('append', $event->action);
-            $this->assertEquals($expectedPartialRenderForCreate, trim($event->render()));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($model)),
-                    $model->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function prefers_custom_turbo_stream_views_when_creating_models()
-    {
-        Event::fake([TurboStreamModelCreated::class]);
-
-        $model = BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
-
-        Event::assertDispatched(function (TurboStreamModelCreated $event) use ($model) {
-            $this->assertEquals(
-                sprintf('created custom partial for %s', $model->name),
-                trim($event->render())
-            );
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function prefers_custom_turbo_stream_views_when_updating_models()
-    {
-        Event::fake([TurboStreamModelUpdated::class]);
-
-        $model = BroadcastsUsingCustomTurboStreamView::withoutEvents(function () {
-            return BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
-        });
-
-        $model->update(['name' => 'changed']);
-
-        Event::assertDispatched(function (TurboStreamModelUpdated $event) use ($model) {
-            $this->assertEquals(
-                sprintf('updated custom partial for %s', $model->name),
-                trim($event->render())
-            );
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function prefers_custom_turbo_stream_views_when_deleting_models()
-    {
-        Event::fake([TurboStreamModelDeleted::class]);
-
-        $model = BroadcastsUsingCustomTurboStreamView::withoutEvents(function () {
-            return BroadcastsUsingCustomTurboStreamView::create(['name' => 'test']);
-        });
-
-        $model->delete();
-
-        App::terminate();
-
-        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($model) {
-            $this->assertEquals(
-                sprintf('deleted custom partial for %s', $model->name),
-                trim($event->render())
-            );
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function broadcasts_to_related_model_when_deleting()
-    {
-        Event::fake([TurboStreamModelDeleted::class]);
-
-        $parent = null;
-        $child = null;
-
-        Model::withoutEvents(function () use (&$parent, &$child) {
-            $parent = RelatedModelParent::create(['name' => 'test']);
-            $child = RelatedModelChildUsingBroadcasts::create(['name' => 'child', 'parent_id' => $parent->getKey()]);
-        });
-
-        $child->delete();
-
-        App::terminate();
-
-        Event::assertDispatched(function (TurboStreamModelDeleted $event) use ($parent, $child) {
-            $this->assertTrue($event->model->is($child));
-            $this->assertEquals(
-                sprintf(
-                    'private-%s.%s',
-                    str_replace('\\', '.', get_class($parent)),
-                    $parent->getKey()
-                ),
-                $event->broadcastOn()[0]->name
-            );
+        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals('combined_properties_test_models', $job->target);
+            $this->assertEquals('prepend', $job->action);
+            $this->assertEquals('combined_properties_test_models._combined_properties_test_model', $job->partial);
+            $this->assertEquals(['combinedPropertiesTestModel' => $child], $job->partialData);
 
             return true;
         });
@@ -552,45 +261,31 @@ class BroadcastTestModel extends TestModel
     use Broadcasts;
 }
 
-class BroadcastTestModelSoftDelete extends BroadcastTestModel
+class AutoBroadcastTestModel extends TestModel
 {
-    use SoftDeletes;
+    use Broadcasts;
+
+    protected $broadcasts = true;
 }
 
-class BroadcastTestModelDifferentPartial extends BroadcastTestModel
+class AutoBroadcastWithCustomInsertsTestModel extends TestModel
 {
-    public function hotwirePartialName()
-    {
-        return "_override_partial_name";
-    }
-}
+    use Broadcasts;
 
-class BroadcastTestModelDifferentAction extends BroadcastTestModelDifferentPartial
-{
-    public $turboStreamCreatedAction = "prepend";
-    public $turboStreamUpdatedAction = "replace";
-}
-
-class BroadcastTestModelDifferentTargetId extends BroadcastTestModelDifferentPartial
-{
-    public function hotwireTargetDomId()
-    {
-        return "hello-{$this->getKey()}";
-    }
-
-    public function hotwireTargetResourcesName()
-    {
-        return "changed-resource-name";
-    }
+    protected $broadcasts = [
+        'insertsBy' => 'prepend',
+    ];
 }
 
 class RelatedModelParent extends TestModel
 {
 }
 
-class RelatedModelChild extends BroadcastTestModelDifferentPartial
+class RelatedModelChild extends TestModel
 {
-    public $broadcastsTo = 'parent';
+    use Broadcasts;
+
+    protected $broadcastsTo = 'parent';
 
     public function parent()
     {
@@ -598,43 +293,10 @@ class RelatedModelChild extends BroadcastTestModelDifferentPartial
     }
 }
 
-class RelatedModelChildUsingBroadcasts extends BroadcastTestModelDifferentPartial
+class RelatedModelChildMethod extends TestModel
 {
-    public $broadcastsTo = 'parent';
+    use Broadcasts;
 
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class RelatedModelChildArr extends BroadcastTestModelDifferentPartial
-{
-    public $broadcastsTo = [
-        'parent',
-    ];
-
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class RelatedModelChildMethod extends BroadcastTestModelDifferentPartial
-{
-    public function broadcastsTo()
-    {
-        return $this->parent;
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class RelatedModelChildMethodArray extends BroadcastTestModelDifferentPartial
-{
     public function broadcastsTo()
     {
         return [
@@ -648,30 +310,27 @@ class RelatedModelChildMethodArray extends BroadcastTestModelDifferentPartial
     }
 }
 
-class BroadcastTestModelUsingChannel extends BroadcastTestModelDifferentPartial
-{
-    public function broadcastsTo()
-    {
-        return new Channel('lorem.ipsum');
-    }
-}
-
-class BroadcastTestModelDifferentPartialData extends BroadcastTestModel
-{
-    public function hotwirePartialName()
-    {
-        return "_override_partial_data";
-    }
-
-    public function hotwirePartialData()
-    {
-        return [
-            'name' => 'John Doe',
-        ];
-    }
-}
-
-class BroadcastsUsingCustomTurboStreamView extends TestModel
+class BroadcastTestModelUsingChannel extends TestModel
 {
     use Broadcasts;
+
+    public static $TEST_CHANNEL;
+
+    public function broadcastsTo()
+    {
+        return static::$TEST_CHANNEL ??= new Channel('testing');
+    }
+}
+
+class CombinedPropertiesTestModel extends TestModel
+{
+    use Broadcasts;
+
+    protected $broadcasts = ['insertsBy' => 'prepend'];
+    protected $broadcastsTo = 'parent';
+
+    public function parent()
+    {
+        return $this->belongsTo(RelatedModelParent::class);
+    }
 }

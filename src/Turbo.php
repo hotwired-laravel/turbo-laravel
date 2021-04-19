@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel;
 
 use Closure;
+use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 
 class Turbo
 {
@@ -60,5 +61,10 @@ class Turbo
     public function shouldBroadcastToOthers(): bool
     {
         return $this->broadcastToOthersOnly;
+    }
+
+    public function broadcaster(): Broadcaster
+    {
+        return resolve(Broadcaster::class);
     }
 }
