@@ -222,7 +222,7 @@ Here's what the HTML response will look like:
 </turbo-stream>
 ```
 
-Most of these things was "guessed" by the app based on the naming conventions we talked about earlier. But you can also override most things, like so:
+Most of these things were "guessed" based on the [naming conventions](#conventions) we talked about earlier. But you can override most things, like so:
 
 ```php
 return response()->turboStream($comment)->target('post_comments');
@@ -256,7 +256,7 @@ response()->turboStream()->remove($comment);
 
 You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwire.dev/handbook/streams).
 
-These shorthand methods return a pending object for the response which you can chain and override everything that you want on it:
+These shorthand methods return a pending object for the response which you can chain and override everything you want on it:
 
 ```php
 return response()->turboStream()
@@ -264,9 +264,9 @@ return response()->turboStream()
     ->view('comments._comment_card', ['comment' => $comment]);
 ```
 
-As mentioned earlier, passing a model to the `response()->turboStream()` macro will pre-fill the pending response object with some defaults based on its state.
+As mentioned earlier, passing a model to the `response()->turboStream()` macro will pre-fill the pending response object with some defaults based on the model's state.
 
-It will render a `remove` Turbo Stream if the model was deleted (or if it is trashed - in case it's a Soft Deleted model), an `append` if the model was recently created (which you can override the action in the second parameter of the macro), a `replace` if the model was just updated (you can also override the action as the second parameter.) Here's how overriding would look like:
+It will build a `remove` Turbo Stream if the model was deleted (or if it is trashed - in case it's a Soft Deleted model), an `append` if the model was recently created (which you can override the action as the second parameter of the macro), a `replace` if the model was just updated (you can also override the action as the second parameter.) Here's how overriding would look like:
 
 ```php
 return response()->turboStream($comment, 'append');
@@ -275,7 +275,7 @@ return response()->turboStream($comment, 'append');
 <a name="custom-turbo-stream-views"></a>
 ### Custom Turbo Stream Views
 
-If you're not using the model partial convention or if you some more complex Turbo Stream constructs, you may use the `response()->turboStreamView()` version instead and specify your own Turbo Stream views. See the [conventions section](#conventions) to read more about this.
+If you're not using the model partial [convention](#conventions) or if you have some more complex Turbo Stream constructs, you may use the `response()->turboStreamView()` version instead and specify your own Turbo Stream views.
 
 This is what it looks like:
 
@@ -297,7 +297,7 @@ And here's an example of a more complex custom Turbo Stream view:
 </turbo-stream>
 ```
 
-Remember, these a Blade views, so you can make use of the power of Blade to include things like including a shared partial of Turbo Streams that appear is some places, such as flash messages. That `layouts.turbo.flash_stream` could look like this:
+Remember, these are Blade views, so you have the full power of Blade at your hands. In this example, we're including a shared Turbo Stream partial which could append any flash messages we may have. That `layouts.turbo.flash_stream` could look like this:
 
 ```blade
 @if (session()->has('status'))
@@ -309,7 +309,7 @@ Remember, these a Blade views, so you can make use of the power of Blade to incl
 @endif
 ```
 
-Hopefully, you can see how this can be powerful when it comes to reusing views.
+I hope you can see how powerful this can be to reusing views.
 
 <a name="broadcasting"></a>
 ### Broadcasting Turbo Streams Over WebSockets With Laravel Echo
