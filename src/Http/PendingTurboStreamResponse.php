@@ -45,16 +45,6 @@ class PendingTurboStreamResponse implements Responsable
         return $this->inserted($model, 'prepend');
     }
 
-    private function inserted(Model $model, string $action): self
-    {
-        $this->useTarget = $this->getResourceNameFor($model);
-        $this->useAction = $action;
-        $this->partialView = $this->getPartialViewFor($model);
-        $this->partialData = $this->getPartialDataFor($model);
-
-        return $this;
-    }
-
     public function update(Model $model): self
     {
         return $this->updated($model, 'update');
@@ -63,16 +53,6 @@ class PendingTurboStreamResponse implements Responsable
     public function replace(Model $model): self
     {
         return $this->updated($model, 'replace');
-    }
-
-    private function updated(Model $model, string $action): self
-    {
-        $this->useTarget = dom_id($model);
-        $this->useAction = $action;
-        $this->partialView = $this->getPartialViewFor($model);
-        $this->partialData = $this->getPartialDataFor($model);
-
-        return $this;
     }
 
     public function remove(Model $model): self
@@ -132,6 +112,26 @@ class PendingTurboStreamResponse implements Responsable
         )->withHeaders([
             'Content-Type' => Turbo::TURBO_STREAM_FORMAT,
         ]);
+    }
+
+    private function inserted(Model $model, string $action): self
+    {
+        $this->useTarget = $this->getResourceNameFor($model);
+        $this->useAction = $action;
+        $this->partialView = $this->getPartialViewFor($model);
+        $this->partialData = $this->getPartialDataFor($model);
+
+        return $this;
+    }
+
+    private function updated(Model $model, string $action): self
+    {
+        $this->useTarget = dom_id($model);
+        $this->useAction = $action;
+        $this->partialView = $this->getPartialViewFor($model);
+        $this->partialData = $this->getPartialDataFor($model);
+
+        return $this;
     }
 
     private function getResourceNameFor(Model $model): string
