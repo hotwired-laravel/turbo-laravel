@@ -4,8 +4,10 @@ namespace Tonysm\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Model;
+use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
+
 use Tonysm\TurboLaravel\Turbo;
 
 class PendingTurboStreamResponse implements Responsable
@@ -28,6 +30,26 @@ class PendingTurboStreamResponse implements Responsable
     private function inserted(Model $model, string $action): self
     {
         $this->useTarget = $this->getResourceNameFor($model);
+        $this->useAction = $action;
+        $this->partialView = $this->getPartialViewFor($model);
+        $this->partialData = $this->getPartialDataFor($model);
+
+        return $this;
+    }
+
+    public function update(Model $model): self
+    {
+        return $this->updated($model, 'update');
+    }
+
+    public function replace(Model $model): self
+    {
+        return $this->updated($model, 'replace');
+    }
+
+    private function updated(Model $model, string $action): self
+    {
+        $this->useTarget = dom_id($model);
         $this->useAction = $action;
         $this->partialView = $this->getPartialViewFor($model);
         $this->partialData = $this->getPartialDataFor($model);

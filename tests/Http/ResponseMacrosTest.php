@@ -270,11 +270,39 @@ class ResponseMacrosTest extends TestCase
     /** @test */
     public function update_shorthand_for_response_builder()
     {
+        $response = response()
+            ->turboStream()
+            ->update($testModel = TestModel::create(['name' => 'Test model']))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => 'update',
+            'target' => dom_id($testModel),
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
     /** @test */
     public function replace_shorthand_for_response_builder()
     {
+        $response = response()
+            ->turboStream()
+            ->replace($testModel = TestModel::create(['name' => 'Test model']))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => 'replace',
+            'target' => dom_id($testModel),
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
     /** @test */
