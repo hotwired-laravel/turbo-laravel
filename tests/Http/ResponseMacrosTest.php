@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Tests\Http;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use function Tonysm\TurboLaravel\dom_id;
 
@@ -203,6 +204,29 @@ class ResponseMacrosTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $builder);
         $this->assertInstanceOf(Responsable::class, $builder);
+    }
+
+    /** @test */
+    public function can_configure_action_turbo_stream_rendering()
+    {
+        $response = response()
+            ->turboStream()
+            ->target($target = 'example_target')
+            ->action($action = 'replace')
+            ->partial($partial = 'test_model_with_turbo_partials.turbo.created_stream', $partialData = [
+                'exampleModel' => TestModel::create(['name' => 'Test model']),
+            ])
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => $action,
+            'target' => $target,
+            'partial' => $partial,
+            'partialData' => $partialData,
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 }
 
