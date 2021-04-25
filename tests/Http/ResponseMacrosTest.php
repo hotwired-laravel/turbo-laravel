@@ -266,6 +266,21 @@ class ResponseMacrosTest extends TestCase
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
+
+    /** @test */
+    public function update_shorthand_for_response_builder()
+    {
+    }
+
+    /** @test */
+    public function replace_shorthand_for_response_builder()
+    {
+    }
+
+    /** @test */
+    public function remove_shorthand_for_response_builder()
+    {
+    }
 }
 
 class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
