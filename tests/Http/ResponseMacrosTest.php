@@ -37,7 +37,7 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -57,7 +57,7 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['broadcastTestModel' => $testModel],
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -75,7 +75,7 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -95,7 +95,7 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['broadcastTestModel' => $testModel],
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -111,7 +111,7 @@ class ResponseMacrosTest extends TestCase
             'target' => dom_id($testModel),
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -127,7 +127,7 @@ class ResponseMacrosTest extends TestCase
             'target' => dom_id($testModelSoftDelete),
         ])->render();
 
-        $resp = response()->turboStream($testModelSoftDelete);
+        $resp = response()->turboStream($testModelSoftDelete)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -145,7 +145,7 @@ class ResponseMacrosTest extends TestCase
             'target' => dom_id($testModel),
         ])->render();
 
-        $resp = response()->turboStream($testModel);
+        $resp = response()->turboStream($testModel)->toResponse(new Request);
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
@@ -182,19 +182,6 @@ class ResponseMacrosTest extends TestCase
         ]);
 
         $this->assertEquals($expected, trim($resp->getContent()));
-        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
-    }
-
-    /** @test */
-    public function uses_turbo_stream_specific_views_when_they_exist()
-    {
-        $testModel = TestModelWithTurboPartial::create(['name' => 'test']);
-
-        $expected = view('test_model_with_turbo_partials.turbo.created_stream')->render();
-
-        $resp = response()->turboStream($testModel);
-
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 

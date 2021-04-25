@@ -74,7 +74,7 @@ class TurboServiceProvider extends ServiceProvider
                 return new PendingTurboStreamResponse();
             }
 
-            return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
+            return PendingTurboStreamResponse::forModel($model, $action);
         });
 
         Response::macro('turboStreamView', function ($view, array $data = []) {

@@ -16,6 +16,25 @@ class PendingTurboStreamResponse implements Responsable
     private ?string $partialView = null;
     private array $partialData = [];
 
+    public static function forModel(Model $model, string $action = null): self
+    {
+        $builder = new self();
+
+        // We're treating soft-deleted models as they were deleted. In other words, we
+        // will render the deleted Turbo Stream. If you need to treat a soft-deleted
+        // model differently, you can do that on your deleted Turbo Stream view.
+
+        if (! $model->exists || (method_exists($model, 'trashed') && $model->trashed())) {
+            return $builder->remove($model);
+        }
+
+        if ($model->wasRecentlyCreated) {
+            return $builder->inserted($model, $action ?: 'append');
+        }
+
+        return $builder->updated($model, $action ?: 'replace');
+    }
+
     public function append(Model $model): self
     {
         return $this->inserted($model, 'append');
