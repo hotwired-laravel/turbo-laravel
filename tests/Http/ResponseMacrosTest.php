@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use function Tonysm\TurboLaravel\dom_id;
 
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
+use Tonysm\TurboLaravel\Http\TurboStreamResponseFailedException;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
@@ -320,6 +321,18 @@ class ResponseMacrosTest extends TestCase
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action()
+    {
+        $this->expectException(TurboStreamResponseFailedException::class);
+
+        response()
+            ->turboStream()
+            ->target('example_target')
+            ->action('replace')
+            ->toResponse(new Request);
     }
 }
 

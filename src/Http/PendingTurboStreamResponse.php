@@ -95,6 +95,10 @@ class PendingTurboStreamResponse implements Responsable
      */
     public function toResponse($request)
     {
+        if ($this->useAction !== 'remove' && ! $this->partialView) {
+            throw TurboStreamResponseFailedException::missingPartial();
+        }
+
         return response(
             view('turbo-laravel::turbo-stream', [
                 'target' => $this->useTarget,
