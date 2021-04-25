@@ -308,6 +308,18 @@ class ResponseMacrosTest extends TestCase
     /** @test */
     public function remove_shorthand_for_response_builder()
     {
+        $response = response()
+            ->turboStream()
+            ->remove($testModel = TestModel::create(['name' => 'Test model']))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => 'remove',
+            'target' => dom_id($testModel),
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 }
 
