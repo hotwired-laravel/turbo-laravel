@@ -22,7 +22,6 @@ class ResponseMacrosTest extends TestCase
         parent::setUp();
 
         View::addLocation(__DIR__ . '/../Stubs/views');
-        View::addLocation(__DIR__ . '/../../resources/views/');
     }
 
     /** @test */
@@ -30,10 +29,10 @@ class ResponseMacrosTest extends TestCase
     {
         $testModel = TestModel::create(['name' => 'test']);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'append',
             'target' => 'test_models',
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -50,10 +49,10 @@ class ResponseMacrosTest extends TestCase
             return BroadcastTestModel::create(['name' => 'test']);
         });
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'append',
             'target' => 'broadcast_test_models',
-            'partial' => '_broadcast_test_model',
+            'partial' => 'broadcast_test_models._broadcast_test_model',
             'partialData' => ['broadcastTestModel' => $testModel],
         ])->render();
 
@@ -68,10 +67,10 @@ class ResponseMacrosTest extends TestCase
     {
         $testModel = TestModel::create(['name' => 'test'])->fresh();
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'replace',
             'target' => dom_id($testModel),
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -88,10 +87,10 @@ class ResponseMacrosTest extends TestCase
             return BroadcastTestModel::create(['name' => 'test'])->fresh();
         });
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'replace',
             'target' => dom_id($testModel),
-            'partial' => $testModel->hotwirePartialName(),
+            'partial' => 'broadcast_test_models._broadcast_test_model',
             'partialData' => ['broadcastTestModel' => $testModel],
         ])->render();
 
@@ -106,7 +105,7 @@ class ResponseMacrosTest extends TestCase
     {
         $testModel = tap(TestModel::create(['name' => 'test']))->delete();
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
             'target' => dom_id($testModel),
         ])->render();
@@ -122,7 +121,7 @@ class ResponseMacrosTest extends TestCase
     {
         $testModelSoftDelete = tap(TestModelSoftDelete::create(['name' => 'test']))->delete();
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
             'target' => dom_id($testModelSoftDelete),
         ])->render();
@@ -140,7 +139,7 @@ class ResponseMacrosTest extends TestCase
             return tap(BroadcastTestModel::create(['name' => 'test']))->delete();
         });
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
             'target' => dom_id($testModel),
         ])->render();
@@ -160,7 +159,7 @@ class ResponseMacrosTest extends TestCase
         <div id="test_model_{$testModel->getKey()}">hello</div>
         html;
 
-        $resp = response()->turboStreamView(View::file(__DIR__ . '/../Stubs/views/_test_model.blade.php', [
+        $resp = response()->turboStreamView(View::file(__DIR__ . '/../Stubs/views/test_models/_test_model.blade.php', [
             'testModel' => $testModel,
         ]));
 
@@ -177,7 +176,7 @@ class ResponseMacrosTest extends TestCase
         <div id="test_model_{$testModel->getKey()}">hello</div>
         html;
 
-        $resp = response()->turboStreamView('_test_model', [
+        $resp = response()->turboStreamView('test_models._test_model', [
             'testModel' => $testModel,
         ]);
 
@@ -206,7 +205,7 @@ class ResponseMacrosTest extends TestCase
             ])
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => $action,
             'target' => $target,
             'partial' => $partial,
@@ -229,7 +228,7 @@ class ResponseMacrosTest extends TestCase
             ])
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => $action,
             'target' => $target,
             'partial' => $partial,
@@ -248,10 +247,10 @@ class ResponseMacrosTest extends TestCase
             ->append($testModel = TestModel::create(['name' => 'Test model']))
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'append',
             'target' => 'test_models',
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -267,10 +266,10 @@ class ResponseMacrosTest extends TestCase
             ->prepend($testModel = TestModel::create(['name' => 'Test model']))
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'prepend',
             'target' => 'test_models',
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -286,10 +285,10 @@ class ResponseMacrosTest extends TestCase
             ->update($testModel = TestModel::create(['name' => 'Test model']))
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'update',
             'target' => dom_id($testModel),
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -305,10 +304,10 @@ class ResponseMacrosTest extends TestCase
             ->replace($testModel = TestModel::create(['name' => 'Test model']))
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'replace',
             'target' => dom_id($testModel),
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
 
@@ -324,7 +323,7 @@ class ResponseMacrosTest extends TestCase
             ->remove($testModel = TestModel::create(['name' => 'Test model']))
             ->toResponse(new Request);
 
-        $expected = view('turbo-stream', [
+        $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
             'target' => dom_id($testModel),
         ])->render();
@@ -348,30 +347,16 @@ class ResponseMacrosTest extends TestCase
 
 class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
 {
-    public function hotwirePartialName()
-    {
-        return "_test_model";
-    }
 }
 
 class TestModelSoftDelete extends TestModel
 {
     use SoftDeletes;
-
-    public function hotwirePartialName()
-    {
-        return "_test_model_soft_delete";
-    }
 }
 
 class BroadcastTestModel extends \Tonysm\TurboLaravel\Tests\TestModel
 {
     use Broadcasts;
-
-    public function hotwirePartialName()
-    {
-        return "_broadcast_test_model";
-    }
 }
 
 class TestModelWithTurboPartial extends TestModel

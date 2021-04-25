@@ -136,22 +136,16 @@ class PendingTurboStreamResponse implements Responsable
 
     private function getResourceNameFor(Model $model): string
     {
-        return method_exists($model, 'hotwireTargetResourcesName')
-            ? $model->hotwireTargetResourcesName()
-            : Name::forModel($model)->plural;
+        return Name::forModel($model)->plural;
     }
 
     private function getPartialViewFor(Model $model): string
     {
-        return method_exists($model, 'hotwirePartialName')
-            ? $model->hotwirePartialName()
-            : NamesResolver::partialNameFor($model);
+        return NamesResolver::partialNameFor($model);
     }
 
     private function getPartialDataFor(Model $model): array
     {
-        return method_exists($model, 'hotwirePartialData')
-            ? $model->hotwirePartialData()
-            : [NamesResolver::resourceVariableName($model) => $model];
+        return [NamesResolver::resourceVariableName($model) => $model];
     }
 }

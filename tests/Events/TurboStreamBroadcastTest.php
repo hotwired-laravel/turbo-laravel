@@ -23,14 +23,14 @@ class TurboStreamBroadcastTest extends TestCase
             [],
             'test_target',
             'replace',
-            '_test_model',
+            'test_models._test_model',
             ['testModel' => new TestModel(['id' => 1])]
         );
 
         $expected = View::make('turbo-laravel::turbo-stream', [
             'target' => 'test_target',
             'action' => 'replace',
-            'partial' => '_test_model',
+            'partial' => 'test_models._test_model',
             'partialData' => [
                 'testModel' => new TestModel(['id' => 1]),
             ],
