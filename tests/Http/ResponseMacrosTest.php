@@ -2,9 +2,12 @@
 
 namespace Tonysm\TurboLaravel\Tests\Http;
 
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\View;
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
@@ -191,6 +194,15 @@ class ResponseMacrosTest extends TestCase
 
         $this->assertEquals(trim($expected), trim($resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function can_manually_build_turbo_stream_response()
+    {
+        $builder = response()->turboStream();
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $builder);
+        $this->assertInstanceOf(Responsable::class, $builder);
     }
 }
 
