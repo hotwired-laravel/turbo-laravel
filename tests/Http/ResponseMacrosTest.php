@@ -228,6 +228,44 @@ class ResponseMacrosTest extends TestCase
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
+
+    /** @test */
+    public function append_shorthand_for_response_builder()
+    {
+        $response = response()
+            ->turboStream()
+            ->append($testModel = TestModel::create(['name' => 'Test model']))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => 'append',
+            'target' => 'test_models',
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function prepend_shorthand_for_response_builder()
+    {
+        $response = response()
+            ->turboStream()
+            ->prepend($testModel = TestModel::create(['name' => 'Test model']))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => 'prepend',
+            'target' => 'test_models',
+            'partial' => '_test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
 }
 
 class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel

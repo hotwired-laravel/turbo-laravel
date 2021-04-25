@@ -3,6 +3,9 @@
 namespace Tonysm\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Database\Eloquent\Model;
+use Tonysm\TurboLaravel\Models\Naming\Name;
+use Tonysm\TurboLaravel\NamesResolver;
 use Tonysm\TurboLaravel\Turbo;
 
 class PendingTurboStreamResponse implements Responsable
@@ -11,6 +14,26 @@ class PendingTurboStreamResponse implements Responsable
     private string $useAction;
     private ?string $partialView = null;
     private array $partialData = [];
+
+    public function append(Model $model): self
+    {
+        return $this->inserted($model, 'append');
+    }
+
+    public function prepend(Model $model): self
+    {
+        return $this->inserted($model, 'prepend');
+    }
+
+    private function inserted(Model $model, string $action): self
+    {
+        $this->useTarget = $this->getResourceNameFor($model);
+        $this->useAction = $action;
+        $this->partialView = $this->getPartialViewFor($model);
+        $this->partialData = $this->getPartialDataFor($model);
+
+        return $this;
+    }
 
     public function target(string $target): self
     {
@@ -52,5 +75,26 @@ class PendingTurboStreamResponse implements Responsable
         )->withHeaders([
             'Content-Type' => Turbo::TURBO_STREAM_FORMAT,
         ]);
+    }
+
+    private function getResourceNameFor(Model $model): string
+    {
+        return method_exists($model, 'hotwireTargetResourcesName')
+            ? $model->hotwireTargetResourcesName()
+            : Name::forModel($model)->plural;
+    }
+
+    private function getPartialViewFor(Model $model): string
+    {
+        return method_exists($model, 'hotwirePartialName')
+            ? $model->hotwirePartialName()
+            : NamesResolver::partialNameFor($model);
+    }
+
+    private function getPartialDataFor(Model $model): array
+    {
+        return method_exists($model, 'hotwirePartialData')
+            ? $model->hotwirePartialData()
+            : [NamesResolver::resourceVariableName($model) => $model];
     }
 }
