@@ -1,4 +1,4 @@
-<p align="center"><img src="/art/turbo-laravel-logo.svg" alt="Logo Turbo Laravel" /></p>
+<p align="center" style="margin-top: 2rem; margin-bottom: 2rem;"><img src="/art/turbo-laravel-logo.svg" alt="Logo Turbo Laravel" /></p>
 
 <p align="center">
     <a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
@@ -203,9 +203,7 @@ Route::post('posts/{post}/comments', function (Post $post) {
     $comment = $post->comments()->create(/** params */);
 
     if (request()->wantsTurboStream()) {
-        return response()->turboStreamView('comments.turbo.created_stream', [
-            'comment' => $comment,
-        ]);
+        return response()->turboStream()->append($comment);
     }
 
     return back();
@@ -214,7 +212,7 @@ Route::post('posts/{post}/comments', function (Post $post) {
 
 The `request()->wantsTurboStream()` macro added to the request will check if the request accepts Turbo Stream and return `true` or `false` accordingly.
 
-Here's what that `comments.turbo.created_stream.blade.php` view could look like:
+Here's what the HTML response will look like:
 
 ```blade
 <turbo-stream action="append" target="comments">
@@ -224,6 +222,21 @@ Here's what that `comments.turbo.created_stream.blade.php` view could look like:
 </turbo-stream>
 ```
 
+Most of these things was "guessed" by the app based on the naming conventions we talked about earlier. But you can also override most things, like so:
+
+```php
+return response()->turboStream($comment)->target('post_comments');
+```
+
+The model is optional, as it's only used to figure out the defaults based on the model state. You could manually create that same response like so:
+
+```php
+return response()->turboStream()
+    ->target('comments')
+    ->action('append')
+    ->view('comments._comment', ['comment' => $comment]);
+```
+
 There are 5 _actions_ in Turbo Streams. They are:
 
 * `append` & `prepend`: to add the elements in the target element after the existing contents or before, respectively
@@ -231,80 +244,72 @@ There are 5 _actions_ in Turbo Streams. They are:
 * `update`: will keep the target and only replace the contents of it with the contents of the `template` tag in the Turbo Stream
 * `remove`: will remove the element. This one doesn't need a `<template>` tag.
 
+Which means you will find shorthand methods for them all, like:
+
+```php
+response()->turboStream()->append($comment);
+response()->turboStream()->prepend($comment);
+response()->turboStream()->replace($comment);
+response()->turboStream()->update($comment);
+response()->turboStream()->remove($comment);
+```
+
 You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwire.dev/handbook/streams).
 
-If you notice, all we're doing in the `comments.turbo.created_stream.blade.php` view is wrapping the comment's partial with a Turbo Stream tag. You can alternatically delegate the generation of the Turbo Stream tag to a `response()->turboStream()` macro, which will essentially do the same thing, but in this case you wouldn't need that `comments.turbo.created_stream.blade.php` anymore:
+These shorthand methods return a pending object for the response which you can chain and override everything that you want on it:
 
 ```php
-Route::post('posts/{post}/comments', function (Post $post) {
-    $comment = $post->comments()->create(/** params */);
-
-    if (request()->wantsTurboStream()) {
-        return response()->turboStream($comment);
-    }
-
-    return back();
-});
+return response()->turboStream()
+    ->append($comment)
+    ->view('comments._comment_card', ['comment' => $comment]);
 ```
 
-Again, this will detect that your model was recently created and generate an `append` Turbo Stream to a `comments` target (using the plural name of your model's basename for that) and render the model's partial inside a `template` tag, similarly to what we were doing manually.
+As mentioned earlier, passing a model to the `response()->turboStream()` macro will pre-fill the pending response object with some defaults based on its state.
 
-The `response()->turboStream()` macro will generate a _replace_ Turbo Stream action targeting your model's DOM ID when you are only updating the model. In the same way, if you have deleted the model, it will generate a _remove_ Turbo Stream also using the model's DOM ID as target.
-
-If you're not using the model partial convention, you may stick with the `response()->turboStreamView()` version instead and specify your own Turbo Stream views. See the [conventions section](#ceventions) to read more about this.
-
-You may override the partial name by implementing a `hotwirePartialName` method in your model. You may also have more control over the data that is passed down to the partial by implementing the `hotwirePartialData` method, like so:
+It will render a `remove` Turbo Stream if the model was deleted (or if it is trashed - in case it's a Soft Deleted model), an `append` if the model was recently created (which you can override the action in the second parameter of the macro), a `replace` if the model was just updated (you can also override the action as the second parameter.) Here's how overriding would look like:
 
 ```php
-class Comment extends Model
-{
-  public function hotwirePartialName()
-  {
-    return 'my.non.conventional.partial.name';
-  }
-
-  public function hotwirePartialData()
-  {
-    return [
-      'lorem' => false,
-      'ipsum' => true,
-      'comment' => $this,
-    ];
-  }
-}
-```
-
-You may also override the resource name used as target in the case wher you're generating a Turbo Stream for recently created models, as well as the DOM ID that will be used as targets when your model was either updated or deleted by implementing the following methods:
-
-```php
-class Comment extends Model
-{
-  public function hotwireTargetResourcesName()
-  {
-    return 'admin_comments';
-  }
-
-  public function hotwireTargetDomId()
-  {
-    return "admin_comment_{$this->id}";
-  }
-}
+return response()->turboStream($comment, 'append');
 ```
 
 <a name="custom-turbo-stream-views"></a>
 ### Custom Turbo Stream Views
 
-Erlier I showed you a custom Turbo Stream view before I showed you how to auto-generate Turbo Stream views for you models. The name and location of that view was no accident. When auto-generating the Turbo Stream views for your model using the `response()->turboStream()` helper function, it will first check if you have a Custom Turbo Stream View in place for this model and, if so, it will use that view instead of generating one from scratch.
+If you're not using the model partial convention or if you some more complex Turbo Stream constructs, you may use the `response()->turboStreamView()` version instead and specify your own Turbo Stream views. See the [conventions section](#conventions) to read more about this.
 
-This way, you can have more control over your Turbo Stream responses. To use custom Turbo Stream views, you may create a `turbo` folder in the model's resource views folder and name them after the model event you want to override, like so:
+This is what it looks like:
 
-| Model Event | Expected View |
-|---|---|
-| `created` | `{resource}/turbo/created_stream.blade.php` |
-| `updated` | `{resource}/turbo/updated_stream.blade.php` |
-| `deleted` | `{resource}/turbo/deleted_stream.blade.php` |
+```php
+return response()->turboStreamView('comments.turbo.created_stream', [
+    'comment' => $comment,
+]);
+```
 
-**Note: these will only be used when you're using the `response()->turboStream()` macro.**
+And here's an example of a more complex custom Turbo Stream view:
+
+```blade
+@include('layouts.turbo.flash_stream')
+
+<turbo-stream target="comments" action="append">
+    <template>
+        @include('comments._comment', ['comment' => $comment])
+    </template>
+</turbo-stream>
+```
+
+Remember, these a Blade views, so you can make use of the power of Blade to include things like including a shared partial of Turbo Streams that appear is some places, such as flash messages. That `layouts.turbo.flash_stream` could look like this:
+
+```blade
+@if (session()->has('status'))
+<turbo-stream target="notice" action="append">
+    <template>
+        @include('layouts._flash')
+    </template>
+</turbo-stream>
+@endif
+```
+
+Hopefully, you can see how this can be powerful when it comes to reusing views.
 
 <a name="broadcasting"></a>
 ### Broadcasting Turbo Streams Over WebSockets With Laravel Echo
