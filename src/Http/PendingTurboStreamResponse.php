@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
-use Tonysm\TurboLaravel\Turbo;
 
 class PendingTurboStreamResponse implements Responsable
 {
@@ -102,16 +101,14 @@ class PendingTurboStreamResponse implements Responsable
             throw TurboStreamResponseFailedException::missingPartial();
         }
 
-        return response(
+        return TurboResponseFactory::makeStream(
             view('turbo-laravel::turbo-stream', [
                 'target' => $this->useTarget,
                 'action' => $this->useAction,
                 'partial' => $this->partialView,
                 'partialData' => $this->partialData,
             ])->render()
-        )->withHeaders([
-            'Content-Type' => Turbo::TURBO_STREAM_FORMAT,
-        ]);
+        );
     }
 
     private function inserted(Model $model, string $action): self
