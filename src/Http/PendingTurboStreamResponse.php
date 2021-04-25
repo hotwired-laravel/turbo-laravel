@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
-
 use Tonysm\TurboLaravel\Turbo;
 
 class PendingTurboStreamResponse implements Responsable
