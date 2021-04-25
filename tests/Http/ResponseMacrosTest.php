@@ -195,13 +195,36 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
-    public function can_configure_action_turbo_stream_rendering()
+    public function can_configure_manually_turbo_stream_rendering()
     {
         $response = response()
             ->turboStream()
             ->target($target = 'example_target')
             ->action($action = 'replace')
             ->partial($partial = 'test_model_with_turbo_partials.turbo.created_stream', $partialData = [
+                'exampleModel' => TestModel::create(['name' => 'Test model']),
+            ])
+            ->toResponse(new Request);
+
+        $expected = view('turbo-stream', [
+            'action' => $action,
+            'target' => $target,
+            'partial' => $partial,
+            'partialData' => $partialData,
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function can_use_view_instead_of_partial()
+    {
+        $response = response()
+            ->turboStream()
+            ->target($target = 'example_target')
+            ->action($action = 'replace')
+            ->view($partial = 'test_model_with_turbo_partials.turbo.created_stream', $partialData = [
                 'exampleModel' => TestModel::create(['name' => 'Test model']),
             ])
             ->toResponse(new Request);

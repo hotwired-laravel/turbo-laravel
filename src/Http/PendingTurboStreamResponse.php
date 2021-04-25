@@ -97,6 +97,11 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
+    public function view(string $view, array $data = []): self
+    {
+        return $this->partial($view, $data);
+    }
+
     public function partial(string $view, array $data = []): self
     {
         $this->partialView = $view;
