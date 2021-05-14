@@ -13,6 +13,7 @@ use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
+use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 
 class TurboServiceProvider extends ServiceProvider
@@ -68,8 +69,12 @@ class TurboServiceProvider extends ServiceProvider
 
     private function bindRequestAndResponseMacros(): void
     {
-        Response::macro('turboStream', function (Model $model, string $action = null) {
-            return resolve(TurboStreamResponseMacro::class)->handle($model, $action);
+        Response::macro('turboStream', function (?Model $model = null, string $action = null) {
+            if ($model === null) {
+                return new PendingTurboStreamResponse();
+            }
+
+            return PendingTurboStreamResponse::forModel($model, $action);
         });
 
         Response::macro('turboStreamView', function ($view, array $data = []) {
