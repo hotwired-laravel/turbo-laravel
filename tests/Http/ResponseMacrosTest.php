@@ -333,6 +333,23 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function remove_shorthand_accepts_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->remove('target_dom_id')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'remove',
+            'target' => 'target_dom_id',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action()
     {
         $this->expectException(TurboStreamResponseFailedException::class);

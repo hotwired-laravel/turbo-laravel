@@ -54,10 +54,16 @@ class PendingTurboStreamResponse implements Responsable
         return $this->updated($model, 'replace');
     }
 
-    public function remove(Model $model): self
+    /**
+     * The target of the removal. Can be an instance of a Model or a DOM ID.
+     *
+     * @param Model|string
+     * @return self
+     */
+    public function remove($target): self
     {
         $this->useAction = 'remove';
-        $this->useTarget = dom_id($model);
+        $this->useTarget = is_string($target) ? $target : dom_id($target);
 
         return $this;
     }
