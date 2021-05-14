@@ -242,7 +242,7 @@ There are 5 _actions_ in Turbo Streams. They are:
 * `append` & `prepend`: to add the elements in the target element after the existing contents or before, respectively
 * `replace`: will replace the existing element entirely with the contents of the `template` tag in the Turbo Stream
 * `update`: will keep the target and only replace the contents of it with the contents of the `template` tag in the Turbo Stream
-* `remove`: will remove the element. This one doesn't need a `<template>` tag.
+* `remove`: will remove the element. This one doesn't need a `<template>` tag. It accepts either an instance of a Model or the DOM ID of the element to be removed as a string.
 
 Which means you will find shorthand methods for them all, like:
 
@@ -645,7 +645,6 @@ public function store()
 
 You may also catch the `ValidationException` and return a non-200 response, if you want to.
 
-
 <a name="turbo-native"></a>
 ### Turbo Native
 
@@ -744,7 +743,7 @@ class CreatesCommentsTest extends TestCase
 }
 ```
 
-**Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.**
+*Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
 
 <a name="closing-notes"></a>
 ### Closing Notes
