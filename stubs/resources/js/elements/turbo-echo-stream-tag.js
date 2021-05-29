@@ -1,12 +1,11 @@
 import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo'
-import Echo from '../echo'
 
 const subscribeTo = (type, channel) => {
     if (type === "presence") {
-        return Echo.join(channel)
+        return window.Echo.join(channel)
     }
 
-    return Echo[type](channel)
+    return window.Echo[type](channel)
 }
 
 class TurboEchoStreamSourceElement extends HTMLElement {
@@ -21,7 +20,7 @@ class TurboEchoStreamSourceElement extends HTMLElement {
     disconnectedCallback() {
         disconnectStreamSource(this)
         if (this.subscription) {
-            Echo.leave(this.channel)
+            window.Echo.leave(this.channel)
             this.subscription = null
         }
     }

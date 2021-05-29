@@ -15,7 +15,7 @@
     </a>
 </p>
 
-**This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel** (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
+This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem). There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions in your application.
 
 <a name="installation"></a>
 ## Installation
@@ -328,12 +328,13 @@ PUSHER_APP_KEY=
 PUSHER_APP_SECRET=
 PUSHER_APP_CLUSTER=us2
 PUSHER_APP_HOST=websockets.test
+PUSHER_APP_PORT=6001
 
 MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
 MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
-MIX_PUSHER_HOST="localhost"
-MIX_PUSHER_PORT="${LARAVEL_WEBSOCKETS_PORT}"
-MIX_PUSHER_USE_SSL=false
+MIX_PUSHER_APP_HOST="localhost"
+MIX_PUSHER_APP_PORT="${PUSHER_APP_PORT}"
+MIX_PUSHER_APP_USE_SSL=false
 ```
 
 Notice that some of these environment variables are used by your front-end assets during compilation. That's why you see some duplicates that are just prefixed with `MIX_`.
