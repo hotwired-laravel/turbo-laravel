@@ -25,6 +25,19 @@ class ViewHelpersTest extends TestCase
     }
 
     /** @test */
+    public function renders_unless_turbo_native()
+    {
+        $this->assertFalse(Turbo::isTurboNativeVisit());
+        $rendered = View::file(__DIR__ . '/../Stubs/views/unless_turbo_native.blade.php')->render();
+        $this->assertTrue(Str::contains($rendered, 'Without Turbo Native'));
+
+        Turbo::setVisitingFromTurboNative();
+        $this->assertTrue(Turbo::isTurboNativeVisit());
+        $rendered = View::file(__DIR__ . '/../Stubs/views/unless_turbo_native.blade.php')->render();
+        $this->assertTrue(Str::contains($rendered, 'With Turbo Native'));
+    }
+
+    /** @test */
     public function renders_dom_id()
     {
         $testModel = Models\TestModel::create(['name' => 'lorem']);

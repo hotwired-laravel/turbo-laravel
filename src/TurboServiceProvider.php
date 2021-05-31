@@ -54,6 +54,10 @@ class TurboServiceProvider extends ServiceProvider
             return TurboFacade::isTurboNativeVisit();
         });
 
+        Blade::if('unlessturbonative', function () {
+            return ! TurboFacade::isTurboNativeVisit();
+        });
+
         Blade::directive('domid', function ($expression) {
             return "<?php echo e(\\Tonysm\\TurboLaravel\\dom_id($expression)); ?>";
         });
