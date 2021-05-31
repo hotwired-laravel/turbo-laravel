@@ -344,7 +344,7 @@ MIX_PUSHER_APP_USE_SSL=false
 
 Notice that some of these environment variables are used by your front-end assets during compilation. That's why you see some duplicates that are just prefixed with `MIX_`.
 
-These settings assume you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package. Check out the [resources/js/echo.js](resources/js/echo.js) for the suggested dotenv credentials you may need to configure. You may also use [Pusher](https://pusher.com/) instead of the Laravel WebSockets package, if you don't want to host it yourself.
+These settings assume you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package. Check out the Echo configuration at [resources/js/bootstrap.js](resources/js/bootstrap.js) to see which environment variables are needed during build time. You may also use [Pusher](https://pusher.com/) or [Ably](https://ably.io/) instead of the Laravel WebSockets package, if you don't want to host it yourself.
 
 <a name="broadasting-model-changes"></a>
 #### Broadcasting Model Changes
