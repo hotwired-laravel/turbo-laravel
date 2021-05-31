@@ -65,7 +65,6 @@ class TurboInstallCommand extends Command
         );
 
         copy(__DIR__ . '/../../stubs/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
-        copy(__DIR__ . '/../../stubs/resources/js/echo.js', resource_path('js/echo.js'));
         copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
 
         if ($this->option('stimulus')) {
