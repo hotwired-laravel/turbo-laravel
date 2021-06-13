@@ -760,7 +760,7 @@ class CreatesCommentsTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use($post) {
             return count($job->channels) === 1
-                && $job->channels[0]->name === $post->broadcastChannel()
+                && $job->channels[0]->name === sprintf('private-%s', $post->broadcastChannel())
                 && $job->target === 'comments'
                 && $job->action === 'append'
                 && $job->partial === 'comments._comment'
