@@ -22,12 +22,4 @@ class NamesResolver
 
         return "{$resource}._{$partial}";
     }
-
-    public function broadcastingChannelForModel(Model $model)
-    {
-        // Converts the name path to a dot-notation. So "App\\Models\\Task" becomes "App.Models.Task"
-        $path = str_replace('\\', '.', get_class($model));
-
-        return "{$path}.{$model->getKey()}";
-    }
 }

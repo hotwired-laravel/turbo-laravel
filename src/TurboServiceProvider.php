@@ -67,7 +67,7 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         Blade::directive('channel', function ($expression) {
-            return "<?php echo e(\\Tonysm\\TurboLaravel\\turbo_channel($expression)); ?>";
+            return "<?php echo {$expression}->broadcastChannel(); ?>";
         });
     }
 

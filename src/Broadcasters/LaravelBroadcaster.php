@@ -37,7 +37,7 @@ class LaravelBroadcaster implements Broadcaster
         if ($later) {
             dispatch($job);
         } else {
-            dispatch_now($job);
+            dispatch_sync($job);
         }
     }
 }

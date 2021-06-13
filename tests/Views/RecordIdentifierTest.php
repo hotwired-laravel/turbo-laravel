@@ -10,7 +10,6 @@ class RecordIdentifierTest extends TestCase
 {
     private $model;
     private $singular;
-    private $plural;
 
     protected function setUp(): void
     {
@@ -66,14 +65,16 @@ class RecordIdentifierTest extends TestCase
     {
         $this->model->save();
 
+        // This is now built into Laravel. I'm letting the test here in case something changes upstream.
+
         $this->assertEquals(
             sprintf('Tonysm.TurboLaravel.Tests.TestModel.%s', $this->model->getKey()),
-            (new RecordIdentifier($this->model))->channelName()
+            $this->model->broadcastChannel()
         );
 
         $this->assertEquals(
             'Tonysm.TurboLaravel.Tests.TestModel.{testModel}',
-            RecordIdentifier::channelAuthKey(get_class($this->model), "{testModel}")
+            $this->model->broadcastChannelRoute()
         );
     }
 }

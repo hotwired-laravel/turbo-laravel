@@ -11,8 +11,6 @@ use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
 
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
-
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
  */
@@ -130,7 +128,7 @@ trait Broadcasts
             }
 
             return new PrivateChannel(
-                (new RecordIdentifier($streamable))->channelName()
+                $streamable->broadcastChannel()
             );
         })->values()->all();
     }
