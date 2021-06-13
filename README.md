@@ -25,37 +25,53 @@ There is a [companion application](https://github.com/tonysm/turbo-demo-app) tha
 <a name="installation"></a>
 ## Installation
 
-You may install the package via composer:
+Turbo Laravel may be installed via composer:
 
 ```bash
 composer require tonysm/turbo-laravel
 ```
 
-In case you're NOT using Jetstream, you may publish the asset files with:
+After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file, publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
 
 ```bash
 php artisan turbo:install
 ```
 
-You may also use Turbo Laravel with Jetstream if you use the Livewire stack. If you want to do so, you may want to publish the assets using the `--jet` flag:
+Next, you may install your JS dependencies and compile the assets so the changes take effect:
+
+```bash
+npm install
+npm run dev
+```
+
+If you are Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also changes a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
 
 ```bash
 php artisan turbo:install --jet
 ```
 
-The *turbo:install* command will make sure you have the needed JS libs on your `package.json` file and will also publish some JS files to your application. By default, it will add `@hotwired/turbo` to your `package.json` file and publish another custom HTML tag to integrate Turbo with Laravel Echo in the `resources/js/elements` folder. With the `--jet` flag, it will also add a couple needed bridge libs to make sure you can use Hotwire combined with Jetstream and Livewire, these are:
+Then, you can run install your NPM dependencies and compile your assets normally.
+
+These are thje dependencies needed for Jetstream with Livewire to work with Turbo.js:
 
 * [Alpine Turbo Bridge](https://github.com/SimoTod/alpine-turbo-drive-adapter), needed so Alpine.js works nicely; and
 * [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`)
 
-You may also optionally install Stimulus on top of this all by passing `--stimulus` flag to the `turbo:install` command:
+You may also optionally install [Stimulus.js](https://stimulus.hotwire.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
+
+```bash
+php artisan turbo:install --stimulus
+```
+
+Here's the full list of flags:
 
 ```bash
 php artisan turbo:install --jet --stimulus
 ```
-Stimulus is optional because you may want to stick with Alpine.js (or both /shrug).
 
-The package ships with a middleware that applies some conventions on your redirects, specially around how failed validations are handled automatically by Laravel. Read more about this in the [Conventions](#conventions) section of the documentation.
+### Turbo HTTP Middleware
+
+The package ships with a middleware which applies some conventions on your redirects, specially around how failed validations are handled automatically by Laravel. Read more about this in the [Conventions](#conventions) section of the documentation.
 
 You may add the middleware to the "web" route group on your HTTP Kernel, like so:
 
@@ -106,14 +122,14 @@ First of all, none of these conventions are mandatory. Feel free to pick the one
 * You may want to use resource routes for most things (`posts.index`, `posts.store`, etc)
 * You may want to split your views into smaller chunks or _partials_ (small portions of HTML for specific fragments), such as `comments/_comment.blade.php` that displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these partials in [Turbo Streams](#turbo-streams)
 * Your model's partial (such as the `comments/_comment.blade.php` for a `Comment` model, for example) may only rely on having a `$comment` instance passed to it. When broadcasting your model changes and generating the Turbo Streams in background, the package will pass the model instance using the model's basename in _camelCase_ to that partial - although you can fully control this behavior
-* You may use the model's Fully Qualified Class Name, or FQCN for short, on your Broadcasting Channel authorizations with a wildcard such as `.{id}`, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter
+* You may use the model's Fully Qualified Class Name, or FQCN for short, on your Broadcasting Channel authorizations with a wildcard such as `.{id}`, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter. This is now the default broadcasting channel in Laravel (see [here](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions)).
 
 In the [Overview section](#overview) below you will see how to override most of the default behaviors, if you want to.
 
 <a name="overview"></a>
 ### Overview
 
-Once the assets are compiled, you will have a couple custom HTML tags that you may annotate your Turbo Frames and Turbo Streams with. This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwire.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
+Once the assets are compiled, you will have Turbo-specific custom HTML tags that you may annotate your views with (Turbo Frames and Turbo Streams). This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwire.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
 
 <a name="notes-on-turbo-drive-and-turbo-frames"></a>
 ### Notes on Turbo Drive and Turbo Frames
@@ -403,12 +419,12 @@ All of these broadcasting methods return an instance of a `PendingBroadcast` cla
 ```php
 $comment->broadcastAppend()
     ->to($post)
-    ->partial('comments/_custom_partial', [
+    ->view('comments/_custom_view_partial', [
         'comment' => $comment,
         'post' => $post,
     ])
-    ->toOthers() // do not send to the current user
-    ->later(); // dispatch a background job to send
+    ->toOthers() // Do not send to the current user.
+    ->later(); // Dispatch a background job to send.
 ```
 
 You may want to hook those methods in the model events of your model to trigger Turbo Stream broadcasts whenever your models are changed in any context, such as:
@@ -538,7 +554,15 @@ By default, it expects a private channel, so the tag must be used in a page for 
 />
 ```
 
-There is a helper blade directive that you can use to generate the channel name for your models using the same convention:
+As this convention is not built into Laravel, you can use the model's `broadcastChannel()` method:
+
+```blade
+<turbo-echo-stream-source
+    channel="{{ $comment->broadcastChannel() }}"
+/>
+```
+
+There is also a helper blade directive that you can use to generate the channel name for your models using the same convention if you want to:
 
 ```blade
 <turbo-echo-stream-source
@@ -546,16 +570,7 @@ There is a helper blade directive that you can use to generate the channel name 
 />
 ```
 
-Alternatively, the package also offers some helper functions to generate the channel names following the package's conventions, like so:
-
-```php
-use function Tonysm\TurboLaravel\turbo_channel;
-
-// returns "App.Models.Comment.123"
-turbo_channel($comment);
-```
-
-There is also a helper you can use to generate the channel name on your broadcasting authorization:
+To register the Broadcast Auth Route you may use Laravel's built-in conventions as well:
 
 ```php
 // file: routes/channels.php
@@ -564,9 +579,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
-use function Tonysm\TurboLaravel\turbo_channel_auth as channelFor;
-
-Broadcast::channel(channelFor(Post::class), function (User $user, Post $post) {
+Broadcast::channel(Post::class, function (User $user, Post $post) {
     return $user->belongsToTeam($post->team);
 });
 ```
@@ -595,9 +608,9 @@ Turbo::broadcastToOthers(function () {
 });
 ```
 
-This way, any broadcast that happens inside the scope of the closure will only be sent to other users.
+This way, any broadcast that happens inside the scope of the Closure will only be sent to other users.
 
-Third, you may use that same method but without the closure inside a ServiceProvider, for instance, to instruct the package to only send turbo stream broadcasts to other users globally:
+Third, you may use that same method but without the Closure inside a ServiceProvider, for instance, to instruct the package to only send turbo stream broadcasts to other users globally:
 
 ```php
 <?php
@@ -660,14 +673,24 @@ Turbo Visits made by a Turbo Native client will send a custom `User-Agent` heade
 
 ```blade
 @turbonative
-    <h1>Hello, Mobile Users!</h1>
+    <h1>Hello, Turbo Native Users!</h1>
 @endturbonative
+```
+
+Alternatively, you can check if it's not a Turbo Native visit using the `@unlessturbonative` Blade helpers:
+
+```blade
+@unlessturbonative
+    <h1>Hello, Non-Turbo Native Users!</h1>
+@endunlessturbonative
 ```
 
 You may also check if the request was made from a Turbo Native visit using the TurboFacade, like so:
 
 ```php
-if (\Tonysm\TurboLaravel\Facades\Turbo::isTurboNativeVisit()) {
+use Tonysm\TurboLaravel\Facades\Turbo;
+
+if (Turbo::isTurboNativeVisit()) {
     // Do something for mobile specific requests.
 }
 ```
@@ -737,7 +760,7 @@ class CreatesCommentsTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use($post) {
             return count($job->channels) === 1
-                && $job->channels[0]->name === turbo_channel($post)
+                && $job->channels[0]->name === $post->broadcastChannel()
                 && $job->target === 'comments'
                 && $job->action === 'append'
                 && $job->partial === 'comments._comment'
