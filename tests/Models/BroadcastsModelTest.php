@@ -9,8 +9,6 @@ use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
 
-use function Tonysm\TurboLaravel\turbo_channel;
-
 class BroadcastsModelTest extends TestCase
 {
     protected function setUp(): void
@@ -33,7 +31,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('broadcast_test_models', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
@@ -82,7 +80,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
             $this->assertEquals('replace', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
@@ -105,7 +103,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
             $this->assertEquals('remove', $job->action);
             $this->assertNull($job->partial);
@@ -128,7 +126,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
             $this->assertEquals('replace', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
@@ -147,7 +145,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($model)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('auto_broadcast_test_models', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('auto_broadcast_test_models._auto_broadcast_test_model', $job->partial);
@@ -166,7 +164,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($modelWithCustomInsert) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($modelWithCustomInsert)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $modelWithCustomInsert->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('auto_broadcast_with_custom_inserts_test_models', $job->target);
             $this->assertEquals('prepend', $job->action);
             $this->assertEquals('auto_broadcast_with_custom_inserts_test_models._auto_broadcast_with_custom_inserts_test_model', $job->partial);
@@ -186,7 +184,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('related_model_children', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('related_model_children._related_model_child', $job->partial);
@@ -206,7 +204,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertEquals(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('related_model_child_methods', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('related_model_child_methods._related_model_child_method', $job->partial);
@@ -245,7 +243,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
             $this->assertCount(1, $job->channels);
-            $this->assertSame(sprintf('private-%s', turbo_channel($parent)), $job->channels[0]->name);
+            $this->assertSame(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
             $this->assertEquals('combined_properties_test_models', $job->target);
             $this->assertEquals('prepend', $job->action);
             $this->assertEquals('combined_properties_test_models._combined_properties_test_model', $job->partial);

@@ -2,9 +2,9 @@
 
 namespace Tonysm\TurboLaravel\Broadcasting;
 
-use Broadcast;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Broadcast;
 use Tonysm\TurboLaravel\Facades\Turbo;
 
 class PendingBroadcast
