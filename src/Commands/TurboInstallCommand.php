@@ -33,8 +33,7 @@ class TurboInstallCommand extends Command
         if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpinejs' => '^2.8.0',
-                    'alpine-turbo-drive-adapter' => '^1.0.1',
+                    'alpinejs' => '^3.0.6',
                 ] + $packages;
             });
 
