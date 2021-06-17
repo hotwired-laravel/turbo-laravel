@@ -2,8 +2,8 @@
 
 namespace Tonysm\TurboLaravel\Tests\Models;
 
-use Bus;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Support\Facades\Bus;
 use Tonysm\TurboLaravel\Jobs\BroadcastAction;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
@@ -60,6 +60,104 @@ class BroadcastsModelTest extends TestCase
             $this->assertSame($channel, $job->channels[0]);
             $this->assertEquals('some_other_target', $job->target);
             $this->assertEquals('append', $job->action);
+            $this->assertEquals('another_partial', $job->partial);
+            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function manually_before_with_overrides()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastBefore('example_dom_id_target')
+            ->to($channel = new Channel('hello'))
+            ->partial('another_partial', ['lorem' => 'ipsum']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($channel, $job->channels[0]);
+            $this->assertEquals('example_dom_id_target', $job->target);
+            $this->assertEquals('before', $job->action);
+            $this->assertEquals('another_partial', $job->partial);
+            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function manually_after_with_overrides()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastAfter('example_dom_id_target')
+            ->to($channel = new Channel('hello'))
+            ->partial('another_partial', ['lorem' => 'ipsum']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($channel, $job->channels[0]);
+            $this->assertEquals('example_dom_id_target', $job->target);
+            $this->assertEquals('after', $job->action);
+            $this->assertEquals('another_partial', $job->partial);
+            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function manually_before_to_with_overrides()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastBeforeTo($channel = new Channel('hello'), 'example_dom_id_target')
+            ->partial('another_partial', ['lorem' => 'ipsum']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($channel, $job->channels[0]);
+            $this->assertEquals('example_dom_id_target', $job->target);
+            $this->assertEquals('before', $job->action);
+            $this->assertEquals('another_partial', $job->partial);
+            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function manually_after_to_with_overrides()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastAfterTo($channel = new Channel('hello'), 'example_dom_id_target')
+            ->partial('another_partial', ['lorem' => 'ipsum']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
+            $this->assertCount(1, $job->channels);
+            $this->assertSame($channel, $job->channels[0]);
+            $this->assertEquals('example_dom_id_target', $job->target);
+            $this->assertEquals('after', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
 

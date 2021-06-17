@@ -24,14 +24,30 @@ trait Broadcasts
     public function broadcastAppend(): PendingBroadcast
     {
         return $this->broadcastAppendTo(
-            $this->broadcastDetaultTargets()
+            $this->brodcastDefaultStreamables()
         );
     }
 
     public function broadcastPrepend(): PendingBroadcast
     {
         return $this->broadcastPrependTo(
-            $this->broadcastDetaultTargets()
+            $this->brodcastDefaultStreamables()
+        );
+    }
+
+    public function broadcastBefore(string $target): PendingBroadcast
+    {
+        return $this->broadcastBeforeTo(
+            $this->brodcastDefaultStreamables(),
+            $target
+        );
+    }
+
+    public function broadcastAfter(string $target): PendingBroadcast
+    {
+        return $this->broadcastAfterTo(
+            $this->brodcastDefaultStreamables(),
+            $target
         );
     }
 
@@ -42,7 +58,7 @@ trait Broadcasts
             : 'append';
 
         return $this->broadcastActionTo(
-            $this->broadcastDetaultTargets(),
+            $this->brodcastDefaultStreamables(),
             $action,
             Rendering::forModel($this),
         );
@@ -51,21 +67,21 @@ trait Broadcasts
     public function broadcastReplace(): PendingBroadcast
     {
         return $this->broadcastReplaceTo(
-            $this->broadcastDetaultTargets()
+            $this->brodcastDefaultStreamables()
         );
     }
 
     public function broadcastUpdate(): PendingBroadcast
     {
         return $this->broadcastUpdateTo(
-            $this->broadcastDetaultTargets()
+            $this->brodcastDefaultStreamables()
         );
     }
 
     public function broadcastRemove(): PendingBroadcast
     {
         return $this->broadcastRemoveTo(
-            $this->broadcastDetaultTargets()
+            $this->brodcastDefaultStreamables()
         );
     }
 
@@ -77,6 +93,16 @@ trait Broadcasts
     public function broadcastPrependTo($streamable): PendingBroadcast
     {
         return $this->broadcastActionTo($streamable, 'prepend', Rendering::forModel($this));
+    }
+
+    public function broadcastBeforeTo($streamable, string $target): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'before', Rendering::forModel($this), $target);
+    }
+
+    public function broadcastAfterTo($streamable, string $target): PendingBroadcast
+    {
+        return $this->broadcastActionTo($streamable, 'after', Rendering::forModel($this), $target);
     }
 
     public function broadcastReplaceTo($streamable): PendingBroadcast
@@ -94,17 +120,17 @@ trait Broadcasts
         return $this->broadcastActionTo($streamable, 'remove', Rendering::empty());
     }
 
-    protected function broadcastActionTo($streamables, string $action, Rendering $rendering): PendingBroadcast
+    protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
         return new PendingBroadcast(
             $this->toChannels(Collection::wrap($streamables)),
             $action,
-            $this->broadcastDefaultTarget($action),
+            $target ?: $this->broadcastDefaultTarget($action),
             $rendering,
         );
     }
 
-    protected function broadcastDetaultTargets()
+    protected function brodcastDefaultStreamables()
     {
         if (property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
