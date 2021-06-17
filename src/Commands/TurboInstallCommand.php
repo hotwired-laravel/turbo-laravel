@@ -15,7 +15,7 @@ class TurboInstallCommand extends Command
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                '@hotwired/turbo' => '^7.0.0-beta.5',
+                '@hotwired/turbo' => '^7.0.0-beta.7',
                 'laravel-echo' => '^1.10.0',
                 'pusher-js' => '^7.0.2',
             ] + $packages;
@@ -33,8 +33,7 @@ class TurboInstallCommand extends Command
         if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpinejs' => '^2.8.0',
-                    'alpine-turbo-drive-adapter' => '^1.0.1',
+                    'alpinejs' => '^3.0.6',
                 ] + $packages;
             });
 

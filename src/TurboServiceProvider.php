@@ -44,7 +44,7 @@ class TurboServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/turbo-laravel.php', 'turbo-laravel');
 
-        $this->app->singleton(Turbo::class);
+        $this->app->scoped(Turbo::class);
         $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
     }
 

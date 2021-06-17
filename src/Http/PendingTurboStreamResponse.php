@@ -44,6 +44,16 @@ class PendingTurboStreamResponse implements Responsable
         return $this->inserted($model, 'prepend');
     }
 
+    public function before(Model $model, string $target): self
+    {
+        return $this->inserted($model, 'before', $target);
+    }
+
+    public function after(Model $model, string $target): self
+    {
+        return $this->inserted($model, 'after', $target);
+    }
+
     public function update(Model $model): self
     {
         return $this->updated($model, 'update');
@@ -117,9 +127,9 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    private function inserted(Model $model, string $action): self
+    private function inserted(Model $model, string $action, ?string $target = null): self
     {
-        $this->useTarget = $this->getResourceNameFor($model);
+        $this->useTarget = $target ?: $this->getResourceNameFor($model);
         $this->useAction = $action;
         $this->partialView = $this->getPartialViewFor($model);
         $this->partialData = $this->getPartialDataFor($model);
