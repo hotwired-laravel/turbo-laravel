@@ -350,6 +350,44 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function before_shorthand()
+    {
+        $response = response()
+            ->turboStream()
+            ->before($testModel = TestModel::create(['name' => 'Test model']), 'example_dom_id')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'before',
+            'target' => 'example_dom_id',
+            'partial' => 'test_models._test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function after_shorthand()
+    {
+        $response = response()
+            ->turboStream()
+            ->after($testModel = TestModel::create(['name' => 'Test model']), 'example_dom_id')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'after',
+            'target' => 'example_dom_id',
+            'partial' => 'test_models._test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action()
     {
         $this->expectException(TurboStreamResponseFailedException::class);
