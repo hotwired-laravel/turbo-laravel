@@ -52,9 +52,8 @@ php artisan turbo:install --jet
 
 Then, you can run install your NPM dependencies and compile your assets normally.
 
-These are thje dependencies needed for Jetstream with Livewire to work with Turbo.js:
+These are the dependencies needed so Jetstream with Livewire works with Turbo.js:
 
-* [Alpine Turbo Bridge](https://github.com/SimoTod/alpine-turbo-drive-adapter), needed so Alpine.js works nicely; and
 * [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`)
 
 You may also optionally install [Stimulus.js](https://stimulus.hotwire.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
@@ -73,7 +72,13 @@ php artisan turbo:install --jet --stimulus
 
 The package ships with a middleware which applies some conventions on your redirects, specially around how failed validations are handled automatically by Laravel. Read more about this in the [Conventions](#conventions) section of the documentation.
 
-You may add the middleware to the "web" route group on your HTTP Kernel, like so:
+You may add the middleware to the "web" route group on your HTTP Kernel:
+
+```php
+\Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
+```
+
+Like so:
 
 ```php
 
@@ -122,7 +127,7 @@ First of all, none of these conventions are mandatory. Feel free to pick the one
 * You may want to use resource routes for most things (`posts.index`, `posts.store`, etc)
 * You may want to split your views into smaller chunks or _partials_ (small portions of HTML for specific fragments), such as `comments/_comment.blade.php` that displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these partials in [Turbo Streams](#turbo-streams)
 * Your model's partial (such as the `comments/_comment.blade.php` for a `Comment` model, for example) may only rely on having a `$comment` instance passed to it. When broadcasting your model changes and generating the Turbo Streams in background, the package will pass the model instance using the model's basename in _camelCase_ to that partial - although you can fully control this behavior
-* You may use the model's Fully Qualified Class Name, or FQCN for short, on your Broadcasting Channel authorizations with a wildcard such as `.{id}`, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter. This is now the default broadcasting channel in Laravel (see [here](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions)).
+* You may use the model's Fully Qualified Class Name, or FQCN for short, on your Broadcasting Channel authorization routes with a wildcard, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter. This is now the default broadcasting channel in Laravel (see [here](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions)).
 
 In the [Overview section](#overview) below you will see how to override most of the default behaviors, if you want to.
 
@@ -258,9 +263,10 @@ return response()->turboStream()
     ->view('comments._comment', ['comment' => $comment]);
 ```
 
-There are 5 _actions_ in Turbo Streams. They are:
+There are 7 _actions_ in Turbo Streams. They are:
 
-* `append` & `prepend`: to add the elements in the target element after the existing contents or before, respectively
+* `append` & `prepend`: to add the elements in the target element at the top or at the bottom of its contents, respectively
+* `before` & `after`: to add the elements next to the target element before or after, respectively
 * `replace`: will replace the existing element entirely with the contents of the `template` tag in the Turbo Stream
 * `update`: will keep the target and only replace the contents of it with the contents of the `template` tag in the Turbo Stream
 * `remove`: will remove the element. This one doesn't need a `<template>` tag. It accepts either an instance of a Model or the DOM ID of the element to be removed as a string.
@@ -270,6 +276,8 @@ Which means you will find shorthand methods for them all, like:
 ```php
 response()->turboStream()->append($comment);
 response()->turboStream()->prepend($comment);
+response()->turboStream()->before($comment, 'target_dom_id');
+response()->turboStream()->after($comment, 'target_dom_id');
 response()->turboStream()->replace($comment);
 response()->turboStream()->update($comment);
 response()->turboStream()->remove($comment);
@@ -397,6 +405,8 @@ Here are the methods now available to your model:
 ```php
 $comment->broadcastAppend();
 $comment->broadcastPrepend();
+$comment->broadcastBefore('target_dom_id');
+$comment->broadcastAfter('target_dom_id');
 $comment->broadcastReplace();
 $comment->broadcastUpdate();
 $comment->broadcastRemove();
@@ -407,6 +417,8 @@ These methods will assume you want to broadcast the Turbo Streams to your model'
 ```php
 $comment->broadcastAppendTo($post);
 $comment->broadcastPrependTo($post);
+$comment->broadcastBeforeTo($post, 'target_dom_id');
+$comment->broadcastAfterTo($post, 'target_dom_id');
 $comment->broadcastReplaceTo($post);
 $comment->broadcastUpdateTo($post);
 $comment->broadcastRemoveTo($post);
