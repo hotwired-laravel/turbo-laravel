@@ -10,17 +10,22 @@ class RecordIdentifier
     const NEW_PREFIX = "create";
     const DELIMITER = "_";
 
-    /** @var Model */
+    /** @var Model|TurboStreamable */
     private $record;
 
-    public function __construct(Model $record)
+    public function __construct(object $record)
     {
+        throw_if(
+            ! $this->isStreamable($record),
+            sprintf('[%s] must be an instance of Eloquent or TurboStreamable.', get_class($record))
+        );
+
         $this->record = $record;
     }
 
     public function domId(?string $prefix = null): string
     {
-        if ($recordId = $this->record->getKey()) {
+        if ($recordId = $this->streamableKey()) {
             return sprintf('%s%s%s', $this->domClass($prefix), self::DELIMITER, $recordId);
         }
 
@@ -33,5 +38,21 @@ class RecordIdentifier
         $delimiter = static::DELIMITER;
 
         return trim("{$prefix}{$delimiter}{$singular}", $delimiter);
+    }
+
+    protected function streamableKey(): ?string
+    {
+        if ($this->record instanceof Model) {
+            return $this->record->getKey();
+        }
+
+        if ($this->record instanceof TurboStreamable) {
+            return $this->record->getDomId();
+        }
+    }
+
+    protected function isStreamable($record): bool
+    {
+        return $record instanceof Model || $record instanceof TurboStreamable;
     }
 }

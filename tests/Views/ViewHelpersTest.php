@@ -52,6 +52,18 @@ class ViewHelpersTest extends TestCase
     }
 
     /** @test */
+    public function renders_streamable_dom_id()
+    {
+        $testStreamable = new Models\TestTurboStreamable;
+
+        $renderedDomId = View::file(__DIR__ . '/../Stubs/views/domid.blade.php', ['model' => $testStreamable])->render();
+        $renderedDomIdWithPrefix = View::file(__DIR__ . '/../Stubs/views/domid_with_prefix.blade.php', ['model' => $testStreamable])->render();
+
+        $this->assertEquals('<div id="test_turbo_streamable_turbo-dom-id"></div>', trim($renderedDomId));
+        $this->assertEquals('<div id="favorites_test_turbo_streamable_turbo-dom-id"></div>', trim($renderedDomIdWithPrefix));
+    }
+
+    /** @test */
     public function renders_dom_class()
     {
         $testModel = Models\TestModel::create(['name' => 'lorem']);
@@ -63,6 +75,18 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div class="test_model"></div>', trim($renderedDomClass));
         $this->assertEquals('<div class="favorites_test_model"></div>', trim($renderedDomClassWithPrefix));
         $this->assertEquals('<div class="test_model"></div>', trim($rendersDomClassOfNewModel));
+    }
+
+    /** @test */
+    public function renders_streamable_dom_class()
+    {
+        $testModel = new Models\TestTurboStreamable;
+
+        $renderedDomClass = View::file(__DIR__ . '/../Stubs/views/domclass.blade.php', ['model' => $testModel])->render();
+        $renderedDomClassWithPrefix = View::file(__DIR__ . '/../Stubs/views/domclass_with_prefix.blade.php', ['model' => $testModel])->render();
+
+        $this->assertEquals('<div class="test_turbo_streamable"></div>', trim($renderedDomClass));
+        $this->assertEquals('<div class="favorites_test_turbo_streamable"></div>', trim($renderedDomClassWithPrefix));
     }
 
     /** @test */

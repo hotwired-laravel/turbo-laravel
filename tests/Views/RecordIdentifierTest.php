@@ -17,7 +17,6 @@ class RecordIdentifierTest extends TestCase
 
         $this->model = new TestModel(['name' => 'Hello']);
         $this->singular = "test_model";
-        $this->plural = "test_models";
     }
 
     /** @test */
