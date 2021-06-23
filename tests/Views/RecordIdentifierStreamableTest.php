@@ -2,11 +2,11 @@
 
 namespace Tonysm\TurboLaravel\Tests\Views;
 
-use RuntimeException;
 use stdClass;
+use Tonysm\TurboLaravel\Tests\Stubs\Models\TestTurboStreamable;
 use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestTurboStreamable;
 use Tonysm\TurboLaravel\Views\RecordIdentifier;
+use Tonysm\TurboLaravel\Views\UnidentifiableRecordException;
 
 class RecordIdentifierStreamableTest extends TestCase
 {
@@ -32,12 +32,11 @@ class RecordIdentifierStreamableTest extends TestCase
     {
         $this->assertEquals("custom_prefix_{$this->singular}_turbo-dom-id", (new RecordIdentifier($this->streamable))->domId("custom_prefix"));
     }
-    
+
     /** @test */
     public function exception_is_thrown_when_given_non_streamable_instance()
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('[stdClass] must be an instance of Eloquent or TurboStreamable.');
+        $this->expectException(UnidentifiableRecordException::class);
 
         new RecordIdentifier(new stdClass);
     }

@@ -2,11 +2,9 @@
 
 namespace Tonysm\TurboLaravel\Tests\Stubs\Models;
 
-use Tonysm\TurboLaravel\Views\TurboStreamable;
-
-class TestTurboStreamable implements TurboStreamable
+class TestTurboStreamable
 {
-    public function getDomId()
+    public function getKey()
     {
         return 'turbo-dom-id';
     }
