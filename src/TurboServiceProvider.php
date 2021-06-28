@@ -15,7 +15,7 @@ use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Httpclass\PendingTurboStreamResponse;
+use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 
