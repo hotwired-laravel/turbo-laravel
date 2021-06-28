@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Illuminate\View\View;
+use PHPUnit\Framework\Assert;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
+use Tonysm\TurboLaravel\Httpclass\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 
 class TurboServiceProvider extends ServiceProvider
@@ -38,6 +40,7 @@ class TurboServiceProvider extends ServiceProvider
 
         $this->bindBladeMacros();
         $this->bindRequestAndResponseMacros();
+        $this->bindTestResponseMacros();
     }
 
     public function register()
@@ -91,6 +94,27 @@ class TurboServiceProvider extends ServiceProvider
 
         Request::macro('wantsTurboStream', function () {
             return Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT);
+        });
+    }
+
+    protected function bindTestResponseMacros()
+    {
+        if (! app()->environment('testing')) {
+            return;
+        }
+
+        TestResponse::macro('assertTurboStream', function () {
+            Assert::assertStringContainsString(
+                Turbo::TURBO_STREAM_FORMAT,
+                $this->headers->get('Content-Type'),
+            );
+        });
+
+        TestResponse::macro('assertNotTurboStream', function () {
+            Assert::assertStringNotContainsString(
+                Turbo::TURBO_STREAM_FORMAT,
+                $this->headers->get('Content-Type'),
+            );
         });
     }
 }
