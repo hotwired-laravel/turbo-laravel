@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel\Tests\Http;
 
 use Illuminate\Support\Facades\View;
+use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboStreamResponseTest extends TestCase
@@ -33,5 +34,14 @@ class TurboStreamResponseTest extends TestCase
 
         $this->get(route('testing.non-turbo-stream'))
             ->assertNotTurboStream();
+    }
+
+    /** @test */
+    public function turbo_assert_count_of_turbo_streams()
+    {
+        $this->get(route('testing.turbo-stream'))
+            ->assertTurboStream(fn (AssertableTurboStream $turboStream) => (
+                $turboStream->has(3)
+            ));
     }
 }

@@ -17,6 +17,7 @@ use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Httpclass\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
+use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 
 class TurboServiceProvider extends ServiceProvider
 {
@@ -103,11 +104,17 @@ class TurboServiceProvider extends ServiceProvider
             return;
         }
 
-        TestResponse::macro('assertTurboStream', function () {
+        TestResponse::macro('assertTurboStream', function (callable $callback = null) {
             Assert::assertStringContainsString(
                 Turbo::TURBO_STREAM_FORMAT,
                 $this->headers->get('Content-Type'),
             );
+
+            if ($callback === null) {
+                return;
+            }
+
+            $callback(new AssertableTurboStream($this));
         });
 
         TestResponse::macro('assertNotTurboStream', function () {
