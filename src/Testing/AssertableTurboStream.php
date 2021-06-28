@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Testing;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
@@ -23,10 +24,40 @@ class AssertableTurboStream
         return $this;
     }
 
-    public function parsed(): Collection
+    public function hasTurboStream(Closure $callback): self
     {
-        return $this->parsedCollection ??= collect(json_decode(json_encode(simplexml_load_string(<<<XML
-<xml>{$this->response->content()}</xml>
-XML)), true)['turbo-stream']);
+        $attrs = collect();
+
+        $matches = $this->parsed()
+            ->mapInto(TurboStreamMatcher::class)
+            ->filter(function ($matcher) use ($callback, $attrs) {
+                if (! $matcher->matches($callback)) {
+                    $attrs->add($matcher->attrs());
+
+                    return false;
+                }
+
+                return true;
+            });
+
+        Assert::assertTrue(
+            $matches->count() === 1,
+            sprintf(
+                'Expected to find a matching Turbo Stream for `%s`, but %s',
+                $attrs->unique()->join(' '),
+                trans_choice('{0} none was found.|[2,*] :count were found.', $matches->count()),
+            )
+        );
+
+        return $this;
+    }
+
+    private function parsed(): Collection
+    {
+        $parsed = simplexml_load_string(<<<XML
+        <xml>{$this->response->content()}</xml>
+        XML);
+
+        return $this->parsedCollection ??= collect(json_decode(json_encode($parsed), true)['turbo-stream']);
     }
 }

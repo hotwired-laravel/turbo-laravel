@@ -44,4 +44,27 @@ class TurboStreamResponseTest extends TestCase
                 $turboStream->has(3)
             ));
     }
+
+    /** @test */
+    public function turbo_assert_has_turbo_stream()
+    {
+        $this->get(route('testing.turbo-stream'))
+            ->assertTurboStream(fn (AssertableTurboStream $turboStreams) => (
+                $turboStreams->has(3)
+                && $turboStreams->hasTurboStream(fn ($turboStream) => (
+                    $turboStream->where('target', 'posts')
+                                ->where('action', 'append')
+                                ->see('Post Title')
+                ))
+                && $turboStreams->hasTurboStream(fn ($turboStream) => (
+                    $turboStream->where('target', 'inline_post_123')
+                                ->where('action', 'replace')
+                                ->see('Inline Post Title')
+                ))
+                && $turboStreams->hasTurboStream(fn ($turboStream) => (
+                    $turboStream->where('target', 'empty_posts')
+                                ->where('action', 'remove')
+                ))
+            ));
+    }
 }

@@ -1,6 +1,6 @@
 <turbo-stream target="posts" action="append">
     <template>
-        <div>
+        <div id="post_123">
             <h1>Post Title</h1>
             <p>Lorem Ipsum</p>
         </div>
@@ -15,4 +15,4 @@
     </template>
 </turbo-stream>
 
-<turbo-stream target="empty_posts" action="remote"></turbo-stream>
+<turbo-stream target="empty_posts" action="remove"></turbo-stream>
