@@ -18,7 +18,7 @@
 <a name="introduction"></a>
 ## Introduction
 
-This package gives you a set of conventions to make the most out of [Hotwire](https://hotwire.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem).
+This package gives you a set of conventions to make the most out of [Hotwire](https://hotwired.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem).
 
 There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions.
 
@@ -56,7 +56,7 @@ These are the dependencies needed so Jetstream with Livewire works with Turbo.js
 
 * [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`)
 
-You may also optionally install [Stimulus.js](https://stimulus.hotwire.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
+You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
 
 ```bash
 php artisan turbo:install --stimulus
@@ -102,7 +102,7 @@ Keep reading the documentation to have a full picture on how you can make the mo
 <a name="documentation"></a>
 ## Documentation
 
-It's highly recommended reading the [Turbo Handbook](https://turbo.hotwire.dev/). Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight integration with Laravel. We can generate [Turbo Streams](#turbo-streams) from your models and either [return them from HTTP responses](#turbo-stream-request-macro) or *broadcast* your model changes over [WebSockets using Laravel Echo](#turbo-streams-and-laravel-echo).
+It's highly recommended reading the [Turbo Handbook](https://turbo.hotwired.dev/). Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight integration with Laravel. We can generate [Turbo Streams](#turbo-streams) from your models and either [return them from HTTP responses](#turbo-stream-request-macro) or *broadcast* your model changes over [WebSockets using Laravel Echo](#turbo-streams-and-laravel-echo).
 
 * [Conventions](#conventions)
 * [Overview](#overview)
@@ -134,7 +134,7 @@ In the [Overview section](#overview) below you will see how to override most of 
 <a name="overview"></a>
 ### Overview
 
-Once the assets are compiled, you will have Turbo-specific custom HTML tags that you may annotate your views with (Turbo Frames and Turbo Streams). This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwire.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
+Once the assets are compiled, you will have Turbo-specific custom HTML tags that you may annotate your views with (Turbo Frames and Turbo Streams). This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
 
 <a name="notes-on-turbo-drive-and-turbo-frames"></a>
 ### Notes on Turbo Drive and Turbo Frames
@@ -143,7 +143,7 @@ To keep it short, Turbo Drive will turn links and form submissions into AJAX req
 
 If you want some elements to persist across these navigations, you may annotate these elements with a DOM ID and add the `data-turbo-permanent` custom attribute to them. As long as the response also contains an element with the same ID and `data-turbo-permanent`, Turbo will not touch it.
 
-Sometimes you don't want the entire page to change, but instead just a portion of the page. That's what [Turbo Frames](https://turbo.hotwire.dev/handbook/frames) are all about. Links and Form submissions that are trapped inside a Turbo Frame tag (or that point to one!) will instruct Turbo Drive to **NOT** replace the entire body of the document, but instead to look for a matching Turbo Frame in the response using its DOM ID and replace that specific portion of the page.
+Sometimes you don't want the entire page to change, but instead just a portion of the page. That's what [Turbo Frames](https://turbo.hotwired.dev/handbook/frames) are all about. Links and Form submissions that are trapped inside a Turbo Frame tag (or that point to one!) will instruct Turbo Drive to **NOT** replace the entire body of the document, but instead to look for a matching Turbo Frame in the response using its DOM ID and replace that specific portion of the page.
 
 Here's how you can use Turbo Frames:
 
@@ -283,7 +283,7 @@ response()->turboStream()->update($comment);
 response()->turboStream()->remove($comment);
 ```
 
-You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwire.dev/handbook/streams).
+You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwired.dev/handbook/streams).
 
 These shorthand methods return a pending object for the response which you can chain and override everything you want on it:
 
@@ -679,7 +679,7 @@ You may also catch the `ValidationException` and return a non-200 response, if y
 <a name="turbo-native"></a>
 ### Turbo Native
 
-Hotwire also has a [mobile side](https://turbo.hotwire.dev/handbook/native), and the package provides some goodies on this front too.
+Hotwire also has a [mobile side](https://turbo.hotwired.dev/handbook/native), and the package provides some goodies on this front too.
 
 Turbo Visits made by a Turbo Native client will send a custom `User-Agent` header. So we added another Blade helper you may use to toggle fragments or assets (such as mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a Web app:
 
