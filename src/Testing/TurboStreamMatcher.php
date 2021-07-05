@@ -9,11 +9,13 @@ use Illuminate\Testing\TestResponse;
 
 class TurboStreamMatcher
 {
+    private $turboStream;
     private array $wheres = [];
     private array $contents = [];
 
-    public function __construct(public $turboStream)
+    public function __construct($turboStream)
     {
+        $this->turboStream = $turboStream;
     }
 
     public function where(string $prop, string $value): self
