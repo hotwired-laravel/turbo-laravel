@@ -54,10 +54,14 @@ class AssertableTurboStream
 
     private function parsed(): Collection
     {
-        $parsed = simplexml_load_string(<<<XML
-        <xml>{$this->response->content()}</xml>
-        XML);
+        if (! isset($this->parsedCollection)) {
+            $parsed = simplexml_load_string(<<<XML
+            <xml>{$this->response->content()}</xml>
+            XML);
 
-        return $this->parsedCollection ??= collect(json_decode(json_encode($parsed), true)['turbo-stream']);
+            $this->parsedCollection = collect(json_decode(json_encode($parsed), true)['turbo-stream']);
+        }
+
+        return $this->parsedCollection;
     }
 }
