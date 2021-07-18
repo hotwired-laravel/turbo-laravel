@@ -806,7 +806,7 @@ public function create_todos()
 
 #### Testing Turbo Stream Broadcasts
 
-Every broadcast will be dispatched using the `Tonysm\TurboLaravel\Jobs\BroadcastAction` job (either to a worker or to process immediately). You may also use that to test your broadcasts like so:
+Every broadcast will be dispatched using the `Tonysm\TurboLaravel\Jobs\BroadcastAction` job (either to a worker or process synchronously). You may also use that to test your broadcasts like so:
 
 ```php
 use App\Models\Todo;
