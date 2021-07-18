@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Testing\TestResponse;
+use Illuminate\View\ComponentAttributeBag;
 
 class TurboStreamMatcher
 {
@@ -88,15 +89,28 @@ class TurboStreamMatcher
         $content = '';
 
         foreach ($tags as $tag => $contents) {
-            $attrs = trim(collect($contents['@attributes'] ?? [])
-                ->reduce(fn ($acc, $val, $prop) => $acc . ' ' . sprintf('%s="%s"', $prop, $val), ''));
+            $attrs = new ComponentAttributeBag($contents['@attributes'] ?? []);
 
             $strContent = $this->makeElements(is_array($contents) ? Arr::except($contents, '@attributes') : $contents);
-            $opening = trim(sprintf('%s %s', $tag, $attrs));
+            $opening = trim(sprintf('%s %s', $tag, $attrs->toHtml()));
 
-            $content .= "<{$opening}>{$strContent}</{$tag}>";
+            if ($this->isSelfClosingTag($tag)) {
+                $content .= $tag === 'br' ? "<{$opening}>": "<{$opening} />";
+            } else {
+                $content .= "<{$opening}>{$strContent}</{$tag}>";
+            }
         }
 
         return $content;
+    }
+
+    private function isSelfClosingTag(string $tag): bool
+    {
+        return in_array($tag, [
+            'input',
+            'img',
+            'br',
+            'source',
+        ]);
     }
 }
