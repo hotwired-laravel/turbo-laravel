@@ -781,7 +781,7 @@ class TodosController
 
 #### Fluent Turbo Stream Testing
 
-You can get specific on your Turbo Stream responses by passing a callback to the `assertTurboStream(fn)` method. This can be used to test that you have a specific Turbo Stream tag being returned, or that you're returning exactly 3 Turbo Stream tags, for instance:
+You can get specific on your Turbo Stream responses by passing a callback to the `assertTurboStream(fn)` method. This can be used to test that you have a specific Turbo Stream tag being returned, or that you're returning exactly 2 Turbo Stream tags, for instance:
 
 ```php
 /** @test */
