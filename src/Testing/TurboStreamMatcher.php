@@ -95,7 +95,7 @@ class TurboStreamMatcher
             $opening = trim(sprintf('%s %s', $tag, $attrs->toHtml()));
 
             if ($this->isSelfClosingTag($tag)) {
-                $content .= $tag === 'br' ? "<{$opening}>": "<{$opening} />";
+                $content .= "<{$opening} />";
             } else {
                 $content .= "<{$opening}>{$strContent}</{$tag}>";
             }
