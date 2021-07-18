@@ -725,7 +725,7 @@ To mimic Turbo requests, which means sending a request setting the correct Conte
 
 These methods are handy when you are conditionally returning Turbo Stream responses based on the `request()->wantsTurboStream()` helper, for instance. Or when using the `@turbonative` or `@unlessturbonative` Blade directives.
 
-### Testing Turbo Stream HTTP Responses
+#### Testing Turbo Stream HTTP Responses
 
 You can test if you got a Turbo Stream response by using the `assertTurboStream`. Similarly, you can assert that your response is _not_ a Turbo Stream response by using the `assertNotTurboStream()` macro:
 
