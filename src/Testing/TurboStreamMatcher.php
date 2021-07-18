@@ -48,8 +48,7 @@ class TurboStreamMatcher
 
     public function attrs(): string
     {
-        return trim(collect($this->wheres)
-            ->reduce(fn ($acc, $val, $prop) => $acc . ' ' . sprintf('%s="%s"', $prop, $val), ''));
+        return $this->makeAttributes($this->wheres);
     }
 
     private function matchesProps()
@@ -80,6 +79,11 @@ class TurboStreamMatcher
         return true;
     }
 
+    private function makeAttributes(array $attributes): string
+    {
+        return (new ComponentAttributeBag($attributes))->toHtml();
+    }
+
     private function makeElements($tags)
     {
         if (is_string($tags)) {
@@ -89,10 +93,10 @@ class TurboStreamMatcher
         $content = '';
 
         foreach ($tags as $tag => $contents) {
-            $attrs = new ComponentAttributeBag($contents['@attributes'] ?? []);
+            $attrs = $this->makeAttributes($contents['@attributes'] ?? []);
 
             $strContent = $this->makeElements(is_array($contents) ? Arr::except($contents, '@attributes') : $contents);
-            $opening = trim(sprintf('%s %s', $tag, $attrs->toHtml()));
+            $opening = trim(sprintf('%s %s', $tag, $attrs));
 
             if ($this->isSelfClosingTag($tag)) {
                 $content .= "<{$opening} />";
