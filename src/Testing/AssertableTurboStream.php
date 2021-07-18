@@ -15,20 +15,21 @@ class AssertableTurboStream
     public function __construct(TestResponse $response)
     {
         $this->response = $response;
+        $this->parsedCollection = (new ConvertTestResponseToTurboStreamCollection)($response);
     }
 
     public function has(int $expectedTurboStreamsCount): self
     {
-        Assert::assertCount($expectedTurboStreamsCount, $this->parsed());
+        Assert::assertCount($expectedTurboStreamsCount, $this->parsedCollection);
 
         return $this;
     }
 
-    public function hasTurboStream(Closure $callback): self
+    public function hasTurboStream(Closure $callback = null): self
     {
         $attrs = collect();
 
-        $matches = $this->parsed()
+        $matches = $this->parsedCollection
             ->mapInto(TurboStreamMatcher::class)
             ->filter(function ($matcher) use ($callback, $attrs) {
                 if (! $matcher->matches($callback)) {
@@ -50,18 +51,5 @@ class AssertableTurboStream
         );
 
         return $this;
-    }
-
-    private function parsed(): Collection
-    {
-        if (! isset($this->parsedCollection)) {
-            $parsed = simplexml_load_string(<<<XML
-            <xml>{$this->response->content()}</xml>
-            XML);
-
-            $this->parsedCollection = collect(json_decode(json_encode($parsed), true)['turbo-stream']);
-        }
-
-        return $this->parsedCollection;
     }
 }

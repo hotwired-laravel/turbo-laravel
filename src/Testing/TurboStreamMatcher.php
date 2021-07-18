@@ -32,9 +32,11 @@ class TurboStreamMatcher
         return $this;
     }
 
-    public function matches(Closure $callback): bool
+    public function matches(Closure $callback = null): bool
     {
-        $callback($this);
+        if ($callback) {
+            $callback($this);
+        }
 
         if (! $this->matchesProps()) {
             return false;
