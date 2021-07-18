@@ -4,23 +4,21 @@ namespace Tonysm\TurboLaravel\Testing;
 
 use Closure;
 use Illuminate\Support\Collection;
-use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
 
 class AssertableTurboStream
 {
-    public TestResponse $response;
-    public Collection $parsedCollection;
+    /** @var Collection */
+    public $turboStreams;
 
-    public function __construct(TestResponse $response)
+    public function __construct(Collection $turboStreams)
     {
-        $this->response = $response;
-        $this->parsedCollection = (new ConvertTestResponseToTurboStreamCollection)($response);
+        $this->turboStreams = $turboStreams;
     }
 
     public function has(int $expectedTurboStreamsCount): self
     {
-        Assert::assertCount($expectedTurboStreamsCount, $this->parsedCollection);
+        Assert::assertCount($expectedTurboStreamsCount, $this->turboStreams);
 
         return $this;
     }
@@ -29,7 +27,7 @@ class AssertableTurboStream
     {
         $attrs = collect();
 
-        $matches = $this->parsedCollection
+        $matches = $this->turboStreams
             ->mapInto(TurboStreamMatcher::class)
             ->filter(function ($matcher) use ($callback, $attrs) {
                 if (! $matcher->matches($callback)) {

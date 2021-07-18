@@ -18,6 +18,7 @@ use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
+use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
 
 class TurboServiceProvider extends ServiceProvider
 {
@@ -114,7 +115,8 @@ class TurboServiceProvider extends ServiceProvider
                 return;
             }
 
-            $callback(new AssertableTurboStream($this));
+            $turboStreams = (new ConvertTestResponseToTurboStreamCollection)($this);
+            $callback(new AssertableTurboStream($turboStreams));
         });
 
         TestResponse::macro('assertNotTurboStream', function () {
