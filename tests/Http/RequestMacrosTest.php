@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel\Tests\Http;
 
 use Illuminate\Http\Request;
+use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Turbo;
 
@@ -19,5 +20,15 @@ class RequestMacrosTest extends TestCase
             'Accept' => Turbo::TURBO_STREAM_FORMAT.', text/html, application/xhtml+xml',
         ]);
         $this->assertTrue($request->wantsTurboStream(), 'Expected request to want a turbo stream response, but it did not.');
+    }
+
+    /** @test */
+    public function was_from_turbo_stream()
+    {
+        $request = Request::create('/hello');
+        $this->assertFalse($request->wasFromTurboNative());
+
+        TurboFacade::setVisitingFromTurboNative();
+        $this->assertTrue($request->wasFromTurboNative());
     }
 }
