@@ -23,7 +23,7 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
-    public function was_from_turbo_stream()
+    public function was_from_turbo_native()
     {
         $request = Request::create('/hello');
         $this->assertFalse($request->wasFromTurboNative());
