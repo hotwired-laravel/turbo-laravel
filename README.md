@@ -697,13 +697,21 @@ Alternatively, you can check if it's not a Turbo Native visit using the `@unless
 @endunlessturbonative
 ```
 
-You may also check if the request was made from a Turbo Native visit using the TurboFacade, like so:
+You may also check if the request was made from a Turbo Native visit using the request macro:
+
+```php
+if (request()->wasFromTurboNative()) {
+    // ...
+}
+```
+
+Or the Turbo Facade directly, like so:
 
 ```php
 use Tonysm\TurboLaravel\Facades\Turbo;
 
 if (Turbo::isTurboNativeVisit()) {
-    // Do something for mobile specific requests.
+    // ...
 }
 ```
 

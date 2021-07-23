@@ -97,6 +97,10 @@ class TurboServiceProvider extends ServiceProvider
         Request::macro('wantsTurboStream', function () {
             return Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT);
         });
+
+        Request::macro('wasFromTurboNative', function () {
+            return TurboFacade::isTurboNativeVisit();
+        });
     }
 
     protected function bindTestResponseMacros()
