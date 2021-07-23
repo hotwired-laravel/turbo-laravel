@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel\Testing;
 
+use DOMDocument;
 use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 
@@ -9,10 +10,17 @@ class ConvertTestResponseToTurboStreamCollection
 {
     public function __invoke(TestResponse $response): Collection
     {
-        $parsed = simplexml_load_string(<<<XML
-        <xml>{$response->content()}</xml>
-        XML);
+        libxml_use_internal_errors(true);
+        $document = tap(new DOMDocument())->loadHTML($response->content());
+        $elements = $document->getElementsByTagName('turbo-stream');
 
-        return collect(json_decode(json_encode($parsed), true)['turbo-stream']);
+        $streams = collect();
+
+        /** @var \DOMElement $element */
+        foreach ($elements as $element) {
+            $streams->push($element);
+        }
+
+        return $streams;
     }
 }

@@ -3,18 +3,18 @@
 namespace Tonysm\TurboLaravel\Testing;
 
 use Closure;
-use Illuminate\Http\Response;
-use Illuminate\Support\Arr;
-use Illuminate\Testing\TestResponse;
+use DOMElement;
 use Illuminate\View\ComponentAttributeBag;
+use PHPUnit\Framework\Assert;
 
 class TurboStreamMatcher
 {
+    /** @var \DOMElement */
     private $turboStream;
     private array $wheres = [];
     private array $contents = [];
 
-    public function __construct($turboStream)
+    public function __construct(DOMElement $turboStream)
     {
         $this->turboStream = $turboStream;
     }
@@ -70,9 +70,9 @@ class TurboStreamMatcher
     private function matchesProps()
     {
         foreach ($this->wheres as $prop => $value) {
-            $actualProp = $this->turboStream['@attributes'][$prop] ?? false;
+            $propValue = $this->turboStream->getAttribute($prop);
 
-            if ($actualProp === false || $actualProp !== $value) {
+            if (! $propValue || $propValue !== $value) {
                 return false;
             }
         }
@@ -86,55 +86,27 @@ class TurboStreamMatcher
             return true;
         }
 
-        // To assert that the Turbo Stream contains the desired text, we first need to
-        // rebuild the markup from the response. This is because we had to parse the
-        // HTML before getting here so we could assert each Turbo Stream separately.
-
-        $content = new TestResponse(new Response($this->makeElements($this->turboStream['template'] ?? [])));
-
-        foreach ($this->contents as $expectedContent) {
-            $content->assertSee($expectedContent);
+        foreach ($this->contents as $content) {
+            Assert::assertStringContainsString($content, $this->renderElement());
         }
 
         return true;
     }
 
+    private function renderElement(): string
+    {
+        $html = '';
+        $children = $this->turboStream->childNodes;
+
+        foreach ($children as $child) {
+            $html .= $child->ownerDocument->saveXML($child);
+        }
+
+        return $html;
+    }
+
     private function makeAttributes(array $attributes): string
     {
         return (new ComponentAttributeBag($attributes))->toHtml();
-    }
-
-    private function makeElements($tags)
-    {
-        if (is_string($tags)) {
-            return $tags;
-        }
-
-        $content = '';
-
-        foreach ($tags as $tag => $contents) {
-            $attrs = $this->makeAttributes($contents['@attributes'] ?? []);
-
-            $strContent = $this->makeElements(is_array($contents) ? Arr::except($contents, '@attributes') : $contents);
-            $opening = trim(sprintf('%s %s', $tag, $attrs));
-
-            if ($this->isSelfClosingTag($tag)) {
-                $content .= "<{$opening} />";
-            } else {
-                $content .= "<{$opening}>{$strContent}</{$tag}>";
-            }
-        }
-
-        return $content;
-    }
-
-    private function isSelfClosingTag(string $tag): bool
-    {
-        return in_array($tag, [
-            'input',
-            'img',
-            'br',
-            'source',
-        ]);
     }
 }
