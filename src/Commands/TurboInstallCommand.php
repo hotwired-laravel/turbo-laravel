@@ -15,7 +15,7 @@ class TurboInstallCommand extends Command
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                '@hotwired/turbo' => '^7.0.0-beta.8',
+                '@hotwired/turbo' => '^7.0.0-rc.1',
                 'laravel-echo' => '^1.10.0',
                 'pusher-js' => '^7.0.2',
             ] + $packages;
