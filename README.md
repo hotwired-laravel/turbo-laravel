@@ -44,7 +44,7 @@ npm install
 npm run dev
 ```
 
-If you are Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also changes a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
+If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also changes a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
 
 ```bash
 php artisan turbo:install --jet
