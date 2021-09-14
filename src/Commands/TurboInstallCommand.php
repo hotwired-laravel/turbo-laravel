@@ -3,28 +3,31 @@
 namespace Tonysm\TurboLaravel\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class TurboInstallCommand extends Command
 {
-    public $signature = 'turbo:install {--jet} {--stimulus : To install Stimulus or not.}';
-    public $description = 'Install the Turbo resources';
+    const ALPINE_COMMENT = '//=inject-alpine';
+    const STIMULUS_COMMENT = '//=inject-stimulus';
+
+    public $signature = 'turbo:install {--jet : To add the Alpine bridges.} {--stimulus : To add Stimulus as an NPM dependency.}';
+    public $description = 'Install Turbo.js assets.';
 
     public function handle()
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                '@hotwired/turbo' => '^7.0.0-rc.1',
-                'laravel-echo' => '^1.10.0',
-                'pusher-js' => '^7.0.2',
+                '@hotwired/turbo' => '^7.0.0-rc.3',
+                'laravel-echo' => '^1.11.2',
+                'pusher-js' => '^7.0.3',
             ] + $packages;
         });
 
         if ($this->option('stimulus')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'stimulus' => '^2.0.0',
+                    '@hotwired/stimulus' => '^3.0.0-beta.2',
                     '@stimulus/webpack-helpers' => '^2.0.0',
                 ] + $packages;
             });
@@ -37,42 +40,65 @@ class TurboInstallCommand extends Command
                 ] + $packages;
             });
 
-            if ((new Filesystem())->exists(resource_path('views/layouts/app.blade.php'))) {
+            if (File::exists(resource_path('views/layouts/app.blade.php'))) {
                 $this->updateJetstreamLayouts();
             }
         }
 
         // JS scaffold...
-        (new Filesystem())->ensureDirectoryExists(resource_path('js/elements'));
+        File::ensureDirectoryExists(resource_path('js/elements'));
 
-        copy(__DIR__ . '/../../stubs/resources/js/app.js', resource_path('js/app.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/app.js', resource_path('js/app.js'));
 
-        $this->replaceJsStub(
-            resource_path('js/app.js'),
-            '//=inject-alpine',
-            $this->option('jet')
-                ? (new Filesystem())->get(__DIR__ . '/../../stubs/resources/js/alpine.js')
-                : ''
-        );
-
-        $this->replaceJsStub(
-            resource_path('js/app.js'),
-            '//=inject-stimulus',
-            $this->option('stimulus')
-                ? (new Filesystem())->get(__DIR__ . '/../../stubs/resources/js/stimulus.js')
-                : ''
-        );
-
-        copy(__DIR__ . '/../../stubs/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
-        copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
+        if ($this->option('jet')) {
+            $this->injectAlpine();
+        } else {
+            $this->removeJsPlaceholder(self::ALPINE_COMMENT);
+        }
 
         if ($this->option('stimulus')) {
-            (new Filesystem())->ensureDirectoryExists(resource_path('js/controllers'));
-            copy(__DIR__ . '/../../stubs/resources/js/controllers/hello_controller.js', resource_path('js/controllers/hello_controller.js'));
+            $this->injectStimulus();
+        } else {
+            $this->removeJsPlaceholder(self::STIMULUS_COMMENT);
+        }
+
+        File::copy(__DIR__ . '/../../stubs/resources/js/bootstrap.js', resource_path('js/bootstrap.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
+
+        if ($this->option('stimulus')) {
+            File::ensureDirectoryExists(resource_path('js/controllers'));
+            File::copy(__DIR__ . '/../../stubs/resources/js/controllers/hello_controller.js', resource_path('js/controllers/hello_controller.js'));
         }
 
         $this->info('Turbo Laravel scaffolding installed successfully.');
         $this->comment('Please execute the "npm install && npm run dev" command to build your assets.');
+    }
+
+    private function injectAlpine(): void
+    {
+        $this->replaceJsStub(
+            resource_path('js/app.js'),
+            self::ALPINE_COMMENT,
+            File::get(__DIR__ . '/../../stubs/resources/js/alpine.js')
+        );
+    }
+
+    private function removeJsPlaceholder(string $placeholder): void
+    {
+        $lines = File::lines(resource_path('js/app.js'))
+            ->filter(fn (string $line) => ! Str::contains($line, $placeholder))
+            ->implode(PHP_EOL);
+
+        File::put(resource_path('js/app.js'), $lines);
+    }
+
+    private function injectStimulus(): void
+    {
+        $this->replaceJsStub(
+            resource_path('js/app.js'),
+            self::STIMULUS_COMMENT,
+            File::get(__DIR__ . '/../../stubs/resources/js/stimulus.js')
+        );
     }
 
     /**
@@ -84,13 +110,13 @@ class TurboInstallCommand extends Command
      */
     protected static function updateNodePackages(callable $callback, $dev = true)
     {
-        if (! file_exists(base_path('package.json'))) {
+        if (! File::exists(base_path('package.json'))) {
             return;
         }
 
         $configurationKey = $dev ? 'devDependencies' : 'dependencies';
 
-        $packages = json_decode(file_get_contents(base_path('package.json')), true);
+        $packages = json_decode(File::get(base_path('package.json')), true);
 
         $packages[$configurationKey] = $callback(
             array_key_exists($configurationKey, $packages) ? $packages[$configurationKey] : [],
@@ -99,7 +125,7 @@ class TurboInstallCommand extends Command
 
         ksort($packages[$configurationKey]);
 
-        file_put_contents(
+        File::put(
             base_path('package.json'),
             json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
         );
@@ -107,24 +133,20 @@ class TurboInstallCommand extends Command
 
     private function replaceJsStub(string $inFile, string $lookFor, string $replaceWith): void
     {
-        (new Filesystem())->put(
+        File::put(
             $inFile,
-            (string)Str::of((new Filesystem())->get($inFile))
-                ->replace(
-                    $lookFor,
-                    $replaceWith
-                )
+            (string) Str::of(File::get($inFile))->replace($lookFor, $replaceWith)
         );
     }
 
     private function updateJetstreamLayouts(): void
     {
-        (new Filesystem())->put(
+        File::put(
             resource_path('views/layouts/app.blade.php'),
             str_replace(
                 '        @livewireScripts',
                 "        @livewireScripts\n" . '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>',
-                (new Filesystem())->get(resource_path('views/layouts/app.blade.php'))
+                File::get(resource_path('views/layouts/app.blade.php'))
             )
         );
 
@@ -132,24 +154,24 @@ class TurboInstallCommand extends Command
         // Livewire and Alpine don't seem to play well with Turbo Drive when it
         // was already started, as app.js is loaded in the guests layout too.
 
-        (new Filesystem())->put(
+        File::put(
             resource_path('views/layouts/guest.blade.php'),
             str_replace(
                 '        <link rel="stylesheet" href="{{ mix(\'css/app.css\') }}">',
                 '        <link rel="stylesheet" href="{{ mix(\'css/app.css\') }}">' .
                 "\n        @livewireStyles",
-                (new Filesystem())->get(resource_path('views/layouts/guest.blade.php'))
+                File::get(resource_path('views/layouts/guest.blade.php'))
             )
         );
 
-        (new Filesystem())->put(
+        File::put(
             resource_path('views/layouts/guest.blade.php'),
             str_replace(
                 '    </body>',
                 "        @livewireScripts\n" .
                 '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>' .
                 "\n    </body>",
-                (new Filesystem())->get(resource_path('views/layouts/guest.blade.php'))
+                File::get(resource_path('views/layouts/guest.blade.php'))
             )
         );
     }
