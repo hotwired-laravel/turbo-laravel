@@ -1,7 +1,4 @@
 import Alpine from 'alpinejs';
-window.Alpine = Alpine;
-
-Alpine.start();
 
 document.addEventListener('turbo:before-render', () => {
     let permanents = document.querySelectorAll('[data-turbo-permanent]')
@@ -20,3 +17,7 @@ document.addEventListener('turbo:before-render', () => {
         document.removeEventListener('turbo:render', handler)
     })
 })
+
+Alpine.start();
+
+export default Alpine;

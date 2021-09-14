@@ -36,7 +36,7 @@ class TurboInstallCommand extends Command
         if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpinejs' => '^3.0.6',
+                    'alpinejs' => '^3.3.3',
                 ] + $packages;
             });
 
@@ -47,8 +47,10 @@ class TurboInstallCommand extends Command
 
         // JS scaffold...
         File::ensureDirectoryExists(resource_path('js/elements'));
+        File::ensureDirectoryExists(resource_path('js/libs'));
 
         File::copy(__DIR__ . '/../../stubs/resources/js/app.js', resource_path('js/app.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/turbo.js', resource_path('js/libs/turbo.js'));
 
         if ($this->option('jet')) {
             $this->injectAlpine();
@@ -76,10 +78,23 @@ class TurboInstallCommand extends Command
 
     private function injectAlpine(): void
     {
+        File::copy(__DIR__ . '/../../stubs/resources/js/alpine.js', resource_path('js/libs/alpine.js'));
+
         $this->replaceJsStub(
             resource_path('js/app.js'),
             self::ALPINE_COMMENT,
-            File::get(__DIR__ . '/../../stubs/resources/js/alpine.js')
+            'import \'./libs/alpine\';'
+        );
+    }
+
+    private function injectStimulus(): void
+    {
+        File::copy(__DIR__ . '/../../stubs/resources/js/stimulus.js', resource_path('js/libs/stimulus.js'));
+
+        $this->replaceJsStub(
+            resource_path('js/app.js'),
+            self::STIMULUS_COMMENT,
+            'import \'./libs/stimulus\';'
         );
     }
 
@@ -90,15 +105,6 @@ class TurboInstallCommand extends Command
             ->implode(PHP_EOL);
 
         File::put(resource_path('js/app.js'), $lines);
-    }
-
-    private function injectStimulus(): void
-    {
-        $this->replaceJsStub(
-            resource_path('js/app.js'),
-            self::STIMULUS_COMMENT,
-            File::get(__DIR__ . '/../../stubs/resources/js/stimulus.js')
-        );
     }
 
     /**
