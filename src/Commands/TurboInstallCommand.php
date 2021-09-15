@@ -50,7 +50,7 @@ class TurboInstallCommand extends Command
         File::ensureDirectoryExists(resource_path('js/libs'));
 
         File::copy(__DIR__ . '/../../stubs/resources/js/app.js', resource_path('js/app.js'));
-        File::copy(__DIR__ . '/../../stubs/resources/js/turbo.js', resource_path('js/libs/turbo.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/libs/turbo.js', resource_path('js/libs/turbo.js'));
 
         if ($this->option('jet')) {
             $this->injectAlpine();
@@ -78,7 +78,7 @@ class TurboInstallCommand extends Command
 
     private function injectAlpine(): void
     {
-        File::copy(__DIR__ . '/../../stubs/resources/js/alpine.js', resource_path('js/libs/alpine.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
 
         $this->replaceJsStub(
             resource_path('js/app.js'),
@@ -89,7 +89,7 @@ class TurboInstallCommand extends Command
 
     private function injectStimulus(): void
     {
-        File::copy(__DIR__ . '/../../stubs/resources/js/stimulus.js', resource_path('js/libs/stimulus.js'));
+        File::copy(__DIR__ . '/../../stubs/resources/js/libs/stimulus.js', resource_path('js/libs/stimulus.js'));
 
         $this->replaceJsStub(
             resource_path('js/app.js'),
