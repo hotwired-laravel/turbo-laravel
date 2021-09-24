@@ -17,4 +17,6 @@ document.addEventListener('turbo:before-render', () => {
 
 Alpine.start();
 
+window.Alpine = Alpine;
+
 export default Alpine;
