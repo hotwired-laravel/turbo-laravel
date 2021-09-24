@@ -15,8 +15,8 @@ document.addEventListener('turbo:before-render', () => {
     });
 });
 
-Alpine.start();
-
 window.Alpine = Alpine;
+
+Alpine.start();
 
 export default Alpine;

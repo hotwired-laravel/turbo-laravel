@@ -1,6 +1,7 @@
 import * as Turbo from '@hotwired/turbo';
 
-Turbo.start();
 window.Turbo = Turbo;
+
+Turbo.start();
 
 export default Turbo;
