@@ -18,7 +18,7 @@ class TurboInstallCommand extends Command
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                '@hotwired/turbo' => '^7.0.0-rc.4',
+                '@hotwired/turbo' => '^7.0.0',
                 'laravel-echo' => '^1.11.2',
                 'pusher-js' => '^7.0.3',
             ] + $packages;
@@ -27,8 +27,8 @@ class TurboInstallCommand extends Command
         if ($this->option('stimulus')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    '@hotwired/stimulus' => '^3.0.0-beta.2',
-                    '@stimulus/webpack-helpers' => '^2.0.0',
+                    '@hotwired/stimulus' => '^3.0.0',
+                    '@hotwired/stimulus-webpack-helpers' => '^1.0.1',
                 ] + $packages;
             });
         }
@@ -36,7 +36,7 @@ class TurboInstallCommand extends Command
         if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpinejs' => '^3.3.3',
+                    'alpinejs' => '^3.4.1',
                 ] + $packages;
             });
 
@@ -151,7 +151,7 @@ class TurboInstallCommand extends Command
             resource_path('views/layouts/app.blade.php'),
             str_replace(
                 '        @livewireScripts',
-                "        @livewireScripts\n" . '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>',
+                "        @livewireScripts\n" . '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.4/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>',
                 File::get(resource_path('views/layouts/app.blade.php'))
             )
         );
@@ -175,7 +175,7 @@ class TurboInstallCommand extends Command
             str_replace(
                 '    </body>',
                 "        @livewireScripts\n" .
-                '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>' .
+                '        <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.4/dist/livewire-turbolinks.js" data-turbolinks-eval="false" data-turbo-eval="false"></script>' .
                 "\n    </body>",
                 File::get(resource_path('views/layouts/guest.blade.php'))
             )
