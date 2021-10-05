@@ -15,7 +15,7 @@ class TurboMiddlewareTest extends TestCase
     public function usesTestModelResourceRoutes()
     {
         Route::get('/test-models/create', function () {
-            return 'show form';
+            return 'show create form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
         })->name('test-models.create');
 
         Route::post('/test-models', function () {
@@ -23,7 +23,7 @@ class TurboMiddlewareTest extends TestCase
         })->name('test-models.store')->middleware(TurboMiddleware::class);
 
         Route::get('/test-models/{testModel}/edit', function () {
-            return 'show form';
+            return 'show edit form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
         })->name('test-models.edit');
 
         Route::put('/test-models/{testModel}', function (TestModel $model) {
@@ -47,14 +47,14 @@ class TurboMiddlewareTest extends TestCase
      * @test
      * @define-route usesTestModelResourceRoutes
      */
-    public function handles_redirect_responses()
+    public function handles_invalid_forms_with_an_internal_redirect()
     {
         $response = $this->from('/source')->post('/test-models', [], [
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertRedirect('/test-models/create');
-        $response->assertStatus(303);
+        $response->assertSee('show create form');
+        $response->assertStatus(422);
     }
 
     public function usesTurboNativeRoute()
@@ -96,7 +96,7 @@ class TurboMiddlewareTest extends TestCase
         })->name('somewhere-else');
 
         Route::get('/test-models/create', function () {
-            return 'show form';
+            return 'show create form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
         })->name('test-models.create');
 
         Route::post('/test-models', function () {
@@ -122,14 +122,14 @@ class TurboMiddlewareTest extends TestCase
      * @test
      * @define-route usesTestModelResourceRoutes
      */
-    public function redirects_back_to_resource_create_routes_on_failed_validation_follows_laravel_conventions()
+    public function sends_an_internal_redirect_to_resource_create_routes_on_failed_validation_follows_laravel_conventions_and_returns_422_status_code()
     {
         $response = $this->from('/source')->post(route('test-models.store'), [], [
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertRedirect(route('test-models.create'));
-        $response->assertStatus(303);
+        $response->assertSee('show create form');
+        $response->assertStatus(422);
     }
 
     /**
@@ -144,8 +144,8 @@ class TurboMiddlewareTest extends TestCase
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertRedirect(route('test-models.edit', $testModel));
-        $response->assertStatus(303);
+        $response->assertSee('show edit form');
+        $response->assertStatus(422);
     }
 
     /**
@@ -160,8 +160,8 @@ class TurboMiddlewareTest extends TestCase
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertRedirect(route('test-models.edit', ['testModel' => $testModel, 'frame' => 'lorem']));
-        $response->assertStatus(303);
+        $response->assertSee('show edit form (frame=lorem)');
+        $response->assertStatus(422);
     }
 
     public function usesTestModelUpdateRouteWithoutEdit()
