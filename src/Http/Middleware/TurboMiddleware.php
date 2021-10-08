@@ -3,9 +3,11 @@
 namespace Tonysm\TurboLaravel\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -60,41 +62,54 @@ class TurboMiddleware
             return $response;
         }
 
-        // When dealing with invalid form responses, instead of flashing the
-        // errors and inputs to then redirect to the form page, we'll send
-        // an internal request to render the page with a 422 status code.
-
-        $formRoute = $this->guessRedirectingRoute($request);
-
-        if ($response->exception instanceof ValidationException && ! $response->exception->redirectTo && $formRoute) {
-            return $this->dispatchInternalRequest($request, $formRoute);
-        }
-
         // Turbo expects a 303 redirect. We are also changing the default behavior of Laravel's failed
         // validation redirection to send the user to a page where the form of the current resource
         // is rendered (instead of just "back"), since Frames could have been used in many pages.
+
+        $formRedirectUrl = $this->guessFormRedirectUrl($request);
+
+        if ($formRedirectUrl && $response->exception instanceof ValidationException && ! $response->exception->redirectTo) {
+            return $this->handleRedirectInternally($this->kernel(), $formRedirectUrl, $request);
+        }
 
         $response->setStatusCode(303);
 
         return $response;
     }
 
+    protected function kernel(): Kernel
+    {
+        return App::make(Kernel::class);
+    }
+
     /**
+     * @param Kernel $kernel
+     * @param string $url
      * @param Request $request
-     * @param Response $response
-     * @param string $route
+     *
      * @return Response
      */
-    private function dispatchInternalRequest($request, $route)
+    protected function handleRedirectInternally(Kernel $kernel, string $url, $previousRequest)
     {
-        return Route::dispatch(Request::create(
-            $route,
-            'GET',
-            [],
-            $request->cookies->all(),
-            $request->files->all(),
-            $request->headers->all(),
-        ))->setStatusCode(422);
+        /** @param Response|RedirectResponse $response */
+        $response = $kernel->handle(
+            $request = $this->createRequestFrom($url, $previousRequest)
+        );
+
+        if ($response->isRedirect()) {
+            return $this->handleRedirectInternally($kernel, $response->getTargetUrl(), $request);
+        }
+
+        return $response->setStatusCode(422);
+    }
+
+    public function createRequestFrom(string $url, $baseRequest)
+    {
+        $request = Request::create($url);
+
+        $request->headers->replace($baseRequest->headers->all());
+
+        return $request;
     }
 
     /**
@@ -109,7 +124,7 @@ class TurboMiddleware
     /**
      * @param \Illuminate\Http\Request $request
      */
-    private function guessRedirectingRoute($request)
+    private function guessFormRedirectUrl($request)
     {
         $route = $request->route();
         $name = optional($route)->getName();
