@@ -89,16 +89,13 @@ class TurboMiddleware
      *
      * @return Response
      */
-    protected function handleRedirectInternally(Kernel $kernel, string $url, $previousRequest)
+    protected function handleRedirectInternally(Kernel $kernel, string $url, $request)
     {
-        /** @param Response|RedirectResponse $response */
-        $response = $kernel->handle(
-            $request = $this->createRequestFrom($url, $previousRequest)
-        );
-
-        if ($response->isRedirect()) {
-            return $this->handleRedirectInternally($kernel, $response->getTargetUrl(), $request);
-        }
+        do {
+            $response = $kernel->handle(
+                $request = $this->createRequestFrom($url, $request)
+            );
+        } while ($response->isRedirect());
 
         return $response->setStatusCode(422);
     }
