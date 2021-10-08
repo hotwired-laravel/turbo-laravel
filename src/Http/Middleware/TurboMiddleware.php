@@ -104,7 +104,7 @@ class TurboMiddleware
         return $response->setStatusCode(422);
     }
 
-    public function createRequestFrom(string $url, $baseRequest)
+    protected function createRequestFrom(string $url, $baseRequest)
     {
         $request = Request::create($url);
 
