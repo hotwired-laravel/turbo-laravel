@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -62,14 +63,17 @@ class TurboMiddleware
             return $response;
         }
 
-        // Turbo expects a 303 redirect. We are also changing the default behavior of Laravel's failed
-        // validation redirection to send the user to a page where the form of the current resource
-        // is rendered (instead of just "back"), since Frames could have been used in many pages.
+        // When throwing a ValidationException and the app uses named routes convention, we can guess
+        // the form route for the current endpoint, make an internal request there, and return the
+        // response body with the form over a 422 status code, which is better for Turbo Native.
 
         $formRedirectUrl = $this->guessFormRedirectUrl($request);
 
         if ($formRedirectUrl && $response->exception instanceof ValidationException && ! $response->exception->redirectTo) {
-            return $this->handleRedirectInternally($this->kernel(), $formRedirectUrl, $request);
+            return tap($this->handleRedirectInternally($this->kernel(), $formRedirectUrl, $request), function () use ($request) {
+                App::instance('request', $request);
+                Facade::clearResolvedInstance('request');
+            });
         }
 
         $response->setStatusCode(303);
