@@ -67,9 +67,7 @@ class TurboMiddleware
         // the form route for the current endpoint, make an internal request there, and return the
         // response body with the form over a 422 status code, which is better for Turbo Native.
 
-        $formRedirectUrl = $this->guessFormRedirectUrl($request);
-
-        if ($formRedirectUrl && $response->exception instanceof ValidationException && ! $response->exception->redirectTo) {
+        if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->getRedirectUrl($request, $response))) {
             return tap($this->handleRedirectInternally($this->kernel(), $formRedirectUrl, $request), function () use ($request) {
                 App::instance('request', $request);
                 Facade::clearResolvedInstance('request');
@@ -79,6 +77,15 @@ class TurboMiddleware
         $response->setStatusCode(303);
 
         return $response;
+    }
+
+    protected function getRedirectUrl($request, $response)
+    {
+        if ($response->exception->redirectTo) {
+            return $response->exception->redirectTo;
+        }
+
+        return $this->guessFormRedirectUrl($request);
     }
 
     protected function kernel(): Kernel

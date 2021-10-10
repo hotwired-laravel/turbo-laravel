@@ -114,8 +114,8 @@ class TurboMiddlewareTest extends TestCase
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertRedirect('/somewhere-else');
-        $response->assertStatus(303);
+        $response->assertSee('show form');
+        $response->assertStatus(422);
     }
 
     /**
