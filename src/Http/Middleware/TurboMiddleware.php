@@ -68,18 +68,18 @@ class TurboMiddleware
         // response body with the form over a 422 status code, which is better for Turbo Native.
 
         if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->getRedirectUrl($request, $response))) {
-            return tap($this->handleRedirectInternally($this->kernel(), $formRedirectUrl, $request), function () use ($request) {
+            $response->setTargetUrl($formRedirectUrl);
+
+            return tap($this->handleRedirectInternally($this->kernel(), $request, $response), function () use ($request) {
                 App::instance('request', $request);
                 Facade::clearResolvedInstance('request');
             });
         }
 
-        $response->setStatusCode(303);
-
-        return $response;
+        return $response->setStatusCode(303);
     }
 
-    protected function getRedirectUrl($request, $response)
+    private function getRedirectUrl($request, $response)
     {
         if ($response->exception->redirectTo) {
             return $response->exception->redirectTo;
@@ -88,32 +88,32 @@ class TurboMiddleware
         return $this->guessFormRedirectUrl($request);
     }
 
-    protected function kernel(): Kernel
+    private function kernel(): Kernel
     {
         return App::make(Kernel::class);
     }
 
     /**
      * @param Kernel $kernel
-     * @param string $url
      * @param Request $request
+     * @param Response $response
      *
      * @return Response
      */
-    protected function handleRedirectInternally(Kernel $kernel, string $url, $request)
+    private function handleRedirectInternally($kernel, $request, $response)
     {
         do {
             $response = $kernel->handle(
-                $request = $this->createRequestFrom($url, $request)
+                $request = $this->createRequestFrom($response->headers->get('Location'), $request)
             );
         } while ($response->isRedirect());
 
         return $response->setStatusCode(422);
     }
 
-    protected function createRequestFrom(string $url, $baseRequest)
+    private function createRequestFrom(string $url, Request $baseRequest)
     {
-        $request = Request::create($url);
+        $request = Request::create($url, 'GET');
 
         $request->headers->replace($baseRequest->headers->all());
 
