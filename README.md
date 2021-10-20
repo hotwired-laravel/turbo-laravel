@@ -301,6 +301,17 @@ It will build a `remove` Turbo Stream if the model was deleted (or if it is tras
 return response()->turboStream($comment, 'append');
 ```
 
+You may combine multiple Turbo Stream responses in a single one like so:
+
+```php
+return response()->turboStream([
+    response()->turboStream()->append($commend),
+    response()->turboStream()->remove($commend)->target('remove-target-id'),
+]);
+```
+
+Although this is an option, it might feel like too much work for a controller. If that's the case, use [Custom Turbo Stream Views](#custom-turbo-stream-views).
+
 <a name="custom-turbo-stream-views"></a>
 ### Custom Turbo Stream Views
 
