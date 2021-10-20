@@ -388,6 +388,40 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function builds_multiple_turbo_stream_responses()
+    {
+        $model = TestModel::create(['name' => 'Test model']);
+
+        $response = response()->turboStream([
+            response()->turboStream()->append($model)->target('append-target-id'),
+            response()->turboStream()->prepend($model)->target('prepend-target-id'),
+            response()->turboStream()->remove($model)->target('remove-target-id'),
+        ])->toResponse(new Request());
+
+        $expected = collect([
+            view('turbo-laravel::turbo-stream', [
+                'action' => 'append',
+                'target' => 'append-target-id',
+                'partial' => 'test_models._test_model',
+                'partialData' => ['testModel' => $model],
+            ])->render(),
+            view('turbo-laravel::turbo-stream', [
+                'action' => 'prepend',
+                'target' => 'prepend-target-id',
+                'partial' => 'test_models._test_model',
+                'partialData' => ['testModel' => $model],
+            ])->render(),
+            view('turbo-laravel::turbo-stream', [
+                'action' => 'remove',
+                'target' => 'remove-target-id',
+            ])->render(),
+        ])->implode(PHP_EOL);
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action()
     {
         $this->expectException(TurboStreamResponseFailedException::class);

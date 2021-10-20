@@ -118,13 +118,18 @@ class PendingTurboStreamResponse implements Responsable
         }
 
         return TurboResponseFactory::makeStream(
-            view('turbo-laravel::turbo-stream', [
-                'target' => $this->useTarget,
-                'action' => $this->useAction,
-                'partial' => $this->partialView,
-                'partialData' => $this->partialData,
-            ])->render()
+            $this->render()
         );
+    }
+
+    public function render(): string
+    {
+        return view('turbo-laravel::turbo-stream', [
+            'target' => $this->useTarget,
+            'action' => $this->useAction,
+            'partial' => $this->partialView,
+            'partialData' => $this->partialData,
+        ])->render();
     }
 
     private function inserted(Model $model, string $action, ?string $target = null): self
