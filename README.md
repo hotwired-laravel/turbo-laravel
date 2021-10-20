@@ -109,6 +109,7 @@ It's highly recommended reading the [Turbo Handbook](https://turbo.hotwired.dev/
 * [Notes on Turbo Drive and Turbo Frames](#notes-on-turbo-drive-and-turbo-frames)
 * [Blade Directives and Helper Functions](#blade-directives-and-helper-functions)
 * [Turbo Streams](#turbo-streams)
+    * [Turbo Streams Combo](#turbo-streams-combo)
 * [Custom Turbo Stream Views](#custom-turbo-stream-views)
 * [Broadcasting Turbo Streams Over WebSockets with Laravel Echo](#broadcasting)
     * [Broadcasting Model Changes](#broadcasting-model-changes)
@@ -300,6 +301,9 @@ It will build a `remove` Turbo Stream if the model was deleted (or if it is tras
 ```php
 return response()->turboStream($comment, 'append');
 ```
+
+<a name="turbo-streams-combo"></a>
+#### Turbo Streams Combo
 
 You may combine multiple Turbo Stream responses in a single one like so:
 
