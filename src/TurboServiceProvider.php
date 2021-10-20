@@ -2,7 +2,6 @@
 
 namespace Tonysm\TurboLaravel;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;

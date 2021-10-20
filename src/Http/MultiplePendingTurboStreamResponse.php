@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class MultiplePendingTurboStreamResponse implements Responsable
 {
-    /** @var Collection|PendingTurboStreamResponse[] $pendingStreams */
+    /** @var Collection|PendingTurboStreamResponse[] */
     private Collection $pendingStreams;
 
     /**
