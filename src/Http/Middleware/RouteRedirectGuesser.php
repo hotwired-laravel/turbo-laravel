@@ -6,8 +6,12 @@ use Illuminate\Support\Str;
 
 class RouteRedirectGuesser
 {
-    public function guess(string $routeName): string
+    public function guess(string $routeName): ?string
     {
+        if (! Str::endsWith($routeName, '.store') && ! Str::endsWith($routeName, '.update')) {
+            return null;
+        }
+
         $creating = Str::endsWith($routeName, '.store');
 
         $lookFor = $creating

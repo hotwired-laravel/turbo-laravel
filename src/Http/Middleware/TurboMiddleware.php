@@ -145,7 +145,7 @@ class TurboMiddleware
 
         // If the guessed route doesn't exist, send it back to wherever Laravel defaults to.
 
-        if (! Route::has($formRouteName)) {
+        if (! $formRouteName || ! Route::has($formRouteName)) {
             return null;
         }
 

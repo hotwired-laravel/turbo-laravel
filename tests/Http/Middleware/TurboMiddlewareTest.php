@@ -186,4 +186,35 @@ class TurboMiddlewareTest extends TestCase
         $response->assertRedirect('/source');
         $response->assertStatus(303);
     }
+
+    public function usesNonResourceRoutes()
+    {
+        Route::name('app.')->middleware(TurboMiddleware::class)->group(function () {
+            Route::get('login', function () {
+                return 'login form';
+            })->name('login');
+
+            Route::post('login', function () {
+                request()->validate([
+                    'email' => 'required',
+                    'password' => 'required',
+                ]);
+            });
+        });
+    }
+
+    /**
+     * @test
+     * @define-route usesNonResourceRoutes
+     */
+    public function only_guess_route_on_resource_routes()
+    {
+        $this->from(route('app.login'))
+            ->withHeaders([
+                'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+            ])
+            ->post('/login')
+            ->assertRedirect(route('app.login'))
+            ->assertStatus(303);
+    }
 }
