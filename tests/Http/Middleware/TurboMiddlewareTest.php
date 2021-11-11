@@ -217,4 +217,40 @@ class TurboMiddlewareTest extends TestCase
             ->assertRedirect(route('app.login'))
             ->assertStatus(303);
     }
+
+    public function usesRoutesWhichExceptCookies()
+    {
+        Route::get('posts/create', function () {
+            $firstRequestCookie = request()->cookie('my-cookie', 'no-cookie');
+
+            $responseCookie = request()->cookie('response-cookie', 'no-cookie');
+
+            return response(sprintf('Request Cookie: %s; Response Cookie: %s', $firstRequestCookie, $responseCookie));
+        })->name('posts.create');
+
+        Route::post('posts', function () {
+            $exception = ValidationException::withMessages([
+                'title' => ['Title cannot be blank.'],
+            ]);
+
+            $exception->response = redirect()->to('/')->withCookie('response-cookie', 'response-cookie-value');
+
+            throw $exception;
+        })->name('posts.store')->middleware(TurboMiddleware::class);
+    }
+
+    /**
+     * @test
+     * @define-route usesRoutesWhichExceptCookies
+     */
+    public function passes_the_request_cookies_to_the_internal_request()
+    {
+        $this->withHeaders([
+                'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+            ])
+            ->withUnencryptedCookie('my-cookie', 'test-value')
+            ->post(route('posts.store'))
+            ->assertSee('Request Cookie: test-value; Response Cookie: response-cookie-value')
+            ->assertStatus(422);
+    }
 }
