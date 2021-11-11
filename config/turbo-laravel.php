@@ -33,4 +33,17 @@ return [
         'App\\Models\\',
         'App\\',
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Automatically Register Turbo Middleware
+     |--------------------------------------------------------------------------
+     |
+     | When set to `true` the TurboMiddleware will be automatically
+     | *prepended* to the web routes middleware stack. If you want
+     | to disable this behavior, set this to false.
+     |
+     */
+
+    'automatically_register_middleware' => true,
 ];

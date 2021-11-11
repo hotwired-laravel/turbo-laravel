@@ -17,8 +17,6 @@ use Tonysm\TurboLaravel\Turbo as BaseTurbo;
  * @method static bool shouldBroadcastToOthers
  * @method static string domId(Model $model, string $prefix = "")
  * @method static Broadcaster broadcaster()
- * @method static self withoutRegisteringMiddleware()
- * @method static bool shouldRegisterMiddleware()
  */
 class Turbo extends Facade
 {
