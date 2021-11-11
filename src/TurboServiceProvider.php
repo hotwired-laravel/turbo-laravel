@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -15,6 +16,7 @@ use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
+use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
@@ -43,6 +45,8 @@ class TurboServiceProvider extends ServiceProvider
         $this->bindBladeMacros();
         $this->bindRequestAndResponseMacros();
         $this->bindTestResponseMacros();
+
+        Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
     }
 
     public function register()
