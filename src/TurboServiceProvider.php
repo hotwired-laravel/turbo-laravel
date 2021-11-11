@@ -46,7 +46,7 @@ class TurboServiceProvider extends ServiceProvider
         $this->bindRequestAndResponseMacros();
         $this->bindTestResponseMacros();
 
-        if (config('turbo-laravel::automatically_register_middleware', true)) {
+        if (config('turbo-laravel.automatically_register_middleware', true)) {
             Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
         }
     }
