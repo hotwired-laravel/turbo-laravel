@@ -54,6 +54,7 @@ class Turbo
     {
         return $this->registerMiddleware;
     }
+
     /**
      * @param bool|Closure $toOthers
      *
