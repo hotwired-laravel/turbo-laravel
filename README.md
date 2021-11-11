@@ -72,7 +72,7 @@ php artisan turbo:install --jet --stimulus
 
 The package ships with a middleware which applies some conventions on your redirects, specially around how failed validations are handled automatically by Laravel. Read more about this in the [Conventions](#conventions) section of the documentation.
 
-You may add the middleware to the "web" route group on your HTTP Kernel:
+**The middleware is automatically prepended to your web route group middleware stack**. You may want to add the middleware to other groups, when doing so, make sure it's at the top of the middleware stack:
 
 ```php
 \Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
@@ -90,8 +90,8 @@ class Kernel extends HttpKernel
 {
     protected $middlewareGroups = [
         'web' => [
-            // ...
             \Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
+            // other middlewares...
         ],
     ];
 }
