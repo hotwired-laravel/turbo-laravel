@@ -24,6 +24,13 @@ class Turbo
      */
     private bool $broadcastToOthersOnly = false;
 
+    /**
+     * Whether or not the turbo middleware should be automatically added to the "web" middleware group stack.
+     *
+     * @var bool
+     */
+    private bool $registerMiddleware = true;
+
     public function isTurboNativeVisit(): bool
     {
         return $this->visitFromTurboNative;
@@ -36,6 +43,17 @@ class Turbo
         return $this;
     }
 
+    public function withoutRegisteringMiddleware(): self
+    {
+        $this->registerMiddleware = true;
+
+        return $this;
+    }
+
+    public function shouldRegisterMiddleware(): bool
+    {
+        return $this->registerMiddleware;
+    }
     /**
      * @param bool|Closure $toOthers
      *

@@ -46,7 +46,9 @@ class TurboServiceProvider extends ServiceProvider
         $this->bindRequestAndResponseMacros();
         $this->bindTestResponseMacros();
 
-        Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
+        if (TurboFacade::shouldRegisterMiddleware()) {
+            Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
+        }
     }
 
     public function register()
