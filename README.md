@@ -1,9 +1,6 @@
 <p align="center" style="margin-top: 2rem; margin-bottom: 2rem;"><img src="/art/turbo-laravel-logo.svg" alt="Logo Turbo Laravel" /></p>
 
 <p align="center">
-    <a href="https://github.com/tonysm/turbo-laravel/workflows/Tests/badge.svg">
-        <img src="https://img.shields.io/github/workflow/status/tonysm/turbo-laravel/Tests?label=tests" />
-    </a>
     <a href="https://packagist.org/packages/tonysm/turbo-laravel">
         <img src="https://img.shields.io/packagist/dt/tonysm/turbo-laravel" alt="Total Downloads">
     </a>
@@ -18,9 +15,15 @@
 <a name="introduction"></a>
 ## Introduction
 
-This package gives you a set of conventions to make the most out of [Hotwire](https://hotwired.dev/) in Laravel (inspired by the [turbo-rails](https://github.com/hotwired/turbo-rails) gem).
+This package gives you a set of conventions to make the most out of [Hotwire](https://hotwired.dev/) in Laravel.
 
-There is a [companion application](https://github.com/tonysm/turbo-demo-app) that shows how to use the package and its conventions.
+#### Inspiration
+
+This package was inspired by the [Turbo Rails gem](https://github.com/hotwired/turbo-rails).
+
+#### Demo App
+
+If you want to see this package in action with actual code using it, head out to the [companion application repository](https://github.com/tonysm/turbo-demo-app). You can either run the code yourself or check out a live version of it [here](https://turbo-laravel.tonysm.com).
 
 <a name="installation"></a>
 ## Installation
