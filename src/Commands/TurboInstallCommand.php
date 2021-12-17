@@ -18,8 +18,8 @@ class TurboInstallCommand extends Command
     {
         $this->updateNodePackages(function ($packages) {
             return [
-                '@hotwired/turbo' => '^7.0.1',
-                'laravel-echo' => '^1.11.2',
+                '@hotwired/turbo' => '^7.1.0',
+                'laravel-echo' => '^1.11.3',
                 'pusher-js' => '^7.0.3',
             ] + $packages;
         });
@@ -27,7 +27,7 @@ class TurboInstallCommand extends Command
         if ($this->option('stimulus')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    '@hotwired/stimulus' => '^3.0.0',
+                    '@hotwired/stimulus' => '^3.0.1',
                     '@hotwired/stimulus-webpack-helpers' => '^1.0.1',
                 ] + $packages;
             });
@@ -36,7 +36,7 @@ class TurboInstallCommand extends Command
         if ($this->option('jet')) {
             $this->updateNodePackages(function ($packages) {
                 return [
-                    'alpinejs' => '^3.4.1',
+                    'alpinejs' => '^3.7.0',
                 ] + $packages;
             });
 
