@@ -675,9 +675,9 @@ To guess where the form is located at we rely on the route resource convention. 
 
 Examples:
 
-- `posts.comments.store` will redirect to `posts.comments.create` with the `{post}` route param.
-- `comments.store` will redirect to `comments.create` with no route params.
-- `comments.update` will redirect to `comments.edit` with the `{comment}` param.
+- `posts.comments.store` will guess the form is at the `posts.comments.create` route with the `{post}` route param.
+- `comments.store` will guess the form is at the `comments.create` route with no route params.
+- `comments.update` will guess the form is at the `comments.edit` with the `{comment}` param.
 
 If a guessed route name doesn't exist (which will always happen if you don't use the route resorce convention), the middleware will not change the default handling of validation errors. You may also override this behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
 
