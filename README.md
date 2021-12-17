@@ -660,7 +660,7 @@ class AppServiceProvider extends ServiceProvider
 ```
 
 <a name="redirects"></a>
-### Validation Response Redirects
+### Validation Response
 
 By default, Laravel will redirect failed validation exceptions "back" to the page the triggered the request. This is a bit problematic when it comes to Turbo Frames, since a form might be included in a page that don't render the form initially, and after a failed validation exception from a form submission we would want to re-render the form with the invalid messages.
 
@@ -669,9 +669,9 @@ In other words, a Turbo Frame inherits the context of the page where it was inse
 1. Render a Blade view with the form as a non-200 HTTP Status Code, then Turbo will look for a matching Turbo Frame inside the response and replace only that portion or page, but it won't update the URL as it would for other Turbo Visits; or
 2. Redirect the request to a page that renders the form directly instead of "back". There you can render the validation messages and all that. Turbo will follow the redirect (303 Status Code) and fetch the Turbo Frame with the form and invalid messages and update the existing one.
 
-When using the `\Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware` middleware that ships with the package on your HTTP Kernel's "web" route group, it will override Laravel's default handling for failed validation exceptions.
+When using the `TurboMiddleware` that ships with this package, we'll override Laravel's default error handling for validation exceptions. Instead of redirecting "back", we'll guess the form route based on the route resource conventions (if you're using that) and make an internal GET request to that route and return its contents with a 422 status code. So, if you're using the route resource conventions, validation errors will not respond with redirects, but with 422 status codes instead.
 
-For any route name ending in `.store`, it will redirect to a `.create` route for the same resource with all the route params from the previous request. In the same way, for any `.update` routes, it will redirect to a `.edit` route of the same resource.
+To guess where the form is located at we rely on the route resource convention. For any route name ending in `.store`, it will guess that the form can be located at the `.create` route for the same resource with all the route params from the previous request. In the same way, for any `.update` routes, it will guess the form is located at the `.edit` route of the same resource.
 
 Examples:
 
@@ -679,7 +679,9 @@ Examples:
 - `comments.store` will redirect to `comments.create` with no route params.
 - `comments.update` will redirect to `comments.edit` with the `{comment}` param.
 
-If a guessed route name doesn't exist, the middleware will not change the redirect response. You may override this behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it.
+If a guessed route name doesn't exist (which will always happen if you don't use the route resorce convention), the middleware will not change the default handling of validation errors. You may also override this behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
+
+Here's how you may set the `redirectTo` property:
 
 ```php
 public function store()
@@ -691,8 +693,6 @@ public function store()
   }
 }
 ```
-
-You may also catch the `ValidationException` and return a non-200 response, if you want to.
 
 <a name="turbo-native"></a>
 ### Turbo Native
