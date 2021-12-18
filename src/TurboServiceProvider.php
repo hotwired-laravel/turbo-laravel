@@ -21,6 +21,7 @@ use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
+use Tonysm\TurboLaravel\Views\Components as TurboComponents;
 
 class TurboServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,12 @@ class TurboServiceProvider extends ServiceProvider
         }
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'turbo-laravel');
+
+        $this->loadViewComponentsAs('turbo', [
+            TurboComponents\StreamFrom::class,
+            TurboComponents\Stream::class,
+            TurboComponents\Frame::class,
+        ]);
 
         $this->bindBladeMacros();
         $this->bindRequestAndResponseMacros();
