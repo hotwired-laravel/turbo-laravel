@@ -126,12 +126,12 @@ It's highly recommended reading the [Turbo Handbook](https://turbo.hotwired.dev/
 <a name="conventions"></a>
 ### Conventions
 
-First of all, none of these conventions are mandatory. Feel free to pick the ones you like and also add your own. With that out of the way, here's a list of some conventions that I find helpful:
+None of the conventions described bellow are mandatory. Feel free to pick the ones you like and also come up with your own conventions. With that out of the way, here's a list of conventions you may find helpful:
 
-* You may want to use resource routes for most things (`posts.index`, `posts.store`, etc)
-* You may want to split your views into smaller chunks or _partials_ (small portions of HTML for specific fragments), such as `comments/_comment.blade.php` that displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these partials in [Turbo Streams](#turbo-streams)
-* Your model's partial (such as the `comments/_comment.blade.php` for a `Comment` model, for example) may only rely on having a `$comment` instance passed to it. When broadcasting your model changes and generating the Turbo Streams in background, the package will pass the model instance using the model's basename in _camelCase_ to that partial - although you can fully control this behavior
-* You may use the model's Fully Qualified Class Name, or FQCN for short, on your Broadcasting Channel authorization routes with a wildcard, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter. This is now the default broadcasting channel in Laravel (see [here](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions)).
+* You may want to use [resource routes](https://laravel.com/docs/8.x/controllers#resource-controllers) for most things (`posts.index`, `posts.store`, etc.)
+* You may want your views broken up in smaller chunks (aka. "partials"), such as `comments/_comment.blade.php` which displays a comment resuorce, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these _partials_ in [Turbo Streams](#turbo-streams)
+* Your models' partials (such as the `comments/_comment.blade.php` for a `Comment` model) may only rely on having a single `$comment` instance variable passed to it. That's because the package will, by default, figure out the partial of the model when broadcasting and will only pass the model itself to it, using the class basename as the variable instance in _camelCase_. Again, that's by default, you can customize most things
+* You may use the model's Fully Qualified Class Name (aka. FQCN), on your Broadcasting Channel authorization routes with a wildcard, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter, as long as there is one. This is the default [broadcasting channel naming convention](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions) in Laravel
 
 In the [Overview section](#overview) below you will see how to override most of the default behaviors, if you want to.
 
