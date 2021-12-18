@@ -7,6 +7,9 @@ use Illuminate\View\Component;
 
 class StreamFrom extends Component
 {
+    public string|HasBroadcastChannel $source;
+    public string $type;
+
     /**
      * Create a new component instance.
      *
@@ -14,8 +17,10 @@ class StreamFrom extends Component
      * @param string $type The type of channel: "public", "private", or "presence".
      * @return void
      */
-    public function __construct(public string|HasBroadcastChannel $source, public string $type = 'private')
+    public function __construct(string|HasBroadcastChannel $source, string $type = 'private')
     {
+        $this->source = $source;
+        $this->type = $type;
     }
 
     /**

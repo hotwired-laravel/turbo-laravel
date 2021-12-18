@@ -9,13 +9,22 @@ use function Tonysm\TurboLaravel\dom_id;
 
 class Frame extends Component
 {
+    public string|Model|array $id;
+    public string|null $src;
+    public string|null $target;
+    public string|null $loading;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(public string|Model|array $id, public ?string $target = null, public ?string $loading = null, public ?string $src = null)
+    public function __construct(string|Model|array $id, ?string $src = null, ?string $target = null, ?string $loading = null)
     {
+        $this->id = $id;
+        $this->src = $src;
+        $this->target = $target;
+        $this->loading = $loading;
     }
 
     /**

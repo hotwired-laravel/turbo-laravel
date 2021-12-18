@@ -9,6 +9,9 @@ use function Tonysm\TurboLaravel\dom_id;
 
 class Stream extends Component
 {
+    public string|Model|array $target;
+    public string $action;
+
     /**
      * Create a new component instance.
      *
@@ -16,8 +19,10 @@ class Stream extends Component
      * @param string $action One of the seven Turbo Stream actions: "append", "prepend", "before", "after", "replace", "update", or "remove".
      * @return void
      */
-    public function __construct(public string|Model|array $target, public string $action)
+    public function __construct(string|Model|array $target, string $action)
     {
+        $this->target = $target;
+        $this->action = $action;
     }
 
     /**
