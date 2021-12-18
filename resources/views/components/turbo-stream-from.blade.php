@@ -1,1 +1,1 @@
-<turbo-echo-stream-source channel="{{ $channel }}" type="{{ $type }}"></turbo-echo-stream-source>
+<turbo-echo-stream-source channel="{{ $channel }}" type="{{ $type }}" {{ $attributes }}></turbo-echo-stream-source>
