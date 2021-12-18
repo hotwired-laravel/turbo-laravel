@@ -13,7 +13,7 @@ class Frame extends Component
     public $id;
 
     /** @var string|null */
-    public  $src;
+    public $src;
 
     /** @var string|null */
     public string|null $target;
