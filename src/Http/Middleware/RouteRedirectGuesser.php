@@ -8,20 +8,10 @@ class RouteRedirectGuesser
 {
     public function guess(string $routeName): ?string
     {
-        if (! Str::endsWith($routeName, '.store') && ! Str::endsWith($routeName, '.update')) {
+        if (! Str::endsWith($routeName, ['.store', '.update'])) {
             return null;
         }
 
-        $creating = Str::endsWith($routeName, '.store');
-
-        $lookFor = $creating
-            ? '.store'
-            : '.update';
-
-        $replaceWith = $creating
-            ? '.create'
-            : '.edit';
-
-        return str_replace($lookFor, $replaceWith, $routeName);
+        return str_replace(['.store', '.update'], ['.create', '.edit'], $routeName);
     }
 }
