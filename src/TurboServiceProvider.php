@@ -27,9 +27,7 @@ class TurboServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            $this->configurePublications();
-        }
+        $this->configurePublications();
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'turbo-laravel');
 
@@ -73,6 +71,10 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configurePublications()
     {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
         $this->publishes([
             __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
         ], 'config');
@@ -140,7 +142,7 @@ class TurboServiceProvider extends ServiceProvider
         });
     }
 
-    protected function configureTestResponseMacros()
+    private function configureTestResponseMacros()
     {
         if (! app()->environment('testing')) {
             return;
