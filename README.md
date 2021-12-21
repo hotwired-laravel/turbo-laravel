@@ -163,12 +163,12 @@ Here's how you can use Turbo Frames:
 Turbo Frames also allows you to lazy-load the frame's content. You may do so by adding a `src` attribute to the Turbo Frame tag. The conetnt of a lazy-loading Turbo Frame tag can be used to indicate "loading states", such as:
 
 ```blade
-<turbo-frame id="my_frame" src="{{ route('my.page') }}">
+<turbo-frame id="my_frame" :src="route('my.page')">
     <p>Loading...</p>
 </turbo-frame>
 ```
 
-Turbo will automatically fire a GET AJAX request as soon as a lazy-loading Turbo Frame enters the DOM and replace its content with a matching Turbo Frame in the response.
+Turbo will automatically dispatch a GET AJAX request as soon as a lazy-loading Turbo Frame enters the DOM and replace its content with a matching Turbo Frame in the response.
 
 You may also trigger a Turbo Frame with forms and links that are _outside_ of such frames by pointing to them like so:
 
@@ -185,17 +185,17 @@ You could also "hide" this link and trigger a "click" event with JavaScript prog
 So far, all vanilla Hotwire and Turbo.
 
 <a name="blade-directives-and-helper-functions"></a>
-### Blade Directives and Helper Functions
+### Blade Components, Directives, and Helper Functions
 
 Since Turbo rely a lot on DOM IDs, the package offers a helper to generate unique DOM IDs based on your models. You may use the `@domid` Blade Directive in your Blade views like so:
 
 ```blade
-<turbo-frame id="@domid($comment)">
+<x-turbo-frame id="@domid($comment)">
     <!-- Content -->
-</turbo-frame>
+</x-turbo-frame>
 ```
 
-This will generate a DOM ID string using your model's basename and its ID, such as `comment_123`. You may also give it a _content_ that will prefix your DOM ID, such as:
+This will generate a DOM ID string using your model's basename and its ID, such as `comment_123`. You may also give it a prefix that will added to the DOM ID, such as:
 
 ```blade
 <turbo-frame id="@domid($post, 'comments_count')">(99)</turbo-frame>
@@ -203,7 +203,17 @@ This will generate a DOM ID string using your model's basename and its ID, such 
 
 Which will generate a `comments_count_post_123` DOM ID.
 
-The package also ships with a namespaced `dom_id()` helper function so you can use it outside of your own views:
+You may also prefer using the `<x-turbo-frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
+
+```blade
+<x-turbo-frame :id="[$post, 'comments_count']">(99)</x-turbo-frame>
+```
+
+To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID, an Eloquent model instance, which will be passed to the `dom_id()`  function that ships with the package (the same one as the `@domid()` Blade directive uses behind the scenes), or an array tuple where the first item is an instance of an Eloquent model and the second is the prefix of the DOM ID.
+
+Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo-frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but you any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered using the `<x-turbo-frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
+
+The mentioned namespaced `dom_id()` helper function may also be used from anywhere in your application, like so:
 
 ```php
 use function Tonysm\TurboLaravel\dom_id;
@@ -218,13 +228,13 @@ These helpers strip out the model's FQCN (see [config/turbo-laravel.php](config/
 <a name="turbo-streams"></a>
 ### Turbo Streams
 
-As mentioned earlier, out of everything Turbo provides, it's Turbo Streams that benefit the most from a back-end integration.
+As mentioned earlier, out of everything Turbo provides, it's Turbo Streams that benefits the most from a back-end integration.
 
-Turbo Drive will get your pages behaving like an SPA and Turbo Frames will allow you to have a finer grained control of chunks of your page instead of replace the entire page when a form is submitted or a link is clicked.
+Turbo Drive will get your pages behaving like an SPA and Turbo Frames will allow you to have a finer grained control of chunks of your page instead of replacing the entire page when a form is submitted or a link is clicked.
 
-However, sometimes you want to update _multiple_ parts of you page at the same time. For instance, after a form submission to create a comment, you may want to append the comment to the comment's list and also update the comment's count in the page. You may achieve that with Turbo Streams.
+However, sometimes you want to update _multiple_ parts of your page at the same time. For instance, after a form submission to create a comment, you may want to append the comment to the comment's list and also update the comment's count in the page. You may achieve that with Turbo Streams.
 
-Any non-GET form submission will get annotated by Turbo with a `Content-Type: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This will indicate your back-end that you can return a Turbo Stream response for that form submission if you want to.
+Form submissions will get annotated by Turbo with a `Content-Type: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This will indicate to your back-end that you can return a Turbo Stream response for that form submission if you want to.
 
 Here's an example of a route handler detecting and returning a Turbo Stream response to a form submission:
 
@@ -244,10 +254,12 @@ The `request()->wantsTurboStream()` macro added to the request will check if the
 
 Here's what the HTML response will look like:
 
-```blade
-<turbo-stream action="append" target="comments">
+```html
+<turbo-stream action="append" target="comments_post_123">
     <template>
-        @include('comments._comment', ['comment' => $comment])
+        <div id="comment_123">
+            <p>Hello, World</p>
+        </div>
     </template>
 </turbo-stream>
 ```
@@ -258,7 +270,7 @@ Most of these things were "guessed" based on the [naming conventions](#conventio
 return response()->turboStream($comment)->target('post_comments');
 ```
 
-The model is optional, as it's only used to figure out the defaults based on the model state. You could manually create that same response like so:
+Although it's handy to pass the model instance to the `turboStream()` response macro - which will be used to decide the default values of the Turbo Stream response based on the model's current state, sometimes you may want to build a Turbo Stream response manually, which can be achieved like so:
 
 ```php
 return response()->turboStream()
@@ -289,7 +301,7 @@ response()->turboStream()->remove($comment);
 
 You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwired.dev/handbook/streams).
 
-These shorthand methods return a pending object for the response which you can chain and override everything you want on it:
+These shorthand methods return a pending object for the response which you can chain and override everything you want before it's rendered:
 
 ```php
 return response()->turboStream()
@@ -312,19 +324,22 @@ You may combine multiple Turbo Stream responses in a single one like so:
 
 ```php
 return response()->turboStream([
-    response()->turboStream()->append($commend),
-    response()->turboStream()->remove($commend)->target('remove-target-id'),
+    response()->turboStream()
+        ->append($comment)
+        ->target(dom_id($comment->post, 'comments')),
+    response()->turboStream()
+        ->action('update')
+        ->target(dom_id($comment->post, 'comments_count'))
+        ->view('posts._comments_count', ['post' => $comment->post]),
 ]);
 ```
 
-Although this is an option, it might feel like too much work for a controller. If that's the case, use [Custom Turbo Stream Views](#custom-turbo-stream-views).
+Although this is a valid option, it might feel like too much work for a controller. If that's the case, use [Custom Turbo Stream Views](#custom-turbo-stream-views).
 
 <a name="custom-turbo-stream-views"></a>
 ### Custom Turbo Stream Views
 
-If you're not using the model partial [convention](#conventions) or if you have some more complex Turbo Stream constructs, you may use the `response()->turboStreamView()` version instead and specify your own Turbo Stream views.
-
-This is what it looks like:
+If you're not using the model partial [convention](#conventions) or if you have some more complex Turbo Stream constructs to build, you may use the `response()->turboStreamView()` version instead and specify your own Blade view where Turbo Streams will be created. This is what that looks like:
 
 ```php
 return response()->turboStreamView('comments.turbo.created_stream', [
@@ -337,7 +352,7 @@ And here's an example of a more complex custom Turbo Stream view:
 ```blade
 @include('layouts.turbo.flash_stream')
 
-<turbo-stream target="comments" action="append">
+<turbo-stream target="@domid($comment->post, 'comments')" action="append">
     <template>
         @include('comments._comment', ['comment' => $comment])
     </template>
@@ -354,6 +369,16 @@ Remember, these are Blade views, so you have the full power of Blade at your han
     </template>
 </turbo-stream>
 @endif
+```
+
+Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things quite a bit. It has the same convention of figureing out the DOM ID of the target when you're passing a model instance or an array as the `<x-turbo-frame>` component applied to the `target` attribute here. When using the component version, there's also no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
+
+```blade
+@include('layouts.turbo.flash_stream')
+
+<x-turbo-stream :target="[$comment->post, 'comments']" action="append">
+    @include('comments._comment', ['comment' => $comment])
+</x-turbo-stream>
 ```
 
 I hope you can see how powerful this can be to reusing views.
@@ -571,33 +596,20 @@ You may listen to a Turbo Stream broadcast message on your pages by adding the c
 
 ```blade
 <turbo-echo-stream-source
-    channel="App.Models.Comments.{{ $comment->id }}"
+    channel="App.Models.Post.{{ $post->id }}"
 />
 ```
 
-By default, it expects a private channel, so the tag must be used in a page for already authenticated users. You can control the channel type in the tag with a `type` attribute.
+You may prefer using the convenient `<x-turbo-stream-from>` Blade component, passing the model as the `source` prop to it, something like this:
 
 ```blade
-<turbo-echo-stream-source
-    channel="App.Models.Comments.{{ $comment->id }}"
-    type="presence"
-/>
+<x-turbo-stream-from :source="$post" />
 ```
 
-As this convention is not built into Laravel, you can use the model's `broadcastChannel()` method:
+By default, it expects a private channel, so the it must be used in a page for already authenticated users. You may control the channel type in the tag with a `type` attribute.
 
 ```blade
-<turbo-echo-stream-source
-    channel="{{ $comment->broadcastChannel() }}"
-/>
-```
-
-There is also a helper blade directive that you can use to generate the channel name for your models using the same convention if you want to:
-
-```blade
-<turbo-echo-stream-source
-    channel="@channel($comment)"
-/>
+<x-turbo-stream-from :source="$post" type="public" />
 ```
 
 To register the Broadcast Auth Route you may use Laravel's built-in conventions as well:
