@@ -255,7 +255,7 @@ The `request()->wantsTurboStream()` macro added to the request will check if the
 Here's what the HTML response will look like:
 
 ```html
-<turbo-stream action="append" target="comments">
+<turbo-stream action="append" target="comments_post_123">
     <template>
         <div id="comment_123">
             <p>Hello, World</p>
@@ -324,8 +324,13 @@ You may combine multiple Turbo Stream responses in a single one like so:
 
 ```php
 return response()->turboStream([
-    response()->turboStream()->append($commend),
-    response()->turboStream()->remove($commend)->target('remove-target-id'),
+    response()->turboStream()
+        ->append($comment)
+        ->target(dom_id($comment->post, 'comments')),
+    response()->turboStream()
+        ->action('update')
+        ->target(dom_id($comment->post, 'comments_count'))
+        ->view('posts._comments_count', ['post' => $comment->post]),
 ]);
 ```
 
