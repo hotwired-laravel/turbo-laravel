@@ -398,7 +398,7 @@ We can broadcast to all users over WebSockets those exact same Turbo Stream tags
 
 You may still feed the user making the changes with Turbo Streams over HTTP and broadcast the changes to other users over WebSockets. This way, the user making the change will have an instant feedback compared to having to wait for a background worker to pick up the job and send it to them over WebSockets.
 
-First, you need to uncomment the Laravel Echo setup on your `resources/views/bootstrap.js` file and make sure you compile your assets after doing that by running:
+First, you need to uncomment the Laravel Echo setup on your [`resources/js/bootstrap.js`](stubs/resources/js/bootstrap.js) file and make sure you compile your assets after doing that by running:
 
 ```bash
 npm run dev
