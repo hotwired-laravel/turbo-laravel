@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\View;
 use PHPUnit\Framework\Assert;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
@@ -21,37 +22,21 @@ use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
-use Tonysm\TurboLaravel\Views\Components as TurboComponents;
 
 class TurboServiceProvider extends ServiceProvider
 {
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
-            ], 'config');
-
-            $this->publishes([
-                __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
-            ], 'views');
-
-            $this->commands([
-                TurboInstallCommand::class,
-            ]);
+            $this->configurePublications();
         }
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'turbo-laravel');
 
-        $this->loadViewComponentsAs('turbo', [
-            TurboComponents\StreamFrom::class,
-            TurboComponents\Stream::class,
-            TurboComponents\Frame::class,
-        ]);
-
-        $this->bindBladeMacros();
-        $this->bindRequestAndResponseMacros();
-        $this->bindTestResponseMacros();
+        $this->configureComponents();
+        $this->configureMacros();
+        $this->configureRequestAndResponseMacros();
+        $this->configureTestResponseMacros();
 
         if (config('turbo-laravel.automatically_register_middleware', true)) {
             Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
@@ -66,7 +51,42 @@ class TurboServiceProvider extends ServiceProvider
         $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
     }
 
-    private function bindBladeMacros(): void
+    private function configureComponents()
+    {
+        $this->callAfterResolving(BladeCompiler::class, function () {
+            $this->registerComponent('frame');
+            $this->registerComponent('stream');
+            $this->registerComponent('stream-from');
+        });
+    }
+
+    /**
+     * Register the given component.
+     *
+     * @param  string  $component
+     * @return void
+     */
+    private function registerComponent(string $component)
+    {
+        Blade::component('turbo-laravel::components.turbo-'.$component, 'turbo-'.$component);
+    }
+
+    private function configurePublications()
+    {
+        $this->publishes([
+            __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
+        ], 'views');
+
+        $this->commands([
+            TurboInstallCommand::class,
+        ]);
+    }
+
+    private function configureMacros(): void
     {
         Blade::if('turbonative', function () {
             return TurboFacade::isTurboNativeVisit();
@@ -89,7 +109,7 @@ class TurboServiceProvider extends ServiceProvider
         });
     }
 
-    private function bindRequestAndResponseMacros(): void
+    private function configureRequestAndResponseMacros(): void
     {
         Response::macro('turboStream', function ($model = null, string $action = null) {
             if (is_array($model)) {
@@ -120,7 +140,7 @@ class TurboServiceProvider extends ServiceProvider
         });
     }
 
-    protected function bindTestResponseMacros()
+    protected function configureTestResponseMacros()
     {
         if (! app()->environment('testing')) {
             return;
