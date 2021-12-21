@@ -394,11 +394,17 @@ I hope you can see how powerful this can be to reusing views.
 
 So far, we have used Turbo Streams over HTTP to handle the case of updating multiple parts of the page for a single user after a form submission. In addition to that, you may want to broadcast model changes over WebSockets to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
 
-Those same Turbo Stream responses we are returning to a user after a form submission, we can also send those to other users connected to a Laravel Echo channel and have their pages update reflecting the model change made by other users.
+We can broadcast to all users over WebSockets those exact same Turbo Stream tags we are returning to a user after a form submission. That makes use of Laravel Echo and Laravel's Broadcasting component.
 
 You may still feed the user making the changes with Turbo Streams over HTTP and broadcast the changes to other users over WebSockets. This way, the user making the change will have an instant feedback compared to having to wait for a background worker to pick up the job and send it to them over WebSockets.
 
-First, setup the [Laravel Broadcasting](https://laravel.com/docs/8.x/broadcasting) component for your app. One of the first steps is to configure your environment variables to something that looks like this:
+First, you need to uncomment the Laravel Echo setup on your `resources/views/bootstrap.js` file and make sure you compile your assets after doing that by running:
+
+```bash
+npm run dev
+```
+
+Then, you'll need to setup the [Laravel Broadcasting](https://laravel.com/docs/8.x/broadcasting) component for your app. One of the first steps is to configure your environment variables to look something like this:
 
 ```dotenv
 PUSHER_APP_ID=
