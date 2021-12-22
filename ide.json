@@ -5,7 +5,7 @@
             "viewPaths": [
                 {
                     "path": "resources/views/components",
-                    "namespace": "turbo"
+                    "namespace": "x-turbo"
                 }
             ]
         }
