@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
-use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\View;
 use PHPUnit\Framework\Assert;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
@@ -22,6 +21,7 @@ use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
+use Tonysm\TurboLaravel\Views\Components as ViewComponents;
 
 class TurboServiceProvider extends ServiceProvider
 {
@@ -51,22 +51,11 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureComponents()
     {
-        $this->callAfterResolving(BladeCompiler::class, function () {
-            $this->registerComponent('frame');
-            $this->registerComponent('stream');
-            $this->registerComponent('stream-from');
-        });
-    }
-
-    /**
-     * Register the given component.
-     *
-     * @param  string  $component
-     * @return void
-     */
-    private function registerComponent(string $component)
-    {
-        Blade::component('turbo-laravel::components.turbo-'.$component, 'turbo-'.$component);
+        $this->loadViewComponentsAs('turbo', [
+            ViewComponents\Frame::class,
+            ViewComponents\Stream::class,
+            ViewComponents\StreamFrom::class,
+        ]);
     }
 
     private function configurePublications()

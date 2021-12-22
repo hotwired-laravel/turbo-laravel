@@ -45,7 +45,7 @@ class Frame extends Component
      */
     public function render()
     {
-        return view('turbo-laravel::components.turbo-frame', [
+        return view('turbo-laravel::components.frame', [
             'domId' => $this->domId(),
         ]);
     }

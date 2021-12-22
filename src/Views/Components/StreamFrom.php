@@ -31,7 +31,7 @@ class StreamFrom extends Component
      */
     public function render()
     {
-        return view('turbo-laravel::components.turbo-stream-from', [
+        return view('turbo-laravel::components.stream-from', [
             'channel' => $this->source instanceof HasBroadcastChannel ? $this->source->broadcastChannel() : $this->source,
         ]);
     }

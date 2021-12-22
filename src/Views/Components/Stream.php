@@ -34,7 +34,7 @@ class Stream extends Component
      */
     public function render()
     {
-        return view('turbo-laravel::components.turbo-stream', [
+        return view('turbo-laravel::components.stream', [
             'targetValue' => $this->targetValue(),
         ]);
     }
