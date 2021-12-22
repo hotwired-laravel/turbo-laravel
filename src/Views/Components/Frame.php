@@ -16,10 +16,10 @@ class Frame extends Component
     public $src;
 
     /** @var string|null */
-    public string|null $target;
+    public $target;
 
     /** @var string|null */
-    public string|null $loading;
+    public $loading;
 
     /**
      * Create a new component instance.
