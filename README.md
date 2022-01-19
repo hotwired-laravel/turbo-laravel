@@ -160,7 +160,7 @@ Here's how you can use Turbo Frames:
 </turbo-frame>
 ```
 
-Turbo Frames also allows you to lazy-load the frame's content. You may do so by adding a `src` attribute to the Turbo Frame tag. The conetnt of a lazy-loading Turbo Frame tag can be used to indicate "loading states", such as:
+Turbo Frames also allows you to lazy-load the frame's content. You may do so by adding a `src` attribute to the Turbo Frame tag. The content of a lazy-loading Turbo Frame tag can be used to indicate "loading states", such as:
 
 ```blade
 <turbo-frame id="my_frame" :src="route('my.page')">
