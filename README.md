@@ -217,7 +217,7 @@ To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID
 <x-turbo-frame :id="[$post, 'comments_count']">(99)</x-turbo-frame>
 ```
 
-Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo-frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but you any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered using the `<x-turbo-frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
+Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo-frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered by the `<x-turbo-frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
 
 The mentioned namespaced `dom_id()` helper function may also be used from anywhere in your application, like so:
 
