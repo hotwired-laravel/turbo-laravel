@@ -61,7 +61,7 @@ You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) pa
 php artisan turbo:install --stimulus
 ```
 
-You may also optionally install [Alpine.js](https://alpinejs.dev/) but not Jetstream (maybe you're more into [Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)) passing `--alpine` flag to the `turbo:install` Artisan command:
+You may also optionally install [Alpine.js](https://alpinejs.dev/) in a non-Jetstream context (maybe you're more into [Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)) passing `--alpine` flag to the `turbo:install` Artisan command:
 
 ```bash
 php artisan turbo:install --alpine
