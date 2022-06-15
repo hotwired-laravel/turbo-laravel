@@ -1,7 +1,7 @@
-import Alpine from 'alpinejs';
+import Alpine from "alpinejs";
 
-document.addEventListener('turbo:before-render', () => {
-    let permanents = document.querySelectorAll('[data-turbo-permanent]');
+document.addEventListener("turbo:before-render", () => {
+    let permanents = document.querySelectorAll("[data-turbo-permanent]");
     let undos = Array.from(permanents).map(el => {
         el._x_ignore = true;
         return () => {
@@ -9,9 +9,9 @@ document.addEventListener('turbo:before-render', () => {
         };
     });
 
-    document.addEventListener('turbo:render', function handler() {
+    document.addEventListener("turbo:render", function handler() {
         while(undos.length) undos.shift()();
-        document.removeEventListener('turbo:render', handler);
+        document.removeEventListener("turbo:render", handler);
     });
 });
 

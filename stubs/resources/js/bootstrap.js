@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from "lodash";
 window._ = _;
 
 /**
@@ -7,10 +7,10 @@ window._ = _;
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
+import axios from "axios";
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * The Laravel Echo setup is commented out because it doesn't work out of the box
@@ -20,11 +20,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * See: https://github.com/tonysm/turbo-laravel/#broadcasting-turbo-streams-over-websockets-with-laravel-echo
  */
 
-// import Echo from 'laravel-echo';
-// import Pusher from 'pusher-js';
+// import Echo from "laravel-echo";
+// import Pusher from "pusher-js";
 
 // window.Echo = new Echo({
-//     broadcaster: 'pusher',
+//     broadcaster: "pusher",
 //     key: process.env.MIX_PUSHER_APP_KEY,
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: process.env.MIX_PUSHER_APP_USE_SSL === "true",
@@ -33,8 +33,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     wsPort: process.env.MIX_PUSHER_APP_PORT || null,
 // });
 
-// document.addEventListener('turbo:before-fetch-request', (e) => {
-//     e.detail.fetchOptions.headers['X-Socket-ID'] = window.Echo.socketId();
+// document.addEventListener("turbo:before-fetch-request", (e) => {
+//     e.detail.fetchOptions.headers["X-Socket-ID"] = window.Echo.socketId();
 // });
 
 /**
@@ -45,10 +45,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
-document.addEventListener('turbo:before-fetch-request', (e) => {
+document.addEventListener("turbo:before-fetch-request", (e) => {
     if (token) {
-        e.detail.fetchOptions.headers['X-CSRF-Token'] = token.content;
+        e.detail.fetchOptions.headers["X-CSRF-Token"] = token.content;
     } else {
-        console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+        console.error("CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token");
     }
 });

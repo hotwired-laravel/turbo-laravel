@@ -1,4 +1,4 @@
-import { connectStreamSource, disconnectStreamSource } from '@hotwired/turbo'
+import { connectStreamSource, disconnectStreamSource } from "@hotwired/turbo"
 
 const subscribeTo = (type, channel) => {
     if (type === "presence") {
