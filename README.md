@@ -34,30 +34,26 @@ Turbo Laravel may be installed via composer:
 composer require tonysm/turbo-laravel
 ```
 
-After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file, publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
+After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using NPM) or to your `routes/importmap.php` file (when you're using [Importmap](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
 
 ```bash
 php artisan turbo:install
 ```
 
-Next, you may install your JS dependencies and compile the assets so the changes take effect:
-
-```bash
-npm install
-npm run dev
-```
-
-If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also changes a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
+If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also change a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
 
 ```bash
 php artisan turbo:install --jet
 ```
 
-Then, you can run install your NPM dependencies and compile your assets normally.
+When using Jetstream with Livewire, the [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) is needed so Livewire works nicely with Turbo. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`).
 
-These are the dependencies needed so Jetstream with Livewire works with Turbo.js:
+If you're not using Importmap, the command will tell you to pull and compile the assets before proceeding:
 
-* [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) needed so Livewire works nicely. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`)
+```bash
+npm install
+npm run dev
+```
 
 You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
 
@@ -65,10 +61,18 @@ You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) pa
 php artisan turbo:install --stimulus
 ```
 
+You may also optionally install [Alpine.js](https://alpinejs.dev/) but not Jetstream (maybe you're more into [Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)) passing `--alpine` flag to the `turbo:install` Artisan command:
+
+```bash
+php artisan turbo:install --alpine
+```
+
+_Note: the `--jet` option also adds all the necessary Alpine dependencies since Jetstream depends on Alpine._
+
 Here's the full list of flags:
 
 ```bash
-php artisan turbo:install --jet --stimulus
+php artisan turbo:install --jet --stimulus --alpine
 ```
 
 ### Turbo HTTP Middleware
