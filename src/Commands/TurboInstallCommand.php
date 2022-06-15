@@ -246,7 +246,7 @@ class TurboInstallCommand extends Command
         // was already started, as app.js is loaded in the guests layout too.
 
         if ($this->option('jet')) {
-            $this->comment('Adding the Livewire Styles and Livewire/Turbo bridge to the guest layout...');
+            $this->comment('Adding the Livewire Styles and Livewire/Turbo bridge to the "guest" layout...');
 
             File::put(
                 resource_path('views/layouts/guest.blade.php'),
