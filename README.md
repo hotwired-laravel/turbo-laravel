@@ -313,10 +313,7 @@ response()->turboStream()->append('statuses', __('Comment was successfully creat
 The optional content parameter expects either a string, a view instance, or an instance of Laravel's `Illuminate\Support\HtmlString`, so you could do something like:
 
 ```php
-response()->turboStream()->append(
-    'some_dom_id',
-    view('my-greeting-view', ['name' => 'Tester']),
-);
+response()->turboStream()->append('some_dom_id', view('greetings', ['name' => 'Tester']));
 ```
 
 Or more explicitly by passing an instance of the `HtmlString` as content:
