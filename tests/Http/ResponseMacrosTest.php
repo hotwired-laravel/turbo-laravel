@@ -5,7 +5,10 @@ namespace Tonysm\TurboLaravel\Tests\Http;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\HtmlString;
+
 use function Tonysm\TurboLaravel\dom_id;
 
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
@@ -270,6 +273,28 @@ class ResponseMacrosTest extends TestCase
             'action' => 'append',
             'target' => 'test_models',
             'content' => 'Hello World',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function append_shorthand_passing_html_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->append('test_models', new HtmlString(Blade::render(
+                '<div>Hello, {{ $name }}</div>',
+                ['name' => 'Tester'],
+                deleteCachedView: true,
+            )))
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'append',
+            'target' => 'test_models',
+            'content' => new HtmlString('<div>Hello, Tester</div>'),
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
