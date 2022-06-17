@@ -310,7 +310,16 @@ Alternativelly, you may also pass strings to the shorthand stream builders, whic
 response()->turboStream()->append('statuses', __('Comment was successfully created!'));
 ```
 
-The optional content parameter expects either a string or an instance of Laravel's `Illuminate\Support\HtmlString`, so you could do something like:
+The optional content parameter expects either a string, a view instance, or an instance of Laravel's `Illuminate\Support\HtmlString`, so you could do something like:
+
+```php
+response()->turboStream()->append(
+    'some_dom_id',
+    view('my-greeting-view', ['name' => 'Tester']),
+);
+```
+
+Or more explicitly by passing an instance of the `HtmlString` as content:
 
 ```php
 use Illuminate\Support\Facades\Blade;
