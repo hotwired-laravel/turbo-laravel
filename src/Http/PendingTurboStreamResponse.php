@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\Model;
+
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
@@ -14,6 +15,7 @@ class PendingTurboStreamResponse implements Responsable
     private string $useAction;
     private ?string $partialView = null;
     private array $partialData = [];
+    private $inlineContent = null;
 
     public static function forModel(Model $model, string $action = null): self
     {
@@ -34,43 +36,43 @@ class PendingTurboStreamResponse implements Responsable
         return $builder->updated($model, $action ?: 'replace');
     }
 
-    public function append(Model $model): self
+    public function append(Model|string $model, $content = null): self
     {
-        return $this->inserted($model, 'append');
+        return $this->inserted($model, 'append', $content);
     }
 
-    public function prepend(Model $model): self
+    public function prepend(Model|string $model, $content = null): self
     {
-        return $this->inserted($model, 'prepend');
+        return $this->inserted($model, 'prepend', $content);
     }
 
-    public function before(Model $model, string $target): self
+    public function before(Model|string $model, $content = null): self
     {
-        return $this->inserted($model, 'before', $target);
-    }
-
-    public function after(Model $model, string $target): self
-    {
-        return $this->inserted($model, 'after', $target);
-    }
-
-    public function update(Model $model): self
-    {
-        return $this->updated($model, 'update');
-    }
-
-    public function replace(Model $model): self
-    {
-        return $this->updated($model, 'replace');
+        return $this->updated($model, 'before', $content);
     }
 
     /**
-     * The target of the removal. Can be an instance of a Model or a DOM ID.
+     * @param Model|string $model The target DOM ID or Model instance to defer the target.
+     * @param HtmlString|string $content Optional inline content. Can be string or a instance of HtmlString.
      *
-     * @param Model|string
      * @return self
      */
-    public function remove($target): self
+    public function after(Model|string $model, $content = null): self
+    {
+        return $this->updated($model, 'after', $content);
+    }
+
+    public function update(Model|string $model, $content = null): self
+    {
+        return $this->updated($model, 'update', $content);
+    }
+
+    public function replace(Model|string $model, $content = null): self
+    {
+        return $this->updated($model, 'replace', $content);
+    }
+
+    public function remove(Model|string $target): self
     {
         $this->useAction = 'remove';
         $this->useTarget = is_string($target) ? $target : dom_id($target);
@@ -78,9 +80,9 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    public function target(string $target): self
+    public function target(Model|string $target): self
     {
-        $this->useTarget = $target;
+        $this->useTarget = $this->resolveTargetFor($target, resource: true);
 
         return $this;
     }
@@ -92,12 +94,12 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    public function view(string $view, array $data = []): self
+    public function view(?string $view = null, array $data = []): self
     {
         return $this->partial($view, $data);
     }
 
-    public function partial(string $view, array $data = []): self
+    public function partial(?string $view = null, array $data = []): self
     {
         $this->partialView = $view;
         $this->partialData = $data;
@@ -113,7 +115,7 @@ class PendingTurboStreamResponse implements Responsable
      */
     public function toResponse($request)
     {
-        if ($this->useAction !== 'remove' && ! $this->partialView) {
+        if ($this->useAction !== 'remove' && ! $this->partialView && ! $this->inlineContent) {
             throw TurboStreamResponseFailedException::missingPartial();
         }
 
@@ -129,27 +131,43 @@ class PendingTurboStreamResponse implements Responsable
             'action' => $this->useAction,
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
+            'content' => $this->inlineContent,
         ])->render();
     }
 
-    private function inserted(Model $model, string $action, ?string $target = null): self
+    private function inserted(Model|string $target, string $action, $content = null): self
     {
-        $this->useTarget = $target ?: $this->getResourceNameFor($model);
+        $this->useTarget = $this->resolveTargetFor($target, resource: true);
         $this->useAction = $action;
-        $this->partialView = $this->getPartialViewFor($model);
-        $this->partialData = $this->getPartialDataFor($model);
+        $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
+        $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
+        $this->inlineContent = $content;
 
         return $this;
     }
 
-    private function updated(Model $model, string $action): self
+    private function updated(Model|string $target, string $action, ?string $content = null): self
     {
-        $this->useTarget = dom_id($model);
+        $this->useTarget = $this->resolveTargetFor($target);
         $this->useAction = $action;
-        $this->partialView = $this->getPartialViewFor($model);
-        $this->partialData = $this->getPartialDataFor($model);
+        $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
+        $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
+        $this->inlineContent = $content;
 
         return $this;
+    }
+
+    private function resolveTargetFor(Model|string $target, bool $resource = false): string
+    {
+        if (is_string($target)) {
+            return $target;
+        }
+
+        if ($resource) {
+            return $this->getResourceNameFor($target);
+        }
+
+        return dom_id($target);
     }
 
     private function getResourceNameFor(Model $model): string

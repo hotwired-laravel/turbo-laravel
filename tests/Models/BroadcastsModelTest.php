@@ -31,7 +31,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
+            $this->assertEquals('private-broadcast_test_models', $job->channels[0]->name);
             $this->assertEquals('broadcast_test_models', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
@@ -243,7 +243,7 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
+            $this->assertEquals('private-auto_broadcast_test_models', $job->channels[0]->name);
             $this->assertEquals('auto_broadcast_test_models', $job->target);
             $this->assertEquals('append', $job->action);
             $this->assertEquals('auto_broadcast_test_models._auto_broadcast_test_model', $job->partial);
@@ -262,11 +262,30 @@ class BroadcastsModelTest extends TestCase
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($modelWithCustomInsert) {
             $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $modelWithCustomInsert->broadcastChannel()), $job->channels[0]->name);
+            $this->assertEquals('private-auto_broadcast_with_custom_inserts_test_models', $job->channels[0]->name);
             $this->assertEquals('auto_broadcast_with_custom_inserts_test_models', $job->target);
             $this->assertEquals('prepend', $job->action);
             $this->assertEquals('auto_broadcast_with_custom_inserts_test_models._auto_broadcast_with_custom_inserts_test_model', $job->partial);
             $this->assertEquals(['autoBroadcastWithCustomInsertsTestModel' => $modelWithCustomInsert], $job->partialData);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function auto_broadcasts_with_custom_stream()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = AutoBroadcastWithCustomStreamTestModel::create(['name' => 'Testing']);
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals('private-my-custom-channel', $job->channels[0]->name);
+            $this->assertEquals('auto_broadcast_with_custom_stream_test_models', $job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('auto_broadcast_with_custom_stream_test_models._auto_broadcast_with_custom_stream_test_model', $job->partial);
+            $this->assertEquals(['autoBroadcastWithCustomStreamTestModel' => $model], $job->partialData);
 
             return true;
         });
@@ -370,6 +389,15 @@ class AutoBroadcastWithCustomInsertsTestModel extends TestModel
 
     protected $broadcasts = [
         'insertsBy' => 'prepend',
+    ];
+}
+
+class AutoBroadcastWithCustomStreamTestModel extends TestModel
+{
+    use Broadcasts;
+
+    protected $broadcasts = [
+        'stream' => 'my-custom-channel',
     ];
 }
 

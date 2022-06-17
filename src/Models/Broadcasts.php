@@ -24,41 +24,41 @@ trait Broadcasts
     public function broadcastAppend(): PendingBroadcast
     {
         return $this->broadcastAppendTo(
-            $this->brodcastDefaultStreamables()
+            $this->brodcastDefaultStreamables(inserting: true)
         );
     }
 
     public function broadcastPrepend(): PendingBroadcast
     {
         return $this->broadcastPrependTo(
-            $this->brodcastDefaultStreamables()
+            $this->brodcastDefaultStreamables(inserting: true)
         );
     }
 
-    public function broadcastBefore(string $target): PendingBroadcast
+    public function broadcastBefore(string $target, bool $inserting = true): PendingBroadcast
     {
         return $this->broadcastBeforeTo(
-            $this->brodcastDefaultStreamables(),
+            $this->brodcastDefaultStreamables($inserting),
             $target
         );
     }
 
-    public function broadcastAfter(string $target): PendingBroadcast
+    public function broadcastAfter(string $target, bool $inserting = true): PendingBroadcast
     {
         return $this->broadcastAfterTo(
-            $this->brodcastDefaultStreamables(),
+            $this->brodcastDefaultStreamables($inserting),
             $target
         );
     }
 
     public function broadcastInsert(): PendingBroadcast
     {
-        $action = is_array($this->broadcasts)
+        $action = is_array($this->broadcasts) && isset($this->broadcasts['insertsBy'])
             ? $this->broadcasts['insertsBy']
             : 'append';
 
         return $this->broadcastActionTo(
-            $this->brodcastDefaultStreamables(),
+            $this->brodcastDefaultStreamables(inserting: true),
             $action,
             Rendering::forModel($this),
         );
@@ -130,7 +130,7 @@ trait Broadcasts
         );
     }
 
-    protected function brodcastDefaultStreamables()
+    protected function brodcastDefaultStreamables(bool $inserting = false)
     {
         if (property_exists($this, 'broadcastsTo')) {
             return Collection::wrap($this->broadcastsTo)
@@ -141,6 +141,14 @@ trait Broadcasts
 
         if (method_exists($this, 'broadcastsTo')) {
             return $this->broadcastsTo();
+        }
+
+        if ($inserting && is_array($this->broadcasts) && isset($this->broadcasts['stream'])) {
+            return $this->broadcasts['stream'];
+        }
+
+        if ($inserting) {
+            return Name::forModel($this)->plural;
         }
 
         return $this;
@@ -154,7 +162,7 @@ trait Broadcasts
             }
 
             return new PrivateChannel(
-                $streamable->broadcastChannel()
+                is_string($streamable) ? $streamable : $streamable->broadcastChannel()
             );
         })->values()->all();
     }
