@@ -300,6 +300,24 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function append_shorthand_passing_as_string_and_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->append('some_dom_id', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream target="some_dom_id" action="append">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function append_shorthand_passing_string_with_view_partial()
     {
         $testModel = TestModel::create(['name' => 'Test model']);

@@ -3,7 +3,9 @@
 namespace Tonysm\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
@@ -131,8 +133,24 @@ class PendingTurboStreamResponse implements Responsable
             'action' => $this->useAction,
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
-            'content' => $this->inlineContent,
+            'content' => $this->renderInlineContent(),
         ])->render();
+    }
+
+    /**
+     * @return string|HtmlString|null
+     */
+    private function renderInlineContent()
+    {
+        if (! $this->inlineContent) {
+            return null;
+        }
+
+        if ($this->inlineContent instanceof View) {
+            return new HtmlString($this->inlineContent->render());
+        }
+
+        return $this->inlineContent;
     }
 
     private function inserted(Model|string $target, string $action, $content = null): self
