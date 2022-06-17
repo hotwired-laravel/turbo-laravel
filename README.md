@@ -34,13 +34,13 @@ Turbo Laravel may be installed via composer:
 composer require tonysm/turbo-laravel
 ```
 
-After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using NPM) or to your `routes/importmap.php` file (when you're using [Importmap](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
+After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using NPM) or to your `routes/importmap.php` file (when you're using [Importmap Laravel](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
 
 ```bash
 php artisan turbo:install
 ```
 
-If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also change a couple lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
+If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also change a couple of lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
 
 ```bash
 php artisan turbo:install --jet
@@ -48,11 +48,10 @@ php artisan turbo:install --jet
 
 When using Jetstream with Livewire, the [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) is needed so Livewire works nicely with Turbo. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`).
 
-If you're not using [Importmap](https://github.com/tonysm/importmap-laravel), the command will tell you to pull and compile the assets before proceeding:
+If you're not using [Importmap Laravel](https://github.com/tonysm/importmap-laravel), the command will tell you to pull and compile the assets before proceeding:
 
 ```bash
-npm install
-npm run dev
+npm install && npm run dev
 ```
 
 You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
@@ -127,23 +126,23 @@ It's highly recommended reading the [Turbo Handbook](https://turbo.hotwired.dev/
 None of the conventions described bellow are mandatory. Feel free to pick the ones you like and also come up with your own conventions. With that out of the way, here's a list of conventions you may find helpful:
 
 * You may want to use [resource routes](https://laravel.com/docs/8.x/controllers#resource-controllers) for most things (`posts.index`, `posts.store`, etc.)
-* You may want your views broken up in smaller chunks (aka. "partials"), such as `comments/_comment.blade.php` which displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these _partials_ in [Turbo Streams](#turbo-streams)
-* Your models' partials (such as the `comments/_comment.blade.php` for a `Comment` model) may only rely on having a single `$comment` instance variable passed to it. That's because the package will, by default, figure out the partial of the model when broadcasting and will only pass the model itself to it, using the class basename as the variable instance in _camelCase_. Again, that's by default, you can customize most things
+* You may want to split up your views in smaller chunks (aka. "partials"), such as `comments/_comment.blade.php` which displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these _partials_ in [Turbo Streams](#turbo-streams)
+* Your models' partials (such as the `comments/_comment.blade.php` for a `Comment` model) may only rely on having a single `$comment` instance variable passed to them. That's because the package will, by default, figure out the partial for a given model when broadcasting and will also pass the model such partial, using the class basename as the variable instance in _camelCase_. Again, that's by default, you can customize most things
 * You may use the model's Fully Qualified Class Name (aka. FQCN), on your Broadcasting Channel authorization routes with a wildcard, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter, as long as there is one. This is the default [broadcasting channel naming convention](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions) in Laravel
 
-In the [Overview section](#overview) below you will see how to override most of the default behaviors, if you want to.
+In the [Overview section](#overview) below you will see how to override most of the defaults here, if you want to.
 
 <a name="overview"></a>
 ### Overview
 
-Once the assets are compiled, you will have Turbo-specific custom HTML tags that you may annotate your views with (Turbo Frames and Turbo Streams). This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
+When Turbo.js is installed, you will have Turbo-specific custom HTML tags that you may use in your views: Turbo Frames and Turbo Streams. This is vanilla Hotwire. Again, it's recommended to read the [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction). Once you understand how these few pieces work together, the challenge will be in decomposing your UI to work as you want them to.
 
 <a name="notes-on-turbo-drive-and-turbo-frames"></a>
 ### Notes on Turbo Drive and Turbo Frames
 
 To keep it short, Turbo Drive will turn links and form submissions into AJAX requests and will replace the page with the response. That's useful when you want to navigate to another page entirely.
 
-If you want some elements to persist across these navigations, you may annotate these elements with a DOM ID and add the `data-turbo-permanent` custom attribute to them. As long as the response also contains an element with the same ID and `data-turbo-permanent`, Turbo will not touch it.
+If you want some elements to persist across these navigations, you may annotate these elements with a DOM ID and add the `data-turbo-permanent` custom attribute to them. As long as the response also contains an element with the same DOM ID and `data-turbo-permanent` attribute, Turbo will not touch it.
 
 Sometimes you don't want the entire page to change, but instead just a portion of the page. That's what [Turbo Frames](https://turbo.hotwired.dev/handbook/frames) are all about. Links and Form submissions that are trapped inside a Turbo Frame tag (or that point to one!) will instruct Turbo Drive to **NOT** replace the entire body of the document, but instead to look for a matching Turbo Frame in the response using its DOM ID and replace that specific portion of the page.
 
@@ -168,7 +167,7 @@ Turbo Frames also allows you to lazy-load the frame's content. You may do so by 
 
 Turbo will automatically dispatch a GET AJAX request as soon as a lazy-loading Turbo Frame enters the DOM and replace its content with a matching Turbo Frame in the response.
 
-You may also trigger a Turbo Frame with forms and links that are _outside_ of such frames by pointing to them like so:
+You may also trigger a Turbo Frame with forms and links that are _outside_ of such frames by pointing to them with a `data-turbo-frame` attribute:
 
 ```blade
 <div>
@@ -185,7 +184,7 @@ So far, all vanilla Hotwire and Turbo.
 <a name="blade-directives-and-helper-functions"></a>
 ### Blade Components, Directives, and Helper Functions
 
-Since Turbo rely a lot on DOM IDs, the package offers a helper to generate unique DOM IDs based on your models. You may use the `@domid` Blade Directive in your Blade views like so:
+Since Turbo relies a lot on DOM IDs, the package offers a helper to generate unique DOM IDs based on your models. You may use the `@domid` Blade Directive in your Blade views like so:
 
 ```blade
 <turbo-frame id="@domid($comment)">
@@ -199,7 +198,7 @@ This will generate a DOM ID string using your model's basename and its ID, such 
 <turbo-frame id="@domid($post, 'comments_count')">(99)</turbo-frame>
 ```
 
-Which will generate a `comments_count_post_123` DOM ID.
+Which will generate a `comments_count_post_123` DOM ID, assuming your Post model has an ID of `123`.
 
 You may also prefer using the `<x-turbo-frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
 
@@ -209,7 +208,7 @@ You may also prefer using the `<x-turbo-frame>` Blade component that ships with 
 </x-turbo-frame>
 ```
 
-To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID, an Eloquent model instance, which will be passed to the `dom_id()`  function that ships with the package (the same one as the `@domid()` Blade directive uses behind the scenes), or an array tuple where the first item is an instance of an Eloquent model and the second is the prefix of the DOM ID, something like this:
+To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID, an Eloquent model instance, which will be passed to the `dom_id()` function that ships with the package (the same one as the `@domid()` Blade directive uses behind the scenes), or an array tuple where the first item is an instance of an Eloquent model and the second is the prefix of the DOM ID, something like this:
 
 ```blade
 <x-turbo-frame :id="[$post, 'comments_count']">(99)</x-turbo-frame>
@@ -225,7 +224,7 @@ use function Tonysm\TurboLaravel\dom_id;
 dom_id($comment);
 ```
 
-When a new instance of a model is passed to any of these DOM ID helpers, since it doesn't have an ID, it will prefix the resource anme with a `create_` prefix. This way, new instances of an `App\\Models\\Comment` model will generate a `create_comment` DOM ID.
+When a new instance of a model is passed to any of these DOM ID helpers, since it doesn't have an ID, it will prefix the resource name with a `create_` prefix. This way, new instances of an `App\\Models\\Comment` model will generate a `create_comment` DOM ID.
 
 These helpers strip out the model's FQCN (see [config/turbo-laravel.php](config/turbo-laravel.php) if you use an unconventional location for your models).
 
@@ -247,7 +246,7 @@ Route::post('posts/{post}/comments', function (Post $post) {
     $comment = $post->comments()->create(/** params */);
 
     if (request()->wantsTurboStream()) {
-        return response()->turboStream()->append($comment);
+        return response()->turboStream($comment);
     }
 
     return back();
@@ -259,7 +258,7 @@ The `request()->wantsTurboStream()` macro added to the request will check if the
 Here's what the HTML response will look like:
 
 ```html
-<turbo-stream action="append" target="comments_post_123">
+<turbo-stream action="append" target="comments">
     <template>
         <div id="comment_123">
             <p>Hello, World</p>
@@ -296,16 +295,56 @@ Which means you will find shorthand methods for them all, like:
 ```php
 response()->turboStream()->append($comment);
 response()->turboStream()->prepend($comment);
-response()->turboStream()->before($comment, 'target_dom_id');
-response()->turboStream()->after($comment, 'target_dom_id');
+response()->turboStream()->before($comment);
+response()->turboStream()->after($comment);
 response()->turboStream()->replace($comment);
 response()->turboStream()->update($comment);
 response()->turboStream()->remove($comment);
 ```
 
+For these shorthand stream builders, you may pass an instance of an Eloquent model, which will be used to figure out things like `target`, `action`, and the `view` partial as well as the view data passed to them.
+
+Alternativelly, you may also pass strings to the shorthand stream builders, which will be used as the target, and an optional content string, which will be rendered instead of a partial, for instance:
+
+```php
+response()->turboStream()->append('statuses', __('Comment was successfully created!'));
+```
+
+The optional content parameter expects either a string or an instance of Laravel's `Illuminate\Support\HtmlString`, so you could do something like:
+
+```php
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
+
+response()->turboStream()
+    ->append('statuses', new HtmlString(Blade::render('<div>Hello, {{ $name }}</div>', ['name' => 'Tony'])));
+```
+
+Which will result in a Turbo Stream like this:
+
+```html
+<turbo-stream target="statuses" action="append">
+    <template>
+        <div>Hello, Tony</div>
+    </template>
+</turbo-stream>
+```
+
+For both the `before` and `after` methods you need additional calls to specify the view template you want to insert, since the given model/string will only be used to specify the target, something like:
+
+```php
+response()->turboStream()->before($comment)->view('comments._flash_message', ['message' => __('Comment was created!'))]);
+```
+
+Just like the other shorthand stream builders, you may also pass an option content string or `HtmlString` instance to the `before` and `after` shorthands. When doing that, you don't need to specify the view section.
+
+```php
+response()->turboStream()->before($comment, __('Oh, hey!'));
+```
+
 You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwired.dev/handbook/streams).
 
-These shorthand methods return a pending object for the response which you can chain and override everything you want before it's rendered:
+The shorthand methods return a pending object for the response which you can chain and override everything you want before it's rendered:
 
 ```php
 return response()->turboStream()
@@ -548,7 +587,7 @@ class Comment extends Model
 
 This will also automatically hook into the model events, but instead of broadcasting new instances as `append` it will use `prepend`.
 
-Secondly, it will send all changes to this model's broadacsting channel. In our case, we want to direct the broadcasts to the post linked to this model instead. We can achieve that by adding a `$broadcastsTo` property to the model, like so:
+Secondly, it will send all changes to this model's broadacsting channel, except for when the model is created (since no one would be listening to its direct channel). In our case, we want to direct the broadcasts to the post linked to this model instead. We can achieve that by adding a `$broadcastsTo` property to the model, like so:
 
 ```php
 class Comment extends Model
@@ -568,7 +607,7 @@ class Comment extends Model
 }
 ```
 
-That property can either be a string that contains to the name of a relationship of this model or an array of relationships.
+That property can either be a string that contains the name of a relationship of this model or an array of relationships.
 
 Alternatively, you may prefer to have more control over where these broadcasts are being sent to by implementing a `broadcastsTo` method in your model instead of using the property. This way, you can return a single model, a broadcasting channel instance or an array containing either of them, like so:
 
@@ -598,6 +637,21 @@ class Comment extends Model
     }
 }
 ```
+
+Newly created models using the auto-broadcasting feature will be broadcasted to a pluralized version of the model's basename. So if you have a `App\Models\PostComment`, you may expect broadcasts of newly created models to be sent to a private channel called `post_comments`. Again, this convention is only valid for newly created models. Updates/Removals will still be sent to the model's own private channel by default using Laravel's convention for channel names. You may want to specify the channel name for newly created models to be broadcasted to with the `stream` key:
+
+```php
+class Comment extends Model
+{
+    use Broadcasts;
+
+    protected $broadcasts = [
+        'stream' => 'some_comments',
+    ];
+}
+```
+
+Having a `$broadcastsTo` property or implementing the `broadcastsTo()` method in your model will have precedence over this, so newly created models will be sent to the channels specified on those places instead of using the convention or the `stream` option.
 
 <a name="listening-to-broadcasts"></a>
 #### Listening to Turbo Stream Broadcasts
