@@ -300,24 +300,6 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
-    public function append_shorthand_passing_as_string_and_view_as_content()
-    {
-        $response = response()
-            ->turboStream()
-            ->append('some_dom_id', view('hello_view', ['name' => 'Tester']))
-            ->toResponse(new Request);
-
-        $expected = <<<HTML
-        <turbo-stream target="some_dom_id" action="append">
-            <template><div>Hello, Tester</div></template>
-        </turbo-stream>
-        HTML;
-
-        $this->assertEquals(trim($expected), trim($response->getContent()));
-        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
-    }
-
-    /** @test */
     public function append_shorthand_passing_string_with_view_partial()
     {
         $testModel = TestModel::create(['name' => 'Test model']);
@@ -334,6 +316,24 @@ class ResponseMacrosTest extends TestCase
             'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
         ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function append_shorthand_passing_as_string_and_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->append('some_dom_id', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream target="some_dom_id" action="append">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
@@ -534,6 +534,24 @@ class ResponseMacrosTest extends TestCase
             'target' => 'some_dom_id',
             'content' => 'Hello World',
         ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function before_shorthand_passing_as_string_target_and_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->before('some_dom_id', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream target="some_dom_id" action="before">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));

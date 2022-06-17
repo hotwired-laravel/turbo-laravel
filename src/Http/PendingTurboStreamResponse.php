@@ -164,7 +164,7 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    private function updated(Model|string $target, string $action, ?string $content = null): self
+    private function updated(Model|string $target, string $action, $content = null): self
     {
         $this->useTarget = $this->resolveTargetFor($target);
         $this->useAction = $action;
