@@ -259,6 +259,46 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function append_shorthand_passing_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->append('test_models', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'append',
+            'target' => 'test_models',
+            'content' => 'Hello World',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function append_shorthand_passing_string_with_view_partial()
+    {
+        $testModel = TestModel::create(['name' => 'Test model']);
+
+        $response = response()
+            ->turboStream()
+            ->append('test_models_target')
+            ->view('test_models._test_model', ['testModel' => $testModel])
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'append',
+            'target' => 'test_models_target',
+            'partial' => 'test_models._test_model',
+            'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function prepend_shorthand_for_response_builder()
     {
         $response = response()
@@ -271,6 +311,24 @@ class ResponseMacrosTest extends TestCase
             'target' => 'test_models',
             'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function prepend_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->prepend('test_models', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'prepend',
+            'target' => 'test_models',
+            'content' => 'Hello World',
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
@@ -297,6 +355,24 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function update_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->update('test_models_target', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'update',
+            'target' => 'test_models_target',
+            'content' => 'Hello World',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function replace_shorthand_for_response_builder()
     {
         $response = response()
@@ -316,6 +392,24 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function replace_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->replace('test_models_target', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'replace',
+            'target' => 'test_models_target',
+            'content' => 'Hello World',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function remove_shorthand_for_response_builder()
     {
         $response = response()
@@ -326,6 +420,23 @@ class ResponseMacrosTest extends TestCase
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
             'target' => dom_id($testModel),
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function remove_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->remove('test_models_target')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'remove',
+            'target' => 'test_models_target',
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
@@ -354,14 +465,33 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->before($testModel = TestModel::create(['name' => 'Test model']), 'example_dom_id')
+            ->before($testModel = TestModel::create(['name' => 'Test model']))
+            ->view('test_models._test_model', ['testModel' => $testModel])
             ->toResponse(new Request);
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'before',
-            'target' => 'example_dom_id',
+            'target' => dom_id($testModel),
             'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function before_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->before('some_dom_id', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'before',
+            'target' => 'some_dom_id',
+            'content' => 'Hello World',
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
@@ -373,14 +503,33 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->after($testModel = TestModel::create(['name' => 'Test model']), 'example_dom_id')
+            ->after($testModel = TestModel::create(['name' => 'Test model']))
+            ->view('test_models._test_model', ['testModel' => $testModel])
             ->toResponse(new Request);
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'after',
-            'target' => 'example_dom_id',
+            'target' => dom_id($testModel),
             'partial' => 'test_models._test_model',
             'partialData' => ['testModel' => $testModel],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function after_shorthand_as_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->after('some_dom_id', 'Hello World')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'after',
+            'target' => 'some_dom_id',
+            'content' => 'Hello World',
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
