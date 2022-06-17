@@ -266,14 +266,14 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->append('test_models', 'Hello World')
-            ->toResponse(new Request);
+            ->append('some_dom_id', 'Hello World')
+            ->toResponse(new Request());
 
-        $expected = view('turbo-laravel::turbo-stream', [
-            'action' => 'append',
-            'target' => 'test_models',
-            'content' => 'Hello World',
-        ])->render();
+        $expected = <<<HTML
+        <turbo-stream target="some_dom_id" action="append">
+            <template>Hello World</template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
@@ -284,18 +284,16 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->append('test_models', new HtmlString(Blade::render(
-                '<div>Hello, {{ $name }}</div>',
-                ['name' => 'Tester'],
-                deleteCachedView: true,
-            )))
+            ->append('some_dom_id', new HtmlString(
+                Blade::render('<div>Hello, {{ $name }}</div>', ['name' => 'Tester'], deleteCachedView: true)
+            ))
             ->toResponse(new Request);
 
-        $expected = view('turbo-laravel::turbo-stream', [
-            'action' => 'append',
-            'target' => 'test_models',
-            'content' => new HtmlString('<div>Hello, Tester</div>'),
-        ])->render();
+        $expected = <<<HTML
+        <turbo-stream target="some_dom_id" action="append">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
