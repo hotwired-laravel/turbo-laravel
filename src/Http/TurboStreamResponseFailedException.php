@@ -8,6 +8,6 @@ class TurboStreamResponseFailedException extends RuntimeException
 {
     public static function missingPartial(): self
     {
-        return new self('Missing partial: non-remove Turbo Streams need a partial.');
+        return new self('Missing View: All Turbo Stream Actions Except "remove" need a view template, but none were passed.');
     }
 }
