@@ -943,6 +943,11 @@ class CreatesCommentsTest extends TestCase
 
 *Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
 
+<a name="caveats"></a>
+### Fixing Laravel's Previous URL Issue
+
+Visits from Turbo Frames will hit your application and Laravel by default keeps track of the previously visited URLs to be used with helpers like `url()->previous()`, for instance. This might be confusing because chances are that your you wouldn't want to redirect users to the URL of the most recent Turbo Frame that hit your app. So, to avoid storying Turbo Frames visits as Laravel's previous URL, head to the [issue](https://github.com/tonysm/turbo-laravel/issues/60#issuecomment-1123142591) where a solution was discussed.
+
 <a name="closing-notes"></a>
 ### Closing Notes
 
