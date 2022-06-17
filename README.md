@@ -322,8 +322,9 @@ Or more explicitly by passing an instance of the `HtmlString` as content:
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
-response()->turboStream()
-    ->append('statuses', new HtmlString(Blade::render('<div>Hello, {{ $name }}</div>', ['name' => 'Tony'])));
+response()->turboStream()->append('statuses', new HtmlString(
+    Blade::render('<div>Hello, {{ $name }}</div>', ['name' => 'Tony'])
+));
 ```
 
 Which will result in a Turbo Stream like this:
@@ -339,7 +340,11 @@ Which will result in a Turbo Stream like this:
 For both the `before` and `after` methods you need additional calls to specify the view template you want to insert, since the given model/string will only be used to specify the target, something like:
 
 ```php
-response()->turboStream()->before($comment)->view('comments._flash_message', ['message' => __('Comment was created!'))]);
+response()->turboStream()
+    ->before($comment)
+    ->view('comments._flash_message', [
+        'message' => __('Comment was created!'),
+    ]);
 ```
 
 Just like the other shorthand stream builders, you may also pass an option content string or `HtmlString` instance to the `before` and `after` shorthands. When doing that, you don't need to specify the view section.
@@ -377,9 +382,7 @@ return response()->turboStream([
         ->append($comment)
         ->target(dom_id($comment->post, 'comments')),
     response()->turboStream()
-        ->action('update')
-        ->target(dom_id($comment->post, 'comments_count'))
-        ->view('posts._comments_count', ['post' => $comment->post]),
+        ->update(dom_id($comment->post, 'comments_count'), view('posts._comments_count', ['post' => $comment->post])),
 ]);
 ```
 
