@@ -118,6 +118,7 @@ It's highly recommended reading the [Turbo Handbook](https://turbo.hotwired.dev/
 * [Validation Response Redirects](#redirects)
 * [Turbo Native](#turbo-native)
 * [Testing Helpers](#testing-helpers)
+* [Known Issues](#known-issues)
 * [Closing Notes](#closing-notes)
 
 <a name="conventions"></a>
@@ -818,6 +819,45 @@ if (Turbo::isTurboNativeVisit()) {
 }
 ```
 
+#### Interacting With Turbo Native Navigation
+
+Turbo is built to work with native navigation principles and present those alongside what's required for the web. When you have Turbo Native clients running (see the Turbo iOS and Turbo Android projects for details), you can respond to native requests with three dedicated responses: `recede`, `resume`, `refresh`.
+
+You may want to use the provided `InteractsWithTurboNativeNavigation` trait on your controllers like so:
+
+```php
+use Tonysm\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
+
+class TraysController extends Controller
+{
+    use InteractsWithTurboNativeNavigation;
+
+    public function store()
+    {
+        $tray = /** Create the Tray */;
+
+        return $this->recedeOrRedirectTo(route('trays.show', $tray));
+    }
+}
+```
+
+In this example, when the request to create trays comes from a Turbo Native request, we're going to redirect to the `turbo_recede_historical_location` URL route instead of the `trays.show` route. However, if the request was made from your web app, we're going to redirect the client to the `trays.show` route.
+
+There are a couple of redirect helpers available:
+
+```php
+$this->recedeOrRedirectTo(string $url);
+$this->resumeOrRedirectTo(string $url);
+$this->refreshOrRedirectTo(string $url);
+$this->recedeOrRedirectBack(string $fallbackUrl, array $options = []);
+$this->resumeOrRedirectBack(string $fallbackUrl, array $options = []);
+$this->refreshOrRedirectBack(string $fallbackUrl, array $options = []);
+```
+
+The Turbo Native client should intercept navigations to these special routes and handle them separately. For instance, you may want to close a native modal that was showing a form after its submission and _recede_ to the previous screen dismissing the modal, and not by following the redirect as the web does.
+
+*Note: At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).*
+
 <a name="testing-helpers"></a>
 ### Testing Helpers
 
@@ -952,8 +992,12 @@ class CreatesCommentsTest extends TestCase
 
 *Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
 
-<a name="caveats"></a>
-### Fixing Laravel's Previous URL Issue
+<a name="known-issues"></a>
+### Known Issues
+
+If you ever encounter an issue with the package, look here first for documented solutions.
+
+#### Fixing Laravel's Previous URL Issue
 
 Visits from Turbo Frames will hit your application and Laravel by default keeps track of previously visited URLs to be used with helpers like `url()->previous()`, for instance. This might be confusing because chances are that you wouldn't want to redirect users to the URL of the most recent Turbo Frame that hit your app. So, to avoid storying Turbo Frames visits as Laravel's previous URL, head to the [issue](https://github.com/tonysm/turbo-laravel/issues/60#issuecomment-1123142591) where a solution was discussed.
 
