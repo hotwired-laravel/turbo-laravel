@@ -856,7 +856,21 @@ $this->refreshOrRedirectBack(string $fallbackUrl, array $options = []);
 
 The Turbo Native client should intercept navigations to these special routes and handle them separately. For instance, you may want to close a native modal that was showing a form after its submission and _recede_ to the previous screen dismissing the modal, and not by following the redirect as the web does.
 
-*Note: At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).*
+At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).
+
+If you don't want these routes enabled, feel free to disable them in your AppServiceProvider:
+
+```php
+use Tonysm\TurboLaravel\Facades\Turbo;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        Turbo::withoutTurboRoutes();
+    }
+}
+```
 
 <a name="testing-helpers"></a>
 ### Testing Helpers
