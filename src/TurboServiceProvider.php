@@ -28,6 +28,7 @@ class TurboServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configurePublications();
+        $this->configureRoutes();
 
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'turbo-laravel');
 
@@ -72,9 +73,20 @@ class TurboServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
         ], 'views');
 
+        $this->publishes([
+            __DIR__.'/../routes/turbo.php' => base_path('routes/turbo.php'),
+        ], 'turbo-routes');
+
         $this->commands([
             TurboInstallCommand::class,
         ]);
+    }
+
+    private function configureRoutes(): void
+    {
+        if (TurboFacade::shouldRegisterRoutes()) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/turbo.php');
+        }
     }
 
     private function configureMacros(): void
