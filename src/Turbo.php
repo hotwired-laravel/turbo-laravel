@@ -24,13 +24,6 @@ class Turbo
      */
     private bool $broadcastToOthersOnly = false;
 
-    /**
-     * Whether or not the Turbo Native Navigation routes should be registered.
-     *
-     * @var bool
-     */
-    private bool $registersRoutes = true;
-
     public function isTurboNativeVisit(): bool
     {
         return $this->visitFromTurboNative;
@@ -63,18 +56,6 @@ class Turbo
                 $this->broadcastToOthersOnly = false;
             });
         }
-    }
-
-    public function withoutTurboRoutes(): self
-    {
-        $this->registersRoutes = true;
-
-        return $this;
-    }
-
-    public function shouldRegisterRoutes(): bool
-    {
-        return $this->registersRoutes;
     }
 
     public function shouldBroadcastToOthers(): bool

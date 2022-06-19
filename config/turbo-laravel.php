@@ -1,5 +1,7 @@
 <?php
 
+use Tonysm\TurboLaravel\Features;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -46,4 +48,8 @@ return [
      */
 
     'automatically_register_middleware' => true,
+
+    'features' => [
+        Features::turboNativeRoutes(),
+    ],
 ];

@@ -84,7 +84,7 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureRoutes(): void
     {
-        if (TurboFacade::shouldRegisterRoutes()) {
+        if (Features::shouldEnableTurboNativeRoutes()) {
             $this->loadRoutesFrom(__DIR__.'/../routes/turbo.php');
         }
     }
