@@ -13,7 +13,9 @@ jobs:
         laravel: [8.*, 9.*]
         stability: [prefer-lowest, prefer-stable]
         include:
-          - laravel: "^8.47"
+          - laravel: 9.*
+            testbench: "^7.0"
+          - laravel: 8.*
             testbench: "^6.24"
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
