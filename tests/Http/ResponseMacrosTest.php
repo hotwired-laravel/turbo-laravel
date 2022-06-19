@@ -5,7 +5,6 @@ namespace Tonysm\TurboLaravel\Tests\Http;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 
@@ -284,9 +283,7 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->append('some_dom_id', new HtmlString(
-                Blade::render('<div>Hello, {{ $name }}</div>', ['name' => 'Tester'], deleteCachedView: true)
-            ))
+            ->append('some_dom_id', new HtmlString('<div>Hello, Tester</div>'))
             ->toResponse(new Request);
 
         $expected = <<<HTML
