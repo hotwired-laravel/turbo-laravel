@@ -858,7 +858,7 @@ The Turbo Native client should intercept navigations to these special routes and
 
 At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).
 
-If you don't want these routes enabled, feel free to disable them in your `config/turbo-laravel.php` file (make sure the Turbo Laravel configs are published):
+If you don't want these routes enabled, feel free to disable them by commenting out the feature on your `config/turbo-laravel.php` file (make sure the Turbo Laravel configs are published):
 
 ```php
 return [
