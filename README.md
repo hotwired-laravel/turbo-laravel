@@ -858,18 +858,14 @@ The Turbo Native client should intercept navigations to these special routes and
 
 At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).
 
-If you don't want these routes enabled, feel free to disable them in your AppServiceProvider:
+If you don't want these routes enabled, feel free to disable them in your `config/turbo-laravel.php` file (make sure the Turbo Laravel configs are published):
 
 ```php
-use Tonysm\TurboLaravel\Facades\Turbo;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        Turbo::withoutTurboRoutes();
-    }
-}
+return [
+    'features' => [
+        // Features::turboNativeRoutes(),
+    ],
+];
 ```
 
 <a name="testing-helpers"></a>

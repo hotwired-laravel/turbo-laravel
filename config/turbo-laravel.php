@@ -49,6 +49,14 @@ return [
 
     'automatically_register_middleware' => true,
 
+    /*
+     |--------------------------------------------------------------------------
+     | Turbo Laravel Features
+     |--------------------------------------------------------------------------
+     |
+     | Bellow you can enable/disable some of the features provided by the package.
+     |
+     */
     'features' => [
         Features::turboNativeRoutes(),
     ],
