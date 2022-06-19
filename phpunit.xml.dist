@@ -28,4 +28,7 @@
     <logging>
         <junit outputFile="build/report.junit.xml"/>
     </logging>
+    <php>
+        <env name="APP_KEY" value="a2ps3dFoNmyehsm7r0VFZ0Iq64hwBpqI"/>
+    </php>
 </phpunit>
