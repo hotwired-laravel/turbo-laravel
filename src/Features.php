@@ -4,15 +4,13 @@ namespace Tonysm\TurboLaravel;
 
 class Features
 {
-    private static $features = [];
-
-    public static function turboNativeRoutes()
+    public static function enabled(string $feature)
     {
-        static::$features['turbo_routes'] = true;
+        return in_array($feature, config('turbo-laravel.features', []));
     }
 
-    public static function shouldEnableTurboNativeRoutes(): bool
+    public static function turboNativeRoutes(): string
     {
-        return static::$features['turbo_routes'] ?? false;
+        return 'turbo_routes';
     }
 }
