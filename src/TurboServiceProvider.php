@@ -67,11 +67,11 @@ class TurboServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
-        ], 'config');
+        ], 'turbo-config');
 
         $this->publishes([
             __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
-        ], 'views');
+        ], 'turbo-views');
 
         $this->publishes([
             __DIR__.'/../routes/turbo.php' => base_path('routes/turbo.php'),
