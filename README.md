@@ -48,7 +48,7 @@ php artisan turbo:install --jet
 
 When using Jetstream with Livewire, the [Livewire Turbo Plugin](https://github.com/livewire/turbolinks) is needed so Livewire works nicely with Turbo. This one will be added to your Jetstream layouts as script tags fetching from a CDN (both `app.blade.php` and `guest.blade.php`).
 
-If you're not using [Importmap Laravel](https://github.com/tonysm/importmap-laravel), the command will tell you to pull and compile the assets before proceeding:
+If you're not using [Importmap Laravel](https://github.com/tonysm/importmap-laravel), the install command will tell you to pull and compile the assets before proceeding:
 
 ```bash
 npm install && npm run dev
