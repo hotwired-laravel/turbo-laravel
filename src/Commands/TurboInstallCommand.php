@@ -60,7 +60,7 @@ class TurboInstallCommand extends Command
             File::put(
                 $appJsFile = resource_path('js/app.js'),
                 preg_replace(
-                    '/(import [\'"](?:\.\/)?bootstrap[\'"];?)/',
+                    '/(.*[\'"](?:\.\/)?bootstrap[\'"])?;?)/',
                     <<<JS
                     \\1
                     {$imports}
