@@ -238,7 +238,7 @@ Turbo Drive will get your pages behaving like an SPA and Turbo Frames will allow
 
 However, sometimes you want to update _multiple_ parts of your page at the same time. For instance, after a form submission to create a comment, you may want to append the comment to the comment's list and also update the comment's count in the page. You may achieve that with Turbo Streams.
 
-Form submissions will get annotated by Turbo with a `Content-Type: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This will indicate to your back-end that you can return a Turbo Stream response for that form submission if you want to.
+Form submissions will get annotated by Turbo with a `Accept: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This will indicate to your back-end that you can return a Turbo Stream response for that form submission if you want to.
 
 Here's an example of a route handler detecting and returning a Turbo Stream response to a form submission:
 
