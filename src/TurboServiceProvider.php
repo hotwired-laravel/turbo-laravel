@@ -2,6 +2,7 @@
 
 namespace Tonysm\TurboLaravel;
 
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response;
@@ -114,7 +115,7 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureRequestAndResponseMacros(): void
     {
-        Response::macro('turboStream', function ($model = null, string $action = null) {
+        Response::macro('turboStream', function ($model = null, string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse {
             if (is_array($model)) {
                 return MultiplePendingTurboStreamResponse::forStreams($model);
             }
@@ -126,7 +127,7 @@ class TurboServiceProvider extends ServiceProvider
             return PendingTurboStreamResponse::forModel($model, $action);
         });
 
-        Response::macro('turboStreamView', function ($view, array $data = []) {
+        Response::macro('turboStreamView', function ($view, array $data = []): Response|ResponseFactory {
             if (! $view instanceof View) {
                 $view = view($view, $data);
             }
@@ -134,11 +135,11 @@ class TurboServiceProvider extends ServiceProvider
             return TurboResponseFactory::makeStream($view->render());
         });
 
-        Request::macro('wantsTurboStream', function () {
+        Request::macro('wantsTurboStream', function (): bool {
             return Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT);
         });
 
-        Request::macro('wasFromTurboNative', function () {
+        Request::macro('wasFromTurboNative', function (): bool {
             return TurboFacade::isTurboNativeVisit();
         });
     }
