@@ -16,3 +16,11 @@
 </turbo-stream>
 
 <turbo-stream target="empty_posts" action="remove"></turbo-stream>
+
+<turbo-stream targets=".post" action="replace">
+    <template>
+        <div>
+            <h2>Replaced all post</h2>
+        </div>
+    </template>
+</turbo-stream>

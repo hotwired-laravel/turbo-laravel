@@ -593,6 +593,24 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function targets()
+    {
+        $response = response()
+            ->turboStream()
+            ->targets('test_targets')
+            ->remove('test_models_target')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'remove',
+            'targets' => 'test_targets',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function builds_multiple_turbo_stream_responses()
     {
         $model = TestModel::create(['name' => 'Test model']);

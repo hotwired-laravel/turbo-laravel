@@ -29,6 +29,12 @@ class TurboStreamMatcherTest extends TestCase
 
         <turbo-stream action="remove" target="item_3">
         </turbo-stream>
+
+        <turbo-stream action="replace" targets=".items">
+            <template>
+                <h1>new Item</h1>
+            </template>
+        </turbo-stream>
         html));
 
         $this->streams = (new ConvertTestResponseToTurboStreamCollection)($this->response)->mapInto(TurboStreamMatcher::class);
@@ -37,30 +43,37 @@ class TurboStreamMatcherTest extends TestCase
     /** @test */
     public function converts_streams_to_collections()
     {
-        $this->assertCount(3, $this->streams);
+        $this->assertCount(4, $this->streams);
     }
 
     /** @test */
     public function filters_by_attributes()
     {
         $appends = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
-            $matcher->where('action', 'append')->matches()
+            (clone $matcher)->where('action', 'append')->matches()
         ));
 
         $this->assertCount(2, $appends);
 
         $appends = $appends->filter(fn (TurboStreamMatcher $matcher) => (
-            $matcher->where('target', 'item_2')->matches()
+            (clone $matcher)->where('target', 'item_2')->matches()
         ));
 
         $this->assertCount(1, $appends);
 
         // Both action and target attributes.
-        $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
-            $matcher->where('action', 'remove')
+        $remove_item_3 = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
+            (clone $matcher)->where('action', 'remove')
                 ->where('target', 'item_3')
                 ->matches()
         ));
+
+        $this->assertCount(1, $remove_item_3);
+
+        $targets = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
+            (clone $matcher)->where('targets', '.items')->matches()
+        ));
+        $this->assertCount(1, $targets);
     }
 
     /** @test */

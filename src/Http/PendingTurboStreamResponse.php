@@ -13,11 +13,12 @@ use Tonysm\TurboLaravel\NamesResolver;
 
 class PendingTurboStreamResponse implements Responsable
 {
-    private string $useTarget;
+    private ?string $useTarget;
     private string $useAction;
     private ?string $partialView = null;
     private array $partialData = [];
     private $inlineContent = null;
+    private ?string $useTargets = null;
 
     public static function forModel(Model $model, string $action = null): self
     {
@@ -77,7 +78,9 @@ class PendingTurboStreamResponse implements Responsable
     public function remove(Model|string $target): self
     {
         $this->useAction = 'remove';
-        $this->useTarget = is_string($target) ? $target : dom_id($target);
+        if (!$this->useTargets) {
+            $this->useTarget = is_string($target) ? $target : dom_id($target);
+        }
 
         return $this;
     }
@@ -85,6 +88,15 @@ class PendingTurboStreamResponse implements Responsable
     public function target(Model|string $target): self
     {
         $this->useTarget = $this->resolveTargetFor($target, resource: true);
+        $this->useTargets = null;
+
+        return $this;
+    }
+
+    public function targets(string $targets): self
+    {
+        $this->useTargets = $targets;
+        $this->useTarget = null;
 
         return $this;
     }
@@ -134,6 +146,7 @@ class PendingTurboStreamResponse implements Responsable
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
             'content' => $this->renderInlineContent(),
+            'targets' => $this->useTargets
         ])->render();
     }
 
@@ -155,7 +168,9 @@ class PendingTurboStreamResponse implements Responsable
 
     private function inserted(Model|string $target, string $action, $content = null): self
     {
-        $this->useTarget = $this->resolveTargetFor($target, resource: true);
+        if (!$this->useTargets) {
+            $this->useTarget = $this->resolveTargetFor($target, resource: true);
+        }
         $this->useAction = $action;
         $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
         $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
@@ -166,7 +181,9 @@ class PendingTurboStreamResponse implements Responsable
 
     private function updated(Model|string $target, string $action, $content = null): self
     {
-        $this->useTarget = $this->resolveTargetFor($target);
+        if (!$this->useTargets) {
+            $this->useTarget = $this->resolveTargetFor($target);
+        }
         $this->useAction = $action;
         $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
         $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
