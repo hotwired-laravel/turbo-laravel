@@ -27,10 +27,10 @@ class Stream extends Component
         $this->target = $target;
         $this->action = $action;
         $this->targets = $targets;
-        if (!$action) {
+        if (! $action) {
             throw new \InvalidArgumentException('Action is required');
         }
-        if (!$target && !$targets) {
+        if (! $target && ! $targets) {
             throw new \InvalidArgumentException('targets and target cannot be both null');
         }
 
@@ -53,7 +53,7 @@ class Stream extends Component
 
     private function targetValue(): string
     {
-        if (isset($this->targets)){
+        if (isset($this->targets)) {
             return $this->targets;
         }
 

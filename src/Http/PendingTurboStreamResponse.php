@@ -78,7 +78,7 @@ class PendingTurboStreamResponse implements Responsable
     public function remove(Model|string $target): self
     {
         $this->useAction = 'remove';
-        if (!$this->useTargets) {
+        if (! $this->useTargets) {
             $this->useTarget = is_string($target) ? $target : dom_id($target);
         }
 
@@ -146,7 +146,7 @@ class PendingTurboStreamResponse implements Responsable
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
             'content' => $this->renderInlineContent(),
-            'targets' => $this->useTargets
+            'targets' => $this->useTargets,
         ])->render();
     }
 
@@ -168,7 +168,7 @@ class PendingTurboStreamResponse implements Responsable
 
     private function inserted(Model|string $target, string $action, $content = null): self
     {
-        if (!$this->useTargets) {
+        if (! $this->useTargets) {
             $this->useTarget = $this->resolveTargetFor($target, resource: true);
         }
         $this->useAction = $action;
@@ -181,7 +181,7 @@ class PendingTurboStreamResponse implements Responsable
 
     private function updated(Model|string $target, string $action, $content = null): self
     {
-        if (!$this->useTargets) {
+        if (! $this->useTargets) {
             $this->useTarget = $this->resolveTargetFor($target);
         }
         $this->useAction = $action;
