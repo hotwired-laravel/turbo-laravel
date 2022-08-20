@@ -36,6 +36,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
             $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -62,6 +63,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -87,6 +89,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('before', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -112,6 +115,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('after', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -136,6 +140,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('before', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -160,6 +165,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('after', $job->action);
             $this->assertEquals('another_partial', $job->partial);
             $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -183,6 +189,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('replace', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
             $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -206,6 +213,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('remove', $job->action);
             $this->assertNull($job->partial);
             $this->assertEquals([], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -229,6 +237,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('replace', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
             $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -248,6 +257,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('auto_broadcast_test_models._auto_broadcast_test_model', $job->partial);
             $this->assertEquals(['autoBroadcastTestModel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -267,6 +277,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('prepend', $job->action);
             $this->assertEquals('auto_broadcast_with_custom_inserts_test_models._auto_broadcast_with_custom_inserts_test_model', $job->partial);
             $this->assertEquals(['autoBroadcastWithCustomInsertsTestModel' => $modelWithCustomInsert], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -286,6 +297,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('auto_broadcast_with_custom_stream_test_models._auto_broadcast_with_custom_stream_test_model', $job->partial);
             $this->assertEquals(['autoBroadcastWithCustomStreamTestModel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -306,6 +318,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('related_model_children._related_model_child', $job->partial);
             $this->assertEquals(['relatedModelChild' => $child], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -326,6 +339,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('related_model_child_methods._related_model_child_method', $job->partial);
             $this->assertEquals(['relatedModelChildMethod' => $child], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -345,6 +359,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('broadcast_test_model_using_channels._broadcast_test_model_using_channel', $job->partial);
             $this->assertEquals(['broadcastTestModelUsingChannel' => $model], $job->partialData);
+            $this->assertNull($job->targets);
 
             return true;
         });
@@ -365,6 +380,32 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('prepend', $job->action);
             $this->assertEquals('combined_properties_test_models._combined_properties_test_model', $job->partial);
             $this->assertEquals(['combinedPropertiesTestModel' => $child], $job->partialData);
+            $this->assertNull($job->targets);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function manually_broadcast_append_targets()
+    {
+        Bus::fake([BroadcastAction::class]);
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        Bus::assertNotDispatched(BroadcastAction::class);
+
+        $model->broadcastAppend()
+            ->targets('test_targets');
+
+        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
+            $this->assertCount(1, $job->channels);
+            $this->assertEquals('private-broadcast_test_models', $job->channels[0]->name);
+            $this->assertNull($job->target);
+            $this->assertEquals('append', $job->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
+            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
+            $this->assertEquals('test_targets', $job->targets);
 
             return true;
         });

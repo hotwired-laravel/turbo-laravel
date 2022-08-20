@@ -10,20 +10,22 @@ class LaravelBroadcaster implements Broadcaster
     /**
      * @param Channel[] $channels
      * @param bool $later
-     * @param string $target
+     * @param ?string $target
      * @param string $action
      * @param ?string $partial = null
      * @param ?array $partialData = []
      * @param ?string $exceptSocket = null
+     * @param ?string $targets = null
      */
     public function broadcast(
         array $channels,
         bool $later,
-        string $target,
+        ?string $target,
         string $action,
         ?string $partial = null,
         ?array $partialData = [],
-        ?string $exceptSocket = null
+        ?string $exceptSocket = null,
+        ?string $targets = null
     ): void {
         $job = new BroadcastAction(
             $channels,
@@ -32,6 +34,7 @@ class LaravelBroadcaster implements Broadcaster
             $partial,
             $partialData,
             $exceptSocket,
+            $targets
         );
 
         if ($later) {

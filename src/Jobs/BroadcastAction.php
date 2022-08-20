@@ -13,13 +13,14 @@ class BroadcastAction implements ShouldQueue
     use SerializesModels;
 
     public array $channels;
-    public string $target;
+    public ?string $target;
     public string $action;
     public ?string $partial;
     public ?array $partialData;
     public ?string $socket;
+    public ?string $targets;
 
-    public function __construct(array $channels, string $target, string $action, ?string $partial = null, ?array $partialData = [], $socket = null)
+    public function __construct(array $channels, ?string $target, string $action, ?string $partial = null, ?array $partialData = [], $socket = null, $targets = null)
     {
         $this->channels = $channels;
         $this->target = $target;
@@ -27,6 +28,7 @@ class BroadcastAction implements ShouldQueue
         $this->partial = $partial;
         $this->partialData = $partialData;
         $this->socket = $socket;
+        $this->targets = $targets;
     }
 
     public function handle()
@@ -41,7 +43,8 @@ class BroadcastAction implements ShouldQueue
             $this->target,
             $this->action,
             $this->partial,
-            $this->partialData
+            $this->partialData,
+            $this->targets
         );
 
         $event->socket = $this->socket;

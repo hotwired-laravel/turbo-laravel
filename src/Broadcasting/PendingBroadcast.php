@@ -12,19 +12,21 @@ class PendingBroadcast
     /** @var Channel[] */
     public array $channels;
     public string $action;
-    public string $target;
+    public ?string $target;
     public ?string $partialView = null;
     public ?array $partialData = [];
     public bool $sendToOthers = false;
     public bool $sendLater = false;
+    public ?string $targets = null;
 
-    public function __construct(array $channels, string $action, string $target, Rendering $rendering)
+    public function __construct(array $channels, string $action, ?string $target, Rendering $rendering, ?string $targets = null)
     {
         $this->channels = $channels;
         $this->action = $action;
         $this->target = $target;
         $this->partialView = $rendering->partial;
         $this->partialData = $rendering->data;
+        $this->targets = null;
     }
 
     public function to($channel): self
@@ -44,6 +46,15 @@ class PendingBroadcast
     public function target(string $target): self
     {
         $this->target = $target;
+        $this->targets = null;
+
+        return $this;
+    }
+
+    public function targets(string $targets): self
+    {
+        $this->targets = $targets;
+        $this->target = null;
 
         return $this;
     }
@@ -86,6 +97,7 @@ class PendingBroadcast
             $this->partialView,
             $this->partialData,
             $socket,
+            $this->targets
         );
     }
 }

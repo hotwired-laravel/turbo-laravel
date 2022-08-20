@@ -40,4 +40,30 @@ class TurboStreamBroadcastTest extends TestCase
 
         $this->assertEquals(trim($expected), trim($rendered));
     }
+
+    /** @test */
+    public function renders_turbo_stream_targets()
+    {
+        $event = new TurboStreamBroadcast(
+            [],
+            null,
+            'replace',
+            'test_models._test_model',
+            ['testModel' => new TestModel(['id' => 1])],
+            'targets'
+        );
+
+        $expected = View::make('turbo-laravel::turbo-stream', [
+            'targets' => 'targets',
+            'action' => 'replace',
+            'partial' => 'test_models._test_model',
+            'partialData' => [
+                'testModel' => new TestModel(['id' => 1]),
+            ],
+        ]);
+
+        $rendered = $event->render();
+
+        $this->assertEquals(trim($expected), trim($rendered));
+    }
 }

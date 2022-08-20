@@ -3,6 +3,7 @@
 namespace Tonysm\TurboLaravel\Tests\Views;
 
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
+use Illuminate\View\ViewException;
 use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
@@ -72,7 +73,8 @@ class ComponentsTest extends TestCase
             ->assertSee('target="todos"', false)
             ->assertSee('action="append"', false)
             ->assertSee('<template><p>Hello, World</p></template>', false)
-            ->assertSee('</turbo-stream>', false);
+            ->assertSee('</turbo-stream>', false)
+            ->assertDontSee('targets=');
 
         $this->blade(<<<'BLADE'
             <x-turbo-stream :target="[$model, 'comments']" action="append">
@@ -83,7 +85,8 @@ class ComponentsTest extends TestCase
             ->assertSee('target="comments_test_model_123"', false)
             ->assertSee('action="append"', false)
             ->assertSee('<template><p>Hello, World</p></template>', false)
-            ->assertSee('</turbo-stream>', false);
+            ->assertSee('</turbo-stream>', false)
+            ->assertDontSee('targets=');
 
         // Stream content is ignore when action is set to "remove"...
         $this->blade(<<<'BLADE'
@@ -97,7 +100,20 @@ class ComponentsTest extends TestCase
             ->assertDontSee('<template>', false)
             ->assertDontSee('</template>', false)
             ->assertDontSee('<p>Hello, World</p>', false)
-            ->assertSee('</turbo-stream>', false);
+            ->assertSee('</turbo-stream>', false)
+            ->assertDontSee('targets=');
+
+        $this->blade(<<<BLADE
+            <x-turbo-stream targets=".todos" action="append" >
+                <p>Hello, World</p>
+            </x-turbo-stream>
+            BLADE)
+            ->assertSee('<turbo-stream', false)
+            ->assertSee('targets=".todos"', false)
+            ->assertSee('action="append"', false)
+            ->assertSee('<template><p>Hello, World</p></template>', false)
+            ->assertSee('</turbo-stream>', false)
+            ->assertDontSee('target=');
     }
 
     /** @test */
@@ -112,5 +128,29 @@ class ComponentsTest extends TestCase
                 'model' => new TestModel(['id' => 123]),
             ])
             ->assertSee('<turbo-echo-stream-source channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
+    }
+
+    /** @test */
+    public function stream_target_targets_should_throw_exception()
+    {
+        $this->expectException(ViewException::class);
+
+        $this->blade(<<<BLADE
+            <x-turbo-stream target="todo" targets=".todos" action="append" >
+                <p>Hello, World</p>
+            </x-turbo-stream>
+            BLADE);
+    }
+
+    /** @test */
+    public function stream_null_target_targets_should_throw_exception()
+    {
+        $this->expectException(ViewException::class);
+
+        $this->blade(<<<BLADE
+            <x-turbo-stream action="append" >
+                <p>Hello, World</p>
+            </x-turbo-stream>
+            BLADE);
     }
 }

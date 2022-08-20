@@ -50,7 +50,7 @@ class TurboStreamResponseTest extends TestCase
         $this->turbo()
             ->get(route('testing.turbo-stream'))
             ->assertTurboStream(fn (AssertableTurboStream $turboStream) => (
-                $turboStream->has(3)
+                $turboStream->has(4)
             ));
     }
 
@@ -60,7 +60,7 @@ class TurboStreamResponseTest extends TestCase
         $this->turbo()
             ->get(route('testing.turbo-stream'))
             ->assertTurboStream(fn (AssertableTurboStream $turboStreams) => (
-                $turboStreams->has(3)
+                $turboStreams->has(4)
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'posts')
                                 ->where('action', 'append')
@@ -74,6 +74,10 @@ class TurboStreamResponseTest extends TestCase
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'empty_posts')
                                 ->where('action', 'remove')
+                ))
+                && $turboStreams->hasTurboStream(fn ($turboStream) => (
+                $turboStream->where('targets', '.post')
+                    ->where('action', 'replace')
                 ))
             ));
     }
