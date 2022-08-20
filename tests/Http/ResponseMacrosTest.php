@@ -337,6 +337,60 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function append_all_with_inline_content_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->appendAll('.test_models', 'Some inline content')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'append',
+            'targets' => '.test_models',
+            'content' => 'Some inline content',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function append_all_passing_html_safe_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->appendAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="append">
+            <template><div>Some safe HTML content</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function append_all_passing_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->appendAll('.test_models', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="append">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function prepend_shorthand_for_response_builder()
     {
         $response = response()

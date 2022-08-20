@@ -98,6 +98,15 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
+    public function appendAll($targets, $content = null): self
+    {
+        return $this->buildActionAll(
+            action: 'append',
+            targets: $targets,
+            content: $content,
+        );
+    }
+
     public function prepend($target, $content = null): self
     {
         return $this->buildAction(
@@ -160,6 +169,16 @@ class PendingTurboStreamResponse implements Responsable
         $this->useTarget = $target;
         $this->partialView = $rendering?->partial;
         $this->partialData = $rendering?->data ?? [];
+        $this->inlineContent = $content;
+
+        return $this;
+    }
+
+    private function buildActionAll(string $action, $targets, $content = null)
+    {
+        $this->useAction = $action;
+        $this->useTarget = null;
+        $this->useTargets = $targets;
         $this->inlineContent = $content;
 
         return $this;
