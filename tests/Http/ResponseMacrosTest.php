@@ -427,7 +427,6 @@ class ResponseMacrosTest extends TestCase
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-
     /** @test */
     public function prepend_all_with_inline_content_string()
     {
@@ -520,6 +519,60 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function update_all_with_inline_content_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->updateAll('.test_models', 'Some inline content')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'update',
+            'targets' => '.test_models',
+            'content' => 'Some inline content',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function update_all_passing_html_safe_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->updateAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="update">
+            <template><div>Some safe HTML content</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function update_all_passing_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->updateAll('.test_models', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="update">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function replace_shorthand_for_response_builder()
     {
         $response = response()
@@ -551,6 +604,60 @@ class ResponseMacrosTest extends TestCase
             'target' => 'test_models_target',
             'content' => 'Hello World',
         ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function replace_all_with_inline_content_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->replaceAll('.test_models', 'Some inline content')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'replace',
+            'targets' => '.test_models',
+            'content' => 'Some inline content',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function replace_all_passing_html_safe_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->replaceAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="replace">
+            <template><div>Some safe HTML content</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function replace_all_passing_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->replaceAll('.test_models', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="replace">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
