@@ -52,7 +52,7 @@ class TurboStreamMatcher
         // and `->see()` methods will be called by the developers.
 
         if ($callback) {
-            $callback($this);
+            return $callback($this);
         }
 
         // After registering the desired attributes and contents the developers want
