@@ -13,20 +13,20 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
 
     /** @var Channel[] */
     public array $channels;
-    public ?string $target;
     public string $action;
+    public ?string $target = null;
+    public ?string $targets = null;
     public ?string $partial = null;
     public ?array $partialData = [];
-    public ?string $targets = null;
 
-    public function __construct(array $channels, ?string $target, string $action, ?string $partial = null, ?array $partialData = [], ?string $targets = null)
+    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [])
     {
         $this->channels = $channels;
-        $this->target = $target;
         $this->action = $action;
+        $this->target = $target;
+        $this->targets = $targets;
         $this->partial = $partial;
         $this->partialData = $partialData;
-        $this->targets = $targets;
     }
 
     public function broadcastOn()
@@ -44,11 +44,11 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
     public function render(): string
     {
         return View::make('turbo-laravel::turbo-stream', [
-            'target' => $this->target,
             'action' => $this->action,
+            'target' => $this->target,
+            'targets' => $this->targets,
             'partial' => $this->partial ?: null,
             'partialData' => $this->partialData ?: [],
-            'targets' => $this->targets,
         ])->render();
     }
 }

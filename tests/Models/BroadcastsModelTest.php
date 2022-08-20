@@ -396,7 +396,7 @@ class BroadcastsModelTest extends TestCase
         Bus::assertNotDispatched(BroadcastAction::class);
 
         $model->broadcastAppend()
-            ->targets('test_targets');
+            ->targets('.test_targets');
 
         Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
             $this->assertCount(1, $job->channels);
@@ -405,7 +405,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('append', $job->action);
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
             $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
-            $this->assertEquals('test_targets', $job->targets);
+            $this->assertEquals('.test_targets', $job->targets);
 
             return true;
         });
