@@ -67,7 +67,6 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-
     public function action(string $action): self
     {
         $this->useAction = $action;

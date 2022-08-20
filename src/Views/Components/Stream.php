@@ -4,9 +4,9 @@ namespace Tonysm\TurboLaravel\Views\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
-use Tonysm\TurboLaravel\Exceptions\TurboStreamTargetException;
-
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Exceptions\TurboStreamTargetException;
 
 class Stream extends Component
 {
