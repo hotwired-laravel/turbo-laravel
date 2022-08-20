@@ -788,6 +788,60 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function before_all_with_inline_content_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->beforeAll('.test_models', 'Some inline content')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'before',
+            'targets' => '.test_models',
+            'content' => 'Some inline content',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function before_all_passing_html_safe_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->beforeAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="before">
+            <template><div>Some safe HTML content</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function before_all_passing_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->beforeAll('.test_models', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="before">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function after_shorthand()
     {
         $response = response()
@@ -820,6 +874,60 @@ class ResponseMacrosTest extends TestCase
             'target' => 'some_dom_id',
             'content' => 'Hello World',
         ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function after_all_with_inline_content_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->afterAll('.test_models', 'Some inline content')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'after',
+            'targets' => '.test_models',
+            'content' => 'Some inline content',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function after_all_passing_html_safe_string()
+    {
+        $response = response()
+            ->turboStream()
+            ->afterAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="after">
+            <template><div>Some safe HTML content</div></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function after_all_passing_view_as_content()
+    {
+        $response = response()
+            ->turboStream()
+            ->afterAll('.test_models', view('hello_view', ['name' => 'Tester']))
+            ->toResponse(new Request);
+
+        $expected = <<<HTML
+        <turbo-stream targets=".test_models" action="after">
+            <template><div>Hello, Tester</div></template>
+        </turbo-stream>
+        HTML;
 
         $this->assertEquals(trim($expected), trim($response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));

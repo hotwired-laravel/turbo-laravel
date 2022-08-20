@@ -135,11 +135,29 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
+    public function beforeAll($targets, $content = null): self
+    {
+        return $this->buildActionAll(
+            action: 'before',
+            targets: $targets,
+            content: $content,
+        );
+    }
+
     public function after($target, $content = null): self
     {
         return $this->buildAction(
             action: 'after',
             target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            content: $content,
+        );
+    }
+
+    public function afterAll($targets, $content = null): self
+    {
+        return $this->buildActionAll(
+            action: 'after',
+            targets: $targets,
             content: $content,
         );
     }
@@ -163,23 +181,6 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function replaceAll($targets, $content = null): self
-    {
-        return $this->buildActionAll(
-            action: 'replace',
-            targets: $targets,
-            content: $content,
-        );
-    }
-
-    public function removeAll($targets): self
-    {
-        return $this->buildActionAll(
-            action: 'remove',
-            targets: $targets,
-        );
-    }
-
     public function replace($target, $content = null): self
     {
         return $this->buildAction(
@@ -190,11 +191,28 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
+    public function replaceAll($targets, $content = null): self
+    {
+        return $this->buildActionAll(
+            action: 'replace',
+            targets: $targets,
+            content: $content,
+        );
+    }
+
     public function remove($target): self
     {
         return $this->buildAction(
             action: 'remove',
             target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+        );
+    }
+
+    public function removeAll($targets): self
+    {
+        return $this->buildActionAll(
+            action: 'remove',
+            targets: $targets,
         );
     }
 
