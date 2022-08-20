@@ -10,7 +10,6 @@ use Tonysm\TurboLaravel\Broadcasting\Rendering;
 
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\NamesResolver;
 
 class PendingTurboStreamResponse implements Responsable
 {
@@ -295,15 +294,5 @@ class PendingTurboStreamResponse implements Responsable
     private function getResourceNameFor(Model $model): string
     {
         return Name::forModel($model)->plural;
-    }
-
-    private function getPartialViewFor(Model $model): string
-    {
-        return NamesResolver::partialNameFor($model);
-    }
-
-    private function getPartialDataFor(Model $model): array
-    {
-        return [NamesResolver::resourceVariableName($model) => $model];
     }
 }
