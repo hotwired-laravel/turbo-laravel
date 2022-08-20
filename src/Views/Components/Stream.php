@@ -4,6 +4,7 @@ namespace Tonysm\TurboLaravel\Views\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
+use Tonysm\TurboLaravel\Exceptions\TurboStreamTargetException;
 
 use function Tonysm\TurboLaravel\dom_id;
 
@@ -24,11 +25,11 @@ class Stream extends Component
     public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null)
     {
         if (! $target && ! $targets) {
-            throw new \InvalidArgumentException('No target was specified');
+            throw TurboStreamTargetException::targetMissing();
         }
 
         if ($target && $targets) {
-            throw new \InvalidArgumentException('Must specify either target or targets attributes, but never both.');
+            throw TurboStreamTargetException::multipleTargets();
         }
 
         $this->target = $target;
