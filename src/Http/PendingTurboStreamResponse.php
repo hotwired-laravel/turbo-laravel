@@ -51,7 +51,7 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function target($target, bool $resource = false): self
+    public function target(Model|string $target, bool $resource = false): self
     {
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target, $resource) : $target;
         $this->useTargets = null;
@@ -59,10 +59,10 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    public function targets($targets): self
+    public function targets(Model|string $targets): self
     {
         $this->useTarget = null;
-        $this->useTargets = $targets;
+        $this->useTargets = $targets instanceof Model ? $this->resolveTargetFor($targets, resource: true) : $targets;
 
         return $this;
     }
@@ -87,7 +87,7 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    public function append($target, $content = null): self
+    public function append(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'append',
@@ -97,7 +97,7 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function appendAll($targets, $content = null): self
+    public function appendAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'append',
@@ -106,7 +106,7 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function prepend($target, $content = null): self
+    public function prepend(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'prepend',
@@ -116,7 +116,7 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function prependAll($targets, $content = null): self
+    public function prependAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'prepend',
@@ -125,16 +125,16 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function before($target, $content = null): self
+    public function before(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'before',
-            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            target: $target,
             content: $content,
         );
     }
 
-    public function beforeAll($targets, $content = null): self
+    public function beforeAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'before',
@@ -143,16 +143,16 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function after($target, $content = null): self
+    public function after(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'after',
-            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            target: $target,
             content: $content,
         );
     }
 
-    public function afterAll($targets, $content = null): self
+    public function afterAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'after',
@@ -161,17 +161,17 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function update($target, $content = null): self
+    public function update(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'update',
-            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            target: $target,
             content: $content,
             rendering: $target instanceof Model ? Rendering::forModel($target) : null,
         );
     }
 
-    public function updateAll($targets, $content = null): self
+    public function updateAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'update',
@@ -180,17 +180,17 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function replace($target, $content = null): self
+    public function replace(Model|string $target, $content = null): self
     {
         return $this->buildAction(
             action: 'replace',
-            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            target: $target,
             content: $content,
             rendering: $target instanceof Model ? Rendering::forModel($target) : null,
         );
     }
 
-    public function replaceAll($targets, $content = null): self
+    public function replaceAll(Model|string $targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'replace',
@@ -199,15 +199,15 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    public function remove($target): self
+    public function remove(Model|string $target): self
     {
         return $this->buildAction(
             action: 'remove',
-            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            target: $target,
         );
     }
 
-    public function removeAll($targets): self
+    public function removeAll(Model|string $targets): self
     {
         return $this->buildActionAll(
             action: 'remove',
@@ -215,10 +215,10 @@ class PendingTurboStreamResponse implements Responsable
         );
     }
 
-    private function buildAction(string $action, $target, $content = null, ?Rendering $rendering = null)
+    private function buildAction(string $action, Model|string $target, $content = null, ?Rendering $rendering = null)
     {
         $this->useAction = $action;
-        $this->useTarget = $target;
+        $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
         $this->partialView = $rendering?->partial;
         $this->partialData = $rendering?->data ?? [];
         $this->inlineContent = $content;
@@ -226,11 +226,11 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    private function buildActionAll(string $action, $targets, $content = null)
+    private function buildActionAll(string $action, Model|string $targets, $content = null)
     {
         $this->useAction = $action;
         $this->useTarget = null;
-        $this->useTargets = $targets;
+        $this->useTargets = $targets instanceof Model ? $this->resolveTargetFor($targets, resource: true) : $targets;
         $this->inlineContent = $content;
 
         return $this;
