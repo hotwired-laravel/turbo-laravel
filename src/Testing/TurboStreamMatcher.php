@@ -21,24 +21,28 @@ class TurboStreamMatcher
 
     public function where(string $prop, string $value): self
     {
+        $matcher = clone $this;
+
         // We're storing the props locally because we need to
         // wait for the `->matches()` call to check if this
         // Turbo Stream has all the attributes at once.
 
-        $this->wheres[$prop] = $value;
+        $matcher->wheres[$prop] = $value;
 
-        return $this;
+        return $matcher;
     }
 
     public function see(string $content): self
     {
+        $matcher = clone $this;
+
         // Similarly to how we do with the attributes, the contents
         // of the Turbo Stream tag the user wants to assert will
         // be store for latter, after the `->matches()` call.
 
-        $this->contents[] = $content;
+        $matcher->contents[] = $content;
 
-        return $this;
+        return $matcher;
     }
 
     public function matches(Closure $callback = null): bool
