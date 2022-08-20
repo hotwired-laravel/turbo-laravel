@@ -597,13 +597,13 @@ class ResponseMacrosTest extends TestCase
     {
         $response = response()
             ->turboStream()
-            ->targets('test_targets')
-            ->remove('test_models_target')
+            ->action('remove')
+            ->targets('.some_dom_class')
             ->toResponse(new Request);
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
-            'targets' => 'test_targets',
+            'targets' => '.some_dom_class',
         ])->render();
 
         $this->assertEquals(trim($expected), trim($response->getContent()));

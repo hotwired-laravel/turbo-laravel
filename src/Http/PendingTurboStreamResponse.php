@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
+use Tonysm\TurboLaravel\Broadcasting\Rendering;
 
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
@@ -13,93 +14,59 @@ use Tonysm\TurboLaravel\NamesResolver;
 
 class PendingTurboStreamResponse implements Responsable
 {
-    private ?string $useTarget;
     private string $useAction;
+    private ?string $useTarget = null;
+    private ?string $useTargets = null;
     private ?string $partialView = null;
     private array $partialData = [];
     private $inlineContent = null;
-    private ?string $useTargets = null;
 
     public static function forModel(Model $model, string $action = null): self
     {
         $builder = new self();
 
         // We're treating soft-deleted models as they were deleted. In other words, we
-        // will render the deleted Turbo Stream. If you need to treat a soft-deleted
-        // model differently, you can do that on your deleted Turbo Stream view.
+        // will render the remove Turbo Stream. If you need to treat a soft-deleted
+        // model differently, you shouldn't rely on the conventions defined here.
 
         if (! $model->exists || (method_exists($model, 'trashed') && $model->trashed())) {
-            return $builder->remove($model);
+            return $builder->buildAction(
+                action: 'remove',
+                target: $builder->resolveTargetFor($model),
+            );
         }
 
         if ($model->wasRecentlyCreated) {
-            return $builder->inserted($model, $action ?: 'append');
+            return $builder->buildAction(
+                action: $action ?: 'append',
+                target: $builder->resolveTargetFor($model, resource: true),
+                rendering: Rendering::forModel($model),
+            );
         }
 
-        return $builder->updated($model, $action ?: 'replace');
+        return $builder->buildAction(
+            action: $action ?: 'replace',
+            target: $builder->resolveTargetFor($model),
+            rendering: Rendering::forModel($model),
+        );
     }
 
-    public function append(Model|string $model, $content = null): self
+    public function target($target, bool $resource = false): self
     {
-        return $this->inserted($model, 'append', $content);
-    }
-
-    public function prepend(Model|string $model, $content = null): self
-    {
-        return $this->inserted($model, 'prepend', $content);
-    }
-
-    public function before(Model|string $model, $content = null): self
-    {
-        return $this->updated($model, 'before', $content);
-    }
-
-    /**
-     * @param Model|string $model The target DOM ID or Model instance to defer the target.
-     * @param HtmlString|string $content Optional inline content. Can be string or a instance of HtmlString.
-     *
-     * @return self
-     */
-    public function after(Model|string $model, $content = null): self
-    {
-        return $this->updated($model, 'after', $content);
-    }
-
-    public function update(Model|string $model, $content = null): self
-    {
-        return $this->updated($model, 'update', $content);
-    }
-
-    public function replace(Model|string $model, $content = null): self
-    {
-        return $this->updated($model, 'replace', $content);
-    }
-
-    public function remove(Model|string $target): self
-    {
-        $this->useAction = 'remove';
-        if (!$this->useTargets) {
-            $this->useTarget = is_string($target) ? $target : dom_id($target);
-        }
-
-        return $this;
-    }
-
-    public function target(Model|string $target): self
-    {
-        $this->useTarget = $this->resolveTargetFor($target, resource: true);
+        $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target, $resource) : $target;
         $this->useTargets = null;
 
         return $this;
     }
 
-    public function targets(string $targets): self
+    public function targets($targets): self
     {
-        $this->useTargets = $targets;
         $this->useTarget = null;
+        $this->useTargets = $targets;
 
         return $this;
     }
+
 
     public function action(string $action): self
     {
@@ -108,15 +75,92 @@ class PendingTurboStreamResponse implements Responsable
         return $this;
     }
 
-    public function view(?string $view = null, array $data = []): self
+    public function partial(string $view, array $data = []): self
     {
-        return $this->partial($view, $data);
+        return $this->view($view, $data);
     }
 
-    public function partial(?string $view = null, array $data = []): self
+    public function view(string $view, array $data = []): self
     {
         $this->partialView = $view;
         $this->partialData = $data;
+
+        return $this;
+    }
+
+    public function append($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'append',
+            target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
+            content: $content,
+            rendering: $target instanceof Model ? Rendering::forModel($target) : null,
+        );
+    }
+
+    public function prepend($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'prepend',
+            target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
+            content: $content,
+            rendering: $target instanceof Model ? Rendering::forModel($target) : null,
+        );
+    }
+
+    public function before($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'before',
+            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            content: $content,
+        );
+    }
+
+    public function after($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'after',
+            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            content: $content,
+        );
+    }
+
+    public function update($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'update',
+            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            content: $content,
+            rendering: $target instanceof Model ? Rendering::forModel($target) : null,
+        );
+    }
+
+    public function replace($target, $content = null): self
+    {
+        return $this->buildAction(
+            action: 'replace',
+            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+            content: $content,
+            rendering: $target instanceof Model ? Rendering::forModel($target) : null,
+        );
+    }
+
+    public function remove($target): self
+    {
+        return $this->buildAction(
+            action: 'remove',
+            target: $target instanceof Model ? $this->resolveTargetFor($target) : $target,
+        );
+    }
+
+    private function buildAction(string $action, $target, $content = null, ?Rendering $rendering = null)
+    {
+        $this->useAction = $action;
+        $this->useTarget = $target;
+        $this->partialView = $rendering?->partial;
+        $this->partialData = $rendering?->data ?? [];
+        $this->inlineContent = $content;
 
         return $this;
     }
@@ -133,20 +177,18 @@ class PendingTurboStreamResponse implements Responsable
             throw TurboStreamResponseFailedException::missingPartial();
         }
 
-        return TurboResponseFactory::makeStream(
-            $this->render()
-        );
+        return TurboResponseFactory::makeStream($this->render());
     }
 
     public function render(): string
     {
         return view('turbo-laravel::turbo-stream', [
-            'target' => $this->useTarget,
             'action' => $this->useAction,
+            'target' => $this->useTarget,
+            'targets' => $this->useTargets,
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
             'content' => $this->renderInlineContent(),
-            'targets' => $this->useTargets
         ])->render();
     }
 
@@ -164,32 +206,6 @@ class PendingTurboStreamResponse implements Responsable
         }
 
         return $this->inlineContent;
-    }
-
-    private function inserted(Model|string $target, string $action, $content = null): self
-    {
-        if (!$this->useTargets) {
-            $this->useTarget = $this->resolveTargetFor($target, resource: true);
-        }
-        $this->useAction = $action;
-        $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
-        $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
-        $this->inlineContent = $content;
-
-        return $this;
-    }
-
-    private function updated(Model|string $target, string $action, $content = null): self
-    {
-        if (!$this->useTargets) {
-            $this->useTarget = $this->resolveTargetFor($target);
-        }
-        $this->useAction = $action;
-        $this->partialView = $target instanceof Model ? $this->getPartialViewFor($target) : null;
-        $this->partialData = $target instanceof Model ? $this->getPartialDataFor($target) : [];
-        $this->inlineContent = $content;
-
-        return $this;
     }
 
     private function resolveTargetFor(Model|string $target, bool $resource = false): string
