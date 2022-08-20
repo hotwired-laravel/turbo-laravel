@@ -162,12 +162,21 @@ class PendingTurboStreamResponse implements Responsable
             content: $content,
         );
     }
+
     public function replaceAll($targets, $content = null): self
     {
         return $this->buildActionAll(
             action: 'replace',
             targets: $targets,
             content: $content,
+        );
+    }
+
+    public function removeAll($targets): self
+    {
+        return $this->buildActionAll(
+            action: 'remove',
+            targets: $targets,
         );
     }
 

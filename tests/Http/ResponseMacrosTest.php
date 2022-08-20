@@ -715,6 +715,23 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function remove_all()
+    {
+        $response = response()
+            ->turboStream()
+            ->removeAll('.test_models')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'remove',
+            'targets' => '.test_models',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
     public function before_shorthand()
     {
         $response = response()
