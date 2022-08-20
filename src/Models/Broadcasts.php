@@ -125,8 +125,8 @@ trait Broadcasts
         return new PendingBroadcast(
             $this->toChannels(Collection::wrap($streamables)),
             $action,
-            $target ?: $this->broadcastDefaultTarget($action),
             $rendering,
+            $target ?: $this->broadcastDefaultTarget($action),
         );
     }
 

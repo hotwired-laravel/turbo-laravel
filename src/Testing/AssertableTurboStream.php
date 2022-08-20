@@ -25,12 +25,15 @@ class AssertableTurboStream
 
     public function hasTurboStream(Closure $callback = null): self
     {
+        $callback ??= fn ($matcher) => $matcher;
         $attrs = collect();
 
         $matches = $this->turboStreams
             ->mapInto(TurboStreamMatcher::class)
-            ->filter(function ($matcher) use ($callback, $attrs) {
-                if (! $matcher->matches($callback)) {
+            ->filter(function (TurboStreamMatcher $matcher) use ($callback, $attrs) {
+                $matcher = $callback($matcher);
+
+                if (! $matcher->matches()) {
                     $attrs->add($matcher->attrs());
 
                     return false;

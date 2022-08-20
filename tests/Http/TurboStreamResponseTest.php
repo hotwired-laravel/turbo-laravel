@@ -77,7 +77,7 @@ class TurboStreamResponseTest extends TestCase
                 ))
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('targets', '.post')
-                        ->where('action', 'replace')
+                                ->where('action', 'replace')
                 ))
             ));
     }

@@ -21,8 +21,9 @@ class TurboStreamBroadcastTest extends TestCase
     {
         $event = new TurboStreamBroadcast(
             [],
-            'test_target',
             'replace',
+            'test_target',
+            null,
             'test_models._test_model',
             ['testModel' => new TestModel(['id' => 1])]
         );
@@ -46,16 +47,16 @@ class TurboStreamBroadcastTest extends TestCase
     {
         $event = new TurboStreamBroadcast(
             [],
-            null,
             'replace',
+            null,
+            '.targets',
             'test_models._test_model',
             ['testModel' => new TestModel(['id' => 1])],
-            'targets'
         );
 
         $expected = View::make('turbo-laravel::turbo-stream', [
-            'targets' => 'targets',
             'action' => 'replace',
+            'targets' => '.targets',
             'partial' => 'test_models._test_model',
             'partialData' => [
                 'testModel' => new TestModel(['id' => 1]),

@@ -1,4 +1,4 @@
-<turbo-stream @if(isset($targets))targets=@else{{''}}target=@endif"{{ $targetValue }}" action="{{ $action }}">
+<turbo-stream {{ $targetTag }}="{{ $targetValue }}" action="{{ $action }}">
 @if ($action !== "remove")
     <template>{{ $slot }}</template>
 @endif

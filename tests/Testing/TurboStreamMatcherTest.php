@@ -14,7 +14,7 @@ class TurboStreamMatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->response = new TestResponse(response(<<<html
+        $this->response = new TestResponse(response(<<<HTML
         <turbo-stream action="append" target="item_1">
             <template>
                 <h1>First Item</h1>
@@ -35,7 +35,7 @@ class TurboStreamMatcherTest extends TestCase
                 <h1>new Item</h1>
             </template>
         </turbo-stream>
-        html));
+        HTML));
 
         $this->streams = (new ConvertTestResponseToTurboStreamCollection)($this->response)->mapInto(TurboStreamMatcher::class);
     }
@@ -49,30 +49,34 @@ class TurboStreamMatcherTest extends TestCase
     /** @test */
     public function filters_by_attributes()
     {
+        // Matches on action...
         $appends = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
-            (clone $matcher)->where('action', 'append')->matches()
+            $matcher->where('action', 'append')->matches()
         ));
 
         $this->assertCount(2, $appends);
 
+        // Matches on target...
         $appends = $appends->filter(fn (TurboStreamMatcher $matcher) => (
-            (clone $matcher)->where('target', 'item_2')->matches()
+            $matcher->where('target', 'item_2')->matches()
         ));
 
         $this->assertCount(1, $appends);
 
-        // Both action and target attributes.
+        // Matches both on action and target...
         $remove_item_3 = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
-            (clone $matcher)->where('action', 'remove')
+            $matcher->where('action', 'remove')
                 ->where('target', 'item_3')
                 ->matches()
         ));
 
         $this->assertCount(1, $remove_item_3);
 
+        // Matches on targets attribute...
         $targets = $this->streams->filter(fn (TurboStreamMatcher $matcher) => (
-            (clone $matcher)->where('targets', '.items')->matches()
+            $matcher->where('targets', '.items')->matches()
         ));
+
         $this->assertCount(1, $targets);
     }
 

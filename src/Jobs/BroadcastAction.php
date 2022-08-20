@@ -13,22 +13,22 @@ class BroadcastAction implements ShouldQueue
     use SerializesModels;
 
     public array $channels;
-    public ?string $target;
     public string $action;
+    public ?string $target;
+    public ?string $targets;
     public ?string $partial;
     public ?array $partialData;
     public ?string $socket;
-    public ?string $targets;
 
-    public function __construct(array $channels, ?string $target, string $action, ?string $partial = null, ?array $partialData = [], $socket = null, $targets = null)
+    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], $socket = null)
     {
         $this->channels = $channels;
-        $this->target = $target;
         $this->action = $action;
+        $this->target = $target;
+        $this->targets = $targets;
         $this->partial = $partial;
         $this->partialData = $partialData;
         $this->socket = $socket;
-        $this->targets = $targets;
     }
 
     public function handle()
@@ -40,11 +40,11 @@ class BroadcastAction implements ShouldQueue
     {
         $event = new TurboStreamBroadcast(
             $this->channels,
-            $this->target,
             $this->action,
+            $this->target,
+            $this->targets,
             $this->partial,
             $this->partialData,
-            $this->targets
         );
 
         $event->socket = $this->socket;

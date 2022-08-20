@@ -136,10 +136,10 @@ class ComponentsTest extends TestCase
         $this->expectException(ViewException::class);
 
         $this->blade(<<<BLADE
-            <x-turbo-stream target="todo" targets=".todos" action="append" >
-                <p>Hello, World</p>
-            </x-turbo-stream>
-            BLADE);
+        <x-turbo-stream target="todo" targets=".todos" action="append" >
+            <p>Hello, World</p>
+        </x-turbo-stream>
+        BLADE);
     }
 
     /** @test */
@@ -148,9 +148,9 @@ class ComponentsTest extends TestCase
         $this->expectException(ViewException::class);
 
         $this->blade(<<<BLADE
-            <x-turbo-stream action="append" >
-                <p>Hello, World</p>
-            </x-turbo-stream>
-            BLADE);
+        <x-turbo-stream action="append" >
+            <p>Hello, World</p>
+        </x-turbo-stream>
+        BLADE);
     }
 }
