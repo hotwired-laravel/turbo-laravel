@@ -13,7 +13,6 @@ class TurboInstallCommand extends Command
     public $signature = 'turbo:install
         {--alpine : To add Alpine as a JS dependency.}
         {--jet : To update the Jetstream templates.}
-        {--stimulus : To add Stimulus as a JS dependency.}
     ';
 
     public $description = 'Installs Turbo.';
@@ -46,15 +45,6 @@ class TurboInstallCommand extends Command
                 File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
             }
 
-            if ($this->option('stimulus')) {
-                $suffix = $this->usingImportmaps() ? 'importmap' : 'node';
-
-                File::ensureDirectoryExists(resource_path('js/controllers'));
-                File::copy(__DIR__ . '/../../stubs/resources/js/controllers/hello_controller.js', resource_path('js/controllers/hello_controller.js'));
-                File::copy(__DIR__ . "/../../stubs/resources/js/controllers/index-{$suffix}.js", resource_path('js/controllers/index.js'));
-                File::copy(__DIR__ . "/../../stubs/resources/js/libs/stimulus-{$suffix}.js", resource_path('js/libs/stimulus.js'));
-            }
-
             $imports = $this->appJsImportLines();
 
             File::put(
@@ -85,10 +75,6 @@ class TurboInstallCommand extends Command
 
         if ($this->option('alpine') || $this->option('jet')) {
             $imports[] = "import '{$prefix}libs/alpine';";
-        }
-
-        if ($this->option('stimulus')) {
-            $imports[] = "import '{$prefix}libs/stimulus';";
         }
 
         return implode("\n", $imports);
@@ -131,25 +117,7 @@ class TurboInstallCommand extends Command
             '@hotwired/turbo' => '^7.1.0',
             'laravel-echo' => '^1.11.3',
             'pusher-js' => '^7.0.3',
-        ] + $this->stimulusDependencies() + $this->alpineDependencies();
-    }
-
-    private function stimulusDependencies(): array
-    {
-        if (! $this->option('stimulus')) {
-            return [];
-        }
-
-        if ($this->usingImportmaps()) {
-            return [
-                '@hotwired/stimulus' => '^3.0.1',
-            ];
-        }
-
-        return [
-            '@hotwired/stimulus' => '^3.0.1',
-            '@hotwired/stimulus-webpack-helpers' => '^1.0.1',
-        ];
+        ] + $this->alpineDependencies();
     }
 
     private function alpineDependencies(): array
