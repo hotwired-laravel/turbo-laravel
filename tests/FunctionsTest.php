@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use function Tonysm\TurboLaravel\dom_class;
 use function Tonysm\TurboLaravel\dom_id;
@@ -60,34 +59,6 @@ class FunctionsTest extends TestCase
             HTML),
             trim(turbo_stream($testModel)),
         );
-
-        $this->onLaravel9(function () use ($testModel, $expected) {
-            $this->assertEquals(
-                trim(<<<HTML
-                <turbo-stream target="posts" action="append">
-                    <template>Hello World</template>
-                </turbo-stream>
-
-                <turbo-stream target="post_123" action="remove">
-                </turbo-stream>
-                HTML),
-                trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream([
-                    \Tonysm\TurboLaravel\turbo_stream()->append("posts", "Hello World"),
-                    \Tonysm\TurboLaravel\turbo_stream()->remove("post_123"),
-                ]) }}', deleteCachedView: true))
-            );
-
-            $this->assertEquals(
-                trim(<<<HTML
-                <turbo-stream target="test_models" action="append">
-                    <template>{$expected}</template>
-                </turbo-stream>
-                HTML),
-                trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream($testModel) }}', [
-                    'testModel' => $testModel,
-                ], deleteCachedView: true))
-            );
-        }, 'Skipped because it uses Blade::render() which is a Laravel 9 feature');
     }
 
     /** @test */
@@ -130,34 +101,70 @@ class FunctionsTest extends TestCase
             HTML),
             trim(\turbo_stream($testModel)),
         );
+    }
 
-        $this->onLaravel9(function () use ($testModel, $expected) {
-            $this->assertEquals(
-                trim(<<<HTML
-                <turbo-stream target="posts" action="append">
-                    <template>Hello World</template>
-                </turbo-stream>
+    /** @test */
+    public function namespace_turbo_stream_htmlable()
+    {
+        $testModel = TestModel::create(['name' => 'Hello']);
+        $expected = trim(view('test_models._test_model', [
+            'testModel' => $testModel,
+        ])->render());
 
-                <turbo-stream target="post_123" action="remove">
-                </turbo-stream>
-                HTML),
-                trim(Blade::render('{{ \turbo_stream([
-                    \turbo_stream()->append("posts", "Hello World"),
-                    \turbo_stream()->remove("post_123"),
-                ]) }}', deleteCachedView: true))
-            );
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="posts" action="append">
+                <template>Hello World</template>
+            </turbo-stream>
 
-            $this->assertEquals(
-                trim(<<<HTML
-                <turbo-stream target="test_models" action="append">
-                    <template>{$expected}</template>
-                </turbo-stream>
-                HTML),
-                trim(Blade::render('{{ turbo_stream($testModel) }}', [
-                    'testModel' => $testModel,
-                ], deleteCachedView: true))
-            );
-        }, 'Skipped because it uses Blade::render() which is a Laravel 9 feature');
+            <turbo-stream target="post_123" action="remove">
+            </turbo-stream>
+            HTML),
+            trim(View::make('turbo_stream_global_htmlable_multiple')->render())
+        );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="test_models" action="append">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(View::make('turbo_stream_global_htmlable_model', [
+                'testModel' => $testModel,
+            ])->render())
+        );
+    }
+
+    /** @test */
+    public function global_turbo_stream_htmlable()
+    {
+        $testModel = TestModel::create(['name' => 'Hello']);
+        $expected = trim(view('test_models._test_model', [
+            'testModel' => $testModel,
+        ])->render());
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="posts" action="append">
+                <template>Hello World</template>
+            </turbo-stream>
+
+            <turbo-stream target="post_123" action="remove">
+            </turbo-stream>
+            HTML),
+            trim(View::make('turbo_stream_global_htmlable_multiple')->render())
+        );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="test_models" action="append">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(View::make('turbo_stream_global_htmlable_model', [
+                'testModel' => $testModel,
+            ])->render())
+        );
     }
 
     /** @test */
