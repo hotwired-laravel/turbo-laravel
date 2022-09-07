@@ -4,11 +4,11 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-
 use function Tonysm\TurboLaravel\dom_class;
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
+use Tonysm\TurboLaravel\Tests\TestCase;
 use function Tonysm\TurboLaravel\turbo_stream;
 
 class FunctionsTest extends TestCase

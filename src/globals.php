@@ -2,12 +2,12 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use function Tonysm\TurboLaravel\dom_class as base_dom_class;
+use function Tonysm\TurboLaravel\dom_id as base_dom_id;
+
 use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-
 use function Tonysm\TurboLaravel\turbo_stream as base_turbo_stream;
-use function Tonysm\TurboLaravel\dom_id as base_dom_id;
-use function Tonysm\TurboLaravel\dom_class as base_dom_class;
 
 if (! function_exists('dom_id')) {
     /**
