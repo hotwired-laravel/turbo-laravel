@@ -262,6 +262,11 @@ class PendingTurboStreamResponse implements Responsable
         ])->render();
     }
 
+    public function __toString(): string
+    {
+        return $this->render();
+    }
+
     /**
      * @return string|HtmlString|null
      */

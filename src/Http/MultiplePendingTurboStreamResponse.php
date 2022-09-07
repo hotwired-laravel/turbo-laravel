@@ -36,12 +36,20 @@ class MultiplePendingTurboStreamResponse implements Responsable
      */
     public function toResponse($request)
     {
-        return TurboResponseFactory::makeStream(
-            $this->pendingStreams
-                ->map(function (PendingTurboStreamResponse $pendingStream) {
-                    return $pendingStream->render();
-                })
-                ->implode(PHP_EOL)
-        );
+        return TurboResponseFactory::makeStream($this->render());
+    }
+
+    public function render(): string
+    {
+        return $this->pendingStreams
+            ->map(function (PendingTurboStreamResponse $pendingStream) {
+                return $pendingStream->render();
+            })
+            ->implode(PHP_EOL);
+    }
+
+    public function __toString(): string
+    {
+        return $this->render();
     }
 }
