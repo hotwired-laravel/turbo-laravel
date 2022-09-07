@@ -3,11 +3,12 @@
 namespace Tonysm\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
-class MultiplePendingTurboStreamResponse implements Responsable, Htmlable
+class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 {
     /** @var Collection|PendingTurboStreamResponse[] */
     private Collection $pendingStreams;
