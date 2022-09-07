@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
@@ -59,6 +60,32 @@ class FunctionsTest extends TestCase
             HTML),
             trim(turbo_stream($testModel)),
         );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="posts" action="append">
+                <template>Hello World</template>
+            </turbo-stream>
+
+            <turbo-stream target="post_123" action="remove">
+            </turbo-stream>
+            HTML),
+            trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream([
+                \Tonysm\TurboLaravel\turbo_stream()->append("posts", "Hello World"),
+                \Tonysm\TurboLaravel\turbo_stream()->remove("post_123"),
+            ]) }}', deleteCachedView: true))
+        );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="test_models" action="append">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream($testModel) }}', [
+                'testModel' => $testModel,
+            ], deleteCachedView: true))
+        );
     }
 
     /** @test */
@@ -100,6 +127,32 @@ class FunctionsTest extends TestCase
             </turbo-stream>
             HTML),
             trim(\turbo_stream($testModel)),
+        );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="posts" action="append">
+                <template>Hello World</template>
+            </turbo-stream>
+
+            <turbo-stream target="post_123" action="remove">
+            </turbo-stream>
+            HTML),
+            trim(Blade::render('{{ \turbo_stream([
+                \turbo_stream()->append("posts", "Hello World"),
+                \turbo_stream()->remove("post_123"),
+            ]) }}', deleteCachedView: true))
+        );
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="test_models" action="append">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(Blade::render('{{ turbo_stream($testModel) }}', [
+                'testModel' => $testModel,
+            ], deleteCachedView: true))
         );
     }
 
