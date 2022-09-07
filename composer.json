@@ -27,7 +27,7 @@
         "psr-4": {
             "Tonysm\\TurboLaravel\\": "src"
         },
-        "files": ["src/helpers.php"]
+        "files": ["src/helpers.php", "src/globals.php"]
     },
     "autoload-dev": {
         "psr-4": {
