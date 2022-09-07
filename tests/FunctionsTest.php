@@ -61,31 +61,33 @@ class FunctionsTest extends TestCase
             trim(turbo_stream($testModel)),
         );
 
-        $this->assertEquals(
-            trim(<<<HTML
-            <turbo-stream target="posts" action="append">
-                <template>Hello World</template>
-            </turbo-stream>
+        $this->onLaravel9(function () use ($testModel, $expected) {
+            $this->assertEquals(
+                trim(<<<HTML
+                <turbo-stream target="posts" action="append">
+                    <template>Hello World</template>
+                </turbo-stream>
 
-            <turbo-stream target="post_123" action="remove">
-            </turbo-stream>
-            HTML),
-            trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream([
-                \Tonysm\TurboLaravel\turbo_stream()->append("posts", "Hello World"),
-                \Tonysm\TurboLaravel\turbo_stream()->remove("post_123"),
-            ]) }}', deleteCachedView: true))
-        );
+                <turbo-stream target="post_123" action="remove">
+                </turbo-stream>
+                HTML),
+                trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream([
+                    \Tonysm\TurboLaravel\turbo_stream()->append("posts", "Hello World"),
+                    \Tonysm\TurboLaravel\turbo_stream()->remove("post_123"),
+                ]) }}', deleteCachedView: true))
+            );
 
-        $this->assertEquals(
-            trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
-                <template>{$expected}</template>
-            </turbo-stream>
-            HTML),
-            trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream($testModel) }}', [
-                'testModel' => $testModel,
-            ], deleteCachedView: true))
-        );
+            $this->assertEquals(
+                trim(<<<HTML
+                <turbo-stream target="test_models" action="append">
+                    <template>{$expected}</template>
+                </turbo-stream>
+                HTML),
+                trim(Blade::render('{{ \Tonysm\TurboLaravel\turbo_stream($testModel) }}', [
+                    'testModel' => $testModel,
+                ], deleteCachedView: true))
+            );
+        }, 'Skipped because it uses Blade::render() which is a Laravel 9 feature');
     }
 
     /** @test */
@@ -129,31 +131,33 @@ class FunctionsTest extends TestCase
             trim(\turbo_stream($testModel)),
         );
 
-        $this->assertEquals(
-            trim(<<<HTML
-            <turbo-stream target="posts" action="append">
-                <template>Hello World</template>
-            </turbo-stream>
+        $this->onLaravel9(function () use ($testModel, $expected) {
+            $this->assertEquals(
+                trim(<<<HTML
+                <turbo-stream target="posts" action="append">
+                    <template>Hello World</template>
+                </turbo-stream>
 
-            <turbo-stream target="post_123" action="remove">
-            </turbo-stream>
-            HTML),
-            trim(Blade::render('{{ \turbo_stream([
-                \turbo_stream()->append("posts", "Hello World"),
-                \turbo_stream()->remove("post_123"),
-            ]) }}', deleteCachedView: true))
-        );
+                <turbo-stream target="post_123" action="remove">
+                </turbo-stream>
+                HTML),
+                trim(Blade::render('{{ \turbo_stream([
+                    \turbo_stream()->append("posts", "Hello World"),
+                    \turbo_stream()->remove("post_123"),
+                ]) }}', deleteCachedView: true))
+            );
 
-        $this->assertEquals(
-            trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
-                <template>{$expected}</template>
-            </turbo-stream>
-            HTML),
-            trim(Blade::render('{{ turbo_stream($testModel) }}', [
-                'testModel' => $testModel,
-            ], deleteCachedView: true))
-        );
+            $this->assertEquals(
+                trim(<<<HTML
+                <turbo-stream target="test_models" action="append">
+                    <template>{$expected}</template>
+                </turbo-stream>
+                HTML),
+                trim(Blade::render('{{ turbo_stream($testModel) }}', [
+                    'testModel' => $testModel,
+                ], deleteCachedView: true))
+            );
+        }, 'Skipped because it uses Blade::render() which is a Laravel 9 feature');
     }
 
     /** @test */

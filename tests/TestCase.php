@@ -2,8 +2,10 @@
 
 namespace Tonysm\TurboLaravel\Tests;
 
+use Closure;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\App;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tonysm\TurboLaravel\TurboServiceProvider;
 
@@ -45,5 +47,14 @@ class TestCase extends Orchestra
             $table->timestamps();
             $table->softDeletes();
         });
+    }
+
+    protected function onLaravel9(Closure $test, string $skippedMessage)
+    {
+        if (version_compare(App::version(), '9.0') >= 0) {
+            return $test();
+        } else {
+            $this->markTestSkipped($skippedMessage);
+        }
     }
 }
