@@ -1,12 +1,13 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use function Tonysm\TurboLaravel\dom_class as base_dom_class;
+use function Tonysm\TurboLaravel\dom_id as base_dom_id;
+
 use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
+use function Tonysm\TurboLaravel\turbo_stream as base_turbo_stream;
 
 if (! function_exists('dom_id')) {
     /**
@@ -19,7 +20,7 @@ if (! function_exists('dom_id')) {
      */
     function dom_id(object $model, string $prefix = ""): string
     {
-        return (new RecordIdentifier($model))->domId($prefix);
+        return base_dom_id($model, $prefix);
     }
 }
 
@@ -33,7 +34,7 @@ if (! function_exists('dom_class')) {
      */
     function dom_class(object $model, string $prefix = ""): string
     {
-        return (new RecordIdentifier($model))->domClass($prefix);
+        return base_dom_class($model, $prefix);
     }
 }
 
@@ -46,14 +47,6 @@ if (! function_exists('turbo_stream')) {
      */
     function turbo_stream($model = null, string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse
     {
-        if (is_array($model) || $model instanceof Collection) {
-            return MultiplePendingTurboStreamResponse::forStreams($model);
-        }
-
-        if ($model === null) {
-            return new PendingTurboStreamResponse();
-        }
-
-        return PendingTurboStreamResponse::forModel($model, $action);
+        return base_turbo_stream($model, $action);
     }
 }

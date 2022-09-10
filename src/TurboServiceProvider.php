@@ -117,15 +117,7 @@ class TurboServiceProvider extends ServiceProvider
     private function configureRequestAndResponseMacros(): void
     {
         ResponseFacade::macro('turboStream', function ($model = null, string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse {
-            if (is_array($model)) {
-                return MultiplePendingTurboStreamResponse::forStreams($model);
-            }
-
-            if ($model === null) {
-                return new PendingTurboStreamResponse();
-            }
-
-            return PendingTurboStreamResponse::forModel($model, $action);
+            return turbo_stream($model, $action);
         });
 
         ResponseFacade::macro('turboStreamView', function ($view, array $data = []): Response|ResponseFactory {

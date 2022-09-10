@@ -2,6 +2,8 @@
 
 namespace Tonysm\TurboLaravel\Http;
 
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +13,7 @@ use Tonysm\TurboLaravel\Broadcasting\Rendering;
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 
-class PendingTurboStreamResponse implements Responsable
+class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 {
     private string $useAction;
     private ?string $useTarget = null;
@@ -260,6 +262,16 @@ class PendingTurboStreamResponse implements Responsable
             'partialData' => $this->partialData,
             'content' => $this->renderInlineContent(),
         ])->render();
+    }
+
+    public function toHtml()
+    {
+        return new HtmlString($this->render());
+    }
+
+    public function __toString(): string
+    {
+        return $this->render();
     }
 
     /**

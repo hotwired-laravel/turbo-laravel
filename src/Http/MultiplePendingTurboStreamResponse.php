@@ -2,10 +2,13 @@
 
 namespace Tonysm\TurboLaravel\Http;
 
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\HtmlString;
 
-class MultiplePendingTurboStreamResponse implements Responsable
+class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 {
     /** @var Collection|PendingTurboStreamResponse[] */
     private Collection $pendingStreams;
@@ -36,12 +39,25 @@ class MultiplePendingTurboStreamResponse implements Responsable
      */
     public function toResponse($request)
     {
-        return TurboResponseFactory::makeStream(
-            $this->pendingStreams
-                ->map(function (PendingTurboStreamResponse $pendingStream) {
-                    return $pendingStream->render();
-                })
-                ->implode(PHP_EOL)
-        );
+        return TurboResponseFactory::makeStream($this->render());
+    }
+
+    public function render(): string
+    {
+        return $this->pendingStreams
+            ->map(function (PendingTurboStreamResponse $pendingStream) {
+                return $pendingStream->render();
+            })
+            ->implode(PHP_EOL);
+    }
+
+    public function toHtml()
+    {
+        return new HtmlString($this->render());
+    }
+
+    public function __toString(): string
+    {
+        return $this->render();
     }
 }
