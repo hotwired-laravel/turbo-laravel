@@ -154,6 +154,7 @@ It will build a `remove` Turbo Stream if the model was deleted (or if it is tras
 return turbo_stream($comment, 'append');
 ```
 
+## Target Multiple Elements
 
 You may also [target multiple elements](https://turbo.hotwired.dev/reference/streams#targeting-multiple-elements) using CSS classes using the `xAll` methods:
 
