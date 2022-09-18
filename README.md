@@ -372,6 +372,28 @@ It will build a `remove` Turbo Stream if the model was deleted (or if it is tras
 return response()->turboStream($comment, 'append');
 ```
 
+You may also [target multiple elements](https://turbo.hotwired.dev/reference/streams#targeting-multiple-elements) using CSS classes using the `xAll` methods:
+
+```php
+response()->turboStream()->appendAll('.comment', 'Some content');
+response()->turboStream()->prependAll('.comment', 'Some content');
+response()->turboStream()->updateAll('.comment', 'Some content');
+response()->turboStream()->removeAll('.comment');
+response()->turboStream()->beforeAll('.comment', 'Some content');
+response()->turboStream()->afterAll('.comment', 'Some content');
+```
+
+With the exception of the `removeAll` method, all these `xAll` accept as the second parameter a string of inline content, an instance of a View (which you may create using the `view()` function provided by Laravel), or an instance of the `HtmlSafe` class.
+
+When creating Turbo Stream using the builders, you may also specify the CSS class using the `targets()` (plural) method instead of the singular version:
+
+```php
+return response()->turboStream()
+    ->targets('.comment')
+    ->action('append')
+    ->view('comments._comment', ['comment' => $comment]);
+```
+
 <a name="turbo-streams-combo"></a>
 #### Turbo Streams Combo
 
