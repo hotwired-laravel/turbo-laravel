@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
-use Illuminate\View\View;
 use PHPUnit\Framework\Assert;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
@@ -20,7 +19,6 @@ use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
 use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\TurboResponseFactory;
 use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
 use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
 use Tonysm\TurboLaravel\Views\Components as ViewComponents;
@@ -121,11 +119,7 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         ResponseFacade::macro('turboStreamView', function ($view, array $data = []): Response|ResponseFactory {
-            if (! $view instanceof View) {
-                $view = view($view, $data);
-            }
-
-            return TurboResponseFactory::makeStream($view->render());
+            return turbo_stream_view($view, $data);
         });
 
         Request::macro('wantsTurboStream', function (): bool {

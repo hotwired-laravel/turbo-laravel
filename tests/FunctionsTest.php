@@ -8,7 +8,10 @@ use function Tonysm\TurboLaravel\dom_id;
 
 use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
 use Tonysm\TurboLaravel\Tests\TestCase;
+use Tonysm\TurboLaravel\Turbo;
+
 use function Tonysm\TurboLaravel\turbo_stream;
+use function Tonysm\TurboLaravel\turbo_stream_view;
 
 class FunctionsTest extends TestCase
 {
@@ -197,5 +200,33 @@ class FunctionsTest extends TestCase
         $testModel = TestModel::create(['name' => 'Hello']);
 
         $this->assertEquals("test_model", \dom_class($testModel));
+    }
+
+    /** @test */
+    public function namespaced_turbo_stream_view_fn()
+    {
+        $response = turbo_stream_view('turbo_stream_view_namespaced', [
+            'title' => 'Post Namespaced'
+        ]);
+
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+        $this->assertEquals(
+            view('turbo_stream_view_namespaced', ['title' => 'Post Namespaced'])->render(),
+            $response->content(),
+        );
+    }
+
+    /** @test */
+    public function global_turbo_stream_view_fn()
+    {
+        $response = \turbo_stream_view('turbo_stream_view_global', [
+            'title' => 'Post Global'
+        ]);
+
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+        $this->assertEquals(
+            view('turbo_stream_view_global', ['title' => 'Post Global'])->render(),
+            $response->content(),
+        );
     }
 }
