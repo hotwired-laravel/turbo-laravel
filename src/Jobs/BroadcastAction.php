@@ -14,11 +14,11 @@ class BroadcastAction implements ShouldQueue
 
     public array $channels;
     public string $action;
-    public ?string $target;
-    public ?string $targets;
-    public ?string $partial;
-    public ?array $partialData;
-    public ?string $socket;
+    public ?string $target = null;
+    public ?string $targets = null;
+    public ?string $partial = null;
+    public ?array $partialData = null;
+    public ?string $socket = null;
 
     public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], $socket = null)
     {
