@@ -206,7 +206,7 @@ class FunctionsTest extends TestCase
     public function namespaced_turbo_stream_view_fn()
     {
         $response = turbo_stream_view('turbo_stream_view_namespaced', [
-            'title' => 'Post Namespaced'
+            'title' => 'Post Namespaced',
         ]);
 
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
@@ -220,7 +220,7 @@ class FunctionsTest extends TestCase
     public function global_turbo_stream_view_fn()
     {
         $response = \turbo_stream_view('turbo_stream_view_global', [
-            'title' => 'Post Global'
+            'title' => 'Post Global',
         ]);
 
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
