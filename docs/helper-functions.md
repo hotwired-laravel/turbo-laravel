@@ -26,7 +26,7 @@ use function Tonysm\TurboLaravel\dom_class;
 dom_class($comment);
 ```
 
-This function will generate the DOM class named based on your model's classname. If you have an `App\Models\Comment` instance, it will generate a `comment` DOM class.
+This function will generate the DOM class named based on your model's classname. If you have an instance of a `App\Models\Comment` model, it will generate a `comment` DOM class.
 
 Similarly to the `dom_id()` function, you may also pass a context prefix as the second parameter:
 
@@ -46,11 +46,11 @@ use function Tonysm\TurboLaravel\turbo_stream;
 turbo_stream()->append($comment);
 ```
 
-Both ways generate streams the same way. The `turbo_stream()` function is easier.
+Both the `Response::turboStream()` and the `turbo_stream()` function work the same way. The `turbo_stream()` function may be easier to use.
 
 ## The `turbo_stream_view()`
 
-You may combo Turbo Streams using the `turbo_stream([])` function passing an array, but you may prefer to create a separate Blade view with all the Turbo Streams, this way you may also use template extensions and other things:
+You may combo Turbo Streams using the `turbo_stream([])` function passing an array, but you may prefer to create a separate Blade view with all the Turbo Streams, this way you may also use template extensions and everything else Blade offers:
 
 ```php
 use function Tonysm\TurboLaravel\turbo_stream_view;
@@ -62,6 +62,6 @@ return turbo_stream_view('comments.turbo.created', [
 
 ---
 
- All these functions are also registered globally, so you may use it directly without the `use` statements (this is useful in contexts like Blade views, for instance).
+All these functions are also registered globally, so you may use it directly without the `use` statements (this is useful in contexts like Blade views, for instance).
 
 [Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)

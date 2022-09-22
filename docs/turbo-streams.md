@@ -1,12 +1,12 @@
 # Turbo Streams
 
-As mentioned earlier, out of everything Turbo provides, it's Turbo Streams that benefits the most from a back-end integration.
+Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight back-end integration.
 
 Turbo Drive will get your pages behaving like an SPA and Turbo Frames will allow you to have a finer grained control of chunks of your page instead of replacing the entire page when a form is submitted or a link is clicked.
 
-However, sometimes you want to update _multiple_ parts of your page at the same time. For instance, after a form submission to create a comment, you may want to append the comment to the comment's list and also update the comment's count in the page. You may achieve that with Turbo Streams.
+However, sometimes you want to update _multiple_ parts of your page at the same time. For instance, after a form submission to create a comment, you may want to append the comment to the comments' list and also update the comments' count in the page. You may achieve that with Turbo Streams.
 
-Form submissions will get annotated by Turbo with a `Accept: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This will indicate to your back-end that you can return a Turbo Stream response for that form submission if you want to.
+Form submissions will get annotated by Turbo with a `Accept: text/vnd.turbo-stream.html` header (besides the other normal Content Types). This is a signal to the back-end that you can return a Turbo Stream response for that form submission if you want to.
 
 Here's an example of a route handler detecting and returning a Turbo Stream response to a form submission:
 
@@ -22,7 +22,7 @@ Route::post('posts/{post}/comments', function (Post $post) {
 });
 ```
 
-The `request()->wantsTurboStream()` macro added to the request will check if the request accepts Turbo Stream and return `true` or `false` accordingly.
+The `request()->wantsTurboStream()` macro added to the request class will check if the request accepts Turbo Stream and return `true` or `false` accordingly.
 
 The `response()->turboStream()` macro may be used to generate streams, but you may also use the `turbo_stream()` helper function. From now on, the docs will be using the helper function, but you may use either one of those. Using the function, this example would be:
 
@@ -50,13 +50,13 @@ Here's what the HTML response will look like:
 </turbo-stream>
 ```
 
-Most of these things were "guessed" based on the [naming conventions](#conventions) we talked about earlier. But you can override most things, like so:
+Most of these things were "guessed" based on the [naming conventions](/docs/{{version}}/conventions) we talked about earlier. But you can override most things, like so:
 
 ```php
 return turbo_stream($comment)->target('post_comments');
 ```
 
-Although it's handy to pass the model instance to the `turbo_stream()` function - which will be used to decide the default values of the Turbo Stream response based on the model's current state, sometimes you may want to build a Turbo Stream response manually, which can be achieved like so:
+Although it's handy to pass the model instance to the `turbo_stream()` function - which will be used to decide the default values of the Turbo Stream response based on the model's current state, sometimes you may want to build a Turbo Stream response manually:
 
 ```php
 return turbo_stream()
@@ -67,13 +67,13 @@ return turbo_stream()
 
 There are 7 _actions_ in Turbo Streams. They are:
 
-* `append` & `prepend`: to add the elements in the target element at the top or at the bottom of its contents, respectively
-* `before` & `after`: to add the elements next to the target element before or after, respectively
-* `replace`: will replace the existing element entirely with the contents of the `template` tag in the Turbo Stream
-* `update`: will keep the target and only replace the contents of it with the contents of the `template` tag in the Turbo Stream
-* `remove`: will remove the element. This one doesn't need a `<template>` tag. It accepts either an instance of a Model or the DOM ID of the element to be removed as a string.
+* `append` & `prepend`: to insert the elements in the target element at the top or at the bottom, respectively
+* `before` & `after`: to insert the elements next to the target element before or after, respectively
+* `replace`: will replace the existing element entirely with the contents of the _template_ tag in the Turbo Stream
+* `update`: will keep the target element and only replace the contents of it with the contents of the _template_ tag in the Turbo Stream
+* `remove`: will remove the element. This one doesn't need a _template_ tag. It accepts either an instance of a Model or the DOM ID of the element to be removed as a string.
 
-Which means you will find shorthand methods for them all, like:
+You will find shorthand methods for them all:
 
 ```php
 turbo_stream()->append($comment);
@@ -96,7 +96,9 @@ turbo_stream()->append('statuses', __('Comment was successfully created!'));
 The optional content parameter expects either a string, a view instance, or an instance of Laravel's `Illuminate\Support\HtmlString`, so you could do something like:
 
 ```php
-turbo_stream()->append('some_dom_id', view('greetings', ['name' => 'Tester']));
+turbo_stream()->append('some_dom_id', view('greetings', [
+    'name' => 'Tester',
+]));
 ```
 
 Or more explicitly by passing an instance of the `HtmlString` as content:
@@ -138,12 +140,14 @@ turbo_stream()->before($comment, __('Oh, hey!'));
 
 You can read more about Turbo Streams in the [Turbo Handbook](https://turbo.hotwired.dev/handbook/streams).
 
-The shorthand methods return a pending object for the response which you can chain and override everything you want before it's rendered:
+The shorthand methods also return a pending Turbo Stream builder which you can chain and override everything you want before it's rendered:
 
 ```php
 return turbo_stream()
     ->append($comment)
-    ->view('comments._comment_card', ['comment' => $comment]);
+    ->view('comments._comment_card', [
+        'comment' => $comment,
+    ]);
 ```
 
 As mentioned earlier, passing a model to the `turbo_stream()` helper will pre-fill the pending response object with some defaults based on the model's state.
@@ -156,7 +160,7 @@ return turbo_stream($comment, 'append');
 
 ## Target Multiple Elements
 
-You may also [target multiple elements](https://turbo.hotwired.dev/reference/streams#targeting-multiple-elements) using CSS classes using the `xAll` methods:
+You may also [target multiple elements](https://turbo.hotwired.dev/reference/streams#targeting-multiple-elements) using CSS classes with the `xAll` methods:
 
 ```php
 turbo_stream()->appendAll('.comment', 'Some content');
@@ -167,9 +171,9 @@ turbo_stream()->beforeAll('.comment', 'Some content');
 turbo_stream()->afterAll('.comment', 'Some content');
 ```
 
-With the exception of the `removeAll` method, all these `xAll` accept as the second parameter a string of inline content, an instance of a View (which you may create using the `view()` function provided by Laravel), or an instance of the `HtmlSafe` class.
+With the exception of the `removeAll` method, the `xAll` methods accept as the second parameter a string of inline content, an instance of a View (which may be created using the `view()` function provided by Laravel), or an instance of the `HtmlSafe` class.
 
-When creating Turbo Stream using the builders, you may also specify the CSS class using the `targets()` (plural) method instead of the singular version:
+When creating Turbo Streams using the builders, you may also specify the CSS class using the `targets()` (plural) method instead of the `target()` (singular) version:
 
 ```php
 return turbo_stream()
@@ -180,7 +184,7 @@ return turbo_stream()
 
 ## Turbo Streams Combo
 
-You may combine multiple Turbo Stream responses in a single one like so:
+You may combine multiple Turbo Streams in a single response like so:
 
 ```php
 return turbo_stream([
@@ -196,7 +200,7 @@ Although this is a valid option, it might feel like too much work for a controll
 
 ## Custom Turbo Stream Views
 
-If you're not using the model partial [convention](#conventions) or if you have some more complex Turbo Stream constructs to build, you may use the `response()->turboStreamView()` version instead and specify your own Blade view where Turbo Streams will be created. This is what that looks like:
+Although combining Turbo Streams in a single response right there in the controller is a valid option, it may feel like too much work for a controller. If that's the case, you may want to extract the Turbo Streams to a Blade view and respond with that instead:
 
 ```php
 return response()->turboStreamView('comments.turbo.created_stream', [
@@ -204,7 +208,7 @@ return response()->turboStreamView('comments.turbo.created_stream', [
 ]);
 ```
 
-Similarly, you may prefer to use the helper function `turbo_stream_view()`:
+Similar to the `Response::turboStream()` macro and the `turbo_stream()` helper function, you may prefer using the helper function `turbo_stream_view()`:
 
 ```php
 return turbo_stream_view('comments.turbo.created_stream', [
@@ -236,7 +240,7 @@ Remember, these are Blade views, so you have the full power of Blade at your han
 @endif
 ```
 
-Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things quite a bit. It has the same convention of figureing out the DOM ID of the target when you're passing a model instance or an array as the `<x-turbo-frame>` component applied to the `target` attribute here. When using the component version, there's also no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
+Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things a bit. It has the same convention of figureing out the DOM ID when you're passing a model instance or an array as the `<x-turbo-frame>` component applied to the `target` attribute. When using the component version, there's also no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
 
 ```blade
 @include('layouts.turbo.flash_stream')

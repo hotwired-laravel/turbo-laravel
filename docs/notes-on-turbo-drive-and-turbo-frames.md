@@ -1,10 +1,10 @@
 # Notes on Turbo Drive and Turbo Frames
 
-To keep it short, Turbo Drive will turn links and form submissions into AJAX requests and will replace the page with the response. That's useful when you want to navigate to another page entirely.
+To keep it short, Turbo Drive will turn links and form submissions into JS fetch requests (AJAX) and will replace the page with the response. That's useful when you want to navigate to another page entirely.
 
 If you want some elements to persist across these navigations, you may annotate these elements with a DOM ID and add the `data-turbo-permanent` custom attribute to them. As long as the response also contains an element with the same DOM ID and `data-turbo-permanent` attribute, Turbo will not touch it.
 
-Sometimes you don't want the entire page to change, but instead just a portion of the page. That's what [Turbo Frames](https://turbo.hotwired.dev/handbook/frames) are all about. Links and Form submissions that are trapped inside a Turbo Frame tag (or that point to one!) will instruct Turbo Drive to **NOT** replace the entire body of the document, but instead to look for a matching Turbo Frame in the response using its DOM ID and replace that specific portion of the page.
+Sometimes you don't want the entire page to change, but instead just a fragment of it. That's what [Turbo Frames](https://turbo.hotwired.dev/handbook/frames) are all about. Links and Form submissions that are trapped inside a Turbo Frame tag (or that point to one using a `data-turbo-frame` attribute) will instruct Turbo Drive to **NOT** replace the entire body of the document, but instead to look for a matching Turbo Frame in the response using its DOM ID and replace that specific fragment of the page, keeping everything else untouched, preserving input states and event listeners, for instance.
 
 Here's how you can use Turbo Frames:
 
@@ -25,7 +25,7 @@ Turbo Frames also allows you to lazy-load the frame's content. You may do so by 
 </turbo-frame>
 ```
 
-Turbo will automatically dispatch a GET AJAX request as soon as a lazy-loading Turbo Frame enters the DOM and replace its content with a matching Turbo Frame in the response.
+Turbo will automatically dispatch a GET fetch request (AJAX) as soon as a lazy-loading Turbo Frame enters the DOM and replace its content with a matching Turbo Frame in the response.
 
 You may also trigger a Turbo Frame with forms and links that are _outside_ of such frames by pointing to them with a `data-turbo-frame` attribute:
 

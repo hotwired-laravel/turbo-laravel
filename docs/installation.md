@@ -1,18 +1,18 @@
 # Installation
 
-Turbo Laravel may be installed via composer:
+Turbo Laravel may be installed via Composer:
 
 ```bash
 composer require tonysm/turbo-laravel
 ```
 
-After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using NPM) or to your `routes/importmap.php` file (when you're using [Importmap Laravel](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configures Turbo.js for you:
+After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using Vite and NPM) or to your `routes/importmap.php` file (when you're using [Importmap Laravel](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configure Turbo.js for you:
 
 ```bash
 php artisan turbo:install
 ```
 
-If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also change a couple of lines to the layout files that ships with Jetstream, which will make sure Livewire works nicely as well:
+If you are using Jetstream with Livewire, you may add the `--jet` flag to the `turbo:install` Artisan command, which will add a couple more JS dependencies to make sure Alpine.js works nicely with Turbo.js. This will also change the layout that ships with Jetstream files a bit, which will make sure Livewire works nicely as well:
 
 ```bash
 php artisan turbo:install --jet
@@ -24,12 +24,6 @@ If you're not using [Importmap Laravel](https://github.com/tonysm/importmap-lara
 
 ```bash
 npm install && npm run dev
-```
-
-You may also optionally install [Stimulus.js](https://stimulus.hotwired.dev/) passing `--stimulus` flag to the `turbo:install` Artisan command:
-
-```bash
-php artisan turbo:install --stimulus
 ```
 
 You may also optionally install [Alpine.js](https://alpinejs.dev/) in a non-Jetstream context (maybe you're more into [Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)) passing `--alpine` flag to the `turbo:install` Artisan command:
