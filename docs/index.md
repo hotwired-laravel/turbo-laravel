@@ -4,7 +4,6 @@
     * [Overview](/docs/{{version}}/overview)
     * [Conventions](/docs/{{version}}/conventions)
 * The Basics
-    * [On Turbo Drive & Turbo Frames](/docs/{{version}}/notes-on-turbo-drive-and-turbo-frames)
     * [Blade Helpers](/docs/{{version}}/blade-helpers)
     * [Helper Functions](/docs/{{version}}/helper-functions)
     * [Turbo Streams](/docs/{{version}}/turbo-streams)
