@@ -1,5 +1,5 @@
-<turbo-stream {{ $targetTag }}="{{ $targetValue }}" action="{{ $action }}">
-@if ($action !== "remove")
+<turbo-stream @if ($targetTag) {{ $targetTag }}="{{ $targetValue }}" @endif action="{{ $action }}" {{ $attributes }}>
+@if (($slot?->isNotEmpty() ?? false) && $action !== "remove")
     <template>{{ $slot }}</template>
 @endif
 </turbo-stream>

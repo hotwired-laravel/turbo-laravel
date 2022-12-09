@@ -4,6 +4,9 @@ namespace Tonysm\TurboLaravel\Views\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
+use Illuminate\View\ComponentAttributeBag;
+use Tonysm\TurboLaravel\DefaultStreamAction;
+
 use function Tonysm\TurboLaravel\dom_id;
 
 use Tonysm\TurboLaravel\Exceptions\TurboStreamTargetException;
@@ -24,7 +27,7 @@ class Stream extends Component
      */
     public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null)
     {
-        if (! $target && ! $targets) {
+        if (! $target && ! $targets && DefaultStreamAction::tryFrom($action)) {
             throw TurboStreamTargetException::targetMissing();
         }
 
@@ -46,12 +49,16 @@ class Stream extends Component
     {
         return view('turbo-laravel::components.stream', [
             'targetValue' => $this->targetValue(),
-            'targetTag' => ($this->targets ?? false) ? 'targets' : 'target',
+            'targetTag' => $this->targetTag(),
         ]);
     }
 
-    private function targetValue(): string
+    private function targetValue(): ?string
     {
+        if (! $this->target && ! $this->targets) {
+            return null;
+        }
+
         if ($this->targets ?? false) {
             return $this->targets;
         }
@@ -65,5 +72,14 @@ class Stream extends Component
         }
 
         return dom_id(...$this->target);
+    }
+
+    private function targetTag(): ?string
+    {
+        if (! $this->target && ! $this->targets) {
+            return null;
+        }
+
+        return ($this->targets ?? false) ? 'targets' : 'target';
     }
 }

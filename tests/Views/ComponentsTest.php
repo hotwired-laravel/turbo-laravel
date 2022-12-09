@@ -153,4 +153,20 @@ class ComponentsTest extends TestCase
         </x-turbo-stream>
         BLADE);
     }
+
+    /** @test */
+    public function allows_custom_actions_with_extra_attributes()
+    {
+        $this->blade(<<<BLADE
+            <x-turbo-stream action="console_log" hello="world">
+            </x-turbo-stream>
+            BLADE)
+            ->assertSee('<turbo-stream', false)
+            ->assertSee('action="console_log"', false)
+            ->assertSee('hello="world"', false)
+            ->assertSee('</turbo-stream>', false)
+            ->assertDontSee('<template></template>', false)
+            ->assertDontSee('targets=', false)
+            ->assertDontSee('target=');
+    }
 }
