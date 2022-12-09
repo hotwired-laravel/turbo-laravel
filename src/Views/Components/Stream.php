@@ -4,7 +4,6 @@ namespace Tonysm\TurboLaravel\Views\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
-use Illuminate\View\ComponentAttributeBag;
 use Tonysm\TurboLaravel\DefaultStreamAction;
 
 use function Tonysm\TurboLaravel\dom_id;
