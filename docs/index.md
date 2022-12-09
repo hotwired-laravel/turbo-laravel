@@ -1,5 +1,4 @@
 * Getting Started
-    * [Introduction](/docs/{{version}}/introduction)
     * [Installation](/docs/{{version}}/installation)
     * [Overview](/docs/{{version}}/overview)
     * [Conventions](/docs/{{version}}/conventions)
