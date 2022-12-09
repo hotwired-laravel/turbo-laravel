@@ -167,6 +167,6 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-stream>', false)
             ->assertDontSee('<template></template>', false)
             ->assertDontSee('targets=', false)
-            ->assertDontSee('target=');
+            ->assertDontSee('target=', false);
     }
 }
