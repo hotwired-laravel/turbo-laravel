@@ -52,6 +52,11 @@ class Stream extends Component
         ]);
     }
 
+    /**
+     * Resolves the target|targets value out of the given one or neither.
+     *
+     * @return string|null
+     */
     private function targetValue(): ?string
     {
         if (! $this->target && ! $this->targets) {
@@ -73,6 +78,11 @@ class Stream extends Component
         return dom_id(...$this->target);
     }
 
+    /**
+     * Returns whether the attribute should be "target", "targets" or nothing.
+     *
+     * @return string|null
+     */
     private function targetTag(): ?string
     {
         if (! $this->target && ! $this->targets) {
