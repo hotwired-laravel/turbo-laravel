@@ -252,4 +252,24 @@ Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-strea
 
 I hope you can see how powerful this can be to reusing views.
 
+## Custom Actions
+
+When you're using the Blade component, you can use Turbo's custom actions:
+
+```blade
+<x-turbo-stream action="console_log" value="Hello World" />
+```
+
+As you can see, when using custom actions, the `<template></template>` is also optional. To implement custom actions in the front-end, you'd need something like this:
+
+```js
+import * as Turbo from '@hotwired/turbo';
+
+Turbo.StreamActions.console_log = function () {
+    console.log(this.getAttribute("value"))
+}
+```
+
+Custom actions are only supported from Blade views. You cannot return those from controllers using the Pending Streams Builder, for instance.
+
 [Continue to Broadcasting...](/docs/{{version}}/broadcasting)
