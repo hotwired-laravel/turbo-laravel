@@ -182,6 +182,72 @@ return turbo_stream()
     ->view('comments._comment', ['comment' => $comment]);
 ```
 
+## Turbo Stream Macros
+
+The `turbo_stream()` function returns an instance of `PendingTurboStreamResponse`, which is _macroable_. This means you can create your custom DSL for streams. Let's say you always return flash messages from your controllers like so:
+
+```php
+class ChirpsController extends Controller
+{
+    public function destroy(Request $request, Chirp $chirp)
+    {
+        $this->authorize('delete', $chirp);
+
+        $chirp->delete();
+
+        if ($request->wantsTurboStream()) {
+            return turbo_stream([
+                turbo_stream($chirp),
+                turbo_stream()->append('notifications', view('layouts.notification', [
+                    'message' => __('Chirp deleted.'),
+                ])),
+            ]);
+        }
+
+        // ...
+    }
+}
+```
+
+Chances are you're gonna return flash messages from all your controllers, so you could create a custom macro like so:
+
+```php
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot()
+    {
+        PendingTurboStreamResponse::macro('flash', function (string $message) {
+            return $this->append('notifications', view('layouts.notification', [
+                'message' => $message,
+            ]));
+        });
+    }
+}
+```
+
+You could then rewrite that controller like so:
+
+```php
+class ChirpsController extends Controller
+{
+    public function destroy(Request $request, Chirp $chirp)
+    {
+        $this->authorize('delete', $chirp);
+
+        $chirp->delete();
+
+        if ($request->wantsTurboStream()) {
+            return turbo_stream([
+                turbo_stream($chirp),
+                turbo_stream()->flash(__('Chirp deleted.')),
+            ]);
+        }
+
+        // ...
+    }
+}
+```
+
 ## Turbo Streams Combo
 
 You may combine multiple Turbo Streams in a single response like so:
