@@ -239,7 +239,10 @@ class ChirpsController extends Controller
         if ($request->wantsTurboStream()) {
             return turbo_stream([
                 turbo_stream($chirp),
-                turbo_stream()->flash(__('Chirp deleted.')),
+                turbo_stream()->append('notifications', view('layouts.notification', [
+                    'message' => __('Chirp deleted.'),
+                ])),
+                turbo_stream()->flash(__('Chirp deleted.')), // [tl! remove:-3,3 add]
             ]);
         }
 
