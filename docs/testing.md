@@ -1,5 +1,9 @@
 # Testing
 
+[TOC]
+
+## Introduction
+
 There are two aspects of your application using Turbo Laravel that are specific this approach itself:
 
 1. **Turbo Stream HTTP responses.** As you return Turbo Stream responses from your route handlers/controllers to be applied by Turbo itself; and

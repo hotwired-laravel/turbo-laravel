@@ -1,16 +1,24 @@
 # Broadcasting Turbo Streams Over WebSockets With Laravel Echo
 
+[TOC]
+
+## Introduction
+
 So far, we have used Turbo Streams over HTTP to handle the case of updating multiple parts of the page for a single user after a form submission. In addition to that, you may want to broadcast model changes over WebSockets to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
 
 We can broadcast to all users over WebSockets those exact same Turbo Stream tags we are returning to a user after a form submission. That makes use of Laravel Echo and Laravel's Broadcasting component.
 
 You may still feed the user making the changes with Turbo Streams over HTTP and broadcast the changes to other users over WebSockets. This way, the user making the change will have an instant feedback compared to having to wait for a background worker to pick up the job and send it to them over WebSockets.
 
+## Configuring Laravel Echo
+
 First, you need to uncomment the Laravel Echo setup on your [`resources/js/bootstrap.js`](https://github.com/laravel/laravel/blob/9.x/resources/js/bootstrap.js#L21-L34) file and make sure you compile your assets after doing that by running:
 
 ```bash
 npm run dev
 ```
+
+## Configuring Laravel Broadcasting
 
 Then, you'll need to setup the [Laravel Broadcasting](https://laravel.com/docs/9.x/broadcasting) component for your app. One of the first steps is to configure your environment variables to look something like this:
 
@@ -33,7 +41,6 @@ Notice that some of these environment variables are used by your front-end asset
 
 These settings assume you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package. Check out the Echo configuration at [resources/js/bootstrap.js](https://github.com/laravel/laravel/blob/9.x/resources/js/bootstrap.js#L21-L34) to see which environment variables are needed during build time. You may also use [Pusher](https://pusher.com/) or [Ably](https://ably.io/) instead of the Laravel WebSockets package, if you don't want to host it yourself.
 
-<a name="broadasting-model-changes"></a>
 ## Broadcasting Model Changes
 
 With Laravel Echo properly configured, you may now broadcast model changes using WebSockets. First thing you need to do is use the `Broadcasts` trait in your model:
@@ -224,7 +231,6 @@ class Comment extends Model
 
 Having a `$broadcastsTo` property or implementing the `broadcastsTo()` method in your model will have precedence over this, so newly created models will be sent to the channels specified on those places instead of using the convention or the `stream` option.
 
-<a name="listening-to-broadcasts"></a>
 ## Listening to Turbo Stream Broadcasts
 
 You may listen to a Turbo Stream broadcast message on your pages by adding the custom HTML tag `<turbo-echo-stream-source>` that is published to your application's assets (see [here](https://github.com/tonysm/turbo-laravel/blob/main/stubs/resources/js/elements/turbo-echo-stream-tag.js)). You need to pass the channel you want to listen to broadcasts on using the `channel` attribute of this element, like so.

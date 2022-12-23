@@ -1,5 +1,9 @@
 # Helper Functions
 
+[TOC]
+
+## Introduction
+
 The package ships with a set of helper functions. These functions are all namespaced under `Tonysm\\TurboLaravel\\` but we also add them globally for convenience.
 
 ## The `dom_id()`

@@ -1,5 +1,9 @@
 # Turbo Streams
 
+[TOC]
+
+## Introduction
+
 Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight back-end integration.
 
 Turbo Drive will get your pages behaving like an SPA and Turbo Frames will allow you to have a finer grained control of chunks of your page instead of replacing the entire page when a form is submitted or a link is clicked.

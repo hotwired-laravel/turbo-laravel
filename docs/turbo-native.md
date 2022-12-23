@@ -1,5 +1,9 @@
 # Turbo Native
 
+[TOC]
+
+## Introduction
+
 Hotwire also has a [mobile side](https://turbo.hotwired.dev/handbook/native), and the package provides some goodies on this front too.
 
 Turbo Visits made by a Turbo Native client will send a custom `User-Agent` header. So we added another Blade helper you may use to toggle fragments or assets (such as mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a Web app:

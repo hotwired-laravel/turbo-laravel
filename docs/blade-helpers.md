@@ -1,5 +1,9 @@
 # Blade Directives and Components
 
+[TOC]
+
+## The `@domid()` Blade Directive
+
 Since Turbo relies a lot on DOM IDs, the package offers a helper to generate unique DOM IDs based on your models. You may use the `@domid` Blade Directive in your Blade views like so:
 
 ```blade
@@ -17,6 +21,8 @@ This will generate a DOM ID string using your model's basename and its ID, such 
 ```
 
 Which will generate a `comments_post_123` DOM ID, assuming your Post model has an ID of `123`.
+
+## Blade Components
 
 You may also prefer using the `<x-turbo-frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
 

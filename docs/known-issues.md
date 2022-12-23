@@ -1,5 +1,9 @@
 # Known Issues
 
+[TOC]
+
+## Introduction
+
 If you ever encounter an issue with the package, look here first for documented solutions.
 
 ## Fixing Laravel's Previous URL Issue
