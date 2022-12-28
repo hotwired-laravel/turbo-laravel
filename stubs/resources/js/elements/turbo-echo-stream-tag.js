@@ -39,4 +39,6 @@ class TurboEchoStreamSourceElement extends HTMLElement {
     }
 }
 
-customElements.define('turbo-echo-stream-source', TurboEchoStreamSourceElement)
+if (customElements.get('turbo-echo-stream-source') === undefined) {
+    customElements.define('turbo-echo-stream-source', TurboEchoStreamSourceElement)
+}
