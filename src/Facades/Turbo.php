@@ -17,6 +17,7 @@ use Tonysm\TurboLaravel\Turbo as BaseTurbo;
  * @method static bool shouldBroadcastToOthers
  * @method static string domId(Model $model, string $prefix = "")
  * @method static Broadcaster broadcaster()
+ * @method static \Tonysm\TurboLaravel\Broadcasting\PendingBroadcast broadcastAppendTo(\Illuminate\Broadcasting\Channel|\Illuminate\Database\Eloquent\Model|string $channel, $content = null, \Illuminate\Database\Eloquent\Model|string|null $target = null, ?string $targets = null)
  */
 class Turbo extends Facade
 {

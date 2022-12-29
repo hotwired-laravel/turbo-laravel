@@ -120,6 +120,11 @@ trait Broadcasts
         return $this->broadcastActionTo($streamable, 'remove', Rendering::empty());
     }
 
+    public function asTurboStreamBroadcastingChannel()
+    {
+        return $this->brodcastDefaultStreamables($this->wasRecentlyCreated);
+    }
+
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
         return new PendingBroadcast(
