@@ -7,11 +7,10 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use Tonysm\TurboLaravel\Facades\Turbo;
-
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\NamesResolver;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Facades\Turbo;
-use Tonysm\TurboLaravel\Facades\TurboStream;
 
 class PendingBroadcast
 {
@@ -39,7 +38,7 @@ class PendingBroadcast
     protected bool $isRecording = false;
 
     /**
-     * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory $recorded = null
+     * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory = null
      */
     protected $recorder = null;
 
@@ -151,6 +150,7 @@ class PendingBroadcast
     {
         if ($this->isRecording) {
             $this->recorder?->record($this);
+
             return;
         }
 
