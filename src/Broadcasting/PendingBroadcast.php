@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Facades\Turbo;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 
 class PendingBroadcast
 {
@@ -28,7 +29,19 @@ class PendingBroadcast
      *
      * @var bool
      */
-    public bool $wasCancelled = false;
+    protected bool $wasCancelled = false;
+
+    /**
+     * Indicates whether the broadcasting is being faked or not.
+     *
+     * @var bool
+     */
+    protected bool $isRecording = true;
+
+    /**
+     * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory $recorded = null
+     */
+    protected $recorder = null;
 
     public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null)
     {
@@ -113,6 +126,14 @@ class PendingBroadcast
         return $this;
     }
 
+    public function fake($recorder = null)
+    {
+        $this->isRecording = true;
+        $this->recorder = $recorder;
+
+        return $this;
+    }
+
     public function render(): HtmlString
     {
         return new HtmlString(
@@ -128,6 +149,11 @@ class PendingBroadcast
 
     public function __destruct()
     {
+        if ($this->isRecording) {
+            $this->recorder?->record($this);
+            return;
+        }
+
         if ($this->wasCancelled) {
             return;
         }

@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\View;
+use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
@@ -97,5 +98,56 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PresenceChannel::class, $broadcasting->channels[0]);
         $this->assertEquals('presence-user.123', $broadcasting->channels[0]->name);
+    }
+
+    /** @test */
+    public function can_assert_nothing_was_broadcasted()
+    {
+        Turbo::fakeBroadcasting();
+
+        Turbo::assertNothingWasBroadcasted();
+    }
+
+    /** @test */
+    public function can_assert_broadcasted()
+    {
+        Turbo::fakeBroadcasting();
+
+        Turbo::broadcastRemoveTo('todo_123');
+
+        $called = false;
+
+        Turbo::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called) {
+            $called = true;
+
+            return (
+                $broadcast->target === 'todo_123'
+                && $broadcast->action === 'remove'
+            );
+        });
+
+        $this->assertTrue($called, 'The given filter callback was not called.');
+    }
+
+    /** @test */
+    public function can_assert_broadcasted_times()
+    {
+        Turbo::fakeBroadcasting();
+
+        Turbo::broadcastRemoveTo('todo_123');
+        Turbo::broadcastRemoveTo('todo_123');
+
+        $called = false;
+
+        Turbo::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called) {
+            $called = true;
+
+            return (
+                $broadcast->target === 'todo_123'
+                && $broadcast->action === 'remove'
+            );
+        }, 2);
+
+        $this->assertTrue($called, 'The given filter callback was not called.');
     }
 }

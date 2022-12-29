@@ -6,11 +6,8 @@ use Closure;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use Tonysm\TurboLaravel\Models\Naming\Name;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 
 class Turbo
 {
@@ -112,58 +109,26 @@ class Turbo
 
     public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return new PendingBroadcast(
-            $channel ? $this->resolveChannels($channel) : [],
-            action: $action,
-            target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
-            targets: $targets,
-            rendering: $this->resolveRendering($content),
-        );
+        return TurboStream::broadcast($action, $content, $target, $targets, $channel);
     }
 
-    protected function resolveRendering($content)
+    public function fakeBroadcasting()
     {
-        if ($content instanceof Rendering) {
-            return $content;
-        }
-
-        return $content ? Rendering::forContent($content) : Rendering::empty();
+        return TurboStream::fake();
     }
 
-    protected function resolveChannels(Channel|Model|Collection|array|string $channel)
+    public function assertBroadcasted($callback)
     {
-        if (is_array($channel) || $channel instanceof Collection) {
-            return collect($channel)->map(function ($channel) {
-                return $this->resolveChannels($channel);
-            })->all();
-        }
-
-        if (is_string($channel)) {
-            return [new Channel($channel)];
-        }
-
-        if ($channel instanceof Model) {
-            return $channel->asTurboStreamBroadcastingChannel();
-        }
-
-        return $channel;
+        return TurboStream::assertBroadcasted($callback);
     }
 
-    protected function resolveTargetFor(Model|string $target, bool $resource = false): string
+    public function assertBroadcastedTimes($callback, $times = 1, $message = null)
     {
-        if (is_string($target)) {
-            return $target;
-        }
-
-        if ($resource) {
-            return $this->getResourceNameFor($target);
-        }
-
-        return dom_id($target);
+        return TurboStream::assertBroadcastedTimes($callback, $times, $message);
     }
 
-    protected function getResourceNameFor(Model $model): string
+    public function assertNothingWasBroadcasted()
     {
-        return Name::forModel($model)->plural;
+        return TurboStream::assertNothingWasBroadcasted();
     }
 }
