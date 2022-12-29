@@ -74,42 +74,42 @@ class Turbo
 
     public function broadcastAppendTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('append', $content, $target, $targets, $channel);
+        return TurboStream::broadcastAppendTo($content, $target, $targets, $channel);
     }
 
     public function broadcastPrependTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('prepend', $content, $target, $targets, $channel);
+        return TurboStream::broadcastPrependTo($content, $target, $targets, $channel);
     }
 
     public function broadcastBeforeTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('before', $content, $target, $targets, $channel);
+        return TurboStream::broadcastBeforeTo($content, $target, $targets, $channel);
     }
 
     public function broadcastAfterTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('after', $content, $target, $targets, $channel);
+        return TurboStream::broadcastAfterTo($content, $target, $targets, $channel);
     }
 
     public function broadcastUpdateTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('update', $content, $target, $targets, $channel);
+        return TurboStream::broadcastUpdateTo($content, $target, $targets, $channel);
     }
 
     public function broadcastReplaceTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('replace', $content, $target, $targets, $channel);
+        return TurboStream::broadcastReplaceTo($content, $target, $targets, $channel);
     }
 
     public function broadcastRemoveTo(Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return $this->broadcastActionTo('remove', null, $target, $targets, $channel);
+        return TurboStream::broadcastRemoveTo($target, $targets, $channel);
     }
 
     public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
-        return TurboStream::broadcast($action, $content, $target, $targets, $channel);
+        return TurboStream::broadcastActionTo($action, $content, $target, $targets, $channel);
     }
 
     public function fakeBroadcasting()

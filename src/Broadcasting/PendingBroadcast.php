@@ -36,7 +36,7 @@ class PendingBroadcast
      *
      * @var bool
      */
-    protected bool $isRecording = true;
+    protected bool $isRecording = false;
 
     /**
      * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory $recorded = null

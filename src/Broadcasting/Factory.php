@@ -20,7 +20,42 @@ class Factory
         return $this;
     }
 
-    public function broadcast(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    public function broadcastAppendTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('append', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastPrependTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('prepend', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastBeforeTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('before', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastAfterTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('after', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastUpdateTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('update', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastReplaceTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('replace', $content, $target, $targets, $channel);
+    }
+
+    public function broadcastRemoveTo(Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
+    {
+        return $this->broadcastActionTo('remove', null, $target, $targets, $channel);
+    }
+
+    public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         $broadcast = new PendingBroadcast(
             $channel ? $this->resolveChannels($channel) : [],
