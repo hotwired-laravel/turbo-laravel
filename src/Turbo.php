@@ -5,6 +5,7 @@ namespace Tonysm\TurboLaravel;
 use Closure;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use SebastianBergmann\CodeCoverage\Report\Html\Renderer;
 use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
@@ -74,54 +75,69 @@ class Turbo
         return resolve(Broadcaster::class);
     }
 
-    public function broadcastAppendTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastAppendTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('append', $content, $target, $targets, $channel);
     }
 
-    public function broadcastPrependTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastPrependTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('prepend', $content, $target, $targets, $channel);
     }
 
-    public function broadcastBeforeTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastBeforeTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('before', $content, $target, $targets, $channel);
     }
 
-    public function broadcastAfterTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastAfterTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('after', $content, $target, $targets, $channel);
     }
 
-    public function broadcastUpdateTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastUpdateTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('update', $content, $target, $targets, $channel);
     }
 
-    public function broadcastReplaceTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastReplaceTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('replace', $content, $target, $targets, $channel);
     }
 
-    public function broadcastRemoveTo(Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastRemoveTo(Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return $this->broadcastActionTo('remove', null, $target, $targets, $channel);
     }
 
-    public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
+    public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         return new PendingBroadcast(
             $channel ? $this->resolveChannels($channel) : [],
             action: $action,
             target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
             targets: $targets,
-            rendering: $content ? Rendering::forContent($content) : Rendering::empty(),
+            rendering: $this->resolveRendering($content),
         );
     }
 
-    protected function resolveChannels(Channel|Model|string $channel)
+    protected function resolveRendering($content)
     {
+        if ($content instanceof Rendering) {
+            return $content;
+        }
+
+        return $content ? Rendering::forContent($content) : Rendering::empty();
+    }
+
+    protected function resolveChannels(Channel|Model|Collection|array|string $channel)
+    {
+        if (is_array($channel) || $channel instanceof Collection) {
+            return collect($channel)->map(function ($channel) {
+                return $this->resolveChannels($channel);
+            })->all();
+        }
+
         if (is_string($channel)) {
             return [new Channel($channel)];
         }

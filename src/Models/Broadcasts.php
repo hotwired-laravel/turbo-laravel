@@ -7,6 +7,8 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
+use Tonysm\TurboLaravel\Facades\Turbo;
+
 use function Tonysm\TurboLaravel\dom_id;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\NamesResolver;
@@ -127,11 +129,12 @@ trait Broadcasts
 
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
-        return new PendingBroadcast(
-            $this->toChannels(Collection::wrap($streamables)),
-            $action,
-            $rendering,
-            $target ?: $this->broadcastDefaultTarget($action),
+        return Turbo::broadcastActionTo(
+            action: $action,
+            target: $target ?: $this->broadcastDefaultTarget($action),
+            targets: null,
+            channel: $this->toChannels(Collection::wrap($streamables)),
+            content: $rendering,
         );
     }
 
@@ -183,10 +186,5 @@ trait Broadcasts
         }
 
         return dom_id($this);
-    }
-
-    protected function broadcastDefaultPartial(): string
-    {
-        return NamesResolver::partialNameFor($this);
     }
 }
