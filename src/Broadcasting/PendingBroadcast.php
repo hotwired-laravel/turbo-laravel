@@ -7,7 +7,6 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
 use Tonysm\TurboLaravel\Facades\Turbo;

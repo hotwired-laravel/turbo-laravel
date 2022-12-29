@@ -5,7 +5,6 @@ namespace Tonysm\TurboLaravel\Tests\Testing;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
