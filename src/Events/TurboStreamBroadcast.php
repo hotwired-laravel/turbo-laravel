@@ -6,6 +6,7 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\HtmlString;
 
 class TurboStreamBroadcast implements ShouldBroadcastNow
 {
@@ -18,8 +19,10 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
     public ?string $targets = null;
     public ?string $partial = null;
     public ?array $partialData = [];
+    public ?string $inlineContent = null;
+    public bool $escapeInlineContent = true;
 
-    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [])
+    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true)
     {
         $this->channels = $channels;
         $this->action = $action;
@@ -27,6 +30,8 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
         $this->targets = $targets;
         $this->partial = $partial;
         $this->partialData = $partialData;
+        $this->inlineContent = $inlineContent;
+        $this->escapeInlineContent = $escapeInlineContent;
     }
 
     public function broadcastOn()
@@ -49,6 +54,7 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
             'targets' => $this->targets,
             'partial' => $this->partial ?: null,
             'partialData' => $this->partialData ?: [],
+            'content' => $this->escapeInlineContent ? $this->inlineContent : new HtmlString($this->inlineContent),
         ])->render();
     }
 }

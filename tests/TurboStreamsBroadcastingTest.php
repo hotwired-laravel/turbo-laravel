@@ -5,7 +5,9 @@ namespace Tonysm\TurboLaravel\Tests\Testing;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\Tests\TestCase;
@@ -149,5 +151,45 @@ class TurboStreamsBroadcastingTest extends TestCase
         }, 2);
 
         $this->assertTrue($called, 'The given filter callback was not called.');
+    }
+
+    /** @test */
+    public function broadcast_inline_content_escaped()
+    {
+        Turbo::fakeBroadcasting();
+
+        $broadcast = Turbo::broadcastAppendTo(
+            channel: 'general',
+            target: 'notifications',
+            content: "Hello <script>alert('World')</script>",
+        );
+
+        $expected = <<<'HTML'
+        <turbo-stream target="notifications" action="append">
+            <template>Hello &lt;script&gt;alert(&#039;World&#039;)&lt;/script&gt;</template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
+    }
+
+    /** @test */
+    public function broadcast_inline_content_as_html_string()
+    {
+        Turbo::fakeBroadcasting();
+
+        $broadcast = Turbo::broadcastAppendTo(
+            channel: 'general',
+            target: 'notifications',
+            content: new HtmlString("<h1>Hello World</h1>"),
+        );
+
+        $expected = <<<'HTML'
+        <turbo-stream target="notifications" action="append">
+            <template><h1>Hello World</h1></template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
     }
 }

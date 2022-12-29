@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
+use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
 use Tonysm\TurboLaravel\Facades\Turbo;
 
 class PendingBroadcast
@@ -20,6 +21,8 @@ class PendingBroadcast
     public ?string $targets = null;
     public ?string $partialView = null;
     public ?array $partialData = [];
+    public ?string $inlineContent = null;
+    public bool $escapeInlineContent = true;
     public bool $sendToOthers = false;
     public bool $sendLater = false;
 
@@ -48,8 +51,8 @@ class PendingBroadcast
         $this->action = $action;
         $this->target = $target;
         $this->targets = $targets;
-        $this->partialView = $rendering->partial;
-        $this->partialData = $rendering->data;
+
+        $this->rendering($rendering);
     }
 
     public function to($channel): self
@@ -105,8 +108,20 @@ class PendingBroadcast
 
     public function partial(?string $partial, array $data = []): self
     {
-        $this->partialView = $partial;
-        $this->partialData = $data;
+        return $this->rendering(new Rendering($partial, $data));
+    }
+
+    public function content($content)
+    {
+        return $this->rendering(Rendering::forContent($content));
+    }
+
+    public function rendering(Rendering $rendering)
+    {
+        $this->partialView = $rendering->partial;
+        $this->partialData = $rendering->data;
+        $this->inlineContent = $rendering->inlineContent;
+        $this->escapeInlineContent = $rendering->escapeInlineContent;
 
         return $this;
     }
@@ -135,15 +150,18 @@ class PendingBroadcast
 
     public function render(): HtmlString
     {
-        return new HtmlString(
-            View::make('turbo-laravel::turbo-stream', [
-                'action' => $this->action,
-                'target' => $this->target,
-                'targets' => $this->targets,
-                'partial' => $this->partialView ?: null,
-                'partialData' => $this->partialData ?: [],
-            ])->render()
+        $event = new TurboStreamBroadcast(
+            $this->channels,
+            $this->action,
+            $this->target,
+            $this->targets,
+            $this->partialView,
+            $this->partialData,
+            $this->inlineContent,
+            $this->escapeInlineContent,
         );
+
+        return new HtmlString($event->render());
     }
 
     public function __destruct()
@@ -172,6 +190,8 @@ class PendingBroadcast
             $this->targets,
             $this->partialView,
             $this->partialData,
+            $this->inlineContent,
+            $this->escapeInlineContent,
             $socket,
         );
     }
