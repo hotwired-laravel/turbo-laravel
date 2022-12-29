@@ -3,6 +3,8 @@
 namespace Tonysm\TurboLaravel\Tests\Testing;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Facades\Turbo;
 use Tonysm\TurboLaravel\Tests\TestCase;
@@ -73,5 +75,27 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertCount(1, $broadcasting->channels);
         $this->assertInstanceOf(Channel::class, $broadcasting->channels[0]);
         $this->assertEquals('general', $broadcasting->channels[0]->name);
+    }
+
+    /** @test */
+    public function can_manually_broadcast_to_private_channels()
+    {
+        $broadcasting = Turbo::broadcastRemoveTo(
+            target: 'todo_123',
+        )->toPrivateChannel('user.123')->cancel();
+
+        $this->assertInstanceOf(PrivateChannel::class, $broadcasting->channels[0]);
+        $this->assertEquals('private-user.123', $broadcasting->channels[0]->name);
+    }
+
+    /** @test */
+    public function can_manually_broadcast_to_presence_channels()
+    {
+        $broadcasting = Turbo::broadcastRemoveTo(
+            target: 'todo_123',
+        )->toPresenceChannel('user.123')->cancel();
+
+        $this->assertInstanceOf(PresenceChannel::class, $broadcasting->channels[0]);
+        $this->assertEquals('presence-user.123', $broadcasting->channels[0]->name);
     }
 }

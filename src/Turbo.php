@@ -74,45 +74,45 @@ class Turbo
         return resolve(Broadcaster::class);
     }
 
-    public function broadcastAppendTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastAppendTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'append', $content, $target, $targets);
+        return $this->broadcastActionTo('append', $content, $target, $targets, $channel);
     }
 
-    public function broadcastPrependTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastPrependTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'prepend', $content, $target, $targets);
+        return $this->broadcastActionTo('prepend', $content, $target, $targets, $channel);
     }
 
-    public function broadcastBeforeTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastBeforeTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'before', $content, $target, $targets);
+        return $this->broadcastActionTo('before', $content, $target, $targets, $channel);
     }
 
-    public function broadcastAfterTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastAfterTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'after', $content, $target, $targets);
+        return $this->broadcastActionTo('after', $content, $target, $targets, $channel);
     }
 
-    public function broadcastUpdateTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastUpdateTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'update', $content, $target, $targets);
+        return $this->broadcastActionTo('update', $content, $target, $targets, $channel);
     }
 
-    public function broadcastReplaceTo(Channel|Model|string $channel, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastReplaceTo($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'replace', $content, $target, $targets);
+        return $this->broadcastActionTo('replace', $content, $target, $targets, $channel);
     }
 
-    public function broadcastRemoveTo(Channel|Model|string $channel, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastRemoveTo(Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
-        return $this->broadcastActionTo($channel, 'remove', null, $target, $targets);
+        return $this->broadcastActionTo('remove', null, $target, $targets, $channel);
     }
 
-    public function broadcastActionTo(Channel|Model|string $channel, string $action, $content = null, Model|string|null $target = null, ?string $targets = null)
+    public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|string|null $channel = null)
     {
         return new PendingBroadcast(
-            $this->resolveChannels($channel),
+            $channel ? $this->resolveChannels($channel) : [],
             action: $action,
             target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
             targets: $targets,

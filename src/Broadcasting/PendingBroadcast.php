@@ -3,6 +3,8 @@
 namespace Tonysm\TurboLaravel\Broadcasting;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\View;
@@ -41,6 +43,20 @@ class PendingBroadcast
     public function to($channel): self
     {
         $this->channels = Arr::wrap($channel);
+
+        return $this;
+    }
+
+    public function toPrivateChannel($channel): self
+    {
+        $this->channels = [new PrivateChannel($channel)];
+
+        return $this;
+    }
+
+    public function toPresenceChannel($channel): self
+    {
+        $this->channels = [new PresenceChannel($channel)];
 
         return $this;
     }
