@@ -104,6 +104,11 @@ class Turbo
         return $this->broadcastActionTo($channel, 'replace', $content, $target, $targets);
     }
 
+    public function broadcastRemoveTo(Channel|Model|string $channel, Model|string|null $target = null, ?string $targets = null)
+    {
+        return $this->broadcastActionTo($channel, 'remove', null, $target, $targets);
+    }
+
     public function broadcastActionTo(Channel|Model|string $channel, string $action, $content = null, Model|string|null $target = null, ?string $targets = null)
     {
         return new PendingBroadcast(
@@ -111,7 +116,7 @@ class Turbo
             action: $action,
             target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
             targets: $targets,
-            rendering: Rendering::forContent($content),
+            rendering: $content ? Rendering::forContent($content) : Rendering::empty(),
         );
     }
 

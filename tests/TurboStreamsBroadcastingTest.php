@@ -55,4 +55,23 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(Channel::class, $broadcasting->channels[0]);
         $this->assertEquals('general', $broadcasting->channels[0]->name);
     }
+
+    /** @test */
+    public function manually_broadcast_remove_stream()
+    {
+        $broadcasting = Turbo::broadcastRemoveTo(
+            channel: 'general',
+            target: 'todo_123',
+        )->cancel();
+
+        $expected = <<<HTML
+        <turbo-stream target="todo_123" action="remove">
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim((string) $broadcasting->render()));
+        $this->assertCount(1, $broadcasting->channels);
+        $this->assertInstanceOf(Channel::class, $broadcasting->channels[0]);
+        $this->assertEquals('general', $broadcasting->channels[0]->name);
+    }
 }
