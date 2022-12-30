@@ -128,7 +128,7 @@ trait Broadcasts
 
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
-        return TurboStream::broadcastActionTo(
+        return TurboStream::broadcastAction(
             action: $action,
             target: $target ?: $this->broadcastDefaultTarget($action),
             targets: null,

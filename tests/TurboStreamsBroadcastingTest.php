@@ -40,7 +40,7 @@ class TurboStreamsBroadcastingTest extends TestCase
      */
     public function can_manually_broadcast_append_streams(string $action)
     {
-        $method = sprintf('broadcast%sTo', ucfirst($action));
+        $method = sprintf('broadcast%s', ucfirst($action));
 
         $broadcasting = TurboStream::{$method}(
             channel: 'general',
@@ -65,7 +65,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function manually_broadcast_remove_stream()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             channel: 'general',
             target: 'todo_123',
         );
@@ -84,7 +84,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_broadcast_to_multiple_public_channels()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             channel: ['general', 'todolist.123'],
             target: 'todo_123',
         );
@@ -101,7 +101,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_private_channels()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
         )->toPrivateChannel('user.123');
 
@@ -112,7 +112,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_multiple_private_channels()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
         )->toPrivateChannel(['user.123', 'todolist.123']);
 
@@ -128,7 +128,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_presence_channels()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
         )->toPresenceChannel('user.123');
 
@@ -139,7 +139,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_multiple_presence_channels()
     {
-        $broadcasting = TurboStream::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
         )->toPresenceChannel(['user.123', 'todolist.123']);
 
@@ -161,7 +161,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_assert_broadcasted()
     {
-        TurboStream::broadcastRemoveTo('todo_123');
+        TurboStream::broadcastRemove('todo_123');
 
         $called = false;
 
@@ -180,8 +180,8 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_assert_broadcasted_times()
     {
-        TurboStream::broadcastRemoveTo('todo_123');
-        TurboStream::broadcastRemoveTo('todo_123');
+        TurboStream::broadcastRemove('todo_123');
+        TurboStream::broadcastRemove('todo_123');
 
         $called = false;
 
@@ -200,7 +200,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_escaped()
     {
-        $broadcast = TurboStream::broadcastAppendTo(
+        $broadcast = TurboStream::broadcastAppend(
             channel: 'general',
             target: 'notifications',
             content: "Hello <script>alert('World')</script>",
@@ -218,7 +218,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_as_html_string()
     {
-        $broadcast = TurboStream::broadcastAppendTo(
+        $broadcast = TurboStream::broadcastAppend(
             channel: 'general',
             target: 'notifications',
             content: new HtmlString("<h1>Hello World</h1>"),
@@ -236,7 +236,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_cancel_broadcasting()
     {
-        TurboStream::broadcastRemoveTo('todo_123')->cancel();
+        TurboStream::broadcastRemove('todo_123')->cancel();
 
         TurboStream::assertNothingWasBroadcasted();
     }
