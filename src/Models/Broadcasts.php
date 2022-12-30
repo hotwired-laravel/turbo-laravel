@@ -7,10 +7,10 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use function Tonysm\TurboLaravel\dom_id;
-
-use Tonysm\TurboLaravel\Facades\Turbo;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Models\Naming\Name;
+
+use function Tonysm\TurboLaravel\dom_id;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -128,7 +128,7 @@ trait Broadcasts
 
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
-        return Turbo::broadcastActionTo(
+        return TurboStream::broadcastActionTo(
             action: $action,
             target: $target ?: $this->broadcastDefaultTarget($action),
             targets: null,

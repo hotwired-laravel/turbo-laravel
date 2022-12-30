@@ -8,7 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Facades\Turbo;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboStreamsBroadcastingTest extends TestCase
@@ -40,7 +40,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     {
         $method = sprintf('broadcast%sTo', ucfirst($action));
 
-        $broadcasting = Turbo::{$method}(
+        $broadcasting = TurboStream::{$method}(
             channel: 'general',
             target: 'notifications',
             content: View::make('hello_view', [
@@ -63,12 +63,12 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function manually_broadcast_remove_stream()
     {
-        $broadcasting = Turbo::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemoveTo(
             channel: 'general',
             target: 'todo_123',
         )->cancel();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream target="todo_123" action="remove">
         </turbo-stream>
         HTML;
@@ -82,7 +82,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_private_channels()
     {
-        $broadcasting = Turbo::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemoveTo(
             target: 'todo_123',
         )->toPrivateChannel('user.123')->cancel();
 
@@ -93,7 +93,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_manually_broadcast_to_presence_channels()
     {
-        $broadcasting = Turbo::broadcastRemoveTo(
+        $broadcasting = TurboStream::broadcastRemoveTo(
             target: 'todo_123',
         )->toPresenceChannel('user.123')->cancel();
 
@@ -104,21 +104,21 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_assert_nothing_was_broadcasted()
     {
-        Turbo::fakeBroadcasting();
+        TurboStream::fake();
 
-        Turbo::assertNothingWasBroadcasted();
+        TurboStream::assertNothingWasBroadcasted();
     }
 
     /** @test */
     public function can_assert_broadcasted()
     {
-        Turbo::fakeBroadcasting();
+        TurboStream::fake();
 
-        Turbo::broadcastRemoveTo('todo_123');
+        TurboStream::broadcastRemoveTo('todo_123');
 
         $called = false;
 
-        Turbo::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called) {
             $called = true;
 
             return (
@@ -133,14 +133,14 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_assert_broadcasted_times()
     {
-        Turbo::fakeBroadcasting();
+        TurboStream::fake();
 
-        Turbo::broadcastRemoveTo('todo_123');
-        Turbo::broadcastRemoveTo('todo_123');
+        TurboStream::broadcastRemoveTo('todo_123');
+        TurboStream::broadcastRemoveTo('todo_123');
 
         $called = false;
 
-        Turbo::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called) {
             $called = true;
 
             return (
@@ -155,9 +155,9 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_escaped()
     {
-        Turbo::fakeBroadcasting();
+        TurboStream::fake();
 
-        $broadcast = Turbo::broadcastAppendTo(
+        $broadcast = TurboStream::broadcastAppendTo(
             channel: 'general',
             target: 'notifications',
             content: "Hello <script>alert('World')</script>",
@@ -175,9 +175,9 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_as_html_string()
     {
-        Turbo::fakeBroadcasting();
+        TurboStream::fake();
 
-        $broadcast = Turbo::broadcastAppendTo(
+        $broadcast = TurboStream::broadcastAppendTo(
             channel: 'general',
             target: 'notifications',
             content: new HtmlString("<h1>Hello World</h1>"),
