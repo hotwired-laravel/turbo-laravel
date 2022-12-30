@@ -15,6 +15,11 @@ use Tonysm\TurboLaravel\Broadcasting\Factory;
  * @method static \Tonysm\TurboLaravel\Broadcasting\PendingBroadcast broadcastReplace($content = null, \Illuminate\Database\Eloquent\Model|string|null $target = null, ?string $targets = null, \Illuminate\Broadcasting\Channel|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection|string|null $channel = null)
  * @method static \Tonysm\TurboLaravel\Broadcasting\PendingBroadcast broadcastRemove(\Illuminate\Database\Eloquent\Model|string|null $target = null, ?string $targets = null, \Illuminate\Broadcasting\Channel|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection|string|null $channel = null)
  *
+ * @method static \Tonysm\TurboLaravel\Broadcasting\Factory fake()
+ * @method static \Tonysm\TurboLaravel\Broadcasting\Factory assertNothingWasBroadcasted()
+ * @method static \Tonysm\TurboLaravel\Broadcasting\Factory assertBroadcasted(callable $callback)
+ * @method static \Tonysm\TurboLaravel\Broadcasting\Factory assertBroadcastedTimes(callable $callback, int $times = 1)
+ *
  * @mixin \Tonysm\TurboLaravel\Broadcasting\Factory
  */
 class TurboStream extends Facade

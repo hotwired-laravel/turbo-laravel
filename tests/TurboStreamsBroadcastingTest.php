@@ -198,6 +198,24 @@ class TurboStreamsBroadcastingTest extends TestCase
     }
 
     /** @test */
+    public function broadcast_inline_content()
+    {
+        $broadcast = TurboStream::broadcastUpdate(
+            channel: 'general',
+            target: 'notifications',
+            content: 'Hello World',
+        );
+
+        $expected = <<<'HTML'
+        <turbo-stream target="notifications" action="update">
+            <template>Hello World</template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
+    }
+
+    /** @test */
     public function broadcast_inline_content_escaped()
     {
         $broadcast = TurboStream::broadcastAppend(

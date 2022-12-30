@@ -4,6 +4,8 @@ namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Support\Facades\Bus;
+use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Jobs\BroadcastAction;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Tests\TestCase;
@@ -406,6 +408,30 @@ class BroadcastsModelTest extends TestCase
             $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
             $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
             $this->assertEquals('.test_targets', $job->targets);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function using_the_new_broadcast_fake()
+    {
+        TurboStream::fake();
+
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        $model->broadcastAppend()->targets('.test_targets');
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-broadcast_test_models', $broadcast->channels[0]->name);
+            $this->assertNull($broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $broadcast->partialView);
+            $this->assertEquals(['broadcastTestModel' => $model], $broadcast->partialData);
+            $this->assertEquals('.test_targets', $broadcast->targets);
 
             return true;
         });

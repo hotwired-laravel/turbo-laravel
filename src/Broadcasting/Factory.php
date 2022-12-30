@@ -10,7 +10,19 @@ use Tonysm\TurboLaravel\Models\Naming\Name;
 
 class Factory
 {
+    /**
+     * Indicates if we should record the Turbo Stream
+     * broadcast instead of sending it.
+     *
+     * @var bool
+     */
     protected $recording = false;
+
+    /**
+     * The recorded Turbo Streams.
+     *
+     * @var bool
+     */
     protected $recordedStreams = [];
 
     public function fake()
