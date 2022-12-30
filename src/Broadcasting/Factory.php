@@ -58,7 +58,7 @@ class Factory
     public function broadcastActionTo(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null)
     {
         $broadcast = new PendingBroadcast(
-            $channel ? $this->resolveChannels($channel) : [],
+            channels: $channel ? $this->resolveChannels($channel) : [],
             action: $action,
             target: $target instanceof Model ? $this->resolveTargetFor($target, resource: true) : $target,
             targets: $targets,
@@ -91,9 +91,9 @@ class Factory
     protected function resolveChannels(Channel|Model|Collection|array|string $channel)
     {
         if (is_array($channel) || $channel instanceof Collection) {
-            return collect($channel)->map(function ($channel) {
+            return collect($channel)->flatMap(function ($channel) {
                 return $this->resolveChannels($channel);
-            })->all();
+            })->values()->filter()->all();
         }
 
         if (is_string($channel)) {
@@ -104,7 +104,7 @@ class Factory
             return $channel->asTurboStreamBroadcastingChannel();
         }
 
-        return $channel;
+        return [$channel];
     }
 
     protected function resolveTargetFor(Model|string $target, bool $resource = false): string

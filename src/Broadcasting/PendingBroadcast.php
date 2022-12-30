@@ -22,8 +22,22 @@ class PendingBroadcast
     public ?array $partialData = [];
     public ?string $inlineContent = null;
     public bool $escapeInlineContent = true;
+
+    /**
+     * Whether we should broadcast only to other users and
+     * ignore the current user's broadcasting socket.
+     *
+     * @var bool
+     */
     public bool $sendToOthers = false;
-    public bool $sendLater = false;
+
+    /**
+     * Defines if the broadcast should happen sent
+     * to a queue or processed right away.
+     *
+     * @var bool
+     */
+    protected bool $sendLater = false;
 
     /**
      * Indicates whether this pending broadcast was cancelled or not.
@@ -40,37 +54,38 @@ class PendingBroadcast
     protected bool $isRecording = false;
 
     /**
+     * This is the testing recorder. Used when faking the Turbo Stream broadcasts.
      * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory = null
      */
     protected $recorder = null;
 
     public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null)
     {
-        $this->channels = $channels;
         $this->action = $action;
         $this->target = $target;
         $this->targets = $targets;
 
+        $this->to($channels);
         $this->rendering($rendering);
     }
 
     public function to($channel): self
     {
-        $this->channels = Arr::wrap($channel);
+        $this->channels = $this->normalizeChannels($channel, Channel::class);
 
         return $this;
     }
 
     public function toPrivateChannel($channel): self
     {
-        $this->channels = [new PrivateChannel($channel)];
+        $this->channels = $this->normalizeChannels($channel, PrivateChannel::class);
 
         return $this;
     }
 
     public function toPresenceChannel($channel): self
     {
-        $this->channels = [new PresenceChannel($channel)];
+        $this->channels = $this->normalizeChannels($channel, PresenceChannel::class);
 
         return $this;
     }
@@ -165,13 +180,13 @@ class PendingBroadcast
 
     public function __destruct()
     {
-        if ($this->isRecording) {
-            $this->recorder?->record($this);
-
+        if ($this->wasCancelled) {
             return;
         }
 
-        if ($this->wasCancelled) {
+        if ($this->isRecording) {
+            $this->recorder?->record($this);
+
             return;
         }
 
@@ -193,5 +208,22 @@ class PendingBroadcast
             $this->escapeInlineContent,
             $socket,
         );
+    }
+
+    protected function normalizeChannels($channel, $channelClass)
+    {
+        if ($channel instanceof Channel) {
+            return [$channel];
+        }
+
+        return collect($channel)
+            ->map(function ($channel) use ($channelClass) {
+                return $channel instanceof Channel
+                    ? $channel
+                    : new $channelClass($channel);
+            })
+            ->values()
+            ->filter()
+            ->all();
     }
 }

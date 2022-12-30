@@ -18,6 +18,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         parent::setUp();
 
         View::addLocation(__DIR__ . '/Stubs/views');
+
+        TurboStream::fake();
     }
 
     public function turboStreamDefaultInsertActions()
@@ -46,7 +48,7 @@ class TurboStreamsBroadcastingTest extends TestCase
             content: View::make('hello_view', [
                 'name' => 'Tony',
             ]),
-        )->cancel();
+        );
 
         $expected = <<<HTML
         <turbo-stream target="notifications" action="{$action}">
@@ -66,7 +68,7 @@ class TurboStreamsBroadcastingTest extends TestCase
         $broadcasting = TurboStream::broadcastRemoveTo(
             channel: 'general',
             target: 'todo_123',
-        )->cancel();
+        );
 
         $expected = <<<'HTML'
         <turbo-stream target="todo_123" action="remove">
@@ -80,14 +82,47 @@ class TurboStreamsBroadcastingTest extends TestCase
     }
 
     /** @test */
+    public function can_broadcast_to_multiple_public_channels()
+    {
+        $broadcasting = TurboStream::broadcastRemoveTo(
+            channel: ['general', 'todolist.123'],
+            target: 'todo_123',
+        );
+
+        $this->assertCount(2, $broadcasting->channels);
+
+        $this->assertInstanceOf(Channel::class, $broadcasting->channels[0]);
+        $this->assertEquals('general', $broadcasting->channels[0]->name);
+
+        $this->assertInstanceOf(Channel::class, $broadcasting->channels[1]);
+        $this->assertEquals('todolist.123', $broadcasting->channels[1]->name);
+    }
+
+    /** @test */
     public function can_manually_broadcast_to_private_channels()
     {
         $broadcasting = TurboStream::broadcastRemoveTo(
             target: 'todo_123',
-        )->toPrivateChannel('user.123')->cancel();
+        )->toPrivateChannel('user.123');
 
         $this->assertInstanceOf(PrivateChannel::class, $broadcasting->channels[0]);
         $this->assertEquals('private-user.123', $broadcasting->channels[0]->name);
+    }
+
+    /** @test */
+    public function can_manually_broadcast_to_multiple_private_channels()
+    {
+        $broadcasting = TurboStream::broadcastRemoveTo(
+            target: 'todo_123',
+        )->toPrivateChannel(['user.123', 'todolist.123']);
+
+        $this->assertCount(2, $broadcasting->channels);
+
+        $this->assertInstanceOf(PrivateChannel::class, $broadcasting->channels[0]);
+        $this->assertEquals('private-user.123', $broadcasting->channels[0]->name);
+
+        $this->assertInstanceOf(PrivateChannel::class, $broadcasting->channels[1]);
+        $this->assertEquals('private-todolist.123', $broadcasting->channels[1]->name);
     }
 
     /** @test */
@@ -95,25 +130,37 @@ class TurboStreamsBroadcastingTest extends TestCase
     {
         $broadcasting = TurboStream::broadcastRemoveTo(
             target: 'todo_123',
-        )->toPresenceChannel('user.123')->cancel();
+        )->toPresenceChannel('user.123');
 
         $this->assertInstanceOf(PresenceChannel::class, $broadcasting->channels[0]);
         $this->assertEquals('presence-user.123', $broadcasting->channels[0]->name);
     }
 
     /** @test */
+    public function can_manually_broadcast_to_multiple_presence_channels()
+    {
+        $broadcasting = TurboStream::broadcastRemoveTo(
+            target: 'todo_123',
+        )->toPresenceChannel(['user.123', 'todolist.123']);
+
+        $this->assertCount(2, $broadcasting->channels);
+
+        $this->assertInstanceOf(PresenceChannel::class, $broadcasting->channels[0]);
+        $this->assertEquals('presence-user.123', $broadcasting->channels[0]->name);
+
+        $this->assertInstanceOf(PresenceChannel::class, $broadcasting->channels[1]);
+        $this->assertEquals('presence-todolist.123', $broadcasting->channels[1]->name);
+    }
+
+    /** @test */
     public function can_assert_nothing_was_broadcasted()
     {
-        TurboStream::fake();
-
         TurboStream::assertNothingWasBroadcasted();
     }
 
     /** @test */
     public function can_assert_broadcasted()
     {
-        TurboStream::fake();
-
         TurboStream::broadcastRemoveTo('todo_123');
 
         $called = false;
@@ -133,8 +180,6 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function can_assert_broadcasted_times()
     {
-        TurboStream::fake();
-
         TurboStream::broadcastRemoveTo('todo_123');
         TurboStream::broadcastRemoveTo('todo_123');
 
@@ -155,8 +200,6 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_escaped()
     {
-        TurboStream::fake();
-
         $broadcast = TurboStream::broadcastAppendTo(
             channel: 'general',
             target: 'notifications',
@@ -175,8 +218,6 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_inline_content_as_html_string()
     {
-        TurboStream::fake();
-
         $broadcast = TurboStream::broadcastAppendTo(
             channel: 'general',
             target: 'notifications',
@@ -190,5 +231,13 @@ class TurboStreamsBroadcastingTest extends TestCase
         HTML;
 
         $this->assertEquals(trim($expected), trim($broadcast->render()));
+    }
+
+    /** @test */
+    public function can_cancel_broadcasting()
+    {
+        TurboStream::broadcastRemoveTo('todo_123')->cancel();
+
+        TurboStream::assertNothingWasBroadcasted();
     }
 }
