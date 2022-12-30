@@ -153,6 +153,13 @@ class PendingBroadcast
         return $this;
     }
 
+    public function cancelIf($condition)
+    {
+        $this->wasCancelled = boolval(value($condition));
+
+        return $this;
+    }
+
     public function fake($recorder = null)
     {
         $this->isRecording = true;

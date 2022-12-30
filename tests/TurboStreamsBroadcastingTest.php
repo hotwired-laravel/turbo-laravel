@@ -240,4 +240,26 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         TurboStream::assertNothingWasBroadcasted();
     }
+
+    /** @test */
+    public function can_conditionally_cancel_broadcasting()
+    {
+        TurboStream::broadcastRemove('todo_123')->cancelIf(true);
+
+        TurboStream::broadcastRemove('todo_123')->cancelIf(function () {
+            return true;
+        });
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        TurboStream::broadcastRemove('todo_123')->cancelIf(false);
+
+        TurboStream::broadcastRemove('todo_123')->cancelIf(function () {
+            return false;
+        });
+
+        TurboStream::assertBroadcastedTimes(function ($broadcast) {
+            return $broadcast->action === 'remove' && $broadcast->target === 'todo_123';
+        }, 2);
+    }
 }
