@@ -5,7 +5,6 @@ namespace Tonysm\TurboLaravel\Broadcasting;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
