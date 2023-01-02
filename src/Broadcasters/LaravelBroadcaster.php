@@ -16,6 +16,7 @@ class LaravelBroadcaster implements Broadcaster
      * @param ?array $partialData = []
      * @param ?string $inlineContent = null
      * @param bool $escapeInlineContent = true
+     * @param array $attributes = []
      * @param ?string $exceptSocket = null
      */
     public function broadcast(
@@ -28,6 +29,7 @@ class LaravelBroadcaster implements Broadcaster
         ?array $partialData = [],
         ?string $inlineContent = null,
         bool $escapeInlineContent = true,
+        array $attributes = [],
         ?string $exceptSocket = null,
     ): void {
         $job = new BroadcastAction(
@@ -37,6 +39,9 @@ class LaravelBroadcaster implements Broadcaster
             $targets,
             $partial,
             $partialData,
+            $inlineContent,
+            $escapeInlineContent,
+            $attributes,
             $exceptSocket,
         );
 

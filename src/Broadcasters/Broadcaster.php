@@ -28,6 +28,7 @@ interface Broadcaster
         ?array $partialData = [],
         ?string $inlineContent = null,
         bool $escapeInlineContent = true,
+        array $attributes = [],
         ?string $exceptSocket = null,
     ): void;
 }

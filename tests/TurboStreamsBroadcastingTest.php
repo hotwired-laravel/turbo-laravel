@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Facades\TurboStream;
+use Tonysm\TurboLaravel\Models\Broadcasts;
+use Tonysm\TurboLaravel\Models\Naming\Name;
+use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
 use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboStreamsBroadcastingTest extends TestCase
@@ -280,4 +283,156 @@ class TurboStreamsBroadcastingTest extends TestCase
             return $broadcast->action === 'remove' && $broadcast->target === 'todo_123';
         }, 2);
     }
+
+    /** @test */
+    public function can_pass_model_without_broadcasts_trait_as_channel()
+    {
+        $model = TestModel::create(['name' => 'Testing']);
+
+        TurboStream::broadcastRemove('todo_123', channel: $model);
+
+        $called = false;
+
+        TurboStream::assertBroadcasted(function ($broadcast) use ($model, &$called) {
+            $called = true;
+
+            return count($broadcast->channels) === 1
+                && $broadcast->channels[0]->name === $model->broadcastChannel();
+        });
+
+        $this->assertTrue($called, 'Expected callback to be called, but it was not.');
+    }
+
+    /** @test */
+    public function can_pass_model_with_broadcasts_trait_as_channel()
+    {
+        $model = BroadcastTestModel::create(['name' => 'Testing']);
+
+        TurboStream::broadcastRemove('todo_123', channel: $model);
+
+        $called = false;
+
+        TurboStream::assertBroadcasted(function ($broadcast) use ($model, &$called) {
+            $called = true;
+
+            return count($broadcast->channels) === 1
+                && $broadcast->channels[0]->name === $model->asTurboStreamBroadcastingChannel()[0]->name;
+        });
+
+        $this->assertTrue($called, 'Expected callback to be called, but it was not.');
+    }
+
+    /** @test */
+    public function can_pass_recently_created_model_as_target()
+    {
+        $model = TestModel::create(['name' => 'Testing']);
+
+        TurboStream::broadcastRemove($model);
+
+        $called = false;
+
+        TurboStream::assertBroadcasted(function ($broadcast) use ($model, &$called) {
+            $called = true;
+
+            return $broadcast->target === Name::forModel($model)->plural;
+        });
+
+        $this->assertTrue($called, 'Expected callback to be called, but it was not.');
+    }
+
+    /** @test */
+    public function can_pass_existing_model_as_target()
+    {
+        $model = TestModel::find(TestModel::create(['name' => 'Testing'])->id);
+
+        TurboStream::broadcastAppend('Testing', $model);
+
+        $called = false;
+
+        TurboStream::assertBroadcasted(function ($broadcast) use ($model, &$called) {
+            $called = true;
+
+            return $broadcast->target === dom_id($model);
+        });
+
+        $this->assertTrue($called, 'Expected callback to be called, but it was not.');
+    }
+
+    /** @test */
+    public function broadcast_custom_action()
+    {
+        $broadcast = TurboStream::broadcastAction('console_log', attributes: [
+            'value' => 'Hello World',
+        ]);
+
+        $expected = <<<'HTML'
+        <turbo-stream action="console_log" value="Hello World">
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
+
+        // Calls the __destruct() magic method...
+        unset($broadcast);
+
+        $called = false;
+
+        TurboStream::assertBroadcasted(function ($broadcast) use (&$called) {
+            $called = true;
+
+            return $broadcast->action === 'console_log' && $broadcast->attributes == [
+                'value' => 'Hello World',
+            ];
+        });
+
+        $this->assertTrue($called, 'Expected callback to be called, but it was not.');
+    }
+
+    /** @test */
+    public function pass_attributes_via_setter_method()
+    {
+        $broadcast = TurboStream::broadcastAction('console_log')->attributes([
+            'value' => 'Testing',
+        ]);
+
+        $expected = <<<'HTML'
+        <turbo-stream action="console_log" value="Testing">
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
+    }
+
+    /** @test */
+    public function override_action_and_content_via_setter_methods()
+    {
+        $broadcast = TurboStream::broadcastAction('console_log')
+            ->action('update_title')
+            ->content('Hello World');
+
+        $expected = <<<'HTML'
+        <turbo-stream action="update_title">
+            <template>Hello World</template>
+        </turbo-stream>
+        HTML;
+
+        $this->assertEquals(trim($expected), trim($broadcast->render()));
+    }
+
+    /** @test */
+    public function send_to_others()
+    {
+        $broadcast = TurboStream::broadcastAppend('Hello World');
+
+        $this->assertFalse($broadcast->sendToOthers);
+
+        $broadcast->toOthers();
+
+        $this->assertTrue($broadcast->sendToOthers);
+    }
+}
+
+class BroadcastTestModel extends TestModel
+{
+    use Broadcasts;
 }

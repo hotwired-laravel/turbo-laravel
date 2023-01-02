@@ -20,9 +20,10 @@ class BroadcastAction implements ShouldQueue
     public ?array $partialData = null;
     public ?string $inlineContent = null;
     public bool $escapeInlineContent = true;
+    public array $attributes = [];
     public ?string $socket = null;
 
-    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, $socket = null)
+    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [], $socket = null)
     {
         $this->channels = $channels;
         $this->action = $action;
@@ -32,6 +33,7 @@ class BroadcastAction implements ShouldQueue
         $this->partialData = $partialData;
         $this->inlineContent = $inlineContent;
         $this->escapeInlineContent = $escapeInlineContent;
+        $this->attributes = $attributes;
         $this->socket = $socket;
     }
 
@@ -51,6 +53,7 @@ class BroadcastAction implements ShouldQueue
             $this->partialData,
             $this->inlineContent,
             $this->escapeInlineContent,
+            $this->attributes,
         );
 
         $event->socket = $this->socket;

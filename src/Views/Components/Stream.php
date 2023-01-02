@@ -23,14 +23,17 @@ class Stream extends Component
 
     public ?string $action;
 
+    public array $mergeAttrs = [];
+
     /**
      * Create a new component instance.
      *
      * @param ?string $action One of the seven Turbo Stream actions: "append", "prepend", "before", "after", "replace", "update", or "remove".
      * @param string|Model|array|null $target The DOM ID string, a model to generate the DOM ID for, or an array to be passed to the `dom_id` function.
      * @param string|null $targets The CSS selector to apply the action to multiple targets
+     * @param array $mergeAttrs Pass an array of attributes to be merged with the target|targets and action in the Turbo Stream tag.
      */
-    public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null)
+    public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null, array $mergeAttrs = [])
     {
         if (! $target && ! $targets && in_array($action, static::DEFAULT_ACTIONS)) {
             throw TurboStreamTargetException::targetMissing();
@@ -43,6 +46,7 @@ class Stream extends Component
         $this->target = $target;
         $this->targets = $targets;
         $this->action = $action;
+        $this->mergeAttrs = $mergeAttrs;
     }
 
     /**
@@ -55,6 +59,7 @@ class Stream extends Component
         return view('turbo-laravel::components.stream', [
             'targetValue' => $this->targetValue(),
             'targetTag' => $this->targetTag(),
+            'mergeAttrs' => $this->mergeAttrs,
         ]);
     }
 

@@ -5,6 +5,7 @@ namespace Tonysm\TurboLaravel\Broadcasting;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
@@ -21,6 +22,7 @@ class PendingBroadcast
     public ?array $partialData = [];
     public ?string $inlineContent = null;
     public bool $escapeInlineContent = true;
+    public array $attributes = [];
 
     /**
      * Whether we should broadcast only to other users and
@@ -58,11 +60,12 @@ class PendingBroadcast
      */
     protected $recorder = null;
 
-    public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null)
+    public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null, array $attributes = [])
     {
         $this->action = $action;
         $this->target = $target;
         $this->targets = $targets;
+        $this->attributes = $attributes;
 
         $this->to($channels);
         $this->rendering($rendering);
@@ -129,6 +132,13 @@ class PendingBroadcast
         return $this->rendering(Rendering::forContent($content));
     }
 
+    public function attributes(array $attributes)
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
     public function rendering(Rendering $rendering)
     {
         $this->partialView = $rendering->partial;
@@ -179,6 +189,7 @@ class PendingBroadcast
             $this->partialData,
             $this->inlineContent,
             $this->escapeInlineContent,
+            $this->attributes,
         );
 
         return new HtmlString($event->render());
@@ -212,6 +223,7 @@ class PendingBroadcast
             $this->partialData,
             $this->inlineContent,
             $this->escapeInlineContent,
+            $this->attributes,
             $socket,
         );
     }
@@ -223,10 +235,14 @@ class PendingBroadcast
         }
 
         return collect($channel)
-            ->map(function ($channel) use ($channelClass) {
+            ->flatMap(function ($channel) use ($channelClass) {
+                if ($channel instanceof Model && method_exists($channel, 'asTurboStreamBroadcastingChannel')) {
+                    return $channel->asTurboStreamBroadcastingChannel();
+                }
+
                 return $channel instanceof Channel
-                    ? $channel
-                    : new $channelClass($channel);
+                    ? [$channel]
+                    : [new $channelClass($channel)];
             })
             ->values()
             ->filter()
