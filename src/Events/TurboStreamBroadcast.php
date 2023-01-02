@@ -20,7 +20,7 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
     public ?string $partial = null;
     public ?array $partialData = [];
     public ?string $inlineContent = null;
-    public array $attributes = [];
+    public array $attrs = [];
     public bool $escapeInlineContent = true;
 
     public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [])
@@ -33,7 +33,7 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
         $this->partialData = $partialData;
         $this->inlineContent = $inlineContent;
         $this->escapeInlineContent = $escapeInlineContent;
-        $this->attributes = $attributes;
+        $this->attrs = $attributes;
     }
 
     public function broadcastOn()
@@ -57,7 +57,7 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
             'partial' => $this->partial ?: null,
             'partialData' => $this->partialData ?: [],
             'content' => $this->escapeInlineContent ? $this->inlineContent : new HtmlString($this->inlineContent),
-            'attributes' => $this->attributes ?? [],
+            'attrs' => $this->attrs ?: [],
         ])->render();
     }
 }
