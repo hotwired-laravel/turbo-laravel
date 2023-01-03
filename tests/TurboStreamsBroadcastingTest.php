@@ -442,14 +442,14 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
-            return (
-                $broadcast->action === 'append'
-                && $broadcast->inlineContent === 'Hello World'
-                && count($broadcast->channels) === 1
-                && $broadcast->channels[0] instanceof Channel
-                && $broadcast->channels[0]->name === 'general'
-                && $broadcast->sendToOthers === true
-            );
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(Channel::class, $broadcast->channels[0]);
+            $this->assertEquals('general', $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
         });
     }
 
@@ -463,14 +463,14 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
-            return (
-                $broadcast->action === 'append'
-                && $broadcast->inlineContent === 'Hello World'
-                && count($broadcast->channels) === 1
-                && $broadcast->channels[0] instanceof PrivateChannel
-                && $broadcast->channels[0]->name === 'private-general'
-                && $broadcast->sendToOthers === true
-            );
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(PrivateChannel::class, $broadcast->channels[0]);
+            $this->assertEquals('private-general', $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
         });
     }
 
@@ -484,14 +484,14 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
-            return (
-                $broadcast->action === 'append'
-                && $broadcast->inlineContent === 'Hello World'
-                && count($broadcast->channels) === 1
-                && $broadcast->channels[0] instanceof PresenceChannel
-                && $broadcast->channels[0]->name === 'presence-general'
-                && $broadcast->sendToOthers === true
-            );
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(PresenceChannel::class, $broadcast->channels[0]);
+            $this->assertEquals('presence-general', $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
         });
     }
 
@@ -508,14 +508,14 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
-            return (
-                $broadcast->action === 'append'
-                && $broadcast->inlineContent === 'Hello World'
-                && count($broadcast->channels) === 1
-                && $broadcast->channels[0] instanceof Channel
-                && $broadcast->channels[0]->name === $model->broadcastChannel()
-                && $broadcast->sendToOthers === true
-            );
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(Channel::class, $broadcast->channels[0]);
+            $this->assertEquals($model->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
         });
     }
 
@@ -532,14 +532,14 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
-            return (
-                $broadcast->action === 'append'
-                && $broadcast->inlineContent === 'Hello World'
-                && count($broadcast->channels) === 1
-                && $broadcast->channels[0] instanceof PrivateChannel
-                && $broadcast->channels[0]->name === 'private-'.$model->broadcastChannel()
-                && $broadcast->sendToOthers === true
-            );
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(PrivateChannel::class, $broadcast->channels[0]);
+            $this->assertEquals('private-'.$model->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
         });
     }
 
