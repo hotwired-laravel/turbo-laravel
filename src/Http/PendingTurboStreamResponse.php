@@ -11,9 +11,9 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 
 class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
@@ -244,7 +244,8 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 
     public function broadcastTo($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback = $callback ?? function () {
+        };
 
         return tap($this, function () use ($channel, $callback) {
             $callback($this->asPendingBroadcast($channel));
@@ -253,7 +254,8 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 
     public function broadcastToPrivateChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback = $callback ?? function () {
+        };
 
         return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
             $broadcast->toPrivateChannel($channel);
@@ -263,7 +265,8 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 
     public function broadcastToPresenceChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback = $callback ?? function () {
+        };
 
         return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
             $callback($broadcast->toPresenceChannel($channel));
