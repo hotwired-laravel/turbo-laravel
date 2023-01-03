@@ -7,7 +7,7 @@
 There are two aspects of your application using Turbo Laravel that are specific this approach itself:
 
 1. **Turbo Stream HTTP responses.** As you return Turbo Stream responses from your route handlers/controllers to be applied by Turbo itself; and
-1. **Turbo Stream broadcasts.** Which is the side-effect of certain model changes or whenever you call `$model->broadcastAppend()` on your models, for instance.
+1. **Turbo Stream broadcasts.** Which is the side-effect of certain model changes, or when you call `$model->broadcastAppend()` on your models, or when you're using Handmade Turbo Stream broadcasts.
 
 We're going to cover both of these scenarios here.
 
@@ -100,18 +100,33 @@ public function create_todos()
 
 ## Testing Turbo Stream Broadcasts
 
-Every broadcast will be dispatched using the `Tonysm\TurboLaravel\Jobs\BroadcastAction` job (either to a worker or process synchronously). You may also use that to test your broadcasts like so:
+All broadcasts use the `TurboStream` Facade. You may want to fake it so you can that the broadcasts are being correctly sent:
 
 ```php
 use App\Models\Todo;
-use Tonysm\TurboLaravel\Jobs\BroadcastAction;
+use Tonysm\TurboLaravel\Broadcasting\TurboStream;
+use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 
 class CreatesCommentsTest extends TestCase
 {
     /** @test */
+    public function content_is_required()
+    {
+        TurboStream::fake();
+
+        $todo = Todo::factory()->create();
+
+        $this->turbo()->post(route('todos.comments.store', $todo), [
+            'content' => null,
+        ])->assertInvalid(['content']);
+
+        TurboStream::assertNothingWasBroadcasted();
+    }
+
+    /** @test */
     public function creates_comments()
     {
-        Bus::fake(BroadcastAction::class);
+        TurboStream::fake();
 
         $todo = Todo::factory()->create();
 
@@ -119,13 +134,13 @@ class CreatesCommentsTest extends TestCase
             'content' => 'Hey, this is really nice!',
         ])->assertTurboStream();
 
-        Bus::assertDispatched(function (BroadcastAction $job) use ($todo) {
-            return count($job->channels) === 1
-                && $job->channels[0]->name === sprintf('private-%s', $todo->broadcastChannel())
-                && $job->target === 'comments'
-                && $job->action === 'append'
-                && $job->partial === 'comments._comment'
-                && $job->partialData['comment']->is(
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($todo) {
+            return count($broadcast->channels) === 1
+                && $broadcast->channels[0]->name === sprintf('private-%s', $todo->broadcastChannel())
+                && $broadcast->target === 'comments'
+                && $broadcast->action === 'append'
+                && $broadcast->partialView === 'comments._comment'
+                && $broadcast->partialData['comment']->is(
                     $todo->comments->first()
                 );
         });
@@ -133,6 +148,6 @@ class CreatesCommentsTest extends TestCase
 }
 ```
 
-*Note: make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
+*Note: If you're using the automatic model changes broadcasting, make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
 
 [Continue to Known Issues...](/docs/{{version}}/known-issues)

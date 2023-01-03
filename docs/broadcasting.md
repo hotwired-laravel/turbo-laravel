@@ -10,36 +10,47 @@ We can broadcast to all users over WebSockets those exact same Turbo Stream tags
 
 You may still feed the user making the changes with Turbo Streams over HTTP and broadcast the changes to other users over WebSockets. This way, the user making the change will have an instant feedback compared to having to wait for a background worker to pick up the job and send it to them over WebSockets.
 
-## Configuring Laravel Echo
+## Configuration
 
-First, you need to uncomment the Laravel Echo setup on your [`resources/js/bootstrap.js`](https://github.com/laravel/laravel/blob/9.x/resources/js/bootstrap.js#L21-L34) file and make sure you compile your assets after doing that by running:
+Broadcasting Turbo Streams relies heavily on Laravel's [Broadcasting component](https://laravel.com/docs/broadcasting). This means you need to configure Laravel Echo in the frontend and either use Pusher or any other open-source replacement you want to. If you're not using Pusher, we recommend [Soketi](https://docs.soketi.app/) since it's easy to setup.
 
-```bash
-npm run dev
+## Listening to Broadcasts
+
+You may listen to a Turbo Stream broadcasts on your pages by adding the custom HTML tag `<turbo-echo-stream-source>` that is published to your application's assets (see [here](https://github.com/tonysm/turbo-laravel/blob/main/stubs/resources/js/elements/turbo-echo-stream-tag.js)). You need to pass the channel you want to listen to broadcasts on using the `channel` attribute of this element, like so.
+
+```blade
+<turbo-echo-stream-source
+    channel="App.Models.Post.{{ $post->id }}"
+/>
 ```
 
-## Configuring Laravel Broadcasting
+You may prefer using the convenient `<x-turbo-stream-from>` Blade component, passing the model as the `source` prop to it, something like this:
 
-Then, you'll need to setup the [Laravel Broadcasting](https://laravel.com/docs/9.x/broadcasting) component for your app. One of the first steps is to configure your environment variables to look something like this:
-
-```dotenv
-PUSHER_APP_ID=
-PUSHER_APP_KEY=
-PUSHER_APP_SECRET=
-PUSHER_APP_CLUSTER=us2
-PUSHER_APP_HOST=websockets.test
-PUSHER_APP_PORT=6001
-
-MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
-MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
-MIX_PUSHER_APP_HOST="localhost"
-MIX_PUSHER_APP_PORT="${PUSHER_APP_PORT}"
-MIX_PUSHER_APP_USE_SSL=false
+```blade
+<x-turbo-stream-from :source="$post" />
 ```
 
-Notice that some of these environment variables are used by your front-end assets during compilation. That's why you see some duplicates that are just prefixed with `MIX_`.
+By default, it expects a private channel, so the it must be used in a page for already authenticated users. You may control the channel type in the tag with a `type` attribute.
 
-These settings assume you're using the [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets) package. Check out the Echo configuration at [resources/js/bootstrap.js](https://github.com/laravel/laravel/blob/9.x/resources/js/bootstrap.js#L21-L34) to see which environment variables are needed during build time. You may also use [Pusher](https://pusher.com/) or [Ably](https://ably.io/) instead of the Laravel WebSockets package, if you don't want to host it yourself.
+```blade
+<x-turbo-stream-from :source="$post" type="public" />
+```
+
+To register the Broadcast Auth Route you may use Laravel's built-in conventions as well:
+
+```php
+// file: routes/channels.php
+
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::channel(Post::class, function (User $user, Post $post) {
+    return $user->belongsToTeam($post->team);
+});
+```
+
+You may want to read the [Laravel Broadcasting](https://laravel.com/docs/broadcasting) documentation.
 
 ## Broadcasting Model Changes
 
@@ -231,44 +242,6 @@ class Comment extends Model
 
 Having a `$broadcastsTo` property or implementing the `broadcastsTo()` method in your model will have precedence over this, so newly created models will be sent to the channels specified on those places instead of using the convention or the `stream` option.
 
-## Listening to Turbo Stream Broadcasts
-
-You may listen to a Turbo Stream broadcast message on your pages by adding the custom HTML tag `<turbo-echo-stream-source>` that is published to your application's assets (see [here](https://github.com/tonysm/turbo-laravel/blob/main/stubs/resources/js/elements/turbo-echo-stream-tag.js)). You need to pass the channel you want to listen to broadcasts on using the `channel` attribute of this element, like so.
-
-```blade
-<turbo-echo-stream-source
-    channel="App.Models.Post.{{ $post->id }}"
-/>
-```
-
-You may prefer using the convenient `<x-turbo-stream-from>` Blade component, passing the model as the `source` prop to it, something like this:
-
-```blade
-<x-turbo-stream-from :source="$post" />
-```
-
-By default, it expects a private channel, so the it must be used in a page for already authenticated users. You may control the channel type in the tag with a `type` attribute.
-
-```blade
-<x-turbo-stream-from :source="$post" type="public" />
-```
-
-To register the Broadcast Auth Route you may use Laravel's built-in conventions as well:
-
-**file: routes/channel.php**
-```php
-use App\Models\Post;
-use App\Models\User;
-use Illuminate\Support\Facades\Broadcast;
-
-Broadcast::channel(Post::class, function (User $user, Post $post) {
-    return $user->belongsToTeam($post->team);
-});
-```
-
-You may want to read the [Laravel Broadcasting](https://laravel.com/docs/9.x/broadcasting) documentation.
-
-<a name="broadcasting-to-others"></a>
 ## Broadcasting Turbo Streams to Other Users Only
 
 As mentioned erlier, you may want to feed the current user with Turbo Streams using HTTP requests and only send the broadcasts to other users. There are a couple ways you can achieve that.
@@ -309,6 +282,122 @@ class AppServiceProvider extends ServiceProvider
         Turbo::broadcastToOthers();
     }
 }
+```
+
+## Handmade Broadcasts
+
+You may want to broadcast something that does not depend on a model. You may do so using the `TurboStream` Facade (if you're not into Facades, type-hinting the `Tonysm\TurboLaravel\Broadcasting\Factory` class should also work):
+
+```php
+TurboStream::broadcastAppend(
+    content: __('Hello World'),
+    target: 'notifications',
+    channel: 'general',
+);
+```
+
+Model broadcasts use this same abstraction under the hood, so you have similar methods available:
+
+```php
+TurboStream::broadcastAppend();
+TurboStream::broadcastPrepend();
+TurboStream::broadcastBefore();
+TurboStream::broadcastAfter();
+TurboStream::broadcastUpdate();
+TurboStream::broadcastReplace();
+TurboStream::broadcastRemove();
+```
+
+All of these methods, except the `broadcastRemove()` one, accept a `$content` parameter that may be a View instance, an instance of the `HtmlString` class, or a simple string:
+
+```php
+// Passing a view instance as content...
+TurboStream::broadcastAppend(
+    content: view('layouts.notification', ['message' => 'Hello World']),
+    target: 'notifications',
+    channel: 'general',
+);
+
+// Passing an instance of the HtmlString class (won't be escaped by Blade)...
+TurboStream::broadcastAppend(
+    content: new HtmlString('Hello World'),
+    target: 'notifications',
+    channel: 'general',
+);
+
+// Passing a simple string (will be escaped by Blade)...
+TurboStream::broadcastAppend(
+    content: 'Hello World',
+    target: 'notifications',
+    channel: 'general',
+);
+```
+
+You may also dynamically change the Turbo Stream setting by chaining on the return of that method:
+
+```php
+TurboStream::broadcastAppend('Hello World')
+    ->target('notifications')
+    ->to('general');
+```
+
+As for the channel, you may pass a string that will be interpreted as a public channel name, an Eloquent model which will expect a private channel using that model's broadcasting channel convention, or instances of the `Illuminate\Broadcasting\Channel` class.
+
+You may want to specify private or presence string channels, which you may do like so:
+
+```php
+TurboStream::broadcastAppend('Hello World')
+    ->target('notifications')
+    ->toPrivateChannel('user.123');
+
+TurboStream::broadcastAppend('Hello World')
+    ->target('notifications')
+    ->toPresenceChannel('user.123');
+```
+
+Alternatively to broadcasting any of the 7 default broadcasting actions, you may want to broadcast custom Turbo Stream actions, which you can do by using the `broadcastAction()` method directly (which is the same method used by the other default ones):
+
+```php
+TurboStream::broadcastAction('scroll_to', target: 'todo_123');
+```
+
+## Handmade Broadcasting Using The `turbo_stream()` Response Builder
+
+Alternatively to use the `TurboStream` Facade (or Factory type-hint), you may also broadcast directly from the `turbo_stream()` function response builder:
+
+```php
+turbo_stream()
+    ->append('notifications', 'Hello World')
+    ->broadcastTo('general');
+```
+
+This will tap on the `PendingTurboStreamResponse` and create a `PendingBroadcast` from the Turbo Stream you configured. It's important to note that this will return the same `PendingTurboStreamResponse`, not the `PendingBroadcast`. If you want to configure the `PendingBroadcast` that will be generated, you may pass a `Closure` as the second parameter:
+
+```php
+turbo_stream()
+    ->append('notifications', 'Hello World')
+    ->broadcastTo('general', fn ($broadcast) => $broadcast->toOthers());
+```
+
+You may pass a string, an Eloquent model, or an instance of the `Illuminate\Broadcasting\Channel` class as the channel:
+
+```php
+turbo_stream($comment)
+    ->broadcastTo($comment->post, fn ($broadcast) => $broadcast->toOthers());
+```
+
+Similarly to using the Facade, you may also want to broadcast to private or presence string channels like so:
+
+```php
+// To private channels...
+turbo_stream()
+    ->append('notifications', 'Hello World')
+    ->broadcastToPrivateChannel('user.123', fn ($broadcast) => $broadcast->toOthers())
+
+// To presence channels...
+turbo_stream()
+    ->append('notifications', 'Hello World')
+    ->broadcastToPresenceChannel('chat.123', fn ($broadcast) => $broadcast->toOthers());
 ```
 
 [Continue to Validation Response Redirects...](/docs/{{version}}/validation-response-redirects)
