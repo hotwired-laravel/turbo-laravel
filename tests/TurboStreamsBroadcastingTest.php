@@ -594,25 +594,25 @@ class TurboStreamsBroadcastingTest extends TestCase
     /** @test */
     public function broadcast_passing_model_with_broadcasts_trait_to_channel()
     {
-         /** @var BroadcastTestModel $model */
-         $model = BroadcastTestModel::find(BroadcastTestModel::create(['name' => 'Testing'])->id);
+        /** @var BroadcastTestModel $model */
+        $model = BroadcastTestModel::find(BroadcastTestModel::create(['name' => 'Testing'])->id);
 
-         $response = turbo_stream($model)
-             ->broadcastTo($model, fn ($broadcast) => $broadcast->toOthers());
+        $response = turbo_stream($model)
+            ->broadcastTo($model, fn ($broadcast) => $broadcast->toOthers());
 
-         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
-             $this->assertEquals('replace', $broadcast->action);
-             $this->assertEquals('broadcast_test_models._broadcast_test_model', $broadcast->partialView);
-             $this->assertEquals(['broadcastTestModel' => $model], $broadcast->partialData);
-             $this->assertCount(1, $broadcast->channels);
-             $this->assertInstanceOf(PrivateChannel::class, $broadcast->channels[0]);
-             $this->assertEquals('private-'.$model->broadcastChannel(), $broadcast->channels[0]->name);
-             $this->assertTrue($broadcast->sendToOthers);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            $this->assertEquals('replace', $broadcast->action);
+            $this->assertEquals('broadcast_test_models._broadcast_test_model', $broadcast->partialView);
+            $this->assertEquals(['broadcastTestModel' => $model], $broadcast->partialData);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(PrivateChannel::class, $broadcast->channels[0]);
+            $this->assertEquals('private-'.$model->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
 
-             return true;
-         });
+            return true;
+        });
     }
 }
 
