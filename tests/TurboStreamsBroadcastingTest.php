@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Facades\TurboStream;
+use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
 use Tonysm\TurboLaravel\Models\Broadcasts;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
@@ -429,6 +430,165 @@ class TurboStreamsBroadcastingTest extends TestCase
         $broadcast->toOthers();
 
         $this->assertTrue($broadcast->sendToOthers);
+    }
+
+    /** @test */
+    public function broadcasts_using_the_response_builder_function()
+    {
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastTo('general', fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            return (
+                $broadcast->action === 'append'
+                && $broadcast->inlineContent === 'Hello World'
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0] instanceof Channel
+                && $broadcast->channels[0]->name === 'general'
+                && $broadcast->sendToOthers === true
+            );
+        });
+    }
+
+    /** @test */
+    public function broadcast_to_private_channels_using_response_builder_function()
+    {
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastToPrivateChannel('general', fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            return (
+                $broadcast->action === 'append'
+                && $broadcast->inlineContent === 'Hello World'
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0] instanceof PrivateChannel
+                && $broadcast->channels[0]->name === 'private-general'
+                && $broadcast->sendToOthers === true
+            );
+        });
+    }
+
+    /** @test */
+    public function broadcast_to_presence_channels_using_response_builder_function()
+    {
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastToPresenceChannel('general', fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            return (
+                $broadcast->action === 'append'
+                && $broadcast->inlineContent === 'Hello World'
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0] instanceof PresenceChannel
+                && $broadcast->channels[0]->name === 'presence-general'
+                && $broadcast->sendToOthers === true
+            );
+        });
+    }
+
+    /** @test */
+    public function broadcast_to_model_channel_using_response_builder_function()
+    {
+        /** @var TestModel $model */
+        $model = TestModel::create(['name' => 'Testing']);
+
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastTo($model, fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            return (
+                $broadcast->action === 'append'
+                && $broadcast->inlineContent === 'Hello World'
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0] instanceof Channel
+                && $broadcast->channels[0]->name === $model->broadcastChannel()
+                && $broadcast->sendToOthers === true
+            );
+        });
+    }
+
+    /** @test */
+    public function broadcast_to_model_as_private_channel_using_response_builder_function()
+    {
+        /** @var TestModel $model */
+        $model = TestModel::create(['name' => 'Testing']);
+
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastToPrivateChannel($model, fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            return (
+                $broadcast->action === 'append'
+                && $broadcast->inlineContent === 'Hello World'
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0] instanceof PrivateChannel
+                && $broadcast->channels[0]->name === 'private-'.$model->broadcastChannel()
+                && $broadcast->sendToOthers === true
+            );
+        });
+    }
+
+    /** @test */
+    public function broadcast_to_model_as_presence_channel_using_response_builder_function()
+    {
+        /** @var TestModel $model */
+        $model = TestModel::create(['name' => 'Testing']);
+
+        $response = turbo_stream()
+            ->append('notifications', 'Hello World')
+            ->broadcastToPresenceChannel($model, fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('Hello World', $broadcast->inlineContent);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(PresenceChannel::class, $broadcast->channels[0]);
+            $this->assertEquals('presence-'.$model->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function broadcast_model_changes_using_function()
+    {
+        /** @var TestModel $model */
+        $model = TestModel::create(['name' => 'Testing']);
+
+        $response = turbo_stream($model)
+            ->broadcastTo($model, fn ($broadcast) => $broadcast->toOthers());
+
+        $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('test_models._test_model', $broadcast->partialView);
+            $this->assertEquals(['testModel' => $model], $broadcast->partialData);
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertInstanceOf(Channel::class, $broadcast->channels[0]);
+            $this->assertEquals($model->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertTrue($broadcast->sendToOthers);
+
+            return true;
+        });
     }
 }
 

@@ -5,7 +5,9 @@ namespace Tonysm\TurboLaravel\Broadcasting;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\HasBroadcastChannel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\HtmlString;
 use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
@@ -234,15 +236,21 @@ class PendingBroadcast
             return [$channel];
         }
 
-        return collect($channel)
+        return collect(Arr::wrap($channel))
             ->flatMap(function ($channel) use ($channelClass) {
                 if ($channel instanceof Model && method_exists($channel, 'asTurboStreamBroadcastingChannel')) {
                     return $channel->asTurboStreamBroadcastingChannel();
                 }
 
-                return $channel instanceof Channel
-                    ? [$channel]
-                    : [new $channelClass($channel)];
+                if ($channel instanceof Channel) {
+                    return [$channel];
+                }
+
+                return [
+                    new $channelClass(
+                        $channel instanceof HasBroadcastChannel ? $channel->broadcastChannel() : $channel
+                    ),
+                ];
             })
             ->values()
             ->filter()
