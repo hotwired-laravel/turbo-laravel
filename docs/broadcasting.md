@@ -286,7 +286,7 @@ class AppServiceProvider extends ServiceProvider
 
 ## Handmade Broadcasts
 
-You may want to broadcast something that does not depend on a model. You may do so using the `TurboStream` Facade (if you're not into Facades, type-hinting the `Tonysm\TurboLaravel\Broadcasting\Factory` class should also work):
+You may want to broadcast something that does not depend on a model. You may do so using the `Tonysm\TurboLaravel\Facades\TurboStream` Facade (if you're not into Facades, type-hinting the `Tonysm\TurboLaravel\Broadcasting\Factory` class should also work):
 
 ```php
 TurboStream::broadcastAppend(
