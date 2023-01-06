@@ -104,7 +104,7 @@ All broadcasts use the `TurboStream` Facade. You may want to fake it so you can 
 
 ```php
 use App\Models\Todo;
-use Tonysm\TurboLaravel\Broadcasting\TurboStream;
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 
 class CreatesCommentsTest extends TestCase
@@ -135,14 +135,12 @@ class CreatesCommentsTest extends TestCase
         ])->assertTurboStream();
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($todo) {
-            return count($broadcast->channels) === 1
-                && $broadcast->channels[0]->name === sprintf('private-%s', $todo->broadcastChannel())
-                && $broadcast->target === 'comments'
+            return $broadcast->target === 'comments'
                 && $broadcast->action === 'append'
                 && $broadcast->partialView === 'comments._comment'
-                && $broadcast->partialData['comment']->is(
-                    $todo->comments->first()
-                );
+                && $broadcast->partialData['comment']->is($todo->comments->first())
+                && count($broadcast->channels) === 1
+                && $broadcast->channels[0]->name === sprintf('private-%s', $todo->broadcastChannel());
         });
     }
 }
