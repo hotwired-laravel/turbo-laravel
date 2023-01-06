@@ -9,9 +9,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
+use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
-
 use function Tonysm\TurboLaravel\dom_id;
+
+use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Models\Naming\Name;
 
 class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
@@ -240,6 +242,59 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         return $this;
     }
 
+    public function broadcastTo($channel, ?callable $callback = null)
+    {
+        $callback = $callback ?? function () {
+        };
+
+        return tap($this, function () use ($channel, $callback) {
+            $callback($this->asPendingBroadcast($channel));
+        });
+    }
+
+    public function broadcastToPrivateChannel($channel, ?callable $callback = null)
+    {
+        $callback = $callback ?? function () {
+        };
+
+        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
+            $broadcast->toPrivateChannel($channel);
+            $callback($broadcast);
+        });
+    }
+
+    public function broadcastToPresenceChannel($channel, ?callable $callback = null)
+    {
+        $callback = $callback ?? function () {
+        };
+
+        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
+            $callback($broadcast->toPresenceChannel($channel));
+        });
+    }
+
+    private function asPendingBroadcast($channel)
+    {
+        return TurboStream::broadcastAction(
+            action: $this->useAction,
+            target: $this->useTarget,
+            targets: $this->useTargets,
+            channel: $channel,
+        )->rendering($this->contentAsRendering());
+    }
+
+    private function contentAsRendering()
+    {
+        if ($this->inlineContent) {
+            return Rendering::forContent($this->inlineContent);
+        }
+
+        return new Rendering(
+            $this->partialView,
+            $this->partialData,
+        );
+    }
+
     /**
      * Create an HTTP response that represents the object.
      *
@@ -293,12 +348,8 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         return $this->inlineContent;
     }
 
-    private function resolveTargetFor(Model|string $target, bool $resource = false): string
+    private function resolveTargetFor(Model $target, bool $resource = false): string
     {
-        if (is_string($target)) {
-            return $target;
-        }
-
         if ($resource) {
             return $this->getResourceNameFor($target);
         }

@@ -8,8 +8,9 @@ use Illuminate\Support\Collection;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Broadcasting\Rendering;
 use function Tonysm\TurboLaravel\dom_id;
+use Tonysm\TurboLaravel\Facades\TurboStream;
+
 use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\NamesResolver;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -120,13 +121,19 @@ trait Broadcasts
         return $this->broadcastActionTo($streamable, 'remove', Rendering::empty());
     }
 
+    public function asTurboStreamBroadcastingChannel()
+    {
+        return $this->toChannels(Collection::wrap($this->brodcastDefaultStreamables($this->wasRecentlyCreated)));
+    }
+
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
-        return new PendingBroadcast(
-            $this->toChannels(Collection::wrap($streamables)),
-            $action,
-            $rendering,
-            $target ?: $this->broadcastDefaultTarget($action),
+        return TurboStream::broadcastAction(
+            action: $action,
+            target: $target ?: $this->broadcastDefaultTarget($action),
+            targets: null,
+            channel: $this->toChannels(Collection::wrap($streamables)),
+            content: $rendering,
         );
     }
 
@@ -178,10 +185,5 @@ trait Broadcasts
         }
 
         return dom_id($this);
-    }
-
-    protected function broadcastDefaultPartial(): string
-    {
-        return NamesResolver::partialNameFor($this);
     }
 }

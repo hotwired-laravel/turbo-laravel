@@ -2,19 +2,21 @@
 
 namespace Tonysm\TurboLaravel\Broadcasters;
 
-use Illuminate\Broadcasting\Channel;
 use Tonysm\TurboLaravel\Jobs\BroadcastAction;
 
 class LaravelBroadcaster implements Broadcaster
 {
     /**
-     * @param Channel[] $channels
+     * @param \Illuminate\Broadcasting\Channel[] $channels
      * @param bool $later
      * @param string $action
      * @param ?string $target = null
      * @param ?string $targets = null
      * @param ?string $partial = null
      * @param ?array $partialData = []
+     * @param ?string $inlineContent = null
+     * @param bool $escapeInlineContent = true
+     * @param array $attributes = []
      * @param ?string $exceptSocket = null
      */
     public function broadcast(
@@ -25,6 +27,9 @@ class LaravelBroadcaster implements Broadcaster
         ?string $targets = null,
         ?string $partial = null,
         ?array $partialData = [],
+        ?string $inlineContent = null,
+        bool $escapeInlineContent = true,
+        array $attributes = [],
         ?string $exceptSocket = null,
     ): void {
         $job = new BroadcastAction(
@@ -34,6 +39,9 @@ class LaravelBroadcaster implements Broadcaster
             $targets,
             $partial,
             $partialData,
+            $inlineContent,
+            $escapeInlineContent,
+            $attributes,
             $exceptSocket,
         );
 

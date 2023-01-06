@@ -14,6 +14,8 @@ interface Broadcaster
      * @param ?string $targets = null
      * @param ?string $partial = null
      * @param ?array $partialData = []
+     * @param ?string $inlineContent = null
+     * @param bool $escapeInlineContent = true
      * @param ?string $exceptSocket = null
      */
     public function broadcast(
@@ -24,6 +26,9 @@ interface Broadcaster
         ?string $targets = null,
         ?string $partial = null,
         ?array $partialData = [],
+        ?string $inlineContent = null,
+        bool $escapeInlineContent = true,
+        array $attributes = [],
         ?string $exceptSocket = null,
     ): void;
 }
