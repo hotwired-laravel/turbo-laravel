@@ -5,7 +5,11 @@ const subscribeTo = (type, channel) => {
         return window.Echo.join(channel)
     }
 
-    return window.Echo[type](channel)
+    if (type === 'private') {
+        return window.Echo.private(channel)
+    }
+
+    return window.Echo.channel(channel)
 }
 
 class TurboEchoStreamSourceElement extends HTMLElement {
