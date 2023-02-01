@@ -28,32 +28,24 @@ If you want a more hands-on introduction, head out to [Bootcamp](https://bootcam
 
 Documentation for Turbo Laravel can be found on the [Turbo Laravel website](https://turbo-laravel.com).
 
-## Closing Notes
-
-Try the package out. Use your Browser's DevTools to inspect the responses. You will be able to spot every single Turbo Frame and Turbo Stream happening.
-
-> "The proof of the pudding is in the eating."
-
-Make something awesome!
-
-## Changelog
+### Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-## Contributing
+### Contributing
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
-## Security Vulnerabilities
+### Security Vulnerabilities
 
 Drop me an email at [tonysm@hey.com](mailto:tonysm@hey.com?subject=Security%20Vulnerability) if you want to report
 security vulnerabilities.
 
-## License
+### License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-## Credits
+### Credits
 
 - [Tony Messias](https://github.com/tonysm)
 - [All Contributors](./CONTRIBUTORS.md)
