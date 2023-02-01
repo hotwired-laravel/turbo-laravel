@@ -3,7 +3,7 @@
 Turbo Laravel may be installed via Composer:
 
 ```bash
-composer require tonysm/turbo-laravel
+composer require hotwired/turbo-laravel
 ```
 
 After installing, you may execute the `turbo:install` Artisan command, which will add a couple JS dependencies to your `package.json` file (when you're using Vite and NPM) or to your `routes/importmap.php` file (when you're using [Importmap Laravel](https://github.com/tonysm/importmap-laravel)), publish some JS scripts to your `resources/js` folder that configure Turbo.js for you:
@@ -23,7 +23,7 @@ When using Jetstream with Livewire, the [Livewire Turbo Plugin](https://github.c
 If you're not using [Importmap Laravel](https://github.com/tonysm/importmap-laravel), the install command will tell you to pull and compile the assets before proceeding:
 
 ```bash
-npm install && npm run dev
+npm install && npm run build
 ```
 
 You may also optionally install [Alpine.js](https://alpinejs.dev/) in a non-Jetstream context (maybe you're more into [Breeze](https://laravel.com/docs/9.x/starter-kits#laravel-breeze)) passing `--alpine` flag to the `turbo:install` Artisan command:
