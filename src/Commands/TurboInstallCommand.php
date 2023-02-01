@@ -92,7 +92,7 @@ class TurboInstallCommand extends Command
     private function updateNpmDependencies(): void
     {
         $this->displayTask('updating NPM dependencies', function () {
-            $this->afterMessages[] = '<fg=white>Run: `<fg=yellow>npm install && npm run dev</>`</>';
+            $this->afterMessages[] = '<fg=white>Run: `<fg=yellow>npm install && npm run build</>`</>';
 
             $this->updateNodePackages(function ($packages) {
                 return $this->jsDependencies() + $packages;
