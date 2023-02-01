@@ -91,7 +91,7 @@ class TurboInstallCommand extends Command
 
     private function updateNpmDependencies(): void
     {
-        $this->displayTask('updating NPM dependecies', function () {
+        $this->displayTask('updating NPM dependencies', function () {
             $this->afterMessages[] = '<fg=white>Run: `<fg=yellow>npm install && npm run dev</>`</>';
 
             $this->updateNodePackages(function ($packages) {
@@ -114,9 +114,9 @@ class TurboInstallCommand extends Command
     private function jsDependencies(): array
     {
         return [
-            '@hotwired/turbo' => '^7.1.0',
-            'laravel-echo' => '^1.11.3',
-            'pusher-js' => '^7.0.3',
+            '@hotwired/turbo' => '^7.2.5',
+            'laravel-echo' => '^1.15.0',
+            'pusher-js' => '^8.0.1',
         ] + $this->alpineDependencies();
     }
 
@@ -127,7 +127,7 @@ class TurboInstallCommand extends Command
         }
 
         return [
-            'alpinejs' => '^3.7.0',
+            'alpinejs' => '^3.11.1',
         ];
     }
 
