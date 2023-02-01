@@ -2,9 +2,6 @@
 
 <p align="center">
     <a href="https://packagist.org/packages/hotwired/turbo-laravel">
-        <img src="https://img.shields.io/packagist/dt/tonysm/turbo-laravel" alt="Total Downloads">
-    </a>
-    <a href="https://packagist.org/packages/hotwired/turbo-laravel">
         <img src="https://img.shields.io/packagist/v/hotwired/turbo-laravel" alt="Latest Stable Version">
     </a>
     <a href="https://packagist.org/packages/hotwired/turbo-laravel">
