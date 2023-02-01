@@ -1,8 +1,10 @@
 {
-    "name": "tonysm/turbo-laravel",
+    "name": "hotwired/turbo-laravel",
     "description": "Turbo Laravel gives you a set of conventions to make the most out of the Hotwire stack (inspired by turbo-rails gem).",
     "keywords": [
-        "tonysm",
+        "hotwired",
+        "hotwire",
+        "turbo",
         "turbo-laravel"
     ],
     "homepage": "https://github.com/tonysm/turbo-laravel",
