@@ -5,8 +5,6 @@ Laravel has built-in CSRF protection in place. It essentially prevents our app f
 ```blade
 <form action="{{ route('chirps.store }}" method="post">
     @csrf
-    
-    <!-- ... -->
 </form>
 ```
 
