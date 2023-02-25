@@ -11,14 +11,14 @@ Livewire has an [official plugin](https://github.com/livewire/turbolinks) that b
 To use it, all we need to do is add the CDN script after the Livewire Scripts, something like this:
 
 ```blade
-    <-- ... -->
+    <!-- ... -->
     
     @livewireScripts
     <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbo-eval="false"></script>
 </body>
 ```
 
-When you install Turbo Laravel using the `--jet` flag, this gets automatically added to your `main` and `guest` layouts, since Jetstream uses Livewire.
+When you install Turbo Laravel using the `--jet` flag, this gets automatically added to your `app` and `guest` layouts, since Jetstream uses Livewire.
 
 ## Deeper Integration
 
@@ -92,9 +92,11 @@ if (customElements.get('turbo-livewire-stream-source') === undefined) {
 Now, we can use this element in a page where we want to have the integration between Livewire and Turbo.js (or in a base layout if you want it applied application-wide):
 
 ```blade
+
 <turbo-livewire-stream-source />
 
 <livewire:counter />
+
 ```
 
 That's it! With that, we got Livewire to generate Turbo Streams, dispatch it as a browser event, which gets intercepted by our custom HTML element and applied to the page!
