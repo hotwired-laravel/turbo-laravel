@@ -65,4 +65,4 @@ class Kernel extends HttpKernel
 }
 ```
 
-[Continue to Turbo Native...](/docs/{{version}}/turbo-native)
+[Continue to CSRF Protection...](/docs/{{version}}/csrf)
