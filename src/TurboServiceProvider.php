@@ -2,12 +2,12 @@
 
 namespace Tonysm\TurboLaravel;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Response as ResponseFacade;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -36,10 +36,7 @@ class TurboServiceProvider extends ServiceProvider
         $this->configureMacros();
         $this->configureRequestAndResponseMacros();
         $this->configureTestResponseMacros();
-
-        if (config('turbo-laravel.automatically_register_middleware', true)) {
-            Route::prependMiddlewareToGroup('web', TurboMiddleware::class);
-        }
+        $this->configureMiddleware();
     }
 
     public function register()
@@ -157,5 +154,16 @@ class TurboServiceProvider extends ServiceProvider
                 $this->headers->get('Content-Type'),
             );
         });
+    }
+
+    protected function configureMiddleware(): void
+    {
+        if (! config('turbo-laravel.automatically_register_middleware', true)) {
+            return;
+        }
+
+        /** @var Kernel $kernel */
+        $kernel = resolve(Kernel::class);
+        $kernel->prependMiddlewareToGroup('web', TurboMiddleware::class);
     }
 }
