@@ -21,7 +21,9 @@ Examples:
 - `comments.store` will guess the form is at the `comments.create` route with no route params.
 - `comments.update` will guess the form is at the `comments.edit` with the `{comment}` param.
 
-If a guessed route name doesn't exist (which will always happen if you don't use the route resorce convention), the middleware will not change the default handling of validation errors. You may also override this behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
+If a guessed route name doesn't exist (which will always happen if you don't use the route resource convention), the middleware will not change the default handling of validation errors.
+
+When you're not using the [resource route naming convention](/docs/{{version}}/conventions), you can override redirect behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
 
 Here's how you may set the `redirectTo` property:
 
@@ -35,6 +37,19 @@ public function store()
   }
 }
 ```
+
+You may want to have exceptions to the route guessing behavior, which you can use the `redirect_guessing_exceptions` config in the `config/turbo-laravel.php` config file:
+
+```php
+return [
+    // ...
+    'redirect_guessing_exceptions' => [
+        '/some-page',
+    ],
+];
+```
+
+The internal redirect will still happen, but the resource route convention will not be used.
 
 ## Turbo HTTP Middleware
 

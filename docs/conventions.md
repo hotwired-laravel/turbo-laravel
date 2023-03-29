@@ -12,6 +12,19 @@ Laravel supports [resource routes](https://laravel.com/docs/controllers#resource
 
 If you don't want to use resource routes, at least consider using the naming convention: render forms in a route name ending in `.create` or `.edit` and name their handler routes ending with `.store` or `.update`.
 
+You may want to define exceptions to the route guessing behavior. In that case, you may want to set the `redirect_guessing_exceptions` in the `config/turbo-laravel.php` config file:
+
+```php
+return [
+    // ...
+    'redirect_guessing_exceptions' => [
+        '/some-page',
+    ],
+];
+```
+
+When using this config, the redirection behavior will still happen, but the package will not guess routes. See the [Validation Response Redirects](/docs/{{version}}/validation-response-redirects) page to know more about why this happens.
+
 ## Partials
 
 You may want to split up your views in smaller chunks (aka. "partials"), such as `comments/_comment.blade.php` which displays a comment resource, or `comments/_form.blade.php` for the form to either create/update comments. This will allow you to reuse these _partials_ in [Turbo Streams](/docs/{{version}}/turbo-streams).
