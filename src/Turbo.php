@@ -24,13 +24,6 @@ class Turbo
      */
     private bool $broadcastToOthersOnly = false;
 
-    /**
-     * The URIs of
-     *
-     * @var array
-     */
-    private array $routeGuessingExceptions = [];
-
     public function isTurboNativeVisit(): bool
     {
         return $this->visitFromTurboNative;
