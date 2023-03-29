@@ -18,9 +18,6 @@ use Tonysm\TurboLaravel\Turbo;
 
 class TurboMiddleware
 {
-    /** @var \Tonysm\TurboLaravel\Http\Middleware\RouteRedirectGuesser */
-    private $redirectGuesser;
-
     /**
      * Encrypted cookies to be added to the internal requests following redirects.
      *
@@ -28,9 +25,16 @@ class TurboMiddleware
      */
     private array $encryptedCookies;
 
-    public function __construct(RouteRedirectGuesser $redirectGuesser)
+    /**
+     * The URIs that should be excluded from the route guessing behavior.
+     *
+     * @var array<int, string>
+     */
+    private array $except = [];
+
+    public function __construct()
     {
-        $this->redirectGuesser = $redirectGuesser;
+        $this->except = config('turbo-laravel.redirect_guessing_exceptions', []);
     }
 
     /**
@@ -87,7 +91,7 @@ class TurboMiddleware
         // the form route for the current endpoint, make an internal request there, and return the
         // response body with the form over a 422 status code, which is better for Turbo Native.
 
-        if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->getRedirectUrl($request, $response))) {
+        if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->guessFormRedirectUrl($request, $response->exception->redirectTo))) {
             $response->setTargetUrl($formRedirectUrl);
 
             return tap($this->handleRedirectInternally($request, $response), function () use ($request) {
@@ -97,15 +101,6 @@ class TurboMiddleware
         }
 
         return $response->setStatusCode(303);
-    }
-
-    private function getRedirectUrl($request, $response)
-    {
-        if ($response->exception->redirectTo) {
-            return $response->exception->redirectTo;
-        }
-
-        return $this->guessFormRedirectUrl($request);
     }
 
     private function kernel(): Kernel
@@ -157,24 +152,53 @@ class TurboMiddleware
 
     /**
      * @param \Illuminate\Http\Request $request
+     * @param string|null $defaultRedirectUrl
      */
-    private function guessFormRedirectUrl($request)
+    private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
     {
+        if ($this->inExceptArray($request)) {
+            return $defaultRedirectUrl;
+        }
+
         $route = $request->route();
         $name = optional($route)->getName();
 
         if (! $route || ! $name) {
-            return null;
+            return $defaultRedirectUrl;
         }
 
-        $formRouteName = $this->redirectGuesser->guess($name);
+        $formRouteName = $this->guessRouteName($name);
 
         // If the guessed route doesn't exist, send it back to wherever Laravel defaults to.
 
         if (! $formRouteName || ! Route::has($formRouteName)) {
-            return null;
+            return $defaultRedirectUrl;
         }
 
         return route($formRouteName, $route->parameters() + request()->query());
+    }
+
+    protected function guessRouteName(string $routeName): ?string
+    {
+        if (! Str::endsWith($routeName, ['.store', '.update'])) {
+            return null;
+        }
+
+        return str_replace(['.store', '.update'], ['.create', '.edit'], $routeName);
+    }
+
+    protected function inExceptArray(Request $request): bool
+    {
+        foreach ($this->except as $except) {
+            if ($except !== '/') {
+                $except = trim($except, '/');
+            }
+
+            if ($request->fullUrlIs($except) || $request->is($except)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
