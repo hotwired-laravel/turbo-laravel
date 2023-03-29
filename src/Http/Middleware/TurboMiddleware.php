@@ -18,20 +18,12 @@ use Tonysm\TurboLaravel\Turbo;
 
 class TurboMiddleware
 {
-    /** @var \Tonysm\TurboLaravel\Http\Middleware\RouteRedirectGuesser */
-    private $redirectGuesser;
-
     /**
      * Encrypted cookies to be added to the internal requests following redirects.
      *
      * @var array
      */
     private array $encryptedCookies;
-
-    public function __construct(RouteRedirectGuesser $redirectGuesser)
-    {
-        $this->redirectGuesser = $redirectGuesser;
-    }
 
     /**
      * @param \Illuminate\Http\Request $request
@@ -167,7 +159,7 @@ class TurboMiddleware
             return null;
         }
 
-        $formRouteName = $this->redirectGuesser->guess($name);
+        $formRouteName = $this->guessRouteName($name);
 
         // If the guessed route doesn't exist, send it back to wherever Laravel defaults to.
 
@@ -176,5 +168,14 @@ class TurboMiddleware
         }
 
         return route($formRouteName, $route->parameters() + request()->query());
+    }
+
+    protected function guessRouteName(string $routeName): ?string
+    {
+        if (! Str::endsWith($routeName, ['.store', '.update'])) {
+            return null;
+        }
+
+        return str_replace(['.store', '.update'], ['.create', '.edit'], $routeName);
     }
 }
