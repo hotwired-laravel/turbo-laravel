@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
 use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
+use Tonysm\TurboLaravel\Tests\Stubs\TestFormRequest;
 use Tonysm\TurboLaravel\Tests\TestCase;
 use Tonysm\TurboLaravel\Tests\TestModel;
 use Tonysm\TurboLaravel\Turbo;
@@ -29,6 +30,13 @@ class TurboMiddlewareTest extends TestCase
         Route::put('/test-models/{testModel}', function (TestModel $model) {
             request()->validate(['name' => 'required']);
         })->name('test-models.update')->middleware(TurboMiddleware::class);
+
+        Route::get('/test-models-form-request', function () {
+            return 'show create form when using form requests';
+        })->name('test-models-form-requests.create');
+
+        Route::post('/test-models-form-request', function (TestFormRequest $request) {
+        })->name('test-models-form-requests.store')->middleware(TurboMiddleware::class);
     }
 
     /**
@@ -54,6 +62,20 @@ class TurboMiddlewareTest extends TestCase
         ]);
 
         $response->assertSee('show create form');
+        $response->assertStatus(422);
+    }
+
+    /**
+     * @test
+     * @define-route usesTestModelResourceRoutes
+     */
+    public function handles_invalid_forms_with_an_internal_redirect_when_using_form_requests()
+    {
+        $response = $this->from('/source')->post('/test-models-form-request', [], [
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+        ]);
+
+        $response->assertSee('show create form when using form requests');
         $response->assertStatus(422);
     }
 
@@ -97,20 +119,20 @@ class TurboMiddlewareTest extends TestCase
 
         Route::get('/test-models/create', function () {
             return 'show create form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
-        })->name('test-models.create');
+        });
 
-        Route::post('/test-models', function () {
-            throw ValidationException::withMessages(['field' => ['Failed field']])->redirectTo(route('somewhere-else'));
-        })->name('test-models.store')->middleware(TurboMiddleware::class);
+        Route::post('/test-models', function (TestFormRequest $request) {
+            // Laravel sets the redirectTo when the form request validation fails...
+        })->middleware(TurboMiddleware::class);
     }
 
     /**
      * @test
      * @define-route usesTestModelRoutesWithCustomRedirect
      */
-    public function respects_the_redirects_to_property_of_the_validation_failed_exception()
+    public function uses_the_redirect_to_when_guessed_route_doesnt_exist()
     {
-        $response = $this->from('/source')->post('/test-models', [], [
+        $response = $this->from('/somewhere-else')->post('/test-models', [], [
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 

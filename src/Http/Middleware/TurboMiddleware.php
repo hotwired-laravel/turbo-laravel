@@ -79,7 +79,7 @@ class TurboMiddleware
         // the form route for the current endpoint, make an internal request there, and return the
         // response body with the form over a 422 status code, which is better for Turbo Native.
 
-        if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->getRedirectUrl($request, $response))) {
+        if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->guessFormRedirectUrl($request, $response->exception->redirectTo))) {
             $response->setTargetUrl($formRedirectUrl);
 
             return tap($this->handleRedirectInternally($request, $response), function () use ($request) {
@@ -89,15 +89,6 @@ class TurboMiddleware
         }
 
         return $response->setStatusCode(303);
-    }
-
-    private function getRedirectUrl($request, $response)
-    {
-        if ($response->exception->redirectTo) {
-            return $response->exception->redirectTo;
-        }
-
-        return $this->guessFormRedirectUrl($request);
     }
 
     private function kernel(): Kernel
@@ -149,14 +140,15 @@ class TurboMiddleware
 
     /**
      * @param \Illuminate\Http\Request $request
+     * @param string|null $defaultRedirectUrl
      */
-    private function guessFormRedirectUrl($request)
+    private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
     {
         $route = $request->route();
         $name = optional($route)->getName();
 
         if (! $route || ! $name) {
-            return null;
+            return $defaultRedirectUrl;
         }
 
         $formRouteName = $this->guessRouteName($name);
@@ -164,7 +156,7 @@ class TurboMiddleware
         // If the guessed route doesn't exist, send it back to wherever Laravel defaults to.
 
         if (! $formRouteName || ! Route::has($formRouteName)) {
-            return null;
+            return $defaultRedirectUrl;
         }
 
         return route($formRouteName, $route->parameters() + request()->query());
