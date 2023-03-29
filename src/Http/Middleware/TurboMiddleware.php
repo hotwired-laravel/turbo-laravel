@@ -26,7 +26,7 @@ class TurboMiddleware
     private array $encryptedCookies;
 
     /**
-     * The URIs that should be excluded from
+     * The URIs that should be excluded from the route guessing behavior.
      *
      * @var array<int, string>
      */
