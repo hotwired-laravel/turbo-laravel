@@ -26,6 +26,18 @@ class TurboMiddleware
     private array $encryptedCookies;
 
     /**
+     * The URIs that should be excluded from
+     *
+     * @var array<int, string>
+     */
+    private array $except = [];
+
+    public function __construct()
+    {
+        $this->except = config('turbo-laravel.redirect_guessing_exceptions', []);
+    }
+
+    /**
      * @param \Illuminate\Http\Request $request
      * @param Closure $next
      * @return RedirectResponse|mixed
@@ -144,6 +156,10 @@ class TurboMiddleware
      */
     private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
     {
+        if ($this->inExceptArray($request)) {
+            return $defaultRedirectUrl;
+        }
+
         $route = $request->route();
         $name = optional($route)->getName();
 
@@ -169,5 +185,20 @@ class TurboMiddleware
         }
 
         return str_replace(['.store', '.update'], ['.create', '.edit'], $routeName);
+    }
+
+    protected function inExceptArray(Request $request): bool
+    {
+        foreach ($this->except as $except) {
+            if ($except !== '/') {
+                $except = trim($except, '/');
+            }
+
+            if ($request->fullUrlIs($except) || $request->is($except)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

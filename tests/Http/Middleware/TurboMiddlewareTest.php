@@ -114,7 +114,7 @@ class TurboMiddlewareTest extends TestCase
     public function usesTestModelRoutesWithCustomRedirect()
     {
         Route::get('/somewhere-else', function () {
-            return 'show form';
+            return 'show somewhere else';
         })->name('somewhere-else');
 
         Route::get('/test-models/create', function () {
@@ -136,7 +136,40 @@ class TurboMiddlewareTest extends TestCase
             'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
         ]);
 
-        $response->assertSee('show form');
+        $response->assertSee('show somewhere else');
+        $response->assertStatus(422);
+    }
+
+    public function usesNamedTestRoutesWithFormRequest()
+    {
+        Route::get('/somewhere-else', function () {
+            return 'show somewhere else';
+        })->name('somewhere-else');
+
+        Route::get('/test-models/create', function () {
+            return 'show create form';
+        })->name('test-models.create');
+
+        Route::post('/test-models', function (TestFormRequest $request) {
+            // Laravel sets the redirectTo when the form request validation fails...
+        })->name('test-models.store')->middleware(TurboMiddleware::class);
+    }
+
+    /**
+     * @test
+     * @define-route usesNamedTestRoutesWithFormRequest
+     */
+    public function can_prevent_redirect_route()
+    {
+        config()->set('turbo-laravel.redirect_guessing_exceptions', [
+            '/test-models',
+        ]);
+
+        $response = $this->from('/somewhere-else')->post('/test-models', [], [
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+        ]);
+
+        $response->assertSee('show somewhere else');
         $response->assertStatus(422);
     }
 

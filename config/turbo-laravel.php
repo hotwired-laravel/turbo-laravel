@@ -60,4 +60,16 @@ return [
     'features' => [
         Features::turboNativeRoutes(),
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Guessed Route Exceptions
+     |--------------------------------------------------------------------------
+     |
+     | The URIs that should be excluded from the guessing redirect route behavior.
+     |
+     */
+    'redirect_guessing_exceptions' => [
+        // '/some-page'
+    ],
 ];
