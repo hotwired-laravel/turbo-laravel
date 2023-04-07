@@ -54,7 +54,7 @@ class Name
 
     public static function forModel(object $model)
     {
-        $class = get_class($model);
+        $class = $model::class;
 
         return static::$nameInstanceCache[$class] ??= static::build($class);
     }
