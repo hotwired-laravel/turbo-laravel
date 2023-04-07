@@ -50,9 +50,13 @@ class Name
      */
     public string $element;
 
+    private static array $nameInstanceCache = [];
+
     public static function forModel(object $model)
     {
-        return static::build(get_class($model));
+        $class = $model::class;
+
+        return static::$nameInstanceCache[$class] ??= static::build($class);
     }
 
     public static function build(string $className)
