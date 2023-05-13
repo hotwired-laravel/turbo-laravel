@@ -21,25 +21,17 @@ class ModelObserver
     /**
      * @param Model|Broadcasts $model
      */
-    public function created(Model $model)
+    public function saved(Model $model)
     {
         if (! $this->shouldBroadcast($model)) {
             return;
         }
 
-        $model->broadcastInsert()->later();
-    }
-
-    /**
-     * @param Model|Broadcasts $model
-     */
-    public function updated(Model $model)
-    {
-        if (! $this->shouldBroadcast($model)) {
-            return;
+        if ($model->wasRecentlyCreated) {
+            $model->broadcastInsert()->later();
+        } else {
+            $model->broadcastReplace()->later();
         }
-
-        $model->broadcastReplace()->later();
     }
 
     /**
