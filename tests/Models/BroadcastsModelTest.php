@@ -3,7 +3,9 @@
 namespace Tonysm\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\View;
 use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
 use Tonysm\TurboLaravel\Facades\TurboStream;
 use Tonysm\TurboLaravel\Jobs\BroadcastAction;
@@ -16,6 +18,8 @@ class BroadcastsModelTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        View::addLocation(__DIR__ . '/../Stubs/views');
 
         config(['turbo-laravel.queue' => false]);
     }
@@ -436,6 +440,43 @@ class BroadcastsModelTest extends TestCase
             return true;
         });
     }
+
+    /** @test */
+    public function broadcasts_on_model_touching()
+    {
+        TurboStream::fake();
+
+        $oldUpdatedAt = now()->subDays(10);
+
+        $post = Post::withoutEvents(fn () => Post::forceCreate([
+            'title' => 'Testing Model Touching',
+            'updated_at' => $oldUpdatedAt,
+        ]));
+
+        $this->assertTrue($post->fresh()->updated_at->isSameDay($oldUpdatedAt));
+        TurboStream::assertNothingWasBroadcasted();
+
+        $post->fresh()->comments()->create([
+            'body' => 'Hello World',
+        ]);
+
+        // Must have updated the parent timestamps...
+        $this->assertFalse($post->fresh()->updated_at->isSameDay($oldUpdatedAt));
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($post) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-' . $post->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals(dom_id($post), $broadcast->target);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals('replace', $broadcast->action);
+            $this->assertEquals('posts._post', $broadcast->partialView);
+            $this->assertCount(1, $broadcast->partialData);
+            $this->assertArrayHasKey('post', $broadcast->partialData);
+            $this->assertTrue($post->is($broadcast->partialData['post']));
+
+            return true;
+        });
+    }
 }
 
 class BroadcastTestModel extends TestModel
@@ -523,5 +564,31 @@ class CombinedPropertiesTestModel extends TestModel
     public function parent()
     {
         return $this->belongsTo(RelatedModelParent::class);
+    }
+}
+
+class Post extends Model
+{
+    use Broadcasts;
+
+    protected $guarded = [];
+
+    protected $broadcasts = ['insertsBy' => 'prepend'];
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+}
+
+class Comment extends Model
+{
+    protected $guarded = [];
+
+    protected $touches = ['post'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
     }
 }

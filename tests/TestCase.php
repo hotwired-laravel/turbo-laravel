@@ -45,5 +45,19 @@ class TestCase extends Orchestra
             $table->timestamps();
             $table->softDeletes();
         });
+
+        $app['db']->connection()->getSchemaBuilder()->create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->timestamps();
+        });
+
+        $app['db']->connection()->getSchemaBuilder()->create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id');
+            $table->text('body');
+            $table->timestamps();
+        });
     }
 }
