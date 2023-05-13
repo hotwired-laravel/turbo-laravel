@@ -41,24 +41,14 @@ class TurboInstallCommand extends Command
             File::copy(__DIR__ . '/../../stubs/resources/js/libs/turbo.js', resource_path('js/libs/turbo.js'));
             File::copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
 
-            if ($this->option('alpine') || $this->option('jet')) {
+            if ($this->option('jet')) {
+                File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine-jet.js', resource_path('js/libs/alpine.js'));
+            } elseif ($this->option('alpine')) {
                 File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
             }
 
-            $imports = $this->appJsImportLines();
-
-            File::put(
-                $appJsFile = resource_path('js/app.js'),
-                preg_replace(
-                    '/(.*[\'"](?:\.\/)?bootstrap[\'"]\)?;?)/',
-                    <<<JS
-                    \\1
-                    {$imports}
-                    JS,
-                    File::get($appJsFile),
-                ),
-            );
-
+            File::put(resource_path('js/app.js'), $this->appJsImportLines());
+            File::put(resource_path('js/libs/index.js'), $this->libsIndexJsImportLines());
 
             return self::SUCCESS;
         });
@@ -69,12 +59,26 @@ class TurboInstallCommand extends Command
         $prefix = $this->usingImportmaps() ? '' : './';
 
         $imports = [
+            "import '{$prefix}bootstrap';",
             "import '{$prefix}elements/turbo-echo-stream-tag';",
-            "import '{$prefix}libs/turbo';",
+            "import '{$prefix}libs';",
         ];
 
+        return implode("\n", $imports);
+    }
+
+    private function libsIndexJsImportLines()
+    {
+        $imports = [];
+
+        $imports[] = $this->usingImportmaps()
+            ? "import 'libs/turbo';"
+            : "import './turbo';";
+
         if ($this->option('alpine') || $this->option('jet')) {
-            $imports[] = "import '{$prefix}libs/alpine';";
+            $imports[] = $this->usingImportmaps()
+                ? "import 'libs/alpine';"
+                : "import './alpine';";
         }
 
         return implode("\n", $imports);
