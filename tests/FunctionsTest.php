@@ -3,15 +3,15 @@
 namespace Tests;
 
 use Illuminate\Support\Facades\View;
-use function Tonysm\TurboLaravel\dom_class;
-use function Tonysm\TurboLaravel\dom_id;
+use function HotwiredLaravel\TurboLaravel\dom_class;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
-use function Tonysm\TurboLaravel\turbo_stream;
-use function Tonysm\TurboLaravel\turbo_stream_view;
+use function HotwiredLaravel\TurboLaravel\turbo_stream;
+use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 
 class FunctionsTest extends TestCase
 {

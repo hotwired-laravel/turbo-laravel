@@ -1,8 +1,8 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http;
+namespace HotwiredLaravel\TurboLaravel\Http;
 
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
 class TurboResponseFactory
 {

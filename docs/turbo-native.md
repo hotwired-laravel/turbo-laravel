@@ -33,7 +33,7 @@ if (request()->wasFromTurboNative()) {
 Or the Turbo Facade directly, like so:
 
 ```php
-use Tonysm\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 
 if (Turbo::isTurboNativeVisit()) {
     // ...
@@ -47,7 +47,7 @@ Turbo is built to work with native navigation principles and present those along
 You may want to use the provided `InteractsWithTurboNativeNavigation` trait on your controllers like so:
 
 ```php
-use Tonysm\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
+use HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
 
 class TraysController extends Controller
 {

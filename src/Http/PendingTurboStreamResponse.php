@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http;
+namespace HotwiredLaravel\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
@@ -9,12 +9,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use function Tonysm\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 {

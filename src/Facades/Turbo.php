@@ -1,15 +1,15 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Facades;
+namespace HotwiredLaravel\TurboLaravel\Facades;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
-use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
-use Tonysm\TurboLaravel\Turbo as BaseTurbo;
+use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
+use HotwiredLaravel\TurboLaravel\Turbo as BaseTurbo;
 
 /**
- * @see \Tonysm\TurboLaravel\Turbo
- * @mixin \Tonysm\TurboLaravel\Turbo
+ * @see \HotwiredLaravel\TurboLaravel\Turbo
+ * @mixin \HotwiredLaravel\TurboLaravel\Turbo
  *
  * @method static bool isTurboNativeVisit()
  * @method static self setVisitingFromTurboNative()

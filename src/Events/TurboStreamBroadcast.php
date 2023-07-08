@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Events;
+namespace HotwiredLaravel\TurboLaravel\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;

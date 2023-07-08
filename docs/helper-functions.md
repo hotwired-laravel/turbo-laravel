@@ -11,7 +11,7 @@ The package ships with a set of helper functions. These functions are all namesp
 The mentioned namespaced `dom_id()` helper function may also be used from anywhere in your application, like so:
 
 ```php
-use function Tonysm\TurboLaravel\dom_id;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
 dom_id($comment);
 ```
@@ -25,7 +25,7 @@ These helpers strip out the model's FQCN (see [config/turbo-laravel.php](https:/
 The `dom_class()` helper function may be used from anywhere in your application, like so:
 
 ```php
-use function Tonysm\TurboLaravel\dom_class;
+use function HotwiredLaravel\TurboLaravel\dom_class;
 
 dom_class($comment);
 ```
@@ -45,7 +45,7 @@ This will generate a DOM class of `reactions_list_comment`.
 You may generate Turbo Streams using the `Response::turboStream()` macro, but you may also do so using the `turbo_stream()` helper function:
 
 ```php
-use function Tonysm\TurboLaravel\turbo_stream;
+use function HotwiredLaravel\TurboLaravel\turbo_stream;
 
 turbo_stream()->append($comment);
 ```
@@ -57,7 +57,7 @@ Both the `Response::turboStream()` and the `turbo_stream()` function work the sa
 You may combo Turbo Streams using the `turbo_stream([])` function passing an array, but you may prefer to create a separate Blade view with all the Turbo Streams, this way you may also use template extensions and everything else Blade offers:
 
 ```php
-use function Tonysm\TurboLaravel\turbo_stream_view;
+use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 
 return turbo_stream_view('comments.turbo.created', [
     'comment' => $comment,

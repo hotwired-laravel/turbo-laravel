@@ -1,19 +1,19 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Testing;
+namespace HotwiredLaravel\TurboLaravel\Tests\Testing;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Models\Broadcasts;
-use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class TurboStreamsBroadcastingTest extends TestCase
 {

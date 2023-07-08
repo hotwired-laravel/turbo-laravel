@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http;
+namespace HotwiredLaravel\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;

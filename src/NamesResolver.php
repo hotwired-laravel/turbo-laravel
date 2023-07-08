@@ -1,10 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace HotwiredLaravel\TurboLaravel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Tonysm\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class NamesResolver
 {

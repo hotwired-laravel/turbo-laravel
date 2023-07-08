@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Models\Naming;
+namespace HotwiredLaravel\TurboLaravel\Models\Naming;
 
 use Illuminate\Support\Str;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Jobs;
+namespace HotwiredLaravel\TurboLaravel\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
+use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
 
 class BroadcastAction implements ShouldQueue
 {

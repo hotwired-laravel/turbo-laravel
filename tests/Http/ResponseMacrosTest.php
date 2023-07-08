@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 
-use function Tonysm\TurboLaravel\dom_id;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\TurboStreamResponseFailedException;
-use Tonysm\TurboLaravel\Models\Broadcasts;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\TurboStreamResponseFailedException;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
 class ResponseMacrosTest extends TestCase
 {
@@ -998,7 +998,7 @@ class ResponseMacrosTest extends TestCase
     }
 }
 
-class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
+class TestModel extends \HotwiredLaravel\TurboLaravel\Tests\TestModel
 {
 }
 
@@ -1007,7 +1007,7 @@ class TestModelSoftDelete extends TestModel
     use SoftDeletes;
 }
 
-class BroadcastTestModel extends \Tonysm\TurboLaravel\Tests\TestModel
+class BroadcastTestModel extends \HotwiredLaravel\TurboLaravel\Tests\TestModel
 {
     use Broadcasts;
 }

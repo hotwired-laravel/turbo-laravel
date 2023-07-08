@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace HotwiredLaravel\TurboLaravel;
 
 class Features
 {

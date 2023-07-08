@@ -1,10 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestModel;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Tests\TestModel;
+use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
 
 class RecordIdentifierTest extends TestCase
 {
@@ -67,12 +67,12 @@ class RecordIdentifierTest extends TestCase
         // This is now built into Laravel. I'm letting the test here in case something changes upstream.
 
         $this->assertEquals(
-            sprintf('Tonysm.TurboLaravel.Tests.TestModel.%s', $this->model->getKey()),
+            sprintf('HotwiredLaravel.TurboLaravel.Tests.TestModel.%s', $this->model->getKey()),
             $this->model->broadcastChannel()
         );
 
         $this->assertEquals(
-            'Tonysm.TurboLaravel.Tests.TestModel.{testModel}',
+            'HotwiredLaravel.TurboLaravel.Tests.TestModel.{testModel}',
             $this->model->broadcastChannelRoute()
         );
     }

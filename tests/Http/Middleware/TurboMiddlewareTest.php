@@ -1,15 +1,15 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http\Middleware;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http\Middleware;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
-use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
-use Tonysm\TurboLaravel\Tests\Stubs\TestFormRequest;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestModel;
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
+use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\TestFormRequest;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Tests\TestModel;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
 class TurboMiddlewareTest extends TestCase
 {

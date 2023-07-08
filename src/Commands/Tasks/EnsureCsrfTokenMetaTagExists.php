@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Commands\Tasks;
+namespace HotwiredLaravel\TurboLaravel\Commands\Tasks;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;

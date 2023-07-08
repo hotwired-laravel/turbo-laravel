@@ -1,13 +1,13 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use function Tonysm\TurboLaravel\dom_id;
-use Tonysm\TurboLaravel\Facades\Turbo;
-use Tonysm\TurboLaravel\Tests\Stubs\Models;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class ViewHelpersTest extends TestCase
 {
@@ -122,7 +122,7 @@ class ViewHelpersTest extends TestCase
         $renderedChannelName = View::file(__DIR__ . '/../Stubs/views/channelname.blade.php', ['model' => $testModel])->render();
 
         $this->assertStringContainsString(
-            sprintf('channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.%s"', $testModel->getKey()),
+            sprintf('channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.%s"', $testModel->getKey()),
             $renderedChannelName
         );
     }

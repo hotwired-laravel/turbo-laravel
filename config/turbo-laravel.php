@@ -1,6 +1,6 @@
 <?php
 
-use Tonysm\TurboLaravel\Features;
+use HotwiredLaravel\TurboLaravel\Features;
 
 return [
     /*

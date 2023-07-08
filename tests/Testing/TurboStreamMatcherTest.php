@@ -1,12 +1,12 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Testing;
+namespace HotwiredLaravel\TurboLaravel\Tests\Testing;
 
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\ExpectationFailedException;
-use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
-use Tonysm\TurboLaravel\Testing\TurboStreamMatcher;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
+use HotwiredLaravel\TurboLaravel\Testing\TurboStreamMatcher;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class TurboStreamMatcherTest extends TestCase
 {

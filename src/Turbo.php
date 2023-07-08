@@ -1,9 +1,9 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace HotwiredLaravel\TurboLaravel;
 
 use Closure;
-use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
+use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
 
 class Turbo
 {

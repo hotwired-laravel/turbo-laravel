@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
-use Tonysm\TurboLaravel\Testing\InteractsWithTurbo;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class TurboStreamResponseTest extends TestCase
 {

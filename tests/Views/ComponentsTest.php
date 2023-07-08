@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\View\ViewException;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class ComponentsTest extends TestCase
 {
@@ -122,12 +122,12 @@ class ComponentsTest extends TestCase
         $this->blade('<x-turbo-stream-from :source="$model" />', [
                 'model' => new TestModel(['id' => 123]),
             ])
-            ->assertSee('<turbo-echo-stream-source channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="private" ></turbo-echo-stream-source>', false);
+            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="private" ></turbo-echo-stream-source>', false);
 
         $this->blade('<x-turbo-stream-from :source="$model" type="public" />', [
                 'model' => new TestModel(['id' => 123]),
             ])
-            ->assertSee('<turbo-echo-stream-source channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
+            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
     }
 
     /** @test */

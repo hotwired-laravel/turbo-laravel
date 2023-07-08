@@ -1,8 +1,8 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasters;
+namespace HotwiredLaravel\TurboLaravel\Broadcasters;
 
-use Tonysm\TurboLaravel\Jobs\BroadcastAction;
+use HotwiredLaravel\TurboLaravel\Jobs\BroadcastAction;
 
 class LaravelBroadcaster implements Broadcaster
 {

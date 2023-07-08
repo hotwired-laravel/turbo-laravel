@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http\Controllers\Concerns;
+namespace HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns;
 
 trait InteractsWithTurboNativeNavigation
 {

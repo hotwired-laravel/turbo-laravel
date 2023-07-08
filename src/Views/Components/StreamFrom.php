@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views\Components;
+namespace HotwiredLaravel\TurboLaravel\Views\Components;
 
 use Illuminate\Contracts\Broadcasting\HasBroadcastChannel;
 use Illuminate\View\Component;

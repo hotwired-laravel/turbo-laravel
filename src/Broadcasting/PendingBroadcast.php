@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasting;
+namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\HtmlString;
-use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
-use Tonysm\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 
 class PendingBroadcast
 {
@@ -58,7 +58,7 @@ class PendingBroadcast
 
     /**
      * This is the testing recorder. Used when faking the Turbo Stream broadcasts.
-     * @var ?\Tonysm\TurboLaravel\Broadcasting\Factory = null
+     * @var ?\HotwiredLaravel\TurboLaravel\Broadcasting\Factory = null
      */
     protected $recorder = null;
 

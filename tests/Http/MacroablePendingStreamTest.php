@@ -1,13 +1,13 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
-use Tonysm\TurboLaravel\Testing\InteractsWithTurbo;
-use Tonysm\TurboLaravel\Testing\TurboStreamMatcher;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+use HotwiredLaravel\TurboLaravel\Testing\TurboStreamMatcher;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class MacroablePendingStreamTest extends TestCase
 {

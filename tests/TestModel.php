@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests;
+namespace HotwiredLaravel\TurboLaravel\Tests;
 
 use Illuminate\Database\Eloquent\Model;
 

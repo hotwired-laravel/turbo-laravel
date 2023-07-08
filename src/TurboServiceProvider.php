@@ -1,7 +1,17 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace HotwiredLaravel\TurboLaravel;
 
+use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
+use HotwiredLaravel\TurboLaravel\Broadcasters\LaravelBroadcaster;
+use HotwiredLaravel\TurboLaravel\Commands\TurboInstallCommand;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
+use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
+use HotwiredLaravel\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
+use HotwiredLaravel\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
+use HotwiredLaravel\TurboLaravel\Views\Components as ViewComponents;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -12,16 +22,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Assert;
-use Tonysm\TurboLaravel\Broadcasters\Broadcaster;
-use Tonysm\TurboLaravel\Broadcasters\LaravelBroadcaster;
-use Tonysm\TurboLaravel\Commands\TurboInstallCommand;
-use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
-use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
-use Tonysm\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
-use Tonysm\TurboLaravel\Views\Components as ViewComponents;
 
 class TurboServiceProvider extends ServiceProvider
 {
@@ -97,11 +97,11 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         Blade::directive('domid', function ($expression) {
-            return "<?php echo e(\\Tonysm\\TurboLaravel\\dom_id($expression)); ?>";
+            return "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_id($expression)); ?>";
         });
 
         Blade::directive('domclass', function ($expression) {
-            return "<?php echo e(\\Tonysm\\TurboLaravel\\dom_class($expression)); ?>";
+            return "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_class($expression)); ?>";
         });
 
         Blade::directive('channel', function ($expression) {

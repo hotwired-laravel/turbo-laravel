@@ -1,9 +1,9 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views;
+namespace HotwiredLaravel\TurboLaravel\Views;
 
 use Illuminate\Database\Eloquent\Model;
-use Tonysm\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class RecordIdentifier
 {

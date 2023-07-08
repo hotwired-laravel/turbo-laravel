@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views\Components;
+namespace HotwiredLaravel\TurboLaravel\Views\Components;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
 
-use function Tonysm\TurboLaravel\dom_id;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class Frame extends Component
 {

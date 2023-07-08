@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views;
+namespace HotwiredLaravel\TurboLaravel\Views;
 
 use RuntimeException;
 

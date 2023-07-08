@@ -1,16 +1,16 @@
 <?php
 
-namespace Tonysm\TurboLaravel;
+namespace HotwiredLaravel\TurboLaravel;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
-use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\TurboResponseFactory;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
+use HotwiredLaravel\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\TurboResponseFactory;
+use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
 
 if (! function_exists('dom_id')) {
     /**

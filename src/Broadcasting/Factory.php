@@ -1,12 +1,12 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasting;
+namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\Assert;
-use Tonysm\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class Factory
 {

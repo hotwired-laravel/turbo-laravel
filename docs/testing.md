@@ -24,7 +24,7 @@ These methods are handy when you are conditionally returning Turbo Stream respon
 You can test if you got a Turbo Stream response by using the `assertTurboStream`. Similarly, you can assert that your response is _not_ a Turbo Stream response by using the `assertNotTurboStream()` macro:
 
 ```php
-use Tonysm\TurboLaravel\Testing\InteractsWithTurbo;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 
 class CreateTodosTest extends TestCase
 {
@@ -104,8 +104,8 @@ All broadcasts use the `TurboStream` Facade. You may want to fake it so you can 
 
 ```php
 use App\Models\Todo;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 
 class CreatesCommentsTest extends TestCase
 {

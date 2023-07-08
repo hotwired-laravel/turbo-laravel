@@ -1,5 +1,5 @@
 {
-    "name": "hotwired/turbo-laravel",
+    "name": "hotwired-laravel/turbo-laravel",
     "description": "Turbo Laravel gives you a set of conventions to make the most out of the Hotwire stack (inspired by turbo-rails gem).",
     "keywords": [
         "hotwired",
@@ -7,7 +7,7 @@
         "turbo",
         "turbo-laravel"
     ],
-    "homepage": "https://github.com/tonysm/turbo-laravel",
+    "homepage": "https://github.com/hotwired-laravel/turbo-laravel",
     "license": "MIT",
     "authors": [
         {
@@ -27,13 +27,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Tonysm\\TurboLaravel\\": "src"
+            "HotwiredLaravel\\TurboLaravel\\": "src"
         },
         "files": ["src/helpers.php", "src/globals.php"]
     },
     "autoload-dev": {
         "psr-4": {
-            "Tonysm\\TurboLaravel\\Tests\\": "tests"
+            "HotwiredLaravel\\TurboLaravel\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -47,11 +47,11 @@
     "extra": {
         "laravel": {
             "providers": [
-              "\\Tonysm\\TurboLaravel\\TurboServiceProvider"
+              "\\HotwiredLaravel\\TurboLaravel\\TurboServiceProvider"
             ],
             "aliases": {
-                "Turbo": "\\Tonysm\\TurboLaravel\\Facades\\Turbo",
-                "TurboStream": "\\Tonysm\\TurboLaravel\\Facades\\TurboStream"
+                "Turbo": "\\HotwiredLaravel\\TurboLaravel\\Facades\\Turbo",
+                "TurboStream": "\\HotwiredLaravel\\TurboLaravel\\Facades\\TurboStream"
             }
         }
     },

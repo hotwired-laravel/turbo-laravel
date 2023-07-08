@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasters;
+namespace HotwiredLaravel\TurboLaravel\Broadcasters;
 
 use Illuminate\Broadcasting\Channel;
 

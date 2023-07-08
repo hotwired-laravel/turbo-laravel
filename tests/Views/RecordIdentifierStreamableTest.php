@@ -1,12 +1,12 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use stdClass;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestTurboStreamable;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
-use Tonysm\TurboLaravel\Views\UnidentifiableRecordException;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestTurboStreamable;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
+use HotwiredLaravel\TurboLaravel\Views\UnidentifiableRecordException;
 
 class RecordIdentifierStreamableTest extends TestCase
 {

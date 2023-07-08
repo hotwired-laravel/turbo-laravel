@@ -1,17 +1,17 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Models;
+namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Jobs\BroadcastAction;
-use Tonysm\TurboLaravel\Models\Broadcasts;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestModel;
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Jobs\BroadcastAction;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Tests\TestModel;
 
 class BroadcastsModelTest extends TestCase
 {

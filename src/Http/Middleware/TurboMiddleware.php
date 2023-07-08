@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http\Middleware;
+namespace HotwiredLaravel\TurboLaravel\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Http\Kernel;
@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Cookie;
-use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
 class TurboMiddleware
 {

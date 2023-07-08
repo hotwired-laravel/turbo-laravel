@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Models;
+namespace HotwiredLaravel\TurboLaravel\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

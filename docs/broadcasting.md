@@ -57,7 +57,7 @@ You may want to read the [Laravel Broadcasting](https://laravel.com/docs/broadca
 With Laravel Echo properly configured, you may now broadcast model changes using WebSockets. First thing you need to do is use the `Broadcasts` trait in your model:
 
 ```php
-use Tonysm\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
 
 class Comment extends Model
 {
@@ -256,7 +256,7 @@ $comment->broadcastAppendTo($post)
 Second, you can use the Turbo Facade like so:
 
 ```php
-use Tonysm\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 
 Turbo::broadcastToOthers(function () {
     // ...
@@ -273,7 +273,7 @@ Third, you may use that same method but without the Closure inside a ServiceProv
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Tonysm\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -286,7 +286,7 @@ class AppServiceProvider extends ServiceProvider
 
 ## Handmade Broadcasts
 
-You may want to broadcast something that does not depend on a model. You may do so using the `Tonysm\TurboLaravel\Facades\TurboStream` Facade (if you're not into Facades, type-hinting the `Tonysm\TurboLaravel\Broadcasting\Factory` class should also work):
+You may want to broadcast something that does not depend on a model. You may do so using the `HotwiredLaravel\TurboLaravel\Facades\TurboStream` Facade (if you're not into Facades, type-hinting the `HotwiredLaravel\TurboLaravel\Broadcasting\Factory` class should also work):
 
 ```php
 TurboStream::broadcastAppend(

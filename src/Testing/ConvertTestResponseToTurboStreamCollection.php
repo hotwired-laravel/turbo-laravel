@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Testing;
+namespace HotwiredLaravel\TurboLaravel\Testing;
 
 use DOMDocument;
 use Illuminate\Support\Collection;

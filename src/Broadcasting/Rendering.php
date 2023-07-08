@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasting;
+namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
-use Tonysm\TurboLaravel\NamesResolver;
+use HotwiredLaravel\TurboLaravel\NamesResolver;
 
 class Rendering
 {

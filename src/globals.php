@@ -4,13 +4,13 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use function Tonysm\TurboLaravel\dom_class as base_dom_class;
-use function Tonysm\TurboLaravel\dom_id as base_dom_id;
+use function HotwiredLaravel\TurboLaravel\dom_class as base_dom_class;
+use function HotwiredLaravel\TurboLaravel\dom_id as base_dom_id;
 
-use Tonysm\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use function Tonysm\TurboLaravel\turbo_stream as base_turbo_stream;
-use function Tonysm\TurboLaravel\turbo_stream_view as base_turbo_stream_view;
+use HotwiredLaravel\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use function HotwiredLaravel\TurboLaravel\turbo_stream as base_turbo_stream;
+use function HotwiredLaravel\TurboLaravel\turbo_stream_view as base_turbo_stream_view;
 
 if (! function_exists('dom_id')) {
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Commands;
+namespace HotwiredLaravel\TurboLaravel\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Pipeline\Pipeline;

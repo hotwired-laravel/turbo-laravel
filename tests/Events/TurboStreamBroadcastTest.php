@@ -1,10 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Events;
+namespace HotwiredLaravel\TurboLaravel\Tests\Events;
 
-use Tonysm\TurboLaravel\Events\TurboStreamBroadcast;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use View;
 
 class TurboStreamBroadcastTest extends TestCase
