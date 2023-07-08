@@ -38,13 +38,13 @@ class TurboInstallCommand extends Command
             File::ensureDirectoryExists(resource_path('js/elements'));
             File::ensureDirectoryExists(resource_path('js/libs'));
 
-            File::copy(__DIR__ . '/../../stubs/resources/js/libs/turbo.js', resource_path('js/libs/turbo.js'));
-            File::copy(__DIR__ . '/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
+            File::copy(__DIR__.'/../../stubs/resources/js/libs/turbo.js', resource_path('js/libs/turbo.js'));
+            File::copy(__DIR__.'/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
 
             if ($this->option('jet')) {
-                File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine-jet.js', resource_path('js/libs/alpine.js'));
+                File::copy(__DIR__.'/../../stubs/resources/js/libs/alpine-jet.js', resource_path('js/libs/alpine.js'));
             } elseif ($this->option('alpine')) {
-                File::copy(__DIR__ . '/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
+                File::copy(__DIR__.'/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
             }
 
             File::put(resource_path('js/app.js'), $this->appJsImportLines());
@@ -111,7 +111,7 @@ class TurboInstallCommand extends Command
         $this->displayTask('pinning JS dependencies (Importmap)', function () {
             $dependencies = array_keys($this->jsDependencies());
 
-            return Artisan::call('importmap:pin ' . implode(' ', $dependencies));
+            return Artisan::call('importmap:pin '.implode(' ', $dependencies));
         });
     }
 
@@ -150,9 +150,7 @@ class TurboInstallCommand extends Command
     }
 
     /**
-     *
-     * @param callable $callback
-     * @param bool $dev
+     * @param  bool  $dev
      * @return void
      */
     protected static function updateNodePackages(callable $callback, $dev = true)
@@ -174,7 +172,7 @@ class TurboInstallCommand extends Command
 
         File::put(
             base_path('package.json'),
-            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
         );
     }
 
@@ -183,12 +181,12 @@ class TurboInstallCommand extends Command
         $this->existingLayoutFiles()
             ->each(
                 fn ($file) => (new Pipeline(app()))
-                ->send($file)
-                ->through(array_filter([
-                    $this->option('jet') ? Tasks\EnsureLivewireTurboBridgeExists::class : null,
-                    Tasks\EnsureCsrfTokenMetaTagExists::class,
-                ]))
-                ->thenReturn()
+                    ->send($file)
+                    ->through(array_filter([
+                        $this->option('jet') ? Tasks\EnsureLivewireTurboBridgeExists::class : null,
+                        Tasks\EnsureCsrfTokenMetaTagExists::class,
+                    ]))
+                    ->thenReturn()
             );
 
         if ($this->option('jet')) {

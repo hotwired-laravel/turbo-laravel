@@ -2,15 +2,14 @@
 
 namespace HotwiredLaravel\TurboLaravel\Models;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Support\Collection;
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
 use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
-
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Support\Collection;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model

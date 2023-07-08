@@ -2,10 +2,10 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
-use Illuminate\Http\Request;
 use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use HotwiredLaravel\TurboLaravel\Turbo;
+use Illuminate\Http\Request;
 
 class RequestMacrosTest extends TestCase
 {

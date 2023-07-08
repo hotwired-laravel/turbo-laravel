@@ -2,21 +2,21 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http\Middleware;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
 use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
 use HotwiredLaravel\TurboLaravel\Tests\Stubs\TestFormRequest;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use HotwiredLaravel\TurboLaravel\Tests\TestModel;
 use HotwiredLaravel\TurboLaravel\Turbo;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 class TurboMiddlewareTest extends TestCase
 {
     public function usesTestModelResourceRoutes()
     {
         Route::get('/test-models/create', function () {
-            return 'show create form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
+            return 'show create form'.(request()->has('frame') ? ' (frame='.request('frame').')' : '');
         })->name('test-models.create');
 
         Route::post('/test-models', function () {
@@ -24,7 +24,7 @@ class TurboMiddlewareTest extends TestCase
         })->name('test-models.store')->middleware(TurboMiddleware::class);
 
         Route::get('/test-models/{testModel}/edit', function () {
-            return 'show edit form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
+            return 'show edit form'.(request()->has('frame') ? ' (frame='.request('frame').')' : '');
         })->name('test-models.edit');
 
         Route::put('/test-models/{testModel}', function (TestModel $model) {
@@ -41,6 +41,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function doesnt_change_redirect_response_when_not_turbo_visit()
@@ -53,6 +54,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function handles_invalid_forms_with_an_internal_redirect()
@@ -67,6 +69,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function handles_invalid_forms_with_an_internal_redirect_when_using_form_requests()
@@ -92,6 +95,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTurboNativeRoute
      */
     public function can_detect_turbo_native_visits()
@@ -118,7 +122,7 @@ class TurboMiddlewareTest extends TestCase
         })->name('somewhere-else');
 
         Route::get('/test-models/create', function () {
-            return 'show create form' . (request()->has('frame') ? ' (frame=' . request('frame') . ')' : '');
+            return 'show create form'.(request()->has('frame') ? ' (frame='.request('frame').')' : '');
         });
 
         Route::post('/test-models', function (TestFormRequest $request) {
@@ -128,6 +132,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelRoutesWithCustomRedirect
      */
     public function uses_the_redirect_to_when_guessed_route_doesnt_exist()
@@ -157,6 +162,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesNamedTestRoutesWithFormRequest
      */
     public function can_prevent_redirect_route()
@@ -175,6 +181,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function sends_an_internal_redirect_to_resource_create_routes_on_failed_validation_follows_laravel_conventions_and_returns_422_status_code()
@@ -189,6 +196,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions()
@@ -205,6 +213,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelResourceRoutes
      */
     public function redirects_include_query_params()
@@ -228,6 +237,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTestModelUpdateRouteWithoutEdit
      */
     public function lets_it_crash_when_redirect_route_does_not_exist()
@@ -260,6 +270,7 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesNonResourceRoutes
      */
     public function only_guess_route_on_resource_routes()
@@ -296,13 +307,14 @@ class TurboMiddlewareTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesRoutesWhichExceptCookies
      */
     public function passes_the_request_cookies_to_the_internal_request()
     {
         $this->withHeaders([
-                'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
-            ])
+            'Accept' => sprintf('%s, text/html, application/xhtml+xml', Turbo::TURBO_STREAM_FORMAT),
+        ])
             ->withUnencryptedCookie('my-cookie', 'test-value')
             ->post(route('posts.store'))
             ->assertSee('Request Cookie: test-value; Response Cookie: response-cookie-value')

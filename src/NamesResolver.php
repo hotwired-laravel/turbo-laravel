@@ -2,9 +2,9 @@
 
 namespace HotwiredLaravel\TurboLaravel;
 
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class NamesResolver
 {

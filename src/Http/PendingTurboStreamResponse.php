@@ -2,6 +2,11 @@
 
 namespace HotwiredLaravel\TurboLaravel\Http;
 
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Support\Responsable;
@@ -9,22 +14,21 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
-use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
-use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
-use function HotwiredLaravel\TurboLaravel\dom_id;
-
-use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
-use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 
 class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
 {
     use Macroable;
 
     private string $useAction;
+
     private ?string $useTarget = null;
+
     private ?string $useTargets = null;
+
     private ?string $partialView = null;
+
     private array $partialData = [];
+
     private $inlineContent = null;
 
     public static function forModel(Model $model, string $action = null): self

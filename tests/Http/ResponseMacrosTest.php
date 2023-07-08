@@ -2,20 +2,17 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Http\TurboStreamResponseFailedException;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Turbo;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
-
-use function HotwiredLaravel\TurboLaravel\dom_id;
-
-use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
-use HotwiredLaravel\TurboLaravel\Http\TurboStreamResponseFailedException;
-use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
-use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-
-use HotwiredLaravel\TurboLaravel\Turbo;
 
 class ResponseMacrosTest extends TestCase
 {
@@ -23,7 +20,7 @@ class ResponseMacrosTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__.'/../Stubs/views');
     }
 
     /** @test */
@@ -161,7 +158,7 @@ class ResponseMacrosTest extends TestCase
         <div id="test_model_{$testModel->getKey()}">hello</div>
         html;
 
-        $resp = response()->turboStreamView(View::file(__DIR__ . '/../Stubs/views/test_models/_test_model.blade.php', [
+        $resp = response()->turboStreamView(View::file(__DIR__.'/../Stubs/views/test_models/_test_model.blade.php', [
             'testModel' => $testModel,
         ]));
 
@@ -268,7 +265,7 @@ class ResponseMacrosTest extends TestCase
             ->append('some_dom_id', 'Hello World')
             ->toResponse(new Request());
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream target="some_dom_id" action="append">
             <template>Hello World</template>
         </turbo-stream>
@@ -286,7 +283,7 @@ class ResponseMacrosTest extends TestCase
             ->append('some_dom_id', new HtmlString('<div>Hello, Tester</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream target="some_dom_id" action="append">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -326,7 +323,7 @@ class ResponseMacrosTest extends TestCase
             ->append('some_dom_id', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream target="some_dom_id" action="append">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -362,7 +359,7 @@ class ResponseMacrosTest extends TestCase
             ->appendAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="append">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -380,7 +377,7 @@ class ResponseMacrosTest extends TestCase
             ->appendAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="append">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -453,7 +450,7 @@ class ResponseMacrosTest extends TestCase
             ->prependAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="prepend">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -471,7 +468,7 @@ class ResponseMacrosTest extends TestCase
             ->prependAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="prepend">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -544,7 +541,7 @@ class ResponseMacrosTest extends TestCase
             ->updateAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="update">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -562,7 +559,7 @@ class ResponseMacrosTest extends TestCase
             ->updateAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="update">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -635,7 +632,7 @@ class ResponseMacrosTest extends TestCase
             ->replaceAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="replace">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -653,7 +650,7 @@ class ResponseMacrosTest extends TestCase
             ->replaceAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="replace">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -777,7 +774,7 @@ class ResponseMacrosTest extends TestCase
             ->before('some_dom_id', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream target="some_dom_id" action="before">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -813,7 +810,7 @@ class ResponseMacrosTest extends TestCase
             ->beforeAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="before">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -831,7 +828,7 @@ class ResponseMacrosTest extends TestCase
             ->beforeAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="before">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>
@@ -905,7 +902,7 @@ class ResponseMacrosTest extends TestCase
             ->afterAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="after">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
@@ -923,7 +920,7 @@ class ResponseMacrosTest extends TestCase
             ->afterAll('.test_models', view('hello_view', ['name' => 'Tester']))
             ->toResponse(new Request);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
         <turbo-stream targets=".test_models" action="after">
             <template><div>Hello, Tester</div></template>
         </turbo-stream>

@@ -14,7 +14,7 @@ class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Rende
     private Collection $pendingStreams;
 
     /**
-     * @param Collection $pendingStreams
+     * @param  Collection  $pendingStreams
      */
     public function __construct($pendingStreams)
     {
@@ -22,9 +22,7 @@ class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Rende
     }
 
     /**
-     * @param array|Collection $pendingStreams
-     *
-     * @return self
+     * @param  array|Collection  $pendingStreams
      */
     public static function forStreams($pendingStreams): self
     {

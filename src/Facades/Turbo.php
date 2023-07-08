@@ -2,13 +2,14 @@
 
 namespace HotwiredLaravel\TurboLaravel\Facades;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Facade;
 use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
 use HotwiredLaravel\TurboLaravel\Turbo as BaseTurbo;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @see \HotwiredLaravel\TurboLaravel\Turbo
+ *
  * @mixin \HotwiredLaravel\TurboLaravel\Turbo
  *
  * @method static bool isTurboNativeVisit()

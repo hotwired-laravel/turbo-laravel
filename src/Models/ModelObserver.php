@@ -19,7 +19,7 @@ class ModelObserver
     }
 
     /**
-     * @param Model|Broadcasts $model
+     * @param  Model|Broadcasts  $model
      */
     public function saved(Model $model)
     {
@@ -35,7 +35,7 @@ class ModelObserver
     }
 
     /**
-     * @param Model|Broadcasts $model
+     * @param  Model|Broadcasts  $model
      */
     public function deleted(Model $model)
     {

@@ -13,7 +13,7 @@ class TurboStreamBroadcastTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__.'/../Stubs/views');
     }
 
     /** @test */

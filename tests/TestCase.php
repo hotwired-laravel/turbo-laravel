@@ -2,10 +2,10 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests;
 
+use HotwiredLaravel\TurboLaravel\TurboServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
-use HotwiredLaravel\TurboLaravel\TurboServiceProvider;
 
 class TestCase extends Orchestra
 {

@@ -2,12 +2,12 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
-use Illuminate\Support\Facades\View;
 use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 use HotwiredLaravel\TurboLaravel\Testing\TurboStreamMatcher;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use Illuminate\Support\Facades\View;
 
 class MacroablePendingStreamTest extends TestCase
 {
@@ -17,7 +17,7 @@ class MacroablePendingStreamTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__.'/../Stubs/views');
     }
 
     protected function defineRoutes($router)

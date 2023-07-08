@@ -14,13 +14,21 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
 
     /** @var Channel[] */
     public array $channels;
+
     public string $action;
+
     public ?string $target = null;
+
     public ?string $targets = null;
+
     public ?string $partial = null;
+
     public ?array $partialData = [];
+
     public ?string $inlineContent = null;
+
     public array $attrs = [];
+
     public bool $escapeInlineContent = true;
 
     public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [])

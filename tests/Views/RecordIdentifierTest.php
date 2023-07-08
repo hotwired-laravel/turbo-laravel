@@ -9,6 +9,7 @@ use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
 class RecordIdentifierTest extends TestCase
 {
     private $model;
+
     private $singular;
 
     protected function setUp(): void
@@ -16,7 +17,7 @@ class RecordIdentifierTest extends TestCase
         parent::setUp();
 
         $this->model = new TestModel(['name' => 'Hello']);
-        $this->singular = "test_model";
+        $this->singular = 'test_model';
     }
 
     /** @test */
@@ -28,7 +29,7 @@ class RecordIdentifierTest extends TestCase
     /** @test */
     public function dom_id_of_new_record_with_custom_prefix()
     {
-        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domId("custom_prefix"));
+        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domId('custom_prefix'));
     }
 
     /** @test */
@@ -44,7 +45,7 @@ class RecordIdentifierTest extends TestCase
     {
         $this->model->save();
 
-        $this->assertEquals("custom_prefix_{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId("custom_prefix"));
+        $this->assertEquals("custom_prefix_{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId('custom_prefix'));
     }
 
     /** @test */
@@ -56,7 +57,7 @@ class RecordIdentifierTest extends TestCase
     /** @test */
     public function dom_class_with_custom_prefix()
     {
-        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domClass("custom_prefix"));
+        $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domClass('custom_prefix'));
     }
 
     /** @test */

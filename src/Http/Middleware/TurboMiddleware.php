@@ -3,6 +3,8 @@
 namespace HotwiredLaravel\TurboLaravel\Http\Middleware;
 
 use Closure;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
+use HotwiredLaravel\TurboLaravel\Turbo;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,15 +15,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Cookie;
-use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
-use HotwiredLaravel\TurboLaravel\Turbo;
 
 class TurboMiddleware
 {
     /**
      * Encrypted cookies to be added to the internal requests following redirects.
-     *
-     * @var array
      */
     private array $encryptedCookies;
 
@@ -38,8 +36,7 @@ class TurboMiddleware
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
+     * @param  \Illuminate\Http\Request  $request
      * @return RedirectResponse|mixed
      */
     public function handle($request, Closure $next)
@@ -54,8 +51,7 @@ class TurboMiddleware
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return bool
+     * @param  \Illuminate\Http\Request  $request
      */
     private function turboNativeVisit($request): bool
     {
@@ -63,8 +59,7 @@ class TurboMiddleware
     }
 
     /**
-     * @param mixed $next
-     * @param Request $request
+     * @param  mixed  $next
      * @return RedirectResponse|mixed
      */
     private function turboResponse($response, Request $request)
@@ -109,9 +104,8 @@ class TurboMiddleware
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
-     *
+     * @param  Request  $request
+     * @param  Response  $response
      * @return Response
      */
     private function handleRedirectInternally($request, $response)
@@ -142,7 +136,7 @@ class TurboMiddleware
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     private function turboVisit($request)
@@ -151,8 +145,7 @@ class TurboMiddleware
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string|null $defaultRedirectUrl
+     * @param  \Illuminate\Http\Request  $request
      */
     private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
     {

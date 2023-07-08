@@ -2,6 +2,8 @@
 
 namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
+use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,54 +12,53 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\HtmlString;
-use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
-use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 
 class PendingBroadcast
 {
     /** @var Channel[] */
     public array $channels;
+
     public string $action;
+
     public ?string $target = null;
+
     public ?string $targets = null;
+
     public ?string $partialView = null;
+
     public ?array $partialData = [];
+
     public ?string $inlineContent = null;
+
     public bool $escapeInlineContent = true;
+
     public array $attributes = [];
 
     /**
      * Whether we should broadcast only to other users and
      * ignore the current user's broadcasting socket.
-     *
-     * @var bool
      */
     public bool $sendToOthers = false;
 
     /**
      * Defines if the broadcast should happen sent
      * to a queue or processed right away.
-     *
-     * @var bool
      */
     protected bool $sendLater = false;
 
     /**
      * Indicates whether this pending broadcast was cancelled or not.
-     *
-     * @var bool
      */
     protected bool $wasCancelled = false;
 
     /**
      * Indicates whether the broadcasting is being faked or not.
-     *
-     * @var bool
      */
     protected bool $isRecording = false;
 
     /**
      * This is the testing recorder. Used when faking the Turbo Stream broadcasts.
+     *
      * @var ?\HotwiredLaravel\TurboLaravel\Broadcasting\Factory = null
      */
     protected $recorder = null;

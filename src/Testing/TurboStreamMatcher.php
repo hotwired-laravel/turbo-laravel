@@ -11,7 +11,9 @@ class TurboStreamMatcher
 {
     /** @var \DOMElement */
     private $turboStream;
+
     private array $wheres = [];
+
     private array $contents = [];
 
     public function __construct(DOMElement $turboStream)

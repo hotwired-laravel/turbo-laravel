@@ -9,13 +9,14 @@ class StreamFrom extends Component
 {
     /** @var string|HasBroadcastChannel */
     public $source;
+
     public string $type;
 
     /**
      * Create a new component instance.
      *
-     * @param string|HasBroadcastChannel $source The source of broadcasting streams.
-     * @param string $type The type of channel: "public", "private", or "presence".
+     * @param  string|HasBroadcastChannel  $source The source of broadcasting streams.
+     * @param  string  $type The type of channel: "public", "private", or "presence".
      * @return void
      */
     public function __construct($source, string $type = 'private')

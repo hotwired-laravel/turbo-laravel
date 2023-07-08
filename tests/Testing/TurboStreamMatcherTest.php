@@ -2,11 +2,11 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Testing;
 
-use Illuminate\Testing\TestResponse;
-use PHPUnit\Framework\ExpectationFailedException;
 use HotwiredLaravel\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
 use HotwiredLaravel\TurboLaravel\Testing\TurboStreamMatcher;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use Illuminate\Testing\TestResponse;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class TurboStreamMatcherTest extends TestCase
 {
@@ -14,7 +14,7 @@ class TurboStreamMatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->response = new TestResponse(response(<<<HTML
+        $this->response = new TestResponse(response(<<<'HTML'
         <turbo-stream action="append" target="item_1">
             <template>
                 <h1>First Item</h1>

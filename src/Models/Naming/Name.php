@@ -8,15 +8,11 @@ class Name
 {
     /**
      * The FQCN of the class.
-     *
-     * @var string
      */
     public string $className;
 
     /**
      * The Class name without the root namespace configured in `turbo-laravel.models_namespace`.
-     *
-     * @var string
      */
     public string $classNameWithoutRootNamespace;
 
@@ -25,8 +21,6 @@ class Name
      *
      * Example A: "Account\\TestModel" becomes "account_test_model"
      * Example B: "TestModel" becomes "test_model"
-     *
-     * @var string
      */
     public string $singular;
 
@@ -35,8 +29,6 @@ class Name
      *
      * Example A: "Account\\TestModel" becomes "account_test_models"
      * Example B: "TestModel" becomes "test_models"
-     *
-     * @var string
      */
     public string $plural;
 
@@ -45,8 +37,6 @@ class Name
      *
      * Example A: "Account" becomes "account"
      * Example B: "TestModel" becomes "test_model"
-     *
-     * @var string
      */
     public string $element;
 

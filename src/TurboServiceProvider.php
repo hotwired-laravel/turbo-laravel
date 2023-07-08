@@ -41,7 +41,7 @@ class TurboServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/turbo-laravel.php', 'turbo-laravel');
+        $this->mergeConfigFrom(__DIR__.'/../config/turbo-laravel.php', 'turbo-laravel');
 
         $this->app->scoped(Turbo::class);
         $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
@@ -63,11 +63,11 @@ class TurboServiceProvider extends ServiceProvider
         }
 
         $this->publishes([
-            __DIR__ . '/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
+            __DIR__.'/../config/turbo-laravel.php' => config_path('turbo-laravel.php'),
         ], 'turbo-config');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
+            __DIR__.'/../resources/views' => base_path('resources/views/vendor/turbo-laravel'),
         ], 'turbo-views');
 
         $this->publishes([

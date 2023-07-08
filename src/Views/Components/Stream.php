@@ -2,12 +2,10 @@
 
 namespace HotwiredLaravel\TurboLaravel\Views\Components;
 
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Exceptions\TurboStreamTargetException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
-
-use function HotwiredLaravel\TurboLaravel\dom_id;
-
-use HotwiredLaravel\TurboLaravel\Exceptions\TurboStreamTargetException;
 
 class Stream extends Component
 {
@@ -19,6 +17,7 @@ class Stream extends Component
     ];
 
     public string|Model|array|null $target = null;
+
     public string|null $targets = null;
 
     public ?string $action;
@@ -28,10 +27,10 @@ class Stream extends Component
     /**
      * Create a new component instance.
      *
-     * @param ?string $action One of the seven Turbo Stream actions: "append", "prepend", "before", "after", "replace", "update", or "remove".
-     * @param string|Model|array|null $target The DOM ID string, a model to generate the DOM ID for, or an array to be passed to the `dom_id` function.
-     * @param string|null $targets The CSS selector to apply the action to multiple targets
-     * @param array $mergeAttrs Pass an array of attributes to be merged with the target|targets and action in the Turbo Stream tag.
+     * @param  ?string  $action One of the seven Turbo Stream actions: "append", "prepend", "before", "after", "replace", "update", or "remove".
+     * @param  string|Model|array|null  $target The DOM ID string, a model to generate the DOM ID for, or an array to be passed to the `dom_id` function.
+     * @param  string|null  $targets The CSS selector to apply the action to multiple targets
+     * @param  array  $mergeAttrs Pass an array of attributes to be merged with the target|targets and action in the Turbo Stream tag.
      */
     public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null, array $mergeAttrs = [])
     {
@@ -65,8 +64,6 @@ class Stream extends Component
 
     /**
      * Resolves the target|targets value out of the given one or neither.
-     *
-     * @return string|null
      */
     private function targetValue(): ?string
     {
@@ -91,8 +88,6 @@ class Stream extends Component
 
     /**
      * Returns whether the attribute should be "target", "targets" or nothing.
-     *
-     * @return string|null
      */
     private function targetTag(): ?string
     {
