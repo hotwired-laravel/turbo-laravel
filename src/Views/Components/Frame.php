@@ -1,11 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views\Components;
+namespace HotwiredLaravel\TurboLaravel\Views\Components;
 
+use function HotwiredLaravel\TurboLaravel\dom_id;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
-
-use function Tonysm\TurboLaravel\dom_id;
 
 class Frame extends Component
 {
@@ -24,10 +23,10 @@ class Frame extends Component
     /**
      * Create a new component instance.
      *
-     * @param string|Model|array $id
-     * @param string|null $src
-     * @param string|null $target
-     * @param string|null $loading
+     * @param  string|Model|array  $id
+     * @param  string|null  $src
+     * @param  string|null  $target
+     * @param  string|null  $loading
      * @return void
      */
     public function __construct($id, $src = null, $target = null, $loading = null)

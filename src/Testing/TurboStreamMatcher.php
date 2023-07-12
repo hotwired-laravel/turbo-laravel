@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Testing;
+namespace HotwiredLaravel\TurboLaravel\Testing;
 
 use Closure;
 use DOMElement;
@@ -11,7 +11,9 @@ class TurboStreamMatcher
 {
     /** @var \DOMElement */
     private $turboStream;
+
     private array $wheres = [];
+
     private array $contents = [];
 
     public function __construct(DOMElement $turboStream)

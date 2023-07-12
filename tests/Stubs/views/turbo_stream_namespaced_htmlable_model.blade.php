@@ -1,1 +1,1 @@
-{{ Tonysm\TurboLaravel\turbo_stream($testModel) }}
+{{ HotwiredLaravel\TurboLaravel\turbo_stream($testModel) }}

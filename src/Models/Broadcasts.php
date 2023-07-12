@@ -1,16 +1,15 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Models;
+namespace HotwiredLaravel\TurboLaravel\Models;
 
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Collection;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Broadcasting\Rendering;
-use function Tonysm\TurboLaravel\dom_id;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-
-use Tonysm\TurboLaravel\Models\Naming\Name;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model

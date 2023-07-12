@@ -16,7 +16,7 @@ class TurboEchoStreamSourceElement extends HTMLElement {
     async connectedCallback() {
         connectStreamSource(this)
         this.subscription = subscribeTo(this.type, this.channel)
-            .listen('.Tonysm\\TurboLaravel\\Events\\TurboStreamBroadcast', (e) => {
+            .listen('.HotwiredLaravel\\TurboLaravel\\Events\\TurboStreamBroadcast', (e) => {
                 this.dispatchMessageEvent(e.message)
             })
     }

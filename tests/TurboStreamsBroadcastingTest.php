@@ -1,19 +1,19 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Testing;
+namespace HotwiredLaravel\TurboLaravel\Tests\Testing;
 
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Http\PendingTurboStreamResponse;
-use Tonysm\TurboLaravel\Models\Broadcasts;
-use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboStreamsBroadcastingTest extends TestCase
 {
@@ -21,7 +21,7 @@ class TurboStreamsBroadcastingTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/Stubs/views');
+        View::addLocation(__DIR__.'/Stubs/views');
 
         TurboStream::fake();
     }
@@ -40,6 +40,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider turboStreamDefaultInsertActions
      */
     public function can_manually_broadcast_append_streams(string $action)
@@ -172,10 +173,9 @@ class TurboStreamsBroadcastingTest extends TestCase
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called) {
             $called = true;
 
-            return (
+            return
                 $broadcast->target === 'todo_123'
-                && $broadcast->action === 'remove'
-            );
+                && $broadcast->action === 'remove';
         });
 
         $this->assertTrue($called, 'The given filter callback was not called.');
@@ -192,10 +192,9 @@ class TurboStreamsBroadcastingTest extends TestCase
         TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called) {
             $called = true;
 
-            return (
+            return
                 $broadcast->target === 'todo_123'
-                && $broadcast->action === 'remove'
-            );
+                && $broadcast->action === 'remove';
         }, 2);
 
         $this->assertTrue($called, 'The given filter callback was not called.');
@@ -243,7 +242,7 @@ class TurboStreamsBroadcastingTest extends TestCase
         $broadcast = TurboStream::broadcastAppend(
             channel: 'general',
             target: 'notifications',
-            content: new HtmlString("<h1>Hello World</h1>"),
+            content: new HtmlString('<h1>Hello World</h1>'),
         );
 
         $expected = <<<'HTML'

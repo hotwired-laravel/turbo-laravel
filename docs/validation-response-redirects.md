@@ -58,7 +58,7 @@ The package ships with a middleware which applies some conventions on your redir
 **The middleware is automatically prepended to your web route group middleware stack**. You may want to add the middleware to other groups, when doing so, make sure it's at the top of the middleware stack:
 
 ```php
-\Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
+\HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware::class,
 ```
 
 Like so:
@@ -73,7 +73,7 @@ class Kernel extends HttpKernel
 {
     protected $middlewareGroups = [
         'web' => [
-            \Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware::class,
+            \HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware::class,
             // other middlewares...
         ],
     ];

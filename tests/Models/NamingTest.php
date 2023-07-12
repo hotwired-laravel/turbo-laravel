@@ -1,10 +1,10 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Models;
+namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
-use Tonysm\TurboLaravel\Models\Naming\Name;
-use Tonysm\TurboLaravel\Tests\Stubs\Models;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class NamingTest extends TestCase
 {
@@ -16,7 +16,7 @@ class NamingTest extends TestCase
         parent::setUp();
 
         config()->set('turbo-laravel.models_namespace', [
-            'Tonysm\\TurboLaravel\\Tests\\Stubs\\Models\\',
+            'HotwiredLaravel\\TurboLaravel\\Tests\\Stubs\\Models\\',
         ]);
 
         $this->modelName = Name::build(Models\Account\TestModel::class);

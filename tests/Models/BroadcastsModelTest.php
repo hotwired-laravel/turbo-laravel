@@ -1,17 +1,17 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Models;
+namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
+use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
+use HotwiredLaravel\TurboLaravel\Jobs\BroadcastAction;
+use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Tests\TestModel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Broadcasting\PendingBroadcast;
-use Tonysm\TurboLaravel\Facades\TurboStream;
-use Tonysm\TurboLaravel\Jobs\BroadcastAction;
-use Tonysm\TurboLaravel\Models\Broadcasts;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Tests\TestModel;
 
 class BroadcastsModelTest extends TestCase
 {
@@ -19,7 +19,7 @@ class BroadcastsModelTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__.'/../Stubs/views');
 
         config(['turbo-laravel.queue' => false]);
     }
@@ -465,7 +465,7 @@ class BroadcastsModelTest extends TestCase
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($post) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertEquals('private-' . $post->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals('private-'.$post->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals(dom_id($post), $broadcast->target);
             $this->assertNull($broadcast->targets);
             $this->assertEquals('replace', $broadcast->action);
@@ -559,6 +559,7 @@ class CombinedPropertiesTestModel extends TestModel
     use Broadcasts;
 
     protected $broadcasts = ['insertsBy' => 'prepend'];
+
     protected $broadcastsTo = 'parent';
 
     public function parent()

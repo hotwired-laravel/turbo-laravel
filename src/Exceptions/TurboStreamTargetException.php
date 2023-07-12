@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Exceptions;
+namespace HotwiredLaravel\TurboLaravel\Exceptions;
 
 use InvalidArgumentException;
 

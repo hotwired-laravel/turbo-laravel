@@ -2,16 +2,14 @@
 
 namespace Tests;
 
+use function HotwiredLaravel\TurboLaravel\dom_class;
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Turbo;
+use function HotwiredLaravel\TurboLaravel\turbo_stream;
+use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 use Illuminate\Support\Facades\View;
-use function Tonysm\TurboLaravel\dom_class;
-use function Tonysm\TurboLaravel\dom_id;
-
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Turbo;
-
-use function Tonysm\TurboLaravel\turbo_stream;
-use function Tonysm\TurboLaravel\turbo_stream_view;
 
 class FunctionsTest extends TestCase
 {
@@ -19,14 +17,14 @@ class FunctionsTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/Stubs/views');
+        View::addLocation(__DIR__.'/Stubs/views');
     }
 
     /** @test */
     public function namespaced_turbo_stream_fn()
     {
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -35,7 +33,7 @@ class FunctionsTest extends TestCase
         );
 
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -68,7 +66,7 @@ class FunctionsTest extends TestCase
     public function global_turbo_stream_fn()
     {
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -77,7 +75,7 @@ class FunctionsTest extends TestCase
         );
 
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -115,7 +113,7 @@ class FunctionsTest extends TestCase
         ])->render());
 
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -147,7 +145,7 @@ class FunctionsTest extends TestCase
         ])->render());
 
         $this->assertEquals(
-            trim(<<<HTML
+            trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
                 <template>Hello World</template>
             </turbo-stream>
@@ -191,7 +189,7 @@ class FunctionsTest extends TestCase
     {
         $testModel = TestModel::create(['name' => 'Hello']);
 
-        $this->assertEquals("test_model", dom_class($testModel));
+        $this->assertEquals('test_model', dom_class($testModel));
     }
 
     /** @test */
@@ -199,7 +197,7 @@ class FunctionsTest extends TestCase
     {
         $testModel = TestModel::create(['name' => 'Hello']);
 
-        $this->assertEquals("test_model", \dom_class($testModel));
+        $this->assertEquals('test_model', \dom_class($testModel));
     }
 
     /** @test */

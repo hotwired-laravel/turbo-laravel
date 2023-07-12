@@ -1,23 +1,21 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasters;
+namespace HotwiredLaravel\TurboLaravel\Broadcasters;
 
-use Tonysm\TurboLaravel\Jobs\BroadcastAction;
+use HotwiredLaravel\TurboLaravel\Jobs\BroadcastAction;
 
 class LaravelBroadcaster implements Broadcaster
 {
     /**
-     * @param \Illuminate\Broadcasting\Channel[] $channels
-     * @param bool $later
-     * @param string $action
-     * @param ?string $target = null
-     * @param ?string $targets = null
-     * @param ?string $partial = null
-     * @param ?array $partialData = []
-     * @param ?string $inlineContent = null
-     * @param bool $escapeInlineContent = true
-     * @param array $attributes = []
-     * @param ?string $exceptSocket = null
+     * @param  \Illuminate\Broadcasting\Channel[]  $channels
+     * @param  ?string  $target = null
+     * @param  ?string  $targets = null
+     * @param  ?string  $partial = null
+     * @param  ?array  $partialData = []
+     * @param  ?string  $inlineContent = null
+     * @param  bool  $escapeInlineContent = true
+     * @param  array  $attributes = []
+     * @param  ?string  $exceptSocket = null
      */
     public function broadcast(
         array $channels,

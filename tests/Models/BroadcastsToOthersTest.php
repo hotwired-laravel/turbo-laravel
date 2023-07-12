@@ -1,9 +1,9 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Models;
+namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
-use Tonysm\TurboLaravel\Facades\Turbo;
-use Tonysm\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class BroadcastsToOthersTest extends TestCase
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
+use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\View;
-use Tonysm\TurboLaravel\Testing\AssertableTurboStream;
-use Tonysm\TurboLaravel\Testing\InteractsWithTurbo;
-use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboStreamResponseTest extends TestCase
 {
@@ -15,7 +15,7 @@ class TurboStreamResponseTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__ . '/../Stubs/views');
+        View::addLocation(__DIR__.'/../Stubs/views');
     }
 
     protected function defineRoutes($router)
@@ -63,21 +63,21 @@ class TurboStreamResponseTest extends TestCase
                 $turboStreams->has(4)
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'posts')
-                                ->where('action', 'append')
-                                ->see('Post Title')
+                        ->where('action', 'append')
+                        ->see('Post Title')
                 ))
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'inline_post_123')
-                                ->where('action', 'replace')
-                                ->see('Inline Post Title')
+                        ->where('action', 'replace')
+                        ->see('Inline Post Title')
                 ))
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'empty_posts')
-                                ->where('action', 'remove')
+                        ->where('action', 'remove')
                 ))
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('targets', '.post')
-                                ->where('action', 'replace')
+                        ->where('action', 'replace')
                 ))
             ));
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Turbo;
 use Illuminate\Http\Request;
-use Tonysm\TurboLaravel\Facades\Turbo as TurboFacade;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Turbo;
 
 class RequestMacrosTest extends TestCase
 {

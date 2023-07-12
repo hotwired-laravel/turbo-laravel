@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Stubs;
+namespace HotwiredLaravel\TurboLaravel\Tests\Stubs;
 
 use Illuminate\Foundation\Http\FormRequest;
 

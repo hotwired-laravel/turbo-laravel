@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http;
+namespace HotwiredLaravel\TurboLaravel\Http;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
@@ -14,7 +14,7 @@ class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Rende
     private Collection $pendingStreams;
 
     /**
-     * @param Collection $pendingStreams
+     * @param  Collection  $pendingStreams
      */
     public function __construct($pendingStreams)
     {
@@ -22,9 +22,7 @@ class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Rende
     }
 
     /**
-     * @param array|Collection $pendingStreams
-     *
-     * @return self
+     * @param  array|Collection  $pendingStreams
      */
     public static function forStreams($pendingStreams): self
     {

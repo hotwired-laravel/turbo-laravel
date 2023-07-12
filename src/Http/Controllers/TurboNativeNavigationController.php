@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Http\Controllers;
+namespace HotwiredLaravel\TurboLaravel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 

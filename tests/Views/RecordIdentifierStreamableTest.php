@@ -1,16 +1,17 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestTurboStreamable;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
+use HotwiredLaravel\TurboLaravel\Views\UnidentifiableRecordException;
 use stdClass;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestTurboStreamable;
-use Tonysm\TurboLaravel\Tests\TestCase;
-use Tonysm\TurboLaravel\Views\RecordIdentifier;
-use Tonysm\TurboLaravel\Views\UnidentifiableRecordException;
 
 class RecordIdentifierStreamableTest extends TestCase
 {
     private $streamable;
+
     private $singular;
 
     protected function setUp(): void
@@ -18,7 +19,7 @@ class RecordIdentifierStreamableTest extends TestCase
         parent::setUp();
 
         $this->streamable = new TestTurboStreamable;
-        $this->singular = "test_turbo_streamable";
+        $this->singular = 'test_turbo_streamable';
     }
 
     /** @test */
@@ -30,7 +31,7 @@ class RecordIdentifierStreamableTest extends TestCase
     /** @test */
     public function dom_id_of_streamable_with_custom_prefix()
     {
-        $this->assertEquals("custom_prefix_{$this->singular}_turbo-dom-id", (new RecordIdentifier($this->streamable))->domId("custom_prefix"));
+        $this->assertEquals("custom_prefix_{$this->singular}_turbo-dom-id", (new RecordIdentifier($this->streamable))->domId('custom_prefix'));
     }
 
     /** @test */

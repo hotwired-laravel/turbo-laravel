@@ -1,7 +1,7 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Stubs\Models\Account;
+namespace HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\Account;
 
-class TestModel extends \Tonysm\TurboLaravel\Tests\TestModel
+class TestModel extends \HotwiredLaravel\TurboLaravel\Tests\TestModel
 {
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Views;
+namespace HotwiredLaravel\TurboLaravel\Views;
 
+use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Database\Eloquent\Model;
-use Tonysm\TurboLaravel\Models\Naming\Name;
 
 class RecordIdentifier
 {
-    const NEW_PREFIX = "create";
-    const DELIMITER = "_";
+    const NEW_PREFIX = 'create';
+
+    const DELIMITER = '_';
 
     /** @var Model */
     private $record;

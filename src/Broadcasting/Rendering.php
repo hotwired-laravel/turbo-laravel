@@ -1,18 +1,20 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Broadcasting;
+namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
+use HotwiredLaravel\TurboLaravel\NamesResolver;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
-use Tonysm\TurboLaravel\NamesResolver;
 
 class Rendering
 {
     public ?string $partial = null;
+
     public ?array $data = [];
 
     public ?string $inlineContent = null;
+
     public bool $escapeInlineContent = true;
 
     public function __construct(?string $partial = null, ?array $data = [], ?string $inlineContent = null, ?bool $escapeInlineContent = true)

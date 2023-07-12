@@ -1,8 +1,8 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Testing;
+namespace HotwiredLaravel\TurboLaravel\Testing;
 
-use Tonysm\TurboLaravel\Turbo;
+use HotwiredLaravel\TurboLaravel\Turbo;
 
 /**
  * @mixin \Illuminate\Foundation\Testing\Concerns\MakesHttpRequests

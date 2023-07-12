@@ -1,13 +1,13 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Http;
+namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
+use HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
+use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Route;
-use Tonysm\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
-use Tonysm\TurboLaravel\Http\Middleware\TurboMiddleware;
-use Tonysm\TurboLaravel\Testing\InteractsWithTurbo;
-use Tonysm\TurboLaravel\Tests\TestCase;
 
 class TurboNativeNavigationControllerTest extends TestCase
 {
@@ -29,7 +29,9 @@ class TurboNativeNavigationControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider actionsDataProvider
+     *
      * @define-route usesTurboNativeRoutes
      */
     public function recede_resume_or_refresh_when_native_or_redirect_when_not(string $action)
@@ -43,7 +45,9 @@ class TurboNativeNavigationControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @dataProvider actionsDataProvider
+     *
      * @define-route usesTurboNativeRoutes
      */
     public function recede_resume_or_refresh_when_native_or_redirect_back(string $action)
@@ -60,6 +64,7 @@ class TurboNativeNavigationControllerTest extends TestCase
 
     /**
      * @test
+     *
      * @define-route usesTurboNativeRoutes
      */
     public function historical_location_url_responds_with_html()

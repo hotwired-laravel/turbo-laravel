@@ -1,6 +1,6 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Stubs\Models;
+namespace HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
 
 class TestTurboStreamable
 {

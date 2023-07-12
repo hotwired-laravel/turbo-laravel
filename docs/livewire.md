@@ -12,7 +12,7 @@ To use it, all we need to do is add the CDN script after the Livewire Scripts, s
 
 ```blade
     <!-- ... -->
-    
+
     @livewireScripts
     <script src="https://cdn.jsdelivr.net/gh/livewire/turbolinks@v0.1.x/dist/livewire-turbolinks.js" data-turbo-eval="false"></script>
 </body>
@@ -36,11 +36,11 @@ use Livewire\Component;
 class Counter extends Component
 {
     public $counter = 0;
-    
+
     public function increment()
     {
         $this->counter++;
-        
+
         $this->dispatchBrowserEvent('turboStreamFromLivewire', [
             'message' => view('livewire.counter_stream', ['counter' => $this->counter])->render(),
         ]);

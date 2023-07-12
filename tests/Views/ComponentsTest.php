@@ -1,11 +1,11 @@
 <?php
 
-namespace Tonysm\TurboLaravel\Tests\Views;
+namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
+use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
+use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\View\ViewException;
-use Tonysm\TurboLaravel\Tests\Stubs\Models\TestModel;
-use Tonysm\TurboLaravel\Tests\TestCase;
 
 class ComponentsTest extends TestCase
 {
@@ -64,7 +64,7 @@ class ComponentsTest extends TestCase
     /** @test */
     public function streams()
     {
-        $this->blade(<<<BLADE
+        $this->blade(<<<'BLADE'
             <x-turbo-stream target="todos" action="append">
                 <p>Hello, World</p>
             </x-turbo-stream>
@@ -103,7 +103,7 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-stream>', false)
             ->assertDontSee('targets=');
 
-        $this->blade(<<<BLADE
+        $this->blade(<<<'BLADE'
             <x-turbo-stream targets=".todos" action="append" >
                 <p>Hello, World</p>
             </x-turbo-stream>
@@ -120,14 +120,14 @@ class ComponentsTest extends TestCase
     public function stream_from()
     {
         $this->blade('<x-turbo-stream-from :source="$model" />', [
-                'model' => new TestModel(['id' => 123]),
-            ])
-            ->assertSee('<turbo-echo-stream-source channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="private" ></turbo-echo-stream-source>', false);
+            'model' => new TestModel(['id' => 123]),
+        ])
+            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="private" ></turbo-echo-stream-source>', false);
 
         $this->blade('<x-turbo-stream-from :source="$model" type="public" />', [
-                'model' => new TestModel(['id' => 123]),
-            ])
-            ->assertSee('<turbo-echo-stream-source channel="Tonysm.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
+            'model' => new TestModel(['id' => 123]),
+        ])
+            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
     }
 
     /** @test */
@@ -135,7 +135,7 @@ class ComponentsTest extends TestCase
     {
         $this->expectException(ViewException::class);
 
-        $this->blade(<<<BLADE
+        $this->blade(<<<'BLADE'
         <x-turbo-stream target="todo" targets=".todos" action="append" >
             <p>Hello, World</p>
         </x-turbo-stream>
@@ -147,7 +147,7 @@ class ComponentsTest extends TestCase
     {
         $this->expectException(ViewException::class);
 
-        $this->blade(<<<BLADE
+        $this->blade(<<<'BLADE'
         <x-turbo-stream action="append" >
             <p>Hello, World</p>
         </x-turbo-stream>
@@ -157,7 +157,7 @@ class ComponentsTest extends TestCase
     /** @test */
     public function allows_custom_actions_with_extra_attributes()
     {
-        $this->blade(<<<BLADE
+        $this->blade(<<<'BLADE'
             <x-turbo-stream action="console_log" hello="world">
             </x-turbo-stream>
             BLADE)
