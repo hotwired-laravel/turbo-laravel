@@ -18,7 +18,7 @@ class Stream extends Component
 
     public string|Model|array|null $target = null;
 
-    public string|null $targets = null;
+    public ?string $targets = null;
 
     public ?string $action;
 
@@ -32,7 +32,7 @@ class Stream extends Component
      * @param  string|null  $targets The CSS selector to apply the action to multiple targets
      * @param  array  $mergeAttrs Pass an array of attributes to be merged with the target|targets and action in the Turbo Stream tag.
      */
-    public function __construct(string $action, string|Model|array|null $target = null, string|null $targets = null, array $mergeAttrs = [])
+    public function __construct(string $action, string|Model|array $target = null, string $targets = null, array $mergeAttrs = [])
     {
         if (! $target && ! $targets && in_array($action, static::DEFAULT_ACTIONS)) {
             throw TurboStreamTargetException::targetMissing();

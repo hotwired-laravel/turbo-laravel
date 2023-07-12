@@ -32,42 +32,42 @@ class Factory
         return $this;
     }
 
-    public function broadcastAppend($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastAppend($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('append', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastPrepend($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastPrepend($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('prepend', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastBefore($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastBefore($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('before', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastAfter($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastAfter($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('after', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastUpdate($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastUpdate($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('update', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastReplace($content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastReplace($content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('replace', $content, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastRemove(Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastRemove(Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         return $this->broadcastAction('remove', null, $target, $targets, $channel, $attributes);
     }
 
-    public function broadcastAction(string $action, $content = null, Model|string|null $target = null, ?string $targets = null, Channel|Model|Collection|array|string|null $channel = null, array $attributes = [])
+    public function broadcastAction(string $action, $content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         $broadcast = new PendingBroadcast(
             channels: $channel ? $this->resolveChannels($channel) : [],

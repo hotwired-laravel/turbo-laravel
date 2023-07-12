@@ -32,7 +32,7 @@ class BroadcastAction implements ShouldQueue
 
     public ?string $socket = null;
 
-    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [], $socket = null)
+    public function __construct(array $channels, string $action, string $target = null, string $targets = null, string $partial = null, ?array $partialData = [], string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [], $socket = null)
     {
         $this->channels = $channels;
         $this->action = $action;

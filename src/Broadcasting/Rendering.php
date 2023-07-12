@@ -17,7 +17,7 @@ class Rendering
 
     public bool $escapeInlineContent = true;
 
-    public function __construct(?string $partial = null, ?array $data = [], ?string $inlineContent = null, ?bool $escapeInlineContent = true)
+    public function __construct(string $partial = null, ?array $data = [], string $inlineContent = null, ?bool $escapeInlineContent = true)
     {
         $this->partial = $partial;
         $this->data = $data;

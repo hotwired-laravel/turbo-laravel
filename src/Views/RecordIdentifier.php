@@ -24,7 +24,7 @@ class RecordIdentifier
         $this->record = $record;
     }
 
-    public function domId(?string $prefix = null): string
+    public function domId(string $prefix = null): string
     {
         if ($recordId = $this->record->getKey()) {
             return sprintf('%s%s%s', $this->domClass($prefix), self::DELIMITER, $recordId);
@@ -33,7 +33,7 @@ class RecordIdentifier
         return $this->domClass($prefix ?: static::NEW_PREFIX);
     }
 
-    public function domClass(?string $prefix = null): string
+    public function domClass(string $prefix = null): string
     {
         $singular = Name::forModel($this->record)->singular;
         $delimiter = static::DELIMITER;

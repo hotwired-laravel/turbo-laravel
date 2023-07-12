@@ -225,7 +225,7 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         );
     }
 
-    private function buildAction(string $action, Model|string $target, $content = null, ?Rendering $rendering = null)
+    private function buildAction(string $action, Model|string $target, $content = null, Rendering $rendering = null)
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
@@ -246,7 +246,7 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         return $this;
     }
 
-    public function broadcastTo($channel, ?callable $callback = null)
+    public function broadcastTo($channel, callable $callback = null)
     {
         $callback = $callback ?? function () {
         };
@@ -256,7 +256,7 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         });
     }
 
-    public function broadcastToPrivateChannel($channel, ?callable $callback = null)
+    public function broadcastToPrivateChannel($channel, callable $callback = null)
     {
         $callback = $callback ?? function () {
         };
@@ -267,7 +267,7 @@ class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
         });
     }
 
-    public function broadcastToPresenceChannel($channel, ?callable $callback = null)
+    public function broadcastToPresenceChannel($channel, callable $callback = null)
     {
         $callback = $callback ?? function () {
         };

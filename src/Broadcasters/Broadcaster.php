@@ -20,13 +20,13 @@ interface Broadcaster
         array $channels,
         bool $later,
         string $action,
-        ?string $target = null,
-        ?string $targets = null,
-        ?string $partial = null,
+        string $target = null,
+        string $targets = null,
+        string $partial = null,
         ?array $partialData = [],
-        ?string $inlineContent = null,
+        string $inlineContent = null,
         bool $escapeInlineContent = true,
         array $attributes = [],
-        ?string $exceptSocket = null,
+        string $exceptSocket = null,
     ): void;
 }
