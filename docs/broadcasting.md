@@ -16,7 +16,7 @@ Broadcasting Turbo Streams relies heavily on Laravel's [Broadcasting component](
 
 ## Listening to Broadcasts
 
-You may listen to a Turbo Stream broadcasts on your pages by adding the custom HTML tag `<turbo-echo-stream-source>` that is published to your application's assets (see [here](https://github.com/tonysm/turbo-laravel/blob/main/stubs/resources/js/elements/turbo-echo-stream-tag.js)). You need to pass the channel you want to listen to broadcasts on using the `channel` attribute of this element, like so.
+You may listen to a Turbo Stream broadcasts on your pages by adding the custom HTML tag `<turbo-echo-stream-source>` that is published to your application's assets (see [here](https://github.com/hotwired-laravel/turbo-laravel/blob/main/stubs/resources/js/elements/turbo-echo-stream-tag.js)). You need to pass the channel you want to listen to broadcasts on using the `channel` attribute of this element, like so.
 
 ```blade
 <turbo-echo-stream-source

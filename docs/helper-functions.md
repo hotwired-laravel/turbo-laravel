@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The package ships with a set of helper functions. These functions are all namespaced under `Tonysm\\TurboLaravel\\` but we also add them globally for convenience.
+The package ships with a set of helper functions. These functions are all namespaced under `HotwiredLaravel\\TurboLaravel\\` but we also add them globally for convenience.
 
 ## The `dom_id()`
 
@@ -18,7 +18,7 @@ dom_id($comment);
 
 When a new instance of a model is passed to any of these DOM ID helpers, since it doesn't have an ID, it will prefix the resource name with a `create_` prefix. This way, new instances of an `App\\Models\\Comment` model will generate a `create_comment` DOM ID.
 
-These helpers strip out the model's FQCN (see [config/turbo-laravel.php](https://github.com/tonysm/turbo-laravel/blob/main/config/turbo-laravel.php) if you use an unconventional location for your models).
+These helpers strip out the model's FQCN (see [config/turbo-laravel.php](https://github.com/hotwired-laravel/turbo-laravel/blob/main/config/turbo-laravel.php) if you use an unconventional location for your models).
 
 ## The `dom_class()`
 
