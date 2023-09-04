@@ -24,23 +24,44 @@
     "require-dev": {
         "laravel/pint": "^1.10",
         "orchestra/testbench": "^8.0",
+        "orchestra/workbench": "^0.2.5",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
             "HotwiredLaravel\\TurboLaravel\\": "src"
         },
-        "files": ["src/helpers.php", "src/globals.php"]
+        "files": [
+            "src/helpers.php",
+            "src/globals.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "HotwiredLaravel\\TurboLaravel\\Tests\\": "tests"
+            "HotwiredLaravel\\TurboLaravel\\Tests\\": "tests",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "scripts": {
         "psalm": "vendor/bin/psalm",
         "test": "vendor/bin/phpunit --colors=always",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ],
+        "lint": [
+            "@php vendor/bin/pint"
+        ]
     },
     "config": {
         "sort-packages": true
@@ -48,7 +69,7 @@
     "extra": {
         "laravel": {
             "providers": [
-              "\\HotwiredLaravel\\TurboLaravel\\TurboServiceProvider"
+                "\\HotwiredLaravel\\TurboLaravel\\TurboServiceProvider"
             ],
             "aliases": {
                 "Turbo": "\\HotwiredLaravel\\TurboLaravel\\Facades\\Turbo",
