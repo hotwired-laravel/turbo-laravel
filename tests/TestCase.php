@@ -2,6 +2,7 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests;
 
+use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\TurboServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Workbench\App\Providers\WorkbenchAppServiceProvider;
@@ -13,6 +14,8 @@ class TestCase extends Orchestra
         parent::setUp();
 
         $this->loadMigrationsFrom(dirname(__DIR__).'/workbench/database/migrations/');
+
+        TurboStream::fake();
     }
 
     protected function getPackageProviders($app)

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
-class MultiplePendingTurboStreamResponse implements Responsable, Htmlable, Renderable
+class MultiplePendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 {
     /** @var Collection|PendingTurboStreamResponse[] */
     private Collection $pendingStreams;

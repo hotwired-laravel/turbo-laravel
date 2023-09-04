@@ -4,7 +4,6 @@ namespace HotwiredLaravel\TurboLaravel\Http;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
-use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Contracts\Support\Htmlable;
@@ -15,7 +14,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
 
-class PendingTurboStreamResponse implements Responsable, Htmlable, Renderable
+use function HotwiredLaravel\TurboLaravel\dom_id;
+
+class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 {
     use Macroable;
 
