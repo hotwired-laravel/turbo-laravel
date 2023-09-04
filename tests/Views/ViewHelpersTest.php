@@ -2,12 +2,13 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
-use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class ViewHelpersTest extends TestCase
 {

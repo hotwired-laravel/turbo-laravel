@@ -12,7 +12,7 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        $this->loadMigrationsFrom(dirname(__DIR__) . '/workbench/database/migrations/');
+        $this->loadMigrationsFrom(dirname(__DIR__).'/workbench/database/migrations/');
     }
 
     protected function getPackageProviders($app)

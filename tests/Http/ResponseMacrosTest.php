@@ -2,7 +2,6 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
-use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use HotwiredLaravel\TurboLaravel\Http\TurboStreamResponseFailedException;
 use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
@@ -13,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
+
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class ResponseMacrosTest extends TestCase
 {

@@ -16,11 +16,11 @@ class WorkbenchAppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->booted(function () {
-            View::addLocation(dirname(__DIR__, levels: 2) . '/resources/views');
+            View::addLocation(dirname(__DIR__, levels: 2).'/resources/views');
             Blade::component('app-layout', AppLayout::class);
 
             Route::middleware('web')
-                ->group(dirname(__DIR__, levels: 2) . '/routes/web.php');
+                ->group(dirname(__DIR__, levels: 2).'/routes/web.php');
         });
     }
 

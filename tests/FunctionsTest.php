@@ -2,15 +2,15 @@
 
 namespace Tests;
 
-use function HotwiredLaravel\TurboLaravel\dom_class;
-use function HotwiredLaravel\TurboLaravel\dom_id;
-use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use HotwiredLaravel\TurboLaravel\Turbo;
-use function HotwiredLaravel\TurboLaravel\turbo_stream;
-use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 use Illuminate\Support\Facades\View;
 use Workbench\App\Models\Article;
+
+use function HotwiredLaravel\TurboLaravel\dom_class;
+use function HotwiredLaravel\TurboLaravel\dom_id;
+use function HotwiredLaravel\TurboLaravel\turbo_stream;
+use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 
 class FunctionsTest extends TestCase
 {
