@@ -3,10 +3,13 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use HotwiredLaravel\TurboLaravel\Facades\Turbo;
-use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Blade;
+use Workbench\App\Models\Article;
+use Workbench\App\Models\ReviewStatus;
+use Workbench\App\Models\User\Profile;
+use Workbench\Database\Factories\ArticleFactory;
+use Workbench\Database\Factories\ProfileFactory;
 
 use function HotwiredLaravel\TurboLaravel\dom_id;
 
@@ -15,115 +18,113 @@ class ViewHelpersTest extends TestCase
     /** @test */
     public function renders_turbo_native_correctly()
     {
+        $article = ArticleFactory::new()->create();
+
         $this->assertFalse(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__.'/../Stubs/views/turbo_native.blade.php')->render();
-        $this->assertTrue(Str::contains($rendered, 'Without Turbo Native'));
+
+        $this->get(route('articles.show', $article))
+            ->assertDontSee('Visiting From Turbo Native');
 
         Turbo::setVisitingFromTurboNative();
         $this->assertTrue(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__.'/../Stubs/views/turbo_native.blade.php')->render();
-        $this->assertTrue(Str::contains($rendered, 'With Turbo Native'));
+
+        $this->get(route('articles.show', $article))
+            ->assertSee('Visiting From Turbo Native');
     }
 
     /** @test */
     public function renders_unless_turbo_native()
     {
+        $article = ArticleFactory::new()->create();
+
         $this->assertFalse(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__.'/../Stubs/views/unless_turbo_native.blade.php')->render();
-        $this->assertTrue(Str::contains($rendered, 'Without Turbo Native'));
+
+        $this->get(route('articles.show', $article))
+            ->assertSee('Back to Index');
 
         Turbo::setVisitingFromTurboNative();
         $this->assertTrue(Turbo::isTurboNativeVisit());
-        $rendered = View::file(__DIR__.'/../Stubs/views/unless_turbo_native.blade.php')->render();
-        $this->assertTrue(Str::contains($rendered, 'With Turbo Native'));
+
+        $this->get(route('articles.show', $article))
+            ->assertDontSee('Back to Index');
     }
 
     /** @test */
     public function renders_dom_id()
     {
-        $testModel = Models\TestModel::create(['name' => 'lorem']);
+        $article = ArticleFactory::new()->create();
 
-        $renderedDomId = View::file(__DIR__.'/../Stubs/views/domid.blade.php', ['model' => $testModel])->render();
-        $renderedDomIdWithPrefix = View::file(__DIR__.'/../Stubs/views/domid_with_prefix.blade.php', ['model' => $testModel])->render();
-        $rendersDomIdOfNewModel = View::file(__DIR__.'/../Stubs/views/domid.blade.php', ['model' => new Models\TestModel()])->render();
+        $renderedDomId = Blade::render('<div id="@domid($article)"></div>', ['article' => $article]);
+        $renderedDomIdWithPrefix = Blade::render('<div id="@domid($article, "favorites")"></div>', ['article' => $article]);
+        $rendersDomIdOfNewModel = Blade::render('<div id="@domid($article)"></div>', ['article' => new Article()]);
 
-        $this->assertEquals('<div id="test_model_1"></div>', trim($renderedDomId));
-        $this->assertEquals('<div id="favorites_test_model_1"></div>', trim($renderedDomIdWithPrefix));
-        $this->assertEquals('<div id="create_test_model"></div>', trim($rendersDomIdOfNewModel));
+        $this->assertEquals('<div id="article_'.$article->id.'"></div>', trim($renderedDomId));
+        $this->assertEquals('<div id="favorites_article_'.$article->id.'"></div>', trim($renderedDomIdWithPrefix));
+        $this->assertEquals('<div id="create_article"></div>', trim($rendersDomIdOfNewModel));
     }
 
     /** @test */
-    public function renders_streamable_dom_id()
+    public function dom_id_with_regular_classes()
     {
-        $testStreamable = new Models\TestTurboStreamable;
+        $renderedDomId = Blade::render('<div id="@domid($status)"></div>', ['status' => ReviewStatus::Approved]);
+        $renderedDomIdWithPrefix = Blade::render('<div id="@domid($status, "favorites")"></div>', ['status' => ReviewStatus::Approved]);
 
-        $renderedDomId = View::file(__DIR__.'/../Stubs/views/domid.blade.php', ['model' => $testStreamable])->render();
-        $renderedDomIdWithPrefix = View::file(__DIR__.'/../Stubs/views/domid_with_prefix.blade.php', ['model' => $testStreamable])->render();
-
-        $this->assertEquals('<div id="test_turbo_streamable_turbo-dom-id"></div>', trim($renderedDomId));
-        $this->assertEquals('<div id="favorites_test_turbo_streamable_turbo-dom-id"></div>', trim($renderedDomIdWithPrefix));
+        $this->assertEquals('<div id="review_status_approved"></div>', trim($renderedDomId));
+        $this->assertEquals('<div id="favorites_review_status_approved"></div>', trim($renderedDomIdWithPrefix));
     }
 
     /** @test */
     public function renders_dom_class()
     {
-        $testModel = Models\TestModel::create(['name' => 'lorem']);
+        $article = ArticleFactory::new()->create();
 
-        $renderedDomClass = View::file(__DIR__.'/../Stubs/views/domclass.blade.php', ['model' => $testModel])->render();
-        $renderedDomClassWithPrefix = View::file(__DIR__.'/../Stubs/views/domclass_with_prefix.blade.php', ['model' => $testModel])->render();
-        $rendersDomClassOfNewModel = View::file(__DIR__.'/../Stubs/views/domclass.blade.php', ['model' => new Models\TestModel()])->render();
+        $renderedDomClass = Blade::render('<div class="@domclass($article)"></div>', ['article' => $article]);
+        $renderedDomClassWithPrefix = Blade::render('<div class="@domclass($article, "favorites")"></div>', ['article' => $article]);
+        $rendersDomClassOfNewModel = Blade::render('<div class="@domclass($article)"></div>', ['article' => new Article()]);
 
-        $this->assertEquals('<div class="test_model"></div>', trim($renderedDomClass));
-        $this->assertEquals('<div class="favorites_test_model"></div>', trim($renderedDomClassWithPrefix));
-        $this->assertEquals('<div class="test_model"></div>', trim($rendersDomClassOfNewModel));
+        $this->assertEquals('<div class="article"></div>', trim($renderedDomClass));
+        $this->assertEquals('<div class="favorites_article"></div>', trim($renderedDomClassWithPrefix));
+        $this->assertEquals('<div class="article"></div>', trim($rendersDomClassOfNewModel));
     }
 
     /** @test */
     public function renders_streamable_dom_class()
     {
-        $testModel = new Models\TestTurboStreamable;
+        $renderedDomClass = Blade::render('<div class="@domclass($status)"></div>', ['status' => ReviewStatus::Approved]);
+        $renderedDomClassWithPrefix = Blade::render('<div class="@domclass($status, "favorites")"></div>', ['status' => ReviewStatus::Approved]);
 
-        $renderedDomClass = View::file(__DIR__.'/../Stubs/views/domclass.blade.php', ['model' => $testModel])->render();
-        $renderedDomClassWithPrefix = View::file(__DIR__.'/../Stubs/views/domclass_with_prefix.blade.php', ['model' => $testModel])->render();
-
-        $this->assertEquals('<div class="test_turbo_streamable"></div>', trim($renderedDomClass));
-        $this->assertEquals('<div class="favorites_test_turbo_streamable"></div>', trim($renderedDomClassWithPrefix));
+        $this->assertEquals('<div class="review_status"></div>', trim($renderedDomClass));
+        $this->assertEquals('<div class="favorites_review_status"></div>', trim($renderedDomClassWithPrefix));
     }
 
     /** @test */
     public function can_use_helper_function()
     {
-        $testModel = Models\TestModel::create(['name' => 'lorem']);
+        $article = ArticleFactory::new()->create();
 
-        $this->assertEquals('test_model_1', dom_id($testModel));
-        $this->assertEquals('my_context_test_model_1', dom_id($testModel, 'my_context'));
+        $this->assertEquals('article_'.$article->id, dom_id($article));
+        $this->assertEquals('favorites_article_'.$article->id, dom_id($article, 'favorites'));
     }
 
     /** @test */
     public function generates_model_ids_for_models_in_nested_folders()
     {
-        $testModel = Models\TestModel::create(['name' => 'lorem']);
+        $profile = ProfileFactory::new()->create();
 
-        $this->assertEquals('test_model_1', dom_id($testModel));
-        $this->assertEquals('my_context_test_model_1', dom_id($testModel, 'my_context'));
-
-        $accountTestModel = Models\Account\TestModel::create(['name' => 'lorem']);
-
-        $this->assertEquals("account_test_model_{$accountTestModel->getKey()}", dom_id($accountTestModel));
-        $this->assertEquals("my_context_account_test_model_{$accountTestModel->getKey()}", dom_id($accountTestModel, 'my_context'));
-
-        $this->assertEquals('create_account_test_model', dom_id(new Models\Account\TestModel()));
+        $this->assertEquals('user_profile_'.$profile->id, dom_id($profile));
+        $this->assertEquals('posts_user_profile_'.$profile->id, dom_id($profile, 'posts'));
+        $this->assertEquals('create_user_profile', dom_id(new Profile()));
     }
 
     /** @test */
     public function generates_channel_for_model()
     {
-        $testModel = Models\TestModel::create(['name' => 'lorem']);
+        $article = ArticleFactory::new()->create();
 
-        $renderedChannelName = View::file(__DIR__.'/../Stubs/views/channelname.blade.php', ['model' => $testModel])->render();
+        $renderedChannelName = Blade::render('<x-turbo-stream-from :source="$article" />', ['article' => $article]);
 
         $this->assertStringContainsString(
-            sprintf('channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.%s"', $testModel->getKey()),
+            sprintf('channel="Workbench.App.Models.Article.%s"', $article->getKey()),
             $renderedChannelName
         );
     }
