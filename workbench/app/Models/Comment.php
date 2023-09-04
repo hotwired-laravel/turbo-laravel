@@ -5,14 +5,14 @@ namespace Workbench\App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends Model
+class Comment extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function comments()
+    public function article()
     {
-        return $this->hasMany(Comment::class);
+        return $this->belongsTo(Article::class);
     }
 }

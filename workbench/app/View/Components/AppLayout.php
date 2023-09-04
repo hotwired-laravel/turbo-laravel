@@ -8,7 +8,7 @@ use Illuminate\View\Component;
 
 class AppLayout extends Component
 {
-    public function __construct(public $head = null)
+    public function __construct(public $head = null, public $title = null)
     {
         //
     }

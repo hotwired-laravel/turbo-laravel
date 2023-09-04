@@ -173,11 +173,11 @@ class TurboMiddleware
 
     protected function guessRouteName(string $routeName): ?string
     {
-        if (! Str::endsWith($routeName, ['.store', '.update'])) {
+        if (! Str::endsWith($routeName, ['.store', '.update', '.destroy'])) {
             return null;
         }
 
-        return str_replace(['.store', '.update'], ['.create', '.edit'], $routeName);
+        return str_replace(['.store', '.update', '.destroy'], ['.create', '.edit', '.delete'], $routeName);
     }
 
     protected function inExceptArray(Request $request): bool
