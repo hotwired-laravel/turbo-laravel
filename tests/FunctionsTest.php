@@ -10,14 +10,19 @@ use HotwiredLaravel\TurboLaravel\Turbo;
 use function HotwiredLaravel\TurboLaravel\turbo_stream;
 use function HotwiredLaravel\TurboLaravel\turbo_stream_view;
 use Illuminate\Support\Facades\View;
+use Workbench\App\Models\Article;
 
 class FunctionsTest extends TestCase
 {
+    private Article $article;
+
     public function setUp(): void
     {
         parent::setUp();
 
         View::addLocation(__DIR__.'/Stubs/views');
+
+        $this->article = Article::create(['title' => 'Hello World']);
     }
 
     /** @test */
@@ -47,18 +52,17 @@ class FunctionsTest extends TestCase
             ])),
         );
 
-        $testModel = TestModel::create(['name' => 'Hello']);
-        $expected = trim(view('test_models._test_model', [
-            'testModel' => $testModel,
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
         ])->render());
 
         $this->assertEquals(
             trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
+            <turbo-stream target="articles" action="append">
                 <template>{$expected}</template>
             </turbo-stream>
             HTML),
-            trim(turbo_stream($testModel)),
+            trim(turbo_stream($this->article)),
         );
     }
 
@@ -89,29 +93,23 @@ class FunctionsTest extends TestCase
             ])),
         );
 
-        $testModel = TestModel::create(['name' => 'Hello']);
-        $expected = trim(view('test_models._test_model', [
-            'testModel' => $testModel,
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
         ])->render());
 
         $this->assertEquals(
             trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
+            <turbo-stream target="articles" action="append">
                 <template>{$expected}</template>
             </turbo-stream>
             HTML),
-            trim(\turbo_stream($testModel)),
+            trim(\turbo_stream($this->article)),
         );
     }
 
     /** @test */
     public function namespace_turbo_stream_htmlable()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-        $expected = trim(view('test_models._test_model', [
-            'testModel' => $testModel,
-        ])->render());
-
         $this->assertEquals(
             trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
@@ -121,17 +119,21 @@ class FunctionsTest extends TestCase
             <turbo-stream target="post_123" action="remove">
             </turbo-stream>
             HTML),
-            trim(View::make('turbo_stream_global_htmlable_multiple')->render())
+            trim(View::make('functions.turbo_stream_ns_fn_htmlable_multiple')->render())
         );
+
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
 
         $this->assertEquals(
             trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
+            <turbo-stream target="articles" action="append">
                 <template>{$expected}</template>
             </turbo-stream>
             HTML),
-            trim(View::make('turbo_stream_global_htmlable_model', [
-                'testModel' => $testModel,
+            trim(View::make('functions.turbo_stream_ns_fn_htmlable_model', [
+                'model' => $this->article,
             ])->render())
         );
     }
@@ -139,11 +141,6 @@ class FunctionsTest extends TestCase
     /** @test */
     public function global_turbo_stream_htmlable()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-        $expected = trim(view('test_models._test_model', [
-            'testModel' => $testModel,
-        ])->render());
-
         $this->assertEquals(
             trim(<<<'HTML'
             <turbo-stream target="posts" action="append">
@@ -153,17 +150,21 @@ class FunctionsTest extends TestCase
             <turbo-stream target="post_123" action="remove">
             </turbo-stream>
             HTML),
-            trim(View::make('turbo_stream_global_htmlable_multiple')->render())
+            trim(View::make('functions.turbo_stream_global_fn_htmlable_multiple')->render())
         );
+
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
 
         $this->assertEquals(
             trim(<<<HTML
-            <turbo-stream target="test_models" action="append">
+            <turbo-stream target="articles" action="append">
                 <template>{$expected}</template>
             </turbo-stream>
             HTML),
-            trim(View::make('turbo_stream_global_htmlable_model', [
-                'testModel' => $testModel,
+            trim(View::make('functions.turbo_stream_global_fn_htmlable_model', [
+                'model' => $this->article,
             ])->render())
         );
     }
@@ -171,45 +172,37 @@ class FunctionsTest extends TestCase
     /** @test */
     public function namespaced_dom_id_fn()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-
-        $this->assertEquals("test_model_{$testModel->id}", dom_id($testModel));
+        $this->assertEquals("article_{$this->article->id}", dom_id($this->article));
     }
 
     /** @test */
     public function global_dom_id_fn()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-
-        $this->assertEquals("test_model_{$testModel->id}", \dom_id($testModel));
+        $this->assertEquals("article_{$this->article->id}", \dom_id($this->article));
     }
 
     /** @test */
     public function namespaced_dom_class_fn()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-
-        $this->assertEquals('test_model', dom_class($testModel));
+        $this->assertEquals('article', dom_class($this->article));
     }
 
     /** @test */
     public function global_dom_class_fn()
     {
-        $testModel = TestModel::create(['name' => 'Hello']);
-
-        $this->assertEquals('test_model', \dom_class($testModel));
+        $this->assertEquals('article', \dom_class($this->article));
     }
 
     /** @test */
     public function namespaced_turbo_stream_view_fn()
     {
-        $response = turbo_stream_view('turbo_stream_view_namespaced', [
-            'title' => 'Post Namespaced',
+        $response = turbo_stream_view('functions.turbo_stream_view', [
+            'title' => 'Post Using Namespaced Function',
         ]);
 
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
         $this->assertEquals(
-            view('turbo_stream_view_namespaced', ['title' => 'Post Namespaced'])->render(),
+            view('functions.turbo_stream_view', ['title' => 'Post Using Namespaced Function'])->render(),
             $response->content(),
         );
     }
@@ -217,13 +210,13 @@ class FunctionsTest extends TestCase
     /** @test */
     public function global_turbo_stream_view_fn()
     {
-        $response = \turbo_stream_view('turbo_stream_view_global', [
+        $response = \turbo_stream_view('functions.turbo_stream_view', [
             'title' => 'Post Global',
         ]);
 
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
         $this->assertEquals(
-            view('turbo_stream_view_global', ['title' => 'Post Global'])->render(),
+            view('functions.turbo_stream_view', ['title' => 'Post Global'])->render(),
             $response->content(),
         );
     }

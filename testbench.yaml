@@ -1,4 +1,5 @@
-providers: []
+providers:
+  - Workbench\App\Providers\WorkbenchAppServiceProvider
 
 migrations: true
 seeders: []
