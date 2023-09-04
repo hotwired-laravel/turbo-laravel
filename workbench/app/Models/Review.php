@@ -6,15 +6,23 @@ use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Article extends Model
+class Review extends Model
 {
     use Broadcasts;
     use HasFactory;
 
     protected $guarded = [];
 
-    public function comments()
+    protected $casts = [
+        'status' => ReviewStatus::class,
+    ];
+
+    protected $touches = [
+        'comment',
+    ];
+
+    public function comment()
     {
-        return $this->hasMany(Comment::class);
+        return $this->belongsTo(Comment::class);
     }
 }

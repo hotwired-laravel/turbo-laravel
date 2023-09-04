@@ -4,14 +4,15 @@ namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
-use HotwiredLaravel\TurboLaravel\Jobs\BroadcastAction;
-use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-use HotwiredLaravel\TurboLaravel\Tests\TestModel;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\View;
+use Workbench\App\Models\Comment;
+use Workbench\App\Models\Company;
+use Workbench\App\Models\ReviewStatus;
+use Workbench\Database\Factories\ArticleFactory;
+use Workbench\Database\Factories\CommentFactory;
+use Workbench\Database\Factories\CompanyFactory;
+use Workbench\Database\Factories\ContactFactory;
 
 class BroadcastsModelTest extends TestCase
 {
@@ -19,30 +20,28 @@ class BroadcastsModelTest extends TestCase
     {
         parent::setUp();
 
-        View::addLocation(__DIR__.'/../Stubs/views');
-
         config(['turbo-laravel.queue' => false]);
+
+        TurboStream::fake();
     }
 
     /** @test */
     public function manually_broadcast_append()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
+        $article->broadcastAppend();
 
-        $model->broadcastAppend();
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals('private-broadcast_test_models', $job->channels[0]->name);
-            $this->assertEquals('broadcast_test_models', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
-            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-articles', $broadcast->channels[0]->name);
+            $this->assertEquals('articles', $broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -51,25 +50,23 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_append_with_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
-
-        $model->broadcastAppend()
+        $article->broadcastAppend()
             ->to($channel = new Channel('hello'))
             ->target('some_other_target')
             ->partial('another_partial', ['lorem' => 'ipsum']);
 
-        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($channel, $job->channels[0]);
-            $this->assertEquals('some_other_target', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('another_partial', $job->partial);
-            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('some_other_target', $broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('another_partial', $broadcast->partialView);
+            $this->assertEquals(['lorem' => 'ipsum'], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -78,24 +75,25 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_before_with_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
-
-        $model->broadcastBefore('example_dom_id_target')
+        $article->broadcastBefore('articles_card')
             ->to($channel = new Channel('hello'))
-            ->partial('another_partial', ['lorem' => 'ipsum']);
+            ->partial('articles._article_card', [
+                'article' => $article,
+                'lorem' => 'ipsum',
+            ]);
 
-        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($channel, $job->channels[0]);
-            $this->assertEquals('example_dom_id_target', $job->target);
-            $this->assertEquals('before', $job->action);
-            $this->assertEquals('another_partial', $job->partial);
-            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('articles_card', $broadcast->target);
+            $this->assertEquals('before', $broadcast->action);
+            $this->assertEquals('articles._article_card', $broadcast->partialView);
+            $this->assertEquals(['article' => $article, 'lorem' => 'ipsum'], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -104,24 +102,25 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_after_with_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
-
-        $model->broadcastAfter('example_dom_id_target')
+        $article->broadcastAfter('article_cards')
             ->to($channel = new Channel('hello'))
-            ->partial('another_partial', ['lorem' => 'ipsum']);
+            ->partial('articles._article_card', [
+                'article' => $article,
+                'lorem' => 'ipsum',
+            ]);
 
-        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($channel, $job->channels[0]);
-            $this->assertEquals('example_dom_id_target', $job->target);
-            $this->assertEquals('after', $job->action);
-            $this->assertEquals('another_partial', $job->partial);
-            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('article_cards', $broadcast->target);
+            $this->assertEquals('after', $broadcast->action);
+            $this->assertEquals('articles._article_card', $broadcast->partialView);
+            $this->assertEquals(['article' => $article, 'lorem' => 'ipsum'], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -130,23 +129,24 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_before_to_with_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
+        $article->broadcastBeforeTo($channel = new Channel('hello'), 'example_dom_id_target')
+            ->partial('articles._article_card', [
+                'article' => $article,
+                'lorem' => 'ipsum',
+            ]);
 
-        $model->broadcastBeforeTo($channel = new Channel('hello'), 'example_dom_id_target')
-            ->partial('another_partial', ['lorem' => 'ipsum']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($channel, $job->channels[0]);
-            $this->assertEquals('example_dom_id_target', $job->target);
-            $this->assertEquals('before', $job->action);
-            $this->assertEquals('another_partial', $job->partial);
-            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('example_dom_id_target', $broadcast->target);
+            $this->assertEquals('before', $broadcast->action);
+            $this->assertEquals('articles._article_card', $broadcast->partialView);
+            $this->assertEquals(['article' => $article, 'lorem' => 'ipsum'], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -155,23 +155,24 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_after_to_with_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
+        $article->broadcastAfterTo($channel = new Channel('hello'), 'example_dom_id_target')
+            ->partial('articles._article_card', [
+                'article' => $article,
+                'lorem' => 'ipsum',
+            ]);
 
-        $model->broadcastAfterTo($channel = new Channel('hello'), 'example_dom_id_target')
-            ->partial('another_partial', ['lorem' => 'ipsum']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($channel) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($channel, $job->channels[0]);
-            $this->assertEquals('example_dom_id_target', $job->target);
-            $this->assertEquals('after', $job->action);
-            $this->assertEquals('another_partial', $job->partial);
-            $this->assertEquals(['lorem' => 'ipsum'], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('example_dom_id_target', $broadcast->target);
+            $this->assertEquals('after', $broadcast->action);
+            $this->assertEquals('articles._article_card', $broadcast->partialView);
+            $this->assertEquals(['article' => $article, 'lorem' => 'ipsum'], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -180,22 +181,20 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_broadcast_replace()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
+        $article->broadcastReplace();
 
-        $model->broadcastReplace();
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
-            $this->assertEquals('replace', $job->action);
-            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
-            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals("article_{$article->id}", $broadcast->target);
+            $this->assertEquals('replace', $broadcast->action);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -204,127 +203,56 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_broadcast_remove()
     {
-        Bus::fake([BroadcastAction::class]);
+        $article = ArticleFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        TurboStream::assertNothingWasBroadcasted();
 
-        Bus::assertNotDispatched(BroadcastAction::class);
+        $article->broadcastRemove();
 
-        $model->broadcastRemove();
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
-            $this->assertEquals('remove', $job->action);
-            $this->assertNull($job->partial);
-            $this->assertEquals([], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals("article_{$article->id}", $broadcast->target);
+            $this->assertEquals('remove', $broadcast->action);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEquals([], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
     }
 
     /** @test */
-    public function can_configure_to_auto_broadcast()
+    public function can_auto_broadcast()
     {
-        Bus::fake([BroadcastAction::class]);
+        $comment = CommentFactory::new()->create();
 
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
-
-        Bus::assertNotDispatched(BroadcastAction::class);
-
-        $model->broadcastReplace();
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $model->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals("broadcast_test_model_{$model->id}", $job->target);
-            $this->assertEquals('replace', $job->action);
-            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
-            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-'.$comment->article->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals('comments', $broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('comments._comment', $broadcast->partialView);
+            $this->assertEquals(['comment' => $comment], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
     }
 
     /** @test */
-    public function can_configure_auto_broadcast_with_broadcasts_to_property()
+    public function can_auto_broadcast_with_custom_overrides()
     {
-        Bus::fake([BroadcastAction::class]);
+        $company = CompanyFactory::new()->create();
 
-        $model = AutoBroadcastTestModel::create(['name' => 'Testing']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals('private-auto_broadcast_test_models', $job->channels[0]->name);
-            $this->assertEquals('auto_broadcast_test_models', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('auto_broadcast_test_models._auto_broadcast_test_model', $job->partial);
-            $this->assertEquals(['autoBroadcastTestModel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function auto_broadcasts_with_custom_inserts()
-    {
-        Bus::fake([BroadcastAction::class]);
-
-        $modelWithCustomInsert = AutoBroadcastWithCustomInsertsTestModel::create(['name' => 'Testing']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($modelWithCustomInsert) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals('private-auto_broadcast_with_custom_inserts_test_models', $job->channels[0]->name);
-            $this->assertEquals('auto_broadcast_with_custom_inserts_test_models', $job->target);
-            $this->assertEquals('prepend', $job->action);
-            $this->assertEquals('auto_broadcast_with_custom_inserts_test_models._auto_broadcast_with_custom_inserts_test_model', $job->partial);
-            $this->assertEquals(['autoBroadcastWithCustomInsertsTestModel' => $modelWithCustomInsert], $job->partialData);
-            $this->assertNull($job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function auto_broadcasts_with_custom_stream()
-    {
-        Bus::fake([BroadcastAction::class]);
-
-        $model = AutoBroadcastWithCustomStreamTestModel::create(['name' => 'Testing']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals('private-my-custom-channel', $job->channels[0]->name);
-            $this->assertEquals('auto_broadcast_with_custom_stream_test_models', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('auto_broadcast_with_custom_stream_test_models._auto_broadcast_with_custom_stream_test_model', $job->partial);
-            $this->assertEquals(['autoBroadcastWithCustomStreamTestModel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function can_configure_auto_wire_to_parent_model_using_property()
-    {
-        Bus::fake([BroadcastAction::class]);
-
-        $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChild::create(['name' => 'Child', 'parent_id' => $parent->id]);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals('related_model_children', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('related_model_children._related_model_child', $job->partial);
-            $this->assertEquals(['relatedModelChild' => $child], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-custom-channel', $broadcast->channels[0]->name);
+            $this->assertEquals('companies', $broadcast->target);
+            $this->assertEquals('prepend', $broadcast->action);
+            $this->assertEquals('companies._company', $broadcast->partialView);
+            $this->assertEquals(['company' => $company], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -333,60 +261,20 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function can_configure_auto_broadcast_to_parent_model_using_a_method()
     {
-        Bus::fake([BroadcastAction::class]);
+        $company = Company::withoutEvents(fn () => CompanyFactory::new()->create());
 
-        $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = RelatedModelChildMethod::create(['name' => 'Child', 'parent_id' => $parent->id]);
+        $contact = ContactFactory::new()->create([
+            'company_id' => $company,
+        ]);
 
-        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals('related_model_child_methods', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('related_model_child_methods._related_model_child_method', $job->partial);
-            $this->assertEquals(['relatedModelChildMethod' => $child], $job->partialData);
-            $this->assertNull($job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function can_configure_auto_broadcast_to_channel()
-    {
-        Bus::fake([BroadcastAction::class]);
-
-        $model = BroadcastTestModelUsingChannel::create(['name' => 'Testing']);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame($model::$TEST_CHANNEL, $job->channels[0]);
-            $this->assertEquals('broadcast_test_model_using_channels', $job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('broadcast_test_model_using_channels._broadcast_test_model_using_channel', $job->partial);
-            $this->assertEquals(['broadcastTestModelUsingChannel' => $model], $job->partialData);
-            $this->assertNull($job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function combines_both_properties()
-    {
-        Bus::fake([BroadcastAction::class]);
-
-        $parent = RelatedModelParent::create(['name' => 'Parent']);
-        $child = CombinedPropertiesTestModel::create(['name' => 'Combined', 'parent_id' => $parent->id]);
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($parent, $child) {
-            $this->assertCount(1, $job->channels);
-            $this->assertSame(sprintf('private-%s', $parent->broadcastChannel()), $job->channels[0]->name);
-            $this->assertEquals('combined_properties_test_models', $job->target);
-            $this->assertEquals('prepend', $job->action);
-            $this->assertEquals('combined_properties_test_models._combined_properties_test_model', $job->partial);
-            $this->assertEquals(['combinedPropertiesTestModel' => $child], $job->partialData);
-            $this->assertNull($job->targets);
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company, $contact) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $company->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals('contacts', $broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('contacts._contact', $broadcast->partialView);
+            $this->assertEquals(['contact' => $contact], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
 
             return true;
         });
@@ -395,46 +283,20 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function manually_broadcast_append_targets()
     {
-        Bus::fake([BroadcastAction::class]);
-
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
-
-        Bus::assertNotDispatched(BroadcastAction::class);
-
-        $model->broadcastAppend()
-            ->targets('.test_targets');
-
-        Bus::assertDispatched(function (BroadcastAction $job) use ($model) {
-            $this->assertCount(1, $job->channels);
-            $this->assertEquals('private-broadcast_test_models', $job->channels[0]->name);
-            $this->assertNull($job->target);
-            $this->assertEquals('append', $job->action);
-            $this->assertEquals('broadcast_test_models._broadcast_test_model', $job->partial);
-            $this->assertEquals(['broadcastTestModel' => $model], $job->partialData);
-            $this->assertEquals('.test_targets', $job->targets);
-
-            return true;
-        });
-    }
-
-    /** @test */
-    public function using_the_new_broadcast_fake()
-    {
-        TurboStream::fake();
-
-        $model = BroadcastTestModel::create(['name' => 'Testing']);
+        $article = ArticleFactory::new()->create();
 
         TurboStream::assertNothingWasBroadcasted();
 
-        $model->broadcastAppend()->targets('.test_targets');
+        $article->broadcastAppend()
+            ->targets('.test_targets');
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($model) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertEquals('private-broadcast_test_models', $broadcast->channels[0]->name);
+            $this->assertEquals('private-articles', $broadcast->channels[0]->name);
             $this->assertNull($broadcast->target);
             $this->assertEquals('append', $broadcast->action);
-            $this->assertEquals('broadcast_test_models._broadcast_test_model', $broadcast->partialView);
-            $this->assertEquals(['broadcastTestModel' => $model], $broadcast->partialData);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
             $this->assertEquals('.test_targets', $broadcast->targets);
 
             return true;
@@ -444,152 +306,36 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function broadcasts_on_model_touching()
     {
-        TurboStream::fake();
-
         $oldUpdatedAt = now()->subDays(10);
 
-        $post = Post::withoutEvents(fn () => Post::forceCreate([
-            'title' => 'Testing Model Touching',
+        $comment = Comment::withoutEvents(fn () => CommentFactory::new()->create([
             'updated_at' => $oldUpdatedAt,
         ]));
 
-        $this->assertTrue($post->fresh()->updated_at->isSameDay($oldUpdatedAt));
+        $this->assertTrue($comment->fresh()->updated_at->isSameDay($oldUpdatedAt));
+
         TurboStream::assertNothingWasBroadcasted();
 
-        $post->fresh()->comments()->create([
-            'body' => 'Hello World',
+        $comment->fresh()->review()->create([
+            'status' => ReviewStatus::Approved,
         ]);
 
         // Must have updated the parent timestamps...
-        $this->assertFalse($post->fresh()->updated_at->isSameDay($oldUpdatedAt));
+        $this->assertFalse($comment->fresh()->updated_at->isSameDay($oldUpdatedAt));
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($post) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertEquals('private-'.$post->broadcastChannel(), $broadcast->channels[0]->name);
-            $this->assertEquals(dom_id($post), $broadcast->target);
+            // The comment model is configured to broadacst to the article's channel...
+            $this->assertEquals('private-'.$comment->article->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals(dom_id($comment), $broadcast->target);
             $this->assertNull($broadcast->targets);
             $this->assertEquals('replace', $broadcast->action);
-            $this->assertEquals('posts._post', $broadcast->partialView);
+            $this->assertEquals('comments._comment', $broadcast->partialView);
             $this->assertCount(1, $broadcast->partialData);
-            $this->assertArrayHasKey('post', $broadcast->partialData);
-            $this->assertTrue($post->is($broadcast->partialData['post']));
+            $this->assertArrayHasKey('comment', $broadcast->partialData);
+            $this->assertTrue($comment->is($broadcast->partialData['comment']));
 
             return true;
         });
-    }
-}
-
-class BroadcastTestModel extends TestModel
-{
-    use Broadcasts;
-}
-
-class AutoBroadcastTestModel extends TestModel
-{
-    use Broadcasts;
-
-    protected $broadcasts = true;
-}
-
-class AutoBroadcastWithCustomInsertsTestModel extends TestModel
-{
-    use Broadcasts;
-
-    protected $broadcasts = [
-        'insertsBy' => 'prepend',
-    ];
-}
-
-class AutoBroadcastWithCustomStreamTestModel extends TestModel
-{
-    use Broadcasts;
-
-    protected $broadcasts = [
-        'stream' => 'my-custom-channel',
-    ];
-}
-
-class RelatedModelParent extends TestModel
-{
-}
-
-class RelatedModelChild extends TestModel
-{
-    use Broadcasts;
-
-    protected $broadcastsTo = 'parent';
-
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class RelatedModelChildMethod extends TestModel
-{
-    use Broadcasts;
-
-    public function broadcastsTo()
-    {
-        return [
-            $this->parent,
-        ];
-    }
-
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class BroadcastTestModelUsingChannel extends TestModel
-{
-    use Broadcasts;
-
-    public static $TEST_CHANNEL;
-
-    public function broadcastsTo()
-    {
-        return static::$TEST_CHANNEL ??= new Channel('testing');
-    }
-}
-
-class CombinedPropertiesTestModel extends TestModel
-{
-    use Broadcasts;
-
-    protected $broadcasts = ['insertsBy' => 'prepend'];
-
-    protected $broadcastsTo = 'parent';
-
-    public function parent()
-    {
-        return $this->belongsTo(RelatedModelParent::class);
-    }
-}
-
-class Post extends Model
-{
-    use Broadcasts;
-
-    protected $guarded = [];
-
-    protected $broadcasts = ['insertsBy' => 'prepend'];
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-}
-
-class Comment extends Model
-{
-    protected $guarded = [];
-
-    protected $touches = ['post'];
-
-    public function post()
-    {
-        return $this->belongsTo(Post::class);
     }
 }
