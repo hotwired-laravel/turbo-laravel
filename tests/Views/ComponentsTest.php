@@ -2,10 +2,10 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
-use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\View\ViewException;
+use Workbench\Database\Factories\ArticleFactory;
 
 class ComponentsTest extends TestCase
 {
@@ -27,10 +27,10 @@ class ComponentsTest extends TestCase
 
         // Passing a model...
         $this->blade('<x-turbo-frame :id="$model" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
-            'model' => new TestModel(['id' => 123]),
+            'model' => $article = ArticleFactory::new()->create(),
         ])
             ->assertSee('<turbo-frame', false)
-            ->assertSee('id="test_model_123"', false)
+            ->assertSee('id="article_'.$article->id.'"', false)
             ->assertSee(sprintf(' src="%s"', url('somewhere')), false)
             ->assertSee('loading="lazy"', false)
             ->assertSee('target="_top"', false)
@@ -40,10 +40,10 @@ class ComponentsTest extends TestCase
 
         // Passing a model and prefix...
         $this->blade('<x-turbo-frame :id="[$model, \'comments\']" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
-            'model' => new TestModel(['id' => 123]),
+            'model' => $article = ArticleFactory::new()->create(),
         ])
             ->assertSee('<turbo-frame', false)
-            ->assertSee('id="comments_test_model_123"', false)
+            ->assertSee('id="comments_article_'.$article->id.'"', false)
             ->assertSee(sprintf(' src="%s"', url('somewhere')), false)
             ->assertSee('loading="lazy"', false)
             ->assertSee('target="_top"', false)
@@ -80,9 +80,9 @@ class ComponentsTest extends TestCase
             <x-turbo-stream :target="[$model, 'comments']" action="append">
                 <p>Hello, World</p>
             </x-turbo-stream>
-            BLADE, ['model' => new TestModel(['id' => 123])])
+            BLADE, ['model' => $article = ArticleFactory::new()->create()])
             ->assertSee('<turbo-stream', false)
-            ->assertSee('target="comments_test_model_123"', false)
+            ->assertSee('target="comments_article_'.$article->id.'"', false)
             ->assertSee('action="append"', false)
             ->assertSee('<template><p>Hello, World</p></template>', false)
             ->assertSee('</turbo-stream>', false)
@@ -93,9 +93,9 @@ class ComponentsTest extends TestCase
             <x-turbo-stream :target="$model" action="remove">
                 <p>Hello, World</p>
             </x-turbo-stream>
-            BLADE, ['model' => new TestModel(['id' => 123])])
+            BLADE, ['model' => $article = ArticleFactory::new()->create()])
             ->assertSee('<turbo-stream', false)
-            ->assertSee('target="test_model_123"', false)
+            ->assertSee('target="article_'.$article->id.'"', false)
             ->assertSee('action="remove"', false)
             ->assertDontSee('<template>', false)
             ->assertDontSee('</template>', false)
@@ -120,14 +120,12 @@ class ComponentsTest extends TestCase
     public function stream_from()
     {
         $this->blade('<x-turbo-stream-from :source="$model" />', [
-            'model' => new TestModel(['id' => 123]),
-        ])
-            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="private" ></turbo-echo-stream-source>', false);
+            'model' => $article = ArticleFactory::new()->create(),
+        ])->assertSee('<turbo-echo-stream-source channel="Workbench.App.Models.Article.'.$article->id.'" type="private" ></turbo-echo-stream-source>', false);
 
         $this->blade('<x-turbo-stream-from :source="$model" type="public" />', [
-            'model' => new TestModel(['id' => 123]),
-        ])
-            ->assertSee('<turbo-echo-stream-source channel="HotwiredLaravel.TurboLaravel.Tests.Stubs.Models.TestModel.123" type="public" ></turbo-echo-stream-source>', false);
+            'model' => $article,
+        ])->assertSee('<turbo-echo-stream-source channel="Workbench.App.Models.Article.'.$article->id.'" type="public" ></turbo-echo-stream-source>', false);
     }
 
     /** @test */

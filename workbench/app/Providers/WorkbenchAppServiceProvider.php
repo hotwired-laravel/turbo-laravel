@@ -2,6 +2,7 @@
 
 namespace Workbench\App\Providers;
 
+use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
@@ -29,6 +30,10 @@ class WorkbenchAppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        PendingTurboStreamResponse::macro('flash', function (string $status) {
+            return $this->append('notifications', view('partials._notification', [
+                'status' => $status,
+            ]));
+        });
     }
 }

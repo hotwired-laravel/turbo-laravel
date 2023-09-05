@@ -3,68 +3,61 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Events;
 
 use HotwiredLaravel\TurboLaravel\Events\TurboStreamBroadcast;
-use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models\TestModel;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-use View;
+use Illuminate\Support\Facades\View;
+use Workbench\Database\Factories\ArticleFactory;
 
 class TurboStreamBroadcastTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        View::addLocation(__DIR__.'/../Stubs/views');
-    }
-
     /** @test */
     public function renders_turbo_stream()
     {
+        $article = ArticleFactory::new()->create()->fresh();
+
         $event = new TurboStreamBroadcast(
             [],
             'replace',
-            'test_target',
+            'article_'.$article->id,
             null,
-            'test_models._test_model',
-            ['testModel' => new TestModel(['id' => 1])]
+            'articles._article',
+            ['article' => $article],
         );
 
         $expected = View::make('turbo-laravel::turbo-stream', [
-            'target' => 'test_target',
+            'target' => 'article_'.$article->id,
             'action' => 'replace',
-            'partial' => 'test_models._test_model',
+            'partial' => 'articles._article',
             'partialData' => [
-                'testModel' => new TestModel(['id' => 1]),
+                'article' => $article,
             ],
-        ]);
+        ])->render();
 
-        $rendered = $event->render();
-
-        $this->assertEquals(trim($expected), trim($rendered));
+        $this->assertEquals(trim($expected), trim($event->render()));
     }
 
     /** @test */
     public function renders_turbo_stream_targets()
     {
+        $article = ArticleFactory::new()->create()->fresh();
+
         $event = new TurboStreamBroadcast(
             [],
             'replace',
             null,
-            '.targets',
-            'test_models._test_model',
-            ['testModel' => new TestModel(['id' => 1])],
+            '.articles',
+            'articles._article',
+            ['article' => $article],
         );
 
         $expected = View::make('turbo-laravel::turbo-stream', [
             'action' => 'replace',
-            'targets' => '.targets',
-            'partial' => 'test_models._test_model',
+            'targets' => '.articles',
+            'partial' => 'articles._article',
             'partialData' => [
-                'testModel' => new TestModel(['id' => 1]),
+                'article' => $article,
             ],
-        ]);
+        ])->render();
 
-        $rendered = $event->render();
-
-        $this->assertEquals(trim($expected), trim($rendered));
+        $this->assertEquals(trim($expected), trim($event->render()));
     }
 }

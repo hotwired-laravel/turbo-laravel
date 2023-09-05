@@ -16,7 +16,14 @@ class ArticleCommentsController
 
     public function store(CreateCommentRequest $request, Article $article)
     {
-        $article->comments()->create($request->validated());
+        $comment = $article->comments()->create($request->validated());
+
+        if ($request->wantsTurboStream()) {
+            return turbo_stream_view('article_comments.turbo.created', [
+                'comment' => $comment,
+                'status' => __('Comment created.'),
+            ]);
+        }
 
         return to_route('articles.show', $article);
     }

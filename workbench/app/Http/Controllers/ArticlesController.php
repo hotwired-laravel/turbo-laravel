@@ -58,6 +58,13 @@ class ArticlesController
             'content' => ['nullable', 'string'],
         ]));
 
+        if ($request->wantsTurboStream()) {
+            return turbo_stream([
+                turbo_stream($article),
+                turbo_stream()->flash(__('Article updated.')),
+            ]);
+        }
+
         return to_route('articles.show', $article);
     }
 

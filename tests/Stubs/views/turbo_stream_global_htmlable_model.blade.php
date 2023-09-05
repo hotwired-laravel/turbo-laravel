@@ -1,1 +1,0 @@
-{{ turbo_stream($testModel) }}

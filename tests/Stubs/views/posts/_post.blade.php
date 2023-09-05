@@ -1,1 +1,0 @@
-<div>{{ $post->title }}</div>
