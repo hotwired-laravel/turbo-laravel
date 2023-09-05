@@ -1,6 +1,8 @@
 <x-app-layout>
     <x-slot name="title">{{ __('Edit Article') }}</x-slot>
 
+    <h1>{{ __('Edit Article') }}</h1>
+
     <div>
         <a href="{{ route('articles.show', $article) }}">{{ __('Back to View') }}</a>
 
@@ -9,7 +11,9 @@
         @endif
     </div>
 
-    <x-turbo-frame id="create_article">
+    <br>
+
+    <x-turbo-frame :id="$article" target="_top">
         <form action="{{ route('articles.update', $article) }}" method="post">
             @method('PUT')
 
@@ -30,6 +34,7 @@
             </div>
 
             <div>
+                <a href="{{ route('articles.show', $article) }}">{{ __('Cancel') }}</a>
                 <button type="submit">{{ __('Save') }}</button>
             </div>
         </form>

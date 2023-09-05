@@ -1,9 +1,13 @@
 <x-app-layout>
     <x-slot name="title">{{ __('New Article') }}</x-slot>
 
+    <h1>{{ __('New Article') }}</h1>
+
     <div>
         <a href="{{ route('articles.index') }}">{{ __('Back to Index') }}</a>
     </div>
+
+    <br>
 
     <x-turbo-frame id="create_article">
         <form action="{{ route('articles.store') }}" method="post">

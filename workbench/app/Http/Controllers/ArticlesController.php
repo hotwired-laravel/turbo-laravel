@@ -34,7 +34,16 @@ class ArticlesController
             'content' => ['nullable', 'string'],
         ]));
 
-        // do something...
+        if ($request->wantsTurboStream()) {
+            return turbo_stream([
+                turbo_stream()->prepend('articles', view('articles._article_card', [
+                    'article' => $article,
+                ])),
+                turbo_stream()->replace('create_article', view('articles._create_article_link')),
+            ]);
+        }
+
+        return to_route('articles.show', $article);
     }
 
     public function show(Article $article)

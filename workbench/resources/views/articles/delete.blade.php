@@ -1,6 +1,8 @@
 <x-app-layout>
     <x-slot name="title">{{ __('Delete Article') }}</x-slot>
 
+    <h1>{{ __('Delete Article') }}</h1>
+
     <div>
         <a href="{{ route('articles.show', $article) }}">{{ __('Back to Article') }}</a>
 
@@ -8,8 +10,8 @@
         <p>{{ __('Response cookie: :value.', ['value' => request()->cookie('response-cookie', 'no-cookie')]) }}</p>
     </div>
 
-    <x-turbo-frame id="create_article">
-        <form action="{{ route('articles.destroy', $article) }}" method="post">
+    <x-turbo-frame :id="$article" target="_top">
+        <form action="{{ route('articles.destroy', $article) }}" method="post" data-turbo-frame="_top">
             @method('DELETE')
 
             <p>{{ __('Are you sure you wanna delete this article?') }}</p>

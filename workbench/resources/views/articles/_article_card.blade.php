@@ -1,3 +1,3 @@
 <div id="@domid($article, 'card')">
-    <p>{{ $article->title }}</p>
+    <p>{{ $article->title }} - <a href="{{ route('articles.show', $article)}}">{{ __('View') }}</a></p>
 </div>
