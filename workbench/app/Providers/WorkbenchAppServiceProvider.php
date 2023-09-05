@@ -17,9 +17,6 @@ class WorkbenchAppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->booted(function () {
-            View::addLocation(dirname(__DIR__, levels: 2).'/resources/views');
-            Blade::component('app-layout', AppLayout::class);
-
             Route::middleware('web')
                 ->group(dirname(__DIR__, levels: 2).'/routes/web.php');
         });
@@ -30,6 +27,9 @@ class WorkbenchAppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::addLocation(dirname(__DIR__, levels: 2).'/resources/views');
+        Blade::component('app-layout', AppLayout::class);
+
         PendingTurboStreamResponse::macro('flash', function (string $status) {
             return $this->append('notifications', view('partials._notification', [
                 'status' => $status,

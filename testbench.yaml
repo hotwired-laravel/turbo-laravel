@@ -4,19 +4,10 @@ providers:
 
 migrations: true
 
-seeders:
-  - Workbench\Database\Seeders\DatabaseSeeder
-
-env:
-  - APP_KEY="a2ps3dFoNmyehsm7r0VFZ0Iq64hwBpqI"
-  - APP_DEBUG=true
-  - DB_CONNECTION=sqlite
-
 workbench:
   start: '/articles'
-  install: false
+  install: true
   welcome: true
-  user: 'tonysm@hey.com'
   build:
     - create-sqlite-db
     - db:wipe
