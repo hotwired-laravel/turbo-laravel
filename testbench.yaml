@@ -2,12 +2,19 @@ providers:
   - Workbench\App\Providers\WorkbenchAppServiceProvider
 
 migrations: true
-seeders: []
+
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
+env:
+  APP_KEY: "a2ps3dFoNmyehsm7r0VFZ0Iq64hwBpqI"
+  APP_DEBUG: true
 
 workbench:
-  start: '/'
-  install: true
-  welcome: true
-  build: []
+  start: '/articles'
+  user: 'tonysm@hey.com'
+  build:
+    - create-sqlite-db
+    - migrate:fresh
   assets: []
   sync: []
