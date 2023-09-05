@@ -9,12 +9,17 @@
 
     {{ $head ?? null }}
 
+    {{-- Use Tailwind CDN --}}
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+
     {{-- Install Turbo via CDN --}}
     <script type="module">
         import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo';
     </script>
 </head>
 <body>
-    {{ $slot }}
+    <main class="max-w-lg mx-auto">
+        {{ $slot }}
+    </main>
 </body>
 </html>
