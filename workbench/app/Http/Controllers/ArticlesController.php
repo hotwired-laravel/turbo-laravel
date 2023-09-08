@@ -40,10 +40,12 @@ class ArticlesController
                     'article' => $article,
                 ])),
                 turbo_stream()->replace('create_article_details', view('articles._create_article_link')),
+                turbo_stream()->flash(__('Article created.')),
             ]);
         }
 
-        return to_route('articles.show', $article);
+        return to_route('articles.show', $article)
+            ->with('status', __('Article created.'));
     }
 
     public function show(Article $article)
@@ -74,7 +76,8 @@ class ArticlesController
             ]);
         }
 
-        return to_route('articles.show', $article);
+        return to_route('articles.show', $article)
+            ->with('status', __('Article updated.'));
     }
 
     public function delete(Article $article)
@@ -94,6 +97,7 @@ class ArticlesController
 
         $article->delete();
 
-        return to_route('articles.index');
+        return to_route('articles.index')
+            ->with('status', __('Article removed.'));
     }
 }

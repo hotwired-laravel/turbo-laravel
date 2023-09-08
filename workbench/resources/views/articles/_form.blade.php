@@ -5,7 +5,7 @@
 
     <div>
         <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" for="title">{{ __('Title') }}</label>
-        <input class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="title" placeholder="{{ __('Title') }}" value="{{ old('title', $article?->title) }}" />
+        <input class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" type="text" name="title" placeholder="{{ __('Title') }}" autofocus value="{{ old('title', $article?->title) }}" />
         @error('title')
         <span class="mt-1 block text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
         @enderror
@@ -19,11 +19,11 @@
         @enderror
     </div>
 
-    <div class="mt-4 flex items-center space-x-2 justify-end">
+    <div class="mt-4 flex items-center space-x-4 justify-end">
         @if ($article?->exists)
-        <a class="underline text-indigo-600" href="{{ route('articles.show', $article) }}">{{ __('Cancel') }}</a>
+        <a class="underline text-gray-600" href="{{ route('articles.show', $article) }}">{{ __('Cancel') }}</a>
         @endif
 
-        <button class="px-4 py-2 text-lg rounded bg-indigo-600 text-white" type="submit">{{ $article?->exists ? __('Save') : __('Create') }}</button>
+        <x-button type="submit">{{ $article?->exists ? __('Save') : __('Create') }}</x-button>
     </div>
 </form>

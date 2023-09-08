@@ -51,13 +51,18 @@ class TurboStreamsBroadcastingTest extends TestCase
             channel: 'general',
             target: 'notifications',
             content: View::make('partials._notification', [
-                'status' => 'Hello World',
+                'message' => 'Hello World',
             ]),
         );
 
         $expected = <<<HTML
         <turbo-stream target="notifications" action="{$action}">
-            <template><div>Hello World</div></template>
+            <template><div
+            class="px-4 py-2 shadow-lg opacity-90 bg-gray-900 text-white rounded-full mx-auto animate-appear-then-fade-out"
+            data-controller="remover"
+            data-action="animationend->remover#remove"
+            data-turbo-temporary
+        >Hello World</div></template>
         </turbo-stream>
         HTML;
 

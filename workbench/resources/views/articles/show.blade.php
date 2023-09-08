@@ -1,17 +1,27 @@
 <x-app-layout>
     <x-slot name="title">{{ $article->title }}</x-slot>
 
-    <h1 class="mb-4 text-4xl font-semibold font-cursive">{{ __('View Article') }}</h1>
-
-    <div class="p-6">
+    <div class="flex items-center space-x-4">
         @unlessturbonative
-        <a class="underline text-indigo-600" href="{{ route('articles.index') }}">{{ __('Back to Index') }}</a>
+        <x-button-link variant="secondary" href="{{ route('articles.index') }}" icon="arrow-uturn-left">
+            <span>{{ __('Index') }}</span>
+        </x-button-link>
         @endturbonative
 
-        @turbonative
-        <p>{{ __('Visiting From Turbo Native') }}</p>
-        @endturbonative
+        <h1 class="my-4 text-4xl font-semibold font-cursive">{{ __('View Article') }}</h1>
     </div>
 
-    @include('articles._article', ['article' => $article])
+    @turbonative
+    <p>{{ __('Visiting From Turbo Native') }}</p>
+    @endturbonative
+
+    <div class="mt-4">
+        @include('articles._article', ['article' => $article])
+    </div>
+
+    <x-modal id="{{ dom_id($article, 'remove_modal') }}" :closable="false">
+        <x-turbo-frame class="mt-2" :id="[$article, 'remove_modal_frame']" loading="lazy">
+            <p class="text-gray-600">{{ __('Loading...') }}</p>
+        </x-turbo-frame>
+    </x-modal>
 </x-app-layout>

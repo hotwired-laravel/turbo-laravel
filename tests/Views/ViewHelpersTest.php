@@ -40,13 +40,13 @@ class ViewHelpersTest extends TestCase
         $this->assertFalse(Turbo::isTurboNativeVisit());
 
         $this->get(route('articles.show', $article))
-            ->assertSee('Back to Index');
+            ->assertSee('Index');
 
         Turbo::setVisitingFromTurboNative();
         $this->assertTrue(Turbo::isTurboNativeVisit());
 
         $this->get(route('articles.show', $article))
-            ->assertDontSee('Back to Index');
+            ->assertDontSee('Back');
     }
 
     /** @test */

@@ -3,5 +3,5 @@
 </x-turbo-stream>
 
 <x-turbo-stream target="notifications" action="append">
-    @include('partials._notification', ['status' => $status])
+    @include('partials._notification', ['message' => $status])
 </x-turbo-stream>

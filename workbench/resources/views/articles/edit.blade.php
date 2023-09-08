@@ -1,11 +1,17 @@
 <x-app-layout>
     <x-slot name="title">{{ __('Edit Article') }}</x-slot>
 
-    <h1>{{ __('Edit Article') }}</h1>
+    <div class="flex items-center space-x-4">
+        @unlessturbonative
+        <x-button-link variant="secondary" href="{{ route('articles.show', $article) }}" icon="arrow-uturn-left">
+            <span>{{ __('Back') }}</span>
+        </x-button-link>
+        @endturbonative
+
+        <h1 class="my-4 text-4xl font-semibold font-cursive">{{ __('Edit Article') }}</h1>
+    </div>
 
     <div>
-        <a href="{{ route('articles.show', $article) }}">{{ __('Back to View') }}</a>
-
         @if (request('frame'))
         <p>{{ __('Showing frame: :frame.', ['frame' => request('frame')]) }}</p>
         @endif
