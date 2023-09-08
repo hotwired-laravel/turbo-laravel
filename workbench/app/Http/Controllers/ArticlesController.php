@@ -39,7 +39,6 @@ class ArticlesController
                 turbo_stream()->prepend('articles', view('articles._article_card', [
                     'article' => $article,
                 ])),
-                turbo_stream()->replace('create_article_details', view('articles._create_article_link')),
                 turbo_stream()->flash(__('Article created.')),
             ]);
         }
