@@ -35,8 +35,9 @@
 
     {{-- Install Turbo via CDN --}}
     <script type="module">
-        import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo';
-        import { Application, Controller } from 'https://cdn.skypack.dev/@hotwired/stimulus';
+        import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo'
+        import { Application, Controller } from 'https://cdn.skypack.dev/@hotwired/stimulus'
+        import { install, uninstall } from 'https://cdn.skypack.dev/@github/hotkey'
 
         window.Stimulus = Application.start()
 
@@ -79,6 +80,42 @@
         Stimulus.register("remover", class extends Controller {
             remove() {
                 this.element.remove()
+            }
+        })
+
+        Stimulus.register("cancellable-form", class extends Controller {
+            static targets = ["cancelTrigger"]
+
+            connect() {
+                this.originalData = this.currentState
+            }
+
+            cancel() {
+                if (this.changed || ! this.hasCancelTriggerTarget) return
+
+                this.cancelTriggerTarget.click()
+            }
+
+            get currentState() {
+                return [...new FormData(this.element).values()]
+            }
+
+            get changed() {
+                return JSON.stringify(this.originalData) !== JSON.stringify(this.currentState)
+            }
+        })
+
+        Stimulus.register("hotkeys", class extends Controller {
+            static values = {
+                shortcut: String,
+            }
+
+            connect() {
+                install(this.element, this.shortcutValue)
+            }
+
+            disconnect() {
+                uninstall(this.element)
             }
         })
     </script>

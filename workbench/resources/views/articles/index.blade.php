@@ -5,7 +5,8 @@
 
     <div class="flex items-center justify-end">
         <x-button-link
-            data-controller="modal-trigger"
+            data-controller="modal-trigger hotkeys"
+            data-hotkeys-shortcut-value="w"
             data-modal-trigger-modal-outlet="#create-article-modal"
             data-action="modal-trigger#toggle"
             href="{{ route('articles.create') }}"
