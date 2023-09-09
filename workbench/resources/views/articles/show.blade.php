@@ -15,7 +15,7 @@
     <p>{{ __('Visiting From Turbo Native') }}</p>
     @endturbonative
 
-    <div class="mt-4">
+    <div class="mt-4 rounded p-6 border">
         @include('articles._article', ['article' => $article])
     </div>
 

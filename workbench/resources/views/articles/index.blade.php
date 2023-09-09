@@ -13,7 +13,8 @@
         >{{ __('Add Article') }}</x-button-link>
     </div>
 
-    <div id="articles" class="mt-4 flex flex-col space-y-2 divide-y border rounded">
+    <div id="articles" class="mt-4 flex flex-col overflow-hidden rounded border">
+        @include('articles._empty_card')
         @each('articles._article_card', $articles, 'article')
     </div>
 
