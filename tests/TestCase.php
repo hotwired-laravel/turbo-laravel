@@ -21,13 +21,7 @@ class TestCase extends Orchestra
 
     protected function defineEnvironment($app)
     {
-        $app['config']->set('database.default', 'sqlite');
-
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
+        $app['config']->set('database.default', 'testing');
 
         $app['config']->set('turbo-laravel.models_namespace', [
             'Workbench\\App\\Models\\',
