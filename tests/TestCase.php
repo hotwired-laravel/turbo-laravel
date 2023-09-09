@@ -3,11 +3,9 @@
 namespace HotwiredLaravel\TurboLaravel\Tests;
 
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
-use HotwiredLaravel\TurboLaravel\TurboServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Workbench\App\Providers\WorkbenchAppServiceProvider;
 
 class TestCase extends Orchestra
 {
