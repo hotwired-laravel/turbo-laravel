@@ -2,7 +2,8 @@ providers:
   - HotwiredLaravel\TurboLaravel\TurboServiceProvider
   - Workbench\App\Providers\WorkbenchAppServiceProvider
 
-migrations: true
+migrations:
+  - workbench/database/migrations
 
 workbench:
   start: '/articles'
