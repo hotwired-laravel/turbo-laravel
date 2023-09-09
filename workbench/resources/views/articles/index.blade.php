@@ -10,10 +10,11 @@
             data-action="modal-trigger#toggle"
             href="{{ route('articles.create') }}"
             data-turbo-frame="create_article"
-        >{{ __('Add Article') }}</x-button-link>
+            icon="plus"
+        >{{ __('Write') }}</x-button-link>
     </div>
 
-    <div id="articles" class="mt-4 flex flex-col overflow-hidden rounded border">
+    <div id="articles" class="mt-4 flex flex-col rounded border">
         @include('articles._empty_card')
         @each('articles._article_card', $articles, 'article')
     </div>

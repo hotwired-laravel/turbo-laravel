@@ -83,7 +83,7 @@
         })
     </script>
 </head>
-<body>
+<body class="accent-indigo-600">
     <main class="max-w-lg mx-auto">
         @include('partials._notifications')
 
