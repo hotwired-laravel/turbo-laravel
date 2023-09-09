@@ -19,7 +19,7 @@
 
     <br>
 
-    <x-turbo-frame :id="$article" target="_top">
+    <x-turbo-frame :id="$article" target="_top" class="block mt-4 rounded p-6 border">
         @include('articles._form', ['article' => $article])
     </x-turbo-frame>
 </x-app-layout>
