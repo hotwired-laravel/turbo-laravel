@@ -1,4 +1,4 @@
-<form action="{{ ($article->exists ?? false) ? route('articles.update', $article) : route('articles.store') }}" method="post">
+<form data-controller="cancellable-form" data-action="keydown.esc->cancellable-form#cancel" action="{{ ($article->exists ?? false) ? route('articles.update', $article) : route('articles.store') }}" method="post">
     @if ($article->exists ?? false)
         @method('PUT')
     @endif
@@ -21,7 +21,7 @@
 
     <div class="mt-4 flex items-center space-x-4 justify-end">
         @if ($article?->exists)
-        <a class="underline text-gray-600" href="{{ route('articles.show', $article) }}">{{ __('Cancel') }}</a>
+        <a data-cancellable-form-target="cancelTrigger" class="underline text-gray-600" href="{{ route('articles.show', $article) }}">{{ __('Cancel') }}</a>
         @endif
 
         <x-button type="submit">{{ $article?->exists ? __('Save') : __('Create') }}</x-button>
