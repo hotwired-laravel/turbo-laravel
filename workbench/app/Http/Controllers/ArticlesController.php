@@ -2,16 +2,15 @@
 
 namespace Workbench\App\Http\Controllers;
 
-use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Workbench\App\Models\Article;
 
 class ArticlesController
 {
-    public function index()
+    public function index(Request $request)
     {
-        if (Turbo::isTurboNativeVisit()) {
+        if ($request->wasFromTurboNative()) {
             return Article::query()
                 ->latest()
                 ->paginate();
