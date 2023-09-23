@@ -10,7 +10,7 @@
     {{ $head ?? null }}
 
     {{-- Use Tailwind CDN --}}
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
         tailwind.config = {
             theme: {
