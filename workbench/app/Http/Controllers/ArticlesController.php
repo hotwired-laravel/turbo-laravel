@@ -33,7 +33,7 @@ class ArticlesController
             'content' => ['nullable', 'string'],
         ]));
 
-        if ($request->wantsTurboStream()) {
+        if ($request->wantsTurboStream() && ! $request->has('redirect_to')) {
             return turbo_stream([
                 turbo_stream()->prepend('articles', view('articles._article_card', [
                     'article' => $article,
@@ -67,7 +67,7 @@ class ArticlesController
             'content' => ['nullable', 'string'],
         ]));
 
-        if ($request->wantsTurboStream()) {
+        if ($request->wantsTurboStream() && ! $request->has('redirect_to')) {
             return turbo_stream([
                 turbo_stream($article),
                 turbo_stream()->flash(__('Article updated.')),

@@ -4,6 +4,7 @@
 $color = match ($variant) {
     'primary' => 'bg-gray-900 text-white',
     'secondary' => 'bg-gray-200 text-gray-900',
+    'danger' => 'bg-red-600 text-white',
 };
 @endphp
 
