@@ -3,8 +3,8 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-use HotwiredLaravel\TurboLaravel\Tests\TestModel;
 use HotwiredLaravel\TurboLaravel\Views\RecordIdentifier;
+use Workbench\App\Models\Article;
 
 class RecordIdentifierTest extends TestCase
 {
@@ -16,8 +16,8 @@ class RecordIdentifierTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new TestModel(['name' => 'Hello']);
-        $this->singular = 'test_model';
+        $this->model = new Article(['title' => 'Hello World']);
+        $this->singular = 'article';
     }
 
     /** @test */
@@ -68,12 +68,12 @@ class RecordIdentifierTest extends TestCase
         // This is now built into Laravel. I'm letting the test here in case something changes upstream.
 
         $this->assertEquals(
-            sprintf('HotwiredLaravel.TurboLaravel.Tests.TestModel.%s', $this->model->getKey()),
+            sprintf('Workbench.App.Models.Article.%s', $this->model->getKey()),
             $this->model->broadcastChannel()
         );
 
         $this->assertEquals(
-            'HotwiredLaravel.TurboLaravel.Tests.TestModel.{testModel}',
+            'Workbench.App.Models.Article.{article}',
             $this->model->broadcastChannelRoute()
         );
     }

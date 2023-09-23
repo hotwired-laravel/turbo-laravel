@@ -5,11 +5,16 @@ namespace HotwiredLaravel\TurboLaravel\Tests\Testing;
 use HotwiredLaravel\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
 use HotwiredLaravel\TurboLaravel\Testing\TurboStreamMatcher;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use Illuminate\Support\Collection;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class TurboStreamMatcherTest extends TestCase
 {
+    private TestResponse $response;
+
+    private Collection $streams;
+
     protected function setUp(): void
     {
         parent::setUp();

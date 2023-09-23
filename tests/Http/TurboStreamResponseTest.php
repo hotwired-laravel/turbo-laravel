@@ -5,79 +5,65 @@ namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
-use Illuminate\Support\Facades\View;
+use Workbench\Database\Factories\ArticleFactory;
 
 class TurboStreamResponseTest extends TestCase
 {
     use InteractsWithTurbo;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        View::addLocation(__DIR__.'/../Stubs/views');
-    }
-
-    protected function defineRoutes($router)
-    {
-        $router->get('/testing/turbo-stream', function () {
-            if (request()->wantsTurboStream()) {
-                return response()->turboStreamView('turbo_streams');
-            }
-
-            return 'No Turbo Stream';
-        })->name('testing.turbo-stream');
-    }
-
     /** @test */
     public function turbo_stream_response()
     {
+        $article = ArticleFactory::new()->create();
+
         $this->turbo()
-            ->get(route('testing.turbo-stream'))
+            ->post(route('articles.comments.store', $article), [
+                'content' => 'Hello World',
+            ])
             ->assertTurboStream();
     }
 
     /** @test */
     public function not_turbo_response()
     {
-        $this->get(route('testing.turbo-stream'))
+        $article = ArticleFactory::new()->create();
+
+        $this->post(route('articles.comments.store', $article), [
+            'content' => 'Hello World',
+        ])
             ->assertNotTurboStream();
     }
 
     /** @test */
     public function turbo_assert_count_of_turbo_streams()
     {
+        $article = ArticleFactory::new()->create();
+
         $this->turbo()
-            ->get(route('testing.turbo-stream'))
+            ->post(route('articles.comments.store', $article), ['content' => 'Hello World'])
             ->assertTurboStream(fn (AssertableTurboStream $turboStream) => (
-                $turboStream->has(4)
+                $turboStream->has(2)
             ));
     }
 
     /** @test */
     public function turbo_assert_has_turbo_stream()
     {
+        $article = ArticleFactory::new()->create();
+
         $this->turbo()
-            ->get(route('testing.turbo-stream'))
+            ->post(route('articles.comments.store', $article), ['content' => 'Hello World'])
             ->assertTurboStream(fn (AssertableTurboStream $turboStreams) => (
-                $turboStreams->has(4)
+                $turboStreams->has(2)
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
-                    $turboStream->where('target', 'posts')
+                    $turboStream->where('target', 'comments')
                         ->where('action', 'append')
-                        ->see('Post Title')
+                        ->see('Hello World')
                 ))
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
-                    $turboStream->where('target', 'inline_post_123')
-                        ->where('action', 'replace')
-                        ->see('Inline Post Title')
-                ))
-                && $turboStreams->hasTurboStream(fn ($turboStream) => (
-                    $turboStream->where('target', 'empty_posts')
-                        ->where('action', 'remove')
-                ))
-                && $turboStreams->hasTurboStream(fn ($turboStream) => (
-                    $turboStream->where('targets', '.post')
-                        ->where('action', 'replace')
+                    $turboStream->where('target', 'notifications')
+                        ->where('action', 'append')
+                        ->see('Comment created.')
                 ))
             ));
     }

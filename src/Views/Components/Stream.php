@@ -2,10 +2,11 @@
 
 namespace HotwiredLaravel\TurboLaravel\Views\Components;
 
-use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Exceptions\TurboStreamTargetException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\View\Component;
+
+use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class Stream extends Component
 {

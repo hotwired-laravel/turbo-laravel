@@ -3,8 +3,8 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
-use HotwiredLaravel\TurboLaravel\Tests\Stubs\Models;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use Workbench\App\Models;
 
 class NamingTest extends TestCase
 {
@@ -15,40 +15,36 @@ class NamingTest extends TestCase
     {
         parent::setUp();
 
-        config()->set('turbo-laravel.models_namespace', [
-            'HotwiredLaravel\\TurboLaravel\\Tests\\Stubs\\Models\\',
-        ]);
-
-        $this->modelName = Name::build(Models\Account\TestModel::class);
+        $this->modelName = Name::build(Models\User\Profile::class);
     }
 
     /** @test */
     public function className()
     {
-        $this->assertEquals(Models\Account\TestModel::class, $this->modelName->className);
+        $this->assertEquals(Models\User\Profile::class, $this->modelName->className);
     }
 
     /** @test */
     public function classNameWithoutRootNamespace()
     {
-        $this->assertEquals('Account\\TestModel', $this->modelName->classNameWithoutRootNamespace);
+        $this->assertEquals('User\\Profile', $this->modelName->classNameWithoutRootNamespace);
     }
 
     /** @test */
     public function singular()
     {
-        $this->assertEquals('account_test_model', $this->modelName->singular);
+        $this->assertEquals('user_profile', $this->modelName->singular);
     }
 
     /** @test */
     public function plural()
     {
-        $this->assertEquals('account_test_models', $this->modelName->plural);
+        $this->assertEquals('user_profiles', $this->modelName->plural);
     }
 
     /** @test */
     public function element()
     {
-        $this->assertEquals('test_model', $this->modelName->element);
+        $this->assertEquals('profile', $this->modelName->element);
     }
 }

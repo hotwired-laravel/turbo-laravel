@@ -11,7 +11,7 @@
          verbose="true"
 >
     <testsuites>
-        <testsuite name="Tonysm Test Suite">
+        <testsuite name="Turbo Laravel Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

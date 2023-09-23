@@ -1,0 +1,20 @@
+providers:
+  - HotwiredLaravel\TurboLaravel\TurboServiceProvider
+  - Workbench\App\Providers\WorkbenchAppServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+components:
+  - workbench/resources/views/components
+
+workbench:
+  start: '/articles'
+  install: true
+  welcome: true
+  build:
+    - create-sqlite-db
+    - db:wipe
+    - migrate:refresh
+  assets: []
+  sync: []
