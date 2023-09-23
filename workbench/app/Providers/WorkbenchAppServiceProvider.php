@@ -8,10 +8,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Workbench\App\View\Components\AppLayout;
-use Workbench\App\View\Components\Button;
-use Workbench\App\View\Components\ButtonLink;
-use Workbench\App\View\Components\Icon;
-use Workbench\App\View\Components\Modal;
 
 class WorkbenchAppServiceProvider extends ServiceProvider
 {
@@ -34,10 +30,6 @@ class WorkbenchAppServiceProvider extends ServiceProvider
         View::addLocation(dirname(__DIR__, levels: 2).'/resources/views');
 
         Blade::component('app-layout', AppLayout::class);
-        Blade::component('icon', Icon::class);
-        Blade::component('button', Button::class);
-        Blade::component('button-link', ButtonLink::class);
-        Blade::component('modal', Modal::class);
 
         $this->loadMigrationsFrom(dirname(__DIR__, levels: 2).'/database/migrations');
 
