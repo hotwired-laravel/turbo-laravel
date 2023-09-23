@@ -1,4 +1,9 @@
-<form data-controller="cancellable-form" data-action="keydown.esc->cancellable-form#cancel" action="{{ ($article->exists ?? false) ? route('articles.update', $article) : route('articles.store') }}" method="post">
+<form
+    data-controller="cancellable-form"
+    data-action="keydown.esc->cancellable-form#cancel"
+    action="{{ ($article->exists ?? false) ? route('articles.update', ['article' => $article->id, 'redirect_to' => $redirectTo ?? null]) : route('articles.store', ['redirect_to' => $redirectTo ?? null]) }}"
+    method="post"
+>
     @if ($article->exists ?? false)
         @method('PUT')
     @endif

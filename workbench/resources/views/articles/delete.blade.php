@@ -16,15 +16,15 @@
         <p>{{ __('Response cookie: :value.', ['value' => request()->cookie('response-cookie', 'no-cookie')]) }}</p>
     </div>
 
-    <x-turbo-frame id="{{ request()->header('Turbo-Frame', dom_id($article)) }}" target="_top" class="block mt-4 rounded p-6 border">
-        <form action="{{ route('articles.destroy', $article) }}" method="post" data-turbo-frame="_top">
+    <x-turbo-frame id="{{ request()->header('Turbo-Frame', dom_id($article)) }}" target="_top" class="block mt-4 rounded p-6 border bg-white shadow-sm">
+        <form action="{{ route('articles.destroy', $article) }}" method="post">
             @method('DELETE')
 
             <p class="text-lg">{{ __('Are you sure you wanna delete this article?') }}</p>
 
             <div class="mt-4 flex items-center justify-end space-x-4">
                 <a class="text-gray-600 underline dialog:hidden" href="{{ route('articles.show', $article) }}">{{ __('No, cancel.') }}</a>
-                <button class="text-gray-600 underline hidden dialog:block" formmethod="diaglo" value="cancel" data-action="modal#close:prevent">{{ __('No, cancel.') }}</button>
+                <button class="text-gray-600 underline hidden dialog:block" formmethod="dialog" value="cancel" data-action="modal#close:prevent">{{ __('No, cancel.') }}</button>
 
                 <x-button type="submit" variant="danger">{{ __('Yes, delete it.') }}</x-button>
             </div>
