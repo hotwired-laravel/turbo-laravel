@@ -127,7 +127,7 @@
         })
     </script>
 </head>
-<body class="bg-slate-100">
+<body class="bg-gray-100">
     <main class="max-w-xl mx-auto" {{ $attributes ?? '' }}>
         @include('partials._notifications')
 

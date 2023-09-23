@@ -1,3 +1,5 @@
+@props(['minHeight' => '', 'closable' => true])
+
 <dialog
     {{ $attributes }}
     class="p-6 rounded w-full max-w-lg {{ $minHeight }}"
