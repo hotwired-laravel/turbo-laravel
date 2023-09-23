@@ -9,12 +9,19 @@
 
     {{ $head ?? null }}
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+
     {{-- Use Tailwind CDN --}}
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Figtree'],
+                    },
                     animation: {
                         'appear-then-fade-out': 'appear-then-fade-out 3s both',
                     },
@@ -120,8 +127,8 @@
         })
     </script>
 </head>
-<body class="accent-indigo-600">
-    <main class="max-w-lg mx-auto">
+<body class="bg-slate-100">
+    <main class="max-w-xl mx-auto" {{ $attributes ?? '' }}>
         @include('partials._notifications')
 
         {{ $slot }}
