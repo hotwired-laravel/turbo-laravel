@@ -16,10 +16,7 @@ class WorkbenchAppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->booted(function () {
-            // Route::middleware('web')
-            //     ->group(dirname(__DIR__, levels: 2).'/routes/web.php');
-        });
+        //
     }
 
     /**
@@ -27,8 +24,6 @@ class WorkbenchAppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::addLocation(dirname(__DIR__, levels: 2).'/resources/views');
-
         Blade::component('app-layout', AppLayout::class);
 
         $this->loadMigrationsFrom(dirname(__DIR__, levels: 2).'/database/migrations');
