@@ -24,8 +24,6 @@ class WorkbenchAppServiceProvider extends ServiceProvider
     {
         Blade::component('app-layout', AppLayout::class);
 
-        $this->loadMigrationsFrom(dirname(__DIR__, levels: 2).'/database/migrations');
-
         PendingTurboStreamResponse::macro('flash', function (string $message) {
             return $this->append('notifications', view('partials._notification', [
                 'message' => $message,
