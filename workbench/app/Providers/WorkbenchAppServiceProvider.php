@@ -4,8 +4,6 @@ namespace Workbench\App\Providers;
 
 use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Workbench\App\View\Components\AppLayout;
 
