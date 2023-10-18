@@ -12,6 +12,9 @@ workbench:
   start: '/articles'
   install: true
   welcome: true
+  discovers:
+    web: true
+    views: true
   build:
     - create-sqlite-db
     - db:wipe
