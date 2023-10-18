@@ -17,8 +17,8 @@ class WorkbenchAppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->booted(function () {
-            Route::middleware('web')
-                ->group(dirname(__DIR__, levels: 2).'/routes/web.php');
+            // Route::middleware('web')
+            //     ->group(dirname(__DIR__, levels: 2).'/routes/web.php');
         });
     }
 
