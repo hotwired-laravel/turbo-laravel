@@ -123,6 +123,10 @@ class TurboServiceProvider extends ServiceProvider
             return Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT);
         });
 
+        Request::macro('wantsTurboStreams', function (): bool {
+            return $this->wantsTurboStream();
+        });
+
         Request::macro('wasFromTurboNative', function (): bool {
             return TurboFacade::isTurboNativeVisit();
         });
