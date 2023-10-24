@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.10",
-        "orchestra/testbench": "^8.13",
+        "orchestra/testbench": "^8.14",
         "orchestra/workbench": "^1.0",
         "phpunit/phpunit": "^9.6"
     },
