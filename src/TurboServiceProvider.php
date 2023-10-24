@@ -126,6 +126,14 @@ class TurboServiceProvider extends ServiceProvider
         Request::macro('wasFromTurboNative', function (): bool {
             return TurboFacade::isTurboNativeVisit();
         });
+
+        Request::macro('wasFromTurboFrame', function (string $frame = null): bool {
+            if (! $frame) {
+                return $this->hasHeader('Turbo-Frame');
+            }
+
+            return $this->header('Turbo-Frame', null) === $frame;
+        });
     }
 
     private function configureTestResponseMacros()

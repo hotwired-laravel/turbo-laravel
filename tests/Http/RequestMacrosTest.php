@@ -31,4 +31,17 @@ class RequestMacrosTest extends TestCase
         TurboFacade::setVisitingFromTurboNative();
         $this->assertTrue($request->wasFromTurboNative());
     }
+
+    /** @test */
+    public function was_from_turbo_frame()
+    {
+        $request = Request::create('/hello', server: [
+            'HTTP_Turbo-Frame' => 'testing',
+        ]);
+
+        $this->assertTrue($request->wasFromTurboFrame());
+        $this->assertTrue($request->wasFromTurboFrame('testing'));
+        $this->assertFalse($request->wasFromTurboFrame('wrong_frame'));
+        $this->assertFalse(Request::create('/hello')->wasFromTurboFrame());
+    }
 }
