@@ -6,18 +6,41 @@
 
 There are two aspects of your application using Turbo Laravel that are specific this approach itself:
 
-1. **Turbo Stream HTTP responses.** As you return Turbo Stream responses from your route handlers/controllers to be applied by Turbo itself; and
-1. **Turbo Stream broadcasts.** Which is the side-effect of certain model changes, or when you call `$model->broadcastAppend()` on your models, or when you're using Handmade Turbo Stream broadcasts.
+1. **Turbo HTTP.** As you return Turbo Stream responses from your route handlers/controllers to be applied by Turbo itself; and
+1. **Turbo Stream Broadcasts.** Which is the side-effect of certain model changes, or when you call `$model->broadcastAppend()` on your models, or when you're using Handmade Turbo Stream broadcasts.
 
 We're going to cover both of these scenarios here.
 
 ## Making Turbo & Turbo Native HTTP requests
 
-To enhance your testing capabilities here, Turbo Laravel adds a couple of macros to the TestResponse that Laravel uses under the hood. The goal is that testing Turbo Stream responses is as convenient as testing regular HTTP responses.
+To enhance your testing capabilities when using Turbo, Turbo Laravel adds a couple of macros to the TestResponse that Laravel uses under the hood. The goal is that testing Turbo Stream responses is as convenient as testing regular HTTP responses.
 
 To mimic Turbo requests, which means sending a request setting the correct Content-Type in the `Accept:` HTTP header, you need to use the `InteractsWithTurbo` trait to your testcase. Now you can mimic a Turbo HTTP request by using the `$this->turbo()` method before you make the HTTP call itself. You can also mimic Turbo Native specific requests by using the `$this->turboNative()` also before you make the HTTP call. The first method will add the correct Turbo Stream content type to the `Accept:` header, and the second method will add Turbo Native `User-Agent:` value.
 
 These methods are handy when you are conditionally returning Turbo Stream responses based on the `request()->wantsTurboStream()` helper, for instance. Or when using the `@turbonative` or `@unlessturbonative` Blade directives.
+
+## Making Turbo Frame requests
+
+You may want to handle requests a bit differently based on whether they came from a request triggered inside a Turbo Frame or not. To mimic a request coming from a Turbo Frame, you may use the `fromTurboFrame()` helper from the `InteractsWithTurbo` trait:
+
+```php
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+
+class CreateCommentsTest extends TestCase
+{
+    use InteractsWithTurbo;
+
+    /** @test */
+    public function create_comment()
+    {
+        $article = Article::factory()->create();
+        
+        $this->fromTurboFrame(dom_id($article, 'create_comment'))
+            ->post(route('articles.comments.store', $article), [...])
+            ->assertRedirect();
+    }
+}
+```
 
 ## Testing Turbo Stream HTTP Responses
 
