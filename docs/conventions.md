@@ -35,4 +35,4 @@ The models' partials (such as the `comments/_comment.blade.php` for a `Comment` 
 
 You may use the model's Fully Qualified Class Name (aka. FQCN) as your Broadcasting Channel authorization routes with a wildcard, such as `App.Models.Comment.{comment}` for a `Comment` model living in `App\\Models\\` - the wildcard's name doesn't matter, as long as there is one. This is the default [broadcasting channel naming convention](https://laravel.com/docs/8.x/broadcasting#model-broadcasting-conventions) in Laravel.
 
-[Continue to Blade Helpers...](/docs/{{version}}/blade-helpers)
+[Continue to Blade Helpers...](/docs/{{version}}/helpers)
