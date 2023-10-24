@@ -3,8 +3,7 @@
     * [Overview](/docs/{{version}}/overview)
     * [Conventions](/docs/{{version}}/conventions)
 * The Essentials
-    * [Blade Helpers](/docs/{{version}}/blade-helpers)
-    * [Helper Functions](/docs/{{version}}/helper-functions)
+    * [Helpers](/docs/{{version}}/helpers)
     * [Turbo Streams](/docs/{{version}}/turbo-streams)
     * [Broadcasting](/docs/{{version}}/broadcasting)
     * [Livewire Integration](/docs/{{version}}/livewire)
