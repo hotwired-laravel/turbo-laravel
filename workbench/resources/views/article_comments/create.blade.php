@@ -3,6 +3,13 @@
 
     <div>
         <a href="{{ route('articles.show', $article) }}">{{ __('Back to :title', ['title' => $article->title]) }}</a>
+
+        <div class="p-6 hidden">
+            <p>{{ __('Turbo Frame: :value.', ['value' => request()->header('Turbo-Frame', 'no-frame')]) }}</p>
+            <p>{{ __('Was From Turbo Frame: :value.', ['value' => request()->wasFromTurboFrame() ? 'Yes' : 'No']) }}</p>
+            <p>{{ __('Was From Create Article Comment Turbo Frame: :value.', ['value' => request()->wasFromTurboFrame(dom_id($article, 'create_comment')) ? 'Yes' : 'No']) }}</p>
+            <p>{{ __('Was From Other Turbo Frame: :value.', ['value' => request()->wasFromTurboFrame('other') ? 'Yes' : 'No']) }}</p>
+        </div>
     </div>
 
     <x-turbo-frame :id="[$article, 'create_comment']">
