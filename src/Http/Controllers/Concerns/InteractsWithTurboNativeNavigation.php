@@ -39,7 +39,7 @@ trait InteractsWithTurboNativeNavigation
     protected function redirectToTurboNativeAction(string $action, string $fallbackUrl, string $redirectType = 'to', array $options = [])
     {
         if (request()->wasFromTurboNative()) {
-            return new TurboNativeRedirectResponse(route("turbo_{$action}_historical_location"));
+            return TurboNativeRedirectResponse::createFromFallbackUrl($action, $fallbackUrl);
         }
 
         if ($redirectType === 'back') {
