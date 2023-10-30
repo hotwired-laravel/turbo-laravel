@@ -39,26 +39,37 @@ class TurboNativeNavigationControllerTest extends TestCase
      */
     public function recede_resume_or_refresh_when_native_or_redirect_when_not_with_flash(string $action)
     {
-        // Non-Turbo Native redirect with flash, but without fragments...
+        // Non-Turbo Native redirect with only flash...
         $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true])
-            ->assertRedirect(route('trays.show', 1))
+            ->assertRedirect(route('trays.show', ['tray' => 1]))
             ->assertSessionHas('status', __('Tray created.'));
 
-        // Non-Turbo Native redirect With flash & fragments...
+        // Non-Turbo Native redirect with only flash & fragments...
         $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true])
-            ->assertRedirect(route('trays.show', 1).'#newly-created-tray')
+            ->assertRedirect(route('trays.show', ['tray' => 1]).'#newly-created-tray')
             ->assertSessionHas('status', __('Tray created.'));
 
-        // Turbo Native redirect with flash, but without fragments...
+        // Non-Turbo Native redirect with only flash & fragments & queries...
+        $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true, 'query' => true])
+            ->assertRedirect(route('trays.show', ['tray' => 1, 'lorem' => 'ipsum']).'#newly-created-tray')
+            ->assertSessionHas('status', __('Tray created.'));
+
+        // Turbo Native redirect with only flash...
         $this->turboNative()
             ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true])
             ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]))
             ->assertSessionMissing('status');
 
-        // Turbo Native redirect with flash & fragments...
+        // Turbo Native redirect with only flash & fragments...
         $this->turboNative()
             ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true])
             ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
+            ->assertSessionMissing('status');
+
+        // Turbo Native redirect with only flash & fragments & query...
+        $this->turboNative()
+            ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true, 'query' => true])
+            ->assertRedirect(route("turbo_{$action}_historical_location", ['lorem' => 'ipsum', 'status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
             ->assertSessionMissing('status');
     }
 
