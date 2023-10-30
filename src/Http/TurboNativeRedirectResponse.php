@@ -8,8 +8,9 @@ use Illuminate\Support\Str;
 class TurboNativeRedirectResponse extends RedirectResponse
 {
     /**
-     * Factory method that builds a new instance of the TurboNativeRedirectResponse
-     * and extracts the query strings from the given action and fallback URL.
+     * Factory Method that builds a new instance of the TurboNativeRedirectResponse
+     * with the given action and forwards the query strings from the given fallback
+     * URL to the Turbo Native redirect ones.
      */
     public static function createFromFallbackUrl(string $action, string $fallbackUrl): self
     {
