@@ -7,12 +7,23 @@ use Illuminate\Support\Str;
 
 class TurboNativeRedirectResponse extends RedirectResponse
 {
-    public static function createFromFallbackUrl(string $action, string $fallbackUrl)
+    /**
+     * Factory method that builds a new instance of the TurboNativeRedirectResponse
+     * and extracts the query strings from the given action and fallback URL.
+     */
+    public static function createFromFallbackUrl(string $action, string $fallbackUrl): self
     {
         return (new self(route("turbo_{$action}_historical_location")))
             ->withQueryString((new self($fallbackUrl))->getQueryString());
     }
 
+    /**
+     * Sets the flashed data via query strings when redirecting to Turbo Native routes.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return self
+     */
     public function with($key, $value = null)
     {
         $params = $this->getQueryString();
@@ -21,6 +32,9 @@ class TurboNativeRedirectResponse extends RedirectResponse
             ->setTargetUrl($this->getTargetUrl().'?'.http_build_query($params + [$key => urlencode($value)]));
     }
 
+    /**
+     * Sets multiple query strings at the same time.
+     */
     protected function withQueryString(array $params): self
     {
         foreach ($params as $key => $val) {
@@ -30,6 +44,9 @@ class TurboNativeRedirectResponse extends RedirectResponse
         return $this;
     }
 
+    /**
+     * Returns the query string as an array.
+     */
     protected function getQueryString(): array
     {
         parse_str(str_contains($this->getTargetUrl(), '?') ? Str::after($this->getTargetUrl(), '?') : '', $query);
@@ -37,6 +54,9 @@ class TurboNativeRedirectResponse extends RedirectResponse
         return $query;
     }
 
+    /**
+     * Returns the target URL without the query strings.
+     */
     protected function withoutQueryStrings(): self
     {
         $fragment = str_contains($this->getTargetUrl(), '#') ? Str::after($this->getTargetUrl(), '#') : '';
