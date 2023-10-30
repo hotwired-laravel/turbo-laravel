@@ -60,7 +60,6 @@ class TurboNativeNavigationControllerTest extends TestCase
             ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true])
             ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
             ->assertSessionMissing('status');
-
     }
 
     /**
