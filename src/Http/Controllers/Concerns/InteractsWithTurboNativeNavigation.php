@@ -2,6 +2,8 @@
 
 namespace HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns;
 
+use HotwiredLaravel\TurboLaravel\Http\TurboNativeRedirectResponse;
+
 trait InteractsWithTurboNativeNavigation
 {
     protected function recedeOrRedirectTo(string $url)
@@ -37,7 +39,7 @@ trait InteractsWithTurboNativeNavigation
     protected function redirectToTurboNativeAction(string $action, string $fallbackUrl, string $redirectType = 'to', array $options = [])
     {
         if (request()->wasFromTurboNative()) {
-            return redirect(route("turbo_{$action}_historical_location"));
+            return new TurboNativeRedirectResponse(route("turbo_{$action}_historical_location"));
         }
 
         if ($redirectType === 'back') {
