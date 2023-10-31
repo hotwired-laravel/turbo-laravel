@@ -57,6 +57,7 @@
         "build": "@php vendor/bin/testbench workbench:build --ansi",
         "serve": [
             "@build",
+            "Composer\\Config::disableProcessTimeout",
             "@php vendor/bin/testbench serve"
         ],
         "lint": [
