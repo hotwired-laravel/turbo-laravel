@@ -10,6 +10,11 @@ class TraysController
 {
     use InteractsWithTurboNativeNavigation;
 
+    public function index()
+    {
+        return view('trays.index');
+    }
+
     public function show($tray)
     {
         return view('trays.show', [

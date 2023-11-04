@@ -16,7 +16,7 @@ Route::get('/articles/{article}/delete', [ArticlesController::class, 'delete'])-
 
 Route::resource('articles.comments', ArticleCommentsController::class)->only(['create', 'store']);
 Route::resource('comments', CommentsController::class)->only(['update']);
-Route::resource('trays', TraysController::class)->only(['show', 'store']);
+Route::resource('trays', TraysController::class)->only(['index', 'show', 'store']);
 
 Route::get('request-id', function () {
     return ['turbo_request_id' => Turbo::currentRequestId()];

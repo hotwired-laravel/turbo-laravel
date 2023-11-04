@@ -128,4 +128,12 @@ class ViewHelpersTest extends TestCase
             $renderedChannelName
         );
     }
+
+    /** @test */
+    public function configure_refresh_strategy()
+    {
+        $this->get(route('trays.index'))
+            ->assertSee('<meta name="turbo-refresh-method" content="morph">', false)
+            ->assertSee('<meta name="turbo-refresh-scroll" content="preserve">', false);
+    }
 }
