@@ -226,7 +226,12 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         );
     }
 
-    private function buildAction(string $action, Model|string $target, $content = null, Rendering $rendering = null)
+    public function refresh(): self
+    {
+        return $this->buildAction('refresh');
+    }
+
+    private function buildAction(string $action, Model|string|null $target = null, $content = null, Rendering $rendering = null)
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
@@ -308,7 +313,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
      */
     public function toResponse($request)
     {
-        if ($this->useAction !== 'remove' && ! $this->partialView && ! $this->inlineContent) {
+        if (! in_array($this->useAction, ['remove', 'refresh']) && ! $this->partialView && ! $this->inlineContent) {
             throw TurboStreamResponseFailedException::missingPartial();
         }
 
