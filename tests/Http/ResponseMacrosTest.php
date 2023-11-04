@@ -979,4 +979,20 @@ class ResponseMacrosTest extends TestCase
             ->action('replace')
             ->toResponse(new Request);
     }
+
+    /** @test */
+    public function refresh_shorthand()
+    {
+        $response = response()
+            ->turboStream()
+            ->refresh()
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'refresh',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
 }
