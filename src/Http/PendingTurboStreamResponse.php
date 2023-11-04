@@ -231,7 +231,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         return $this->buildAction('refresh');
     }
 
-    private function buildAction(string $action, Model|string|null $target = null, $content = null, Rendering $rendering = null)
+    private function buildAction(string $action, Model|string $target = null, $content = null, Rendering $rendering = null)
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
