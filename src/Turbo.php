@@ -20,6 +20,11 @@ class Turbo
      */
     private bool $broadcastToOthersOnly = false;
 
+    /**
+     * Stores the request ID sent by Turbo in the `X-Turbo-Request-Id` HTTP header.
+     */
+    private ?string $turboRequestId = null;
+
     public function isTurboNativeVisit(): bool
     {
         return $this->visitFromTurboNative;
@@ -30,6 +35,18 @@ class Turbo
         $this->visitFromTurboNative = true;
 
         return $this;
+    }
+
+    public function setTurboTrackingRequestId(string $requestId): self
+    {
+        $this->turboRequestId = $requestId;
+
+        return $this;
+    }
+
+    public function currentRequestId(): ?string
+    {
+        return $this->turboRequestId;
     }
 
     /**

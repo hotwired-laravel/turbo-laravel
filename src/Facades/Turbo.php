@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool shouldBroadcastToOthers
  * @method static string domId(Model $model, string $prefix = "")
  * @method static Broadcaster broadcaster()
+ * @method static \HotwiredLaravel\TurboLaravel\Turbo setTurboTrackingRequestId(string $requestId)
+ * @method static ?string currentRequestId()
  */
 class Turbo extends Facade
 {

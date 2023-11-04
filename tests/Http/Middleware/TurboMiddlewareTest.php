@@ -168,4 +168,15 @@ class TurboMiddlewareTest extends TestCase
             ->assertSee('Response cookie: response-cookie-value.')
             ->assertUnprocessable();
     }
+
+    /** @test */
+    public function sets_turbo_tracking_request_id()
+    {
+        $this->get('request-id')
+            ->assertJson(['turbo_request_id' => null]);
+
+        $this->withHeader('X-Turbo-Request-Id', '123')
+            ->get('request-id')
+            ->assertJson(['turbo_request_id' => '123']);
+    }
 }
