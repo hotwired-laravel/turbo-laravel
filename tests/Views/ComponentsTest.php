@@ -3,6 +3,7 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
+use HotwiredLaravel\TurboLaravel\Views\Components\RefreshesWith;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\View\ViewException;
 use Workbench\Database\Factories\ArticleFactory;
@@ -166,5 +167,41 @@ class ComponentsTest extends TestCase
             ->assertDontSee('<template></template>', false)
             ->assertDontSee('targets=', false)
             ->assertDontSee('target=', false);
+    }
+
+    /** @test */
+    public function refresh_strategy()
+    {
+        foreach (['replace', 'morph'] as $method) {
+            foreach (['reset', 'preserve'] as $scroll) {
+                $this->blade(<<<'BLADE'
+                    <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+                BLADE, ['method' => $method, 'scroll' => $scroll])
+                    ->assertSee('<meta name="turbo-refresh-method" content="'.$method.'">', false)
+                    ->assertSee('<meta name="turbo-refresh-scroll" content="'.$scroll.'">', false);
+            }
+        }
+    }
+
+    /** @test */
+    public function invalid_refresh_method()
+    {
+        $this->expectException(ViewException::class);
+        $this->expectExceptionMessage('Invalid refresh method given "invalid". Allowed values are: replace or morph.');
+
+        $this->blade(<<<'BLADE'
+            <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+        BLADE, ['method' => 'invalid', 'scroll' => RefreshesWith::DEFAULT_SCROLL]);
+    }
+
+    /** @test */
+    public function invalid_refresh_scroll()
+    {
+        $this->expectException(ViewException::class);
+        $this->expectExceptionMessage('Invalid refresh scroll given "invalid". Allowed values are: reset or preserve.');
+
+        $this->blade(<<<'BLADE'
+            <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+        BLADE, ['method' => RefreshesWith::DEFAULT_METHOD, 'scroll' => 'invalid']);
     }
 }

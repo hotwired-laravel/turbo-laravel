@@ -53,6 +53,7 @@ class TurboServiceProvider extends ServiceProvider
             ViewComponents\Frame::class,
             ViewComponents\Stream::class,
             ViewComponents\StreamFrom::class,
+            ViewComponents\RefreshesWith::class,
         ]);
     }
 
