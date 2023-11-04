@@ -338,4 +338,26 @@ class BroadcastsModelTest extends TestCase
             return true;
         });
     }
+
+    /** @test */
+    public function manually_broadcast_refresh()
+    {
+        $article = ArticleFactory::new()->create();
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        $article->broadcastRefresh();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-articles', $broadcast->channels[0]->name);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+
+            return true;
+        });
+    }
 }
