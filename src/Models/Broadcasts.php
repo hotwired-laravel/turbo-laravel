@@ -86,6 +86,13 @@ trait Broadcasts
         );
     }
 
+    public function broadcastRefresh(): PendingBroadcast
+    {
+        return $this->broadcastRefreshTo(
+            $this->brodcastDefaultStreamables(inserting: true)
+        );
+    }
+
     public function broadcastAppendTo($streamable): PendingBroadcast
     {
         return $this->broadcastActionTo($streamable, 'append', Rendering::forModel($this));
@@ -119,6 +126,17 @@ trait Broadcasts
     public function broadcastRemoveTo($streamable): PendingBroadcast
     {
         return $this->broadcastActionTo($streamable, 'remove', Rendering::empty());
+    }
+
+    public function broadcastRefreshTo($streamable): PendingBroadcast
+    {
+        return TurboStream::broadcastAction(
+            action: 'refresh',
+            target: null,
+            targets: null,
+            channel: $this->toChannels(Collection::wrap($streamable)),
+            content: Rendering::empty(),
+        );
     }
 
     public function asTurboStreamBroadcastingChannel()
