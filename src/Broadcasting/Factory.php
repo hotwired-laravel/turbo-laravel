@@ -75,7 +75,7 @@ class Factory
             action: 'refresh',
             channel: $channel,
             attributes: array_filter(['request-id' => $requestId = Turbo::currentRequestId()]),
-        )->cancelIf(fn (PendingBroadcast $broadcast) => (
+        )->lazyCancelIf(fn (PendingBroadcast $broadcast) => (
             $this->shouldLimitPageRefreshesOn($broadcast->channels, $requestId)
         ));
     }

@@ -655,4 +655,66 @@ class BroadcastsModelTest extends TestCase
             return true;
         }, times: 1);
     }
+
+    /** @test */
+    public function can_disable_manual_broadcasts()
+    {
+        /** @var Board $board */
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create());
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        Board::withoutTurboStreamBroadcasts(fn () => (
+            $board->broadcastAppend()
+        ));
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        $board->broadcastAppend();
+
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals('private-boards', $broadcast->channels[0]->name);
+            $this->assertEquals('boards', $broadcast->target);
+            $this->assertEquals('append', $broadcast->action);
+            $this->assertEquals('boards._board', $broadcast->partialView);
+            $this->assertEquals(['board' => $board], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+
+            return true;
+        }, times: 1);
+    }
+
+    /** @test */
+    public function can_disable_auto_broadcasts()
+    {
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create())->fresh();
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        Task::withoutTurboStreamBroadcasts(fn () => (
+            TaskFactory::new()
+                ->for($board)
+                ->create()
+        ));
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        TaskFactory::new()
+            ->for($board)
+            ->create();
+
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
+
+            return true;
+        }, times: 1);
+    }
 }
