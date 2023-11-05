@@ -28,8 +28,8 @@ class RefreshesWith extends Component
      */
     public function __construct(string $method = self::DEFAULT_METHOD, string $scroll = self::DEFAULT_SCROLL)
     {
-        throw_if(! in_array($method, self::ALLOWED_METHODS), PageRefreshStrategyException::invalidRefreshMethod($method));
-        throw_if(! in_array($scroll, self::ALLOWED_SCROLLS), PageRefreshStrategyException::invalidRefreshScroll($scroll));
+        throw_unless(in_array($method, self::ALLOWED_METHODS), PageRefreshStrategyException::invalidRefreshMethod($method));
+        throw_unless(in_array($scroll, self::ALLOWED_SCROLLS), PageRefreshStrategyException::invalidRefreshScroll($scroll));
 
         $this->method = $method;
         $this->scroll = $scroll;
