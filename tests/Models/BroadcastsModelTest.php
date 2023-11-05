@@ -512,11 +512,11 @@ class BroadcastsModelTest extends TestCase
         TurboStream::assertNothingWasBroadcasted();
 
         /** @var Board $board */
-        $board = Board::withoutEvents(fn () => BoardFactory::new()->create())->fresh();
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create()->fresh());
 
         TurboStream::assertNothingWasBroadcasted();
 
-        $board->fresh()->delete();
+        $board->delete();
 
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
             $this->assertCount(1, $broadcast->channels);
@@ -535,7 +535,7 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function auto_broadcast_refreshes_to_on_create()
     {
-        $board = Board::withoutEvents(fn () => BoardFactory::new()->create())->fresh();
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create()->fresh());
 
         TurboStream::assertNothingWasBroadcasted();
 
