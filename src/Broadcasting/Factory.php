@@ -27,6 +27,24 @@ class Factory
      */
     protected $recordedStreams = [];
 
+    /**
+     * Whether the broadcasts should be sent or not (globally).
+     */
+    protected bool $isBroadcasting = true;
+
+    public function withoutBroadcasts(callable $callback)
+    {
+        $original = $this->isBroadcasting;
+
+        $this->isBroadcasting = false;
+
+        try {
+            return $callback();
+        } finally {
+            $this->isBroadcasting = $original;
+        }
+    }
+
     public function fake()
     {
         $this->recording = true;
@@ -95,7 +113,7 @@ class Factory
             $broadcast->fake($this);
         }
 
-        return $broadcast;
+        return $broadcast->cancelIf(! $this->isBroadcasting);
     }
 
     public function record(PendingBroadcast $broadcast)
