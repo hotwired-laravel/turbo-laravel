@@ -17,9 +17,40 @@ use function HotwiredLaravel\TurboLaravel\dom_id;
  */
 trait Broadcasts
 {
+    protected static $ignoreTurboStreamBroadcastsOn = [];
+
     public static function bootBroadcasts()
     {
         static::observe(new ModelObserver());
+    }
+
+    public static function withoutTurboStreamBroadcasts(callable $callback)
+    {
+        return static::withoutTurboStreamBroadcastsOn([static::class], $callback);
+    }
+
+    public static function withoutTurboStreamBroadcastsOn(array $models, callable $callback)
+    {
+        static::$ignoreTurboStreamBroadcastsOn = array_values(array_merge(static::$ignoreTurboStreamBroadcastsOn, $models));
+
+        try {
+            return $callback();
+        } finally {
+            static::$ignoreTurboStreamBroadcastsOn = array_values(array_diff(static::$ignoreTurboStreamBroadcastsOn, $models));
+        }
+    }
+
+    public static function isIgnoringTurboStreamBroadcasts($class = null)
+    {
+        $class = $class ?: static::class;
+
+        foreach (static::$ignoreTurboStreamBroadcastsOn as $ignoredClass) {
+            if ($class === $ignoredClass || is_subclass_of($class, $ignoredClass)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function broadcastAppend(): PendingBroadcast
@@ -130,7 +161,8 @@ trait Broadcasts
 
     public function broadcastRefreshTo($streamable): PendingBroadcast
     {
-        return TurboStream::broadcastRefresh($this->toChannels(Collection::wrap($streamable)));
+        return TurboStream::broadcastRefresh($this->toChannels(Collection::wrap($streamable)))
+            ->cancelIf(fn () => static::isIgnoringTurboStreamBroadcasts());
     }
 
     public function asTurboStreamBroadcastingChannel()
@@ -146,7 +178,7 @@ trait Broadcasts
             targets: null,
             channel: $this->toChannels(Collection::wrap($streamables)),
             content: $rendering,
-        );
+        )->cancelIf(static::isIgnoringTurboStreamBroadcasts());
     }
 
     protected function broadcastDefaultStreamablesForRefresh()
