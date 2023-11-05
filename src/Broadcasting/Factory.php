@@ -143,7 +143,13 @@ class Factory
     {
         $result = collect($this->recordedStreams)->filter($callback);
 
-        Assert::assertCount($times, $result, $message ?: sprintf('Expected to have broadcasted %s, but broadcasted %d instead.', trans_choice('{0} nothing|{1}a Turbo Stream|[2,*]:value Turbo Streams', $result->count()), $result->count()));
+        Assert::assertCount($times, $result, $message ?: sprintf(
+            'Expected to have broadcasted %d Turbo %s, but broadcasted %d Turbo %s instead.',
+            $times,
+            (string) str('Stream')->plural($times),
+            $result->count(),
+            (string) str('Stream')->plural($result->count()),
+        ));
 
         return $this;
     }
