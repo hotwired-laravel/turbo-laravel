@@ -3,6 +3,7 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Models;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Broadcasting\Channel;
@@ -388,6 +389,31 @@ class BroadcastsModelTest extends TestCase
     }
 
     /** @test */
+    public function manually_broadcast_refresh_with_current_request_id()
+    {
+        Turbo::setTurboTrackingRequestId('123');
+
+        $article = ArticleFactory::new()->create();
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        $article->broadcastRefresh()->to($channel = new Channel('hello'));
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame($channel, $broadcast->channels[0]);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals(['request-id' => '123'], $broadcast->attributes);
+
+            return true;
+        });
+    }
+
+    /** @test */
     public function manually_broadcast_refresh_to()
     {
         $article = ArticleFactory::new()->create();
@@ -404,6 +430,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
@@ -424,6 +451,30 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function auto_broadcast_refreshes_on_create_with_current_request_id()
+    {
+        Turbo::setTurboTrackingRequestId('123');
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        BoardFactory::new()->create();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame('private-boards', $broadcast->channels[0]->name);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals(['request-id' => '123'], $broadcast->attributes);
 
             return true;
         });
@@ -448,6 +499,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
@@ -473,6 +525,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
@@ -495,6 +548,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
@@ -520,6 +574,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
@@ -545,6 +600,7 @@ class BroadcastsModelTest extends TestCase
             $this->assertNull($broadcast->partialView);
             $this->assertEmpty($broadcast->partialData);
             $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
 
             return true;
         });
