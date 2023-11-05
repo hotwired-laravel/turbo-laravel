@@ -4,6 +4,7 @@ namespace HotwiredLaravel\TurboLaravel\Models;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Broadcasting\Channel;
@@ -136,6 +137,7 @@ trait Broadcasts
             targets: null,
             channel: $this->toChannels(Collection::wrap($streamable)),
             content: Rendering::empty(),
+            attributes: array_filter(['request-id' => Turbo::currentRequestId()]),
         );
     }
 
