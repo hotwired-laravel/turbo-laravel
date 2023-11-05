@@ -89,7 +89,7 @@ trait Broadcasts
     public function broadcastRefresh(): PendingBroadcast
     {
         return $this->broadcastRefreshTo(
-            $this->brodcastDefaultStreamables(inserting: true)
+            $this->broadcastDefaultStreamablesForRefresh()
         );
     }
 
@@ -155,6 +155,18 @@ trait Broadcasts
         );
     }
 
+    protected function broadcastDefaultStreamablesForRefresh()
+    {
+        if (property_exists($this, 'broadcastRefreshesTo')) {
+            return Collection::wrap($this->broadcastRefreshesTo)
+                ->map(fn ($related) => $this->{$related})
+                ->values()
+                ->all();
+        }
+
+        return $this->broadcastDefaultStreamableForCurrentModel(inserting: $this->wasRecentlyCreated);
+    }
+
     protected function brodcastDefaultStreamables(bool $inserting = false)
     {
         if (property_exists($this, 'broadcastsTo')) {
@@ -172,6 +184,11 @@ trait Broadcasts
             return $this->broadcasts['stream'];
         }
 
+        return $this->broadcastDefaultStreamableForCurrentModel($inserting);
+    }
+
+    protected function broadcastDefaultStreamableForCurrentModel(bool $inserting)
+    {
         if ($inserting) {
             return Name::forModel($this)->plural;
         }
