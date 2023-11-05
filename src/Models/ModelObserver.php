@@ -27,14 +27,12 @@ class ModelObserver
             $model->broadcastRefresh()->later();
         }
 
-        if (! $this->shouldBroadcast($model)) {
-            return;
-        }
-
-        if ($model->wasRecentlyCreated) {
-            $model->broadcastInsert()->later();
-        } else {
-            $model->broadcastReplace()->later();
+        if ($this->shouldBroadcast($model)) {
+            if ($model->wasRecentlyCreated) {
+                $model->broadcastInsert()->later();
+            } else {
+                $model->broadcastReplace()->later();
+            }
         }
     }
 
@@ -47,11 +45,9 @@ class ModelObserver
             $model->broadcastRefresh()->later();
         }
 
-        if (! $this->shouldBroadcast($model)) {
-            return;
+        if ($this->shouldBroadcast($model)) {
+            $model->broadcastRemove()->later();
         }
-
-        $model->broadcastRemove()->later();
     }
 
     private function shouldBroadcastRefresh(Model $model): bool
