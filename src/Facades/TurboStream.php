@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \HotwiredLaravel\TurboLaravel\Broadcasting\Factory assertNothingWasBroadcasted()
  * @method static \HotwiredLaravel\TurboLaravel\Broadcasting\Factory assertBroadcasted(callable $callback)
  * @method static \HotwiredLaravel\TurboLaravel\Broadcasting\Factory clearRecordedBroadcasts()
+ * @method static mixed withoutBroadcasts(callable $callback)
  *
  * @mixin \HotwiredLaravel\TurboLaravel\Broadcasting\Factory
  */
