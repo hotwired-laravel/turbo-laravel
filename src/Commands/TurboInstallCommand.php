@@ -6,7 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use RuntimeException;
 use Symfony\Component\Console\Terminal;
+use Symfony\Component\Process\Process;
 
 class TurboInstallCommand extends Command
 {
@@ -22,9 +24,9 @@ class TurboInstallCommand extends Command
     public function handle()
     {
         $this->displayHeader('Installing Turbo Laravel', '<bg=blue;fg=black> INFO </>');
-        $this->installJsDependencies();
         $this->updateTemplates();
         $this->publishJsFiles();
+        $this->installJsDependencies();
 
         $this->displayAfterNotes();
 
@@ -86,10 +88,11 @@ class TurboInstallCommand extends Command
 
     private function installJsDependencies()
     {
-        if (! $this->usingImportmaps()) {
-            $this->updateNpmDependencies();
-        } else {
+        if ($this->usingImportmaps()) {
             $this->updateImportmapsDependencies();
+        } else {
+            $this->updateNpmDependencies();
+            $this->runInstallAndBuildCommand();
         }
     }
 
@@ -103,6 +106,34 @@ class TurboInstallCommand extends Command
             });
 
             return self::SUCCESS;
+        });
+    }
+
+    private function runInstallAndBuildCommand(): void
+    {
+        if (file_exists(base_path('pnpm-lock.yaml'))) {
+            $this->runCommands(['pnpm install', 'pnpm run build']);
+        } elseif (file_exists(base_path('yarn.lock'))) {
+            $this->runCommands(['yarn install', 'yarn run build']);
+        } else {
+            $this->runCommands(['npm install', 'npm run build']);
+        }
+    }
+
+    private function runCommands($commands): void
+    {
+        $process = Process::fromShellCommandline(implode(' && ', $commands), null, null, null, null);
+
+        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
+            try {
+                $process->setTty(true);
+            } catch (RuntimeException $e) {
+                $this->output->writeln('  <bg=yellow;fg=black> WARN </> '.$e->getMessage().PHP_EOL);
+            }
+        }
+
+        $process->run(function ($type, $line) {
+            $this->output->write('    '.$line);
         });
     }
 
