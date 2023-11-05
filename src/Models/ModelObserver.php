@@ -23,6 +23,10 @@ class ModelObserver
      */
     public function saved(Model $model)
     {
+        if ($this->shouldBroadcastRefresh($model)) {
+            $model->broadcastRefresh()->later();
+        }
+
         if (! $this->shouldBroadcast($model)) {
             return;
         }
@@ -39,11 +43,28 @@ class ModelObserver
      */
     public function deleted(Model $model)
     {
+        if ($this->shouldBroadcastRefresh($model)) {
+            $model->broadcastRefresh()->later();
+        }
+
         if (! $this->shouldBroadcast($model)) {
             return;
         }
 
         $model->broadcastRemove()->later();
+    }
+
+    private function shouldBroadcastRefresh(Model $model): bool
+    {
+        if (property_exists($model, 'broadcastRefreshes')) {
+            return true;
+        }
+
+        if (property_exists($model, 'broadcastRefreshesTo')) {
+            return true;
+        }
+
+        return false;
     }
 
     private function shouldBroadcast(Model $model): bool
