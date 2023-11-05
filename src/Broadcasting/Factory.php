@@ -2,6 +2,8 @@
 
 namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
+use HotwiredLaravel\TurboLaravel\Facades\Limiter;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
@@ -67,6 +69,17 @@ class Factory
         return $this->broadcastAction('remove', null, $target, $targets, $channel, $attributes);
     }
 
+    public function broadcastRefresh(Channel|Model|Collection|array|string $channel = null)
+    {
+        return $this->broadcastAction(
+            action: 'refresh',
+            channel: $channel,
+            attributes: array_filter(['request-id' => $requestId = Turbo::currentRequestId()]),
+        )->cancelIf(fn (PendingBroadcast $broadcast) => (
+            $this->shouldLimitPageRefreshesOn($broadcast->channels, $requestId)
+        ));
+    }
+
     public function broadcastAction(string $action, $content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         $broadcast = new PendingBroadcast(
@@ -90,6 +103,22 @@ class Factory
         $this->recordedStreams[] = $broadcast;
 
         return $this;
+    }
+
+    protected function shouldLimitPageRefreshesOn(array $channels, ?string $requestId): bool
+    {
+        return Limiter::shouldLimit($this->pageRefreshLimiterKeyFor($channels, $requestId));
+    }
+
+    protected function pageRefreshLimiterKeyFor(array $channels, ?string $requestId): string
+    {
+        $keys = array_map(fn (Channel $channel) => $channel->name, $channels);
+
+        sort($keys);
+
+        $key = sha1(implode('/', array_values($keys) + array_filter([$requestId])));
+
+        return 'turbo-refreshes-limiter-'.$key;
     }
 
     protected function resolveRendering($content)
@@ -128,6 +157,13 @@ class Factory
     protected function getResourceNameFor(Model $model): string
     {
         return Name::forModel($model)->plural;
+    }
+
+    public function clearRecordedBroadcasts(): self
+    {
+        $this->recordedStreams = [];
+
+        return $this;
     }
 
     public function assertBroadcasted($callback)

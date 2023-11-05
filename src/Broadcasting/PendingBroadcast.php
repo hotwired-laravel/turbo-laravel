@@ -168,7 +168,7 @@ class PendingBroadcast
 
     public function cancelIf($condition)
     {
-        $this->wasCancelled = boolval(value($condition));
+        $this->wasCancelled = boolval(value($condition, $this));
 
         return $this;
     }
