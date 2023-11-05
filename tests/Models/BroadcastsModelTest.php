@@ -12,7 +12,6 @@ use Workbench\App\Models\Board;
 use Workbench\App\Models\Comment;
 use Workbench\App\Models\Company;
 use Workbench\App\Models\ReviewStatus;
-use Workbench\App\Models\Task;
 use Workbench\Database\Factories\ArticleFactory;
 use Workbench\Database\Factories\BoardFactory;
 use Workbench\Database\Factories\CommentFactory;
