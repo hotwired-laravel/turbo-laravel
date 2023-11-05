@@ -12,6 +12,7 @@ use Workbench\App\Models\Board;
 use Workbench\App\Models\Comment;
 use Workbench\App\Models\Company;
 use Workbench\App\Models\ReviewStatus;
+use Workbench\App\Models\Task;
 use Workbench\Database\Factories\ArticleFactory;
 use Workbench\Database\Factories\BoardFactory;
 use Workbench\Database\Factories\CommentFactory;
@@ -604,5 +605,55 @@ class BroadcastsModelTest extends TestCase
 
             return true;
         });
+    }
+
+    /** @test */
+    public function auto_broadcast_refreshes_to_on_create_debouncing()
+    {
+        $this->freezeTime();
+
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create())->fresh();
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        TaskFactory::new()
+            ->times(2)
+            ->for($board)
+            ->create();
+
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
+
+            return true;
+        }, times: 1);
+
+        $this->travel(501)->milliseconds();
+
+        TurboStream::clearRecordedBroadcasts();
+
+        TaskFactory::new()
+            ->times(2)
+            ->for($board)
+            ->create();
+
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertEquals('refresh', $broadcast->action);
+            $this->assertNull($broadcast->target);
+            $this->assertNull($broadcast->partialView);
+            $this->assertEmpty($broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEmpty($broadcast->attributes);
+
+            return true;
+        }, times: 1);
     }
 }
