@@ -49,6 +49,53 @@ You may also trigger a Turbo Frame with forms and links that are _outside_ of th
 </div>
 ```
 
+Turbo Streams, the other custom HTML tag that ships with Turbo, is a bit different. We can use Turbo Stream tags to trigger some actions on the document. For instance, here's Turbo Stream that appends a new comment into the comments list that already lives on the page:
+
+```html
+<turbo-stream action="append" target="comments">
+    <template>
+        <div id="comment_123">
+            <p>Lorem ipsum...</p>
+        </div>
+    </template>
+</turbo-stream>
+```
+
+In this case, this new comment of DOM ID `#comment_123` will be _appended_ into the list of comments, which has the `#comments` DOM ID. All the default Turbo Stream actions, except the `refresh` one, require a `target` or a `targets` attribute. The difference here is that if you use the `target` attribute, it expects a DOM ID of the target element, and if you use the `targets` attribute, it expects a CSS selector of the target(s) element(s).
+
+There are 8 default Turbo Stream actions in Turbo:
+
+| Action | Description |
+|---|---|
+| `append` | Appends the contents of the `<template>` tag into the target or targets |
+| `prepend` | Prepends the contents of the `<template>` tag to the target or targets |
+| `update` | Updates the target or targets with the contents of the `<template>` tag (keeps the targeted elements around) |
+| `replace` | Replaces the target or targets with the contents of the `<template>` tag (actually removes the targets) |
+| `before` | Inserts the contents of the `<template>` tag _before_ the targeted elements |
+| `after` | Inserts the contents of the `<template>` tag _after_ the targeted elements |
+| `remove` | Removes the targeted elements (doesn't require a `<template>` tag) |
+| `refresh` | Signals to Turbo Drive to do a page refresh (doesn't require a `<template>` tag, nor "target") |
+
+All of the default actions require a the contents of the new or updated element to be wrapped in a `<template>` tag, except `remove` and `refresh`. That's because Turbo Stream tags can be activated by simply adding them to the document. They'll get activate based on the action and then get removed from the DOM. Having the `<template>` ensure the content is not visible in the browser as it gets activated, only after.
+
+I keep saying "default action", well, that's because Turbo allows us to create our own [custom actions](https://turbo.hotwired.dev/handbook/streams#custom-actions):
+
+```js
+import { StreamActions } from "@hotwired/turbo"
+
+StreamActions.log = function () {
+  console.log(this.getAttribute("message"))
+}
+```
+
+In this case, we can use this action like so:
+
+```html
+<turbo-stream action="log" message="Hello World"></turbo-stream>
+```
+
+This will get "Hello World" printed on the DevTools Console. With custom actions, you can do pretty much anything on the document.
+
 So far, all vanilla Hotwire and Turbo.
 
 [Continue to Conventions...](/docs/{{version}}/conventions)
