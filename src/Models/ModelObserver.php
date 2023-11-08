@@ -24,11 +24,7 @@ class ModelObserver
     public function saved(Model $model)
     {
         if ($this->shouldBroadcastRefresh($model)) {
-            if ($model->wasRecentlyCreated) {
-                $model->broadcastRefreshCreated()->later();
-            } else {
-                $model->broadcastRefresh()->later();
-            }
+            $model->broadcastRefresh()->later();
         }
 
         if ($this->shouldBroadcast($model)) {
