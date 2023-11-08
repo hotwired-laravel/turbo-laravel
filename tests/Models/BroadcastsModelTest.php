@@ -541,9 +541,9 @@ class BroadcastsModelTest extends TestCase
 
         TaskFactory::new()->for($board)->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertSame('private-tasks', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
             $this->assertNull($broadcast->target);
             $this->assertNull($broadcast->partialView);
@@ -621,9 +621,9 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertSame('private-tasks', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
             $this->assertNull($broadcast->target);
             $this->assertNull($broadcast->partialView);
@@ -643,9 +643,9 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertSame('private-tasks', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
             $this->assertNull($broadcast->target);
             $this->assertNull($broadcast->partialView);
@@ -689,7 +689,7 @@ class BroadcastsModelTest extends TestCase
     /** @test */
     public function can_disable_auto_broadcasts()
     {
-        $board = Board::withoutEvents(fn () => BoardFactory::new()->create())->fresh();
+        $board = Board::withoutEvents(fn () => BoardFactory::new()->create()->fresh());
 
         TurboStream::assertNothingWasBroadcasted();
 
@@ -705,9 +705,9 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) {
             $this->assertCount(1, $broadcast->channels);
-            $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
+            $this->assertSame('private-tasks', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
             $this->assertNull($broadcast->target);
             $this->assertNull($broadcast->partialView);

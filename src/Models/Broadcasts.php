@@ -124,6 +124,13 @@ trait Broadcasts
         );
     }
 
+    public function broadcastRefreshCreated(): PendingBroadcast
+    {
+        return $this->broadcastRefreshTo(
+            $this->broadcastDefaultRefreshStreamables(),
+        );
+    }
+
     public function broadcastAppendTo($streamable): PendingBroadcast
     {
         return $this->broadcastActionTo($streamable, 'append', Rendering::forModel($this));
@@ -190,6 +197,10 @@ trait Broadcasts
                 ->all();
         }
 
+        if (method_exists($this, 'broadcastRefreshesTo')) {
+            return $this->broadcastRefreshesTo();
+        }
+
         return $this->broadcastDefaultStreamableForCurrentModel(inserting: $this->wasRecentlyCreated);
     }
 
@@ -211,6 +222,15 @@ trait Broadcasts
         }
 
         return $this->broadcastDefaultStreamableForCurrentModel($inserting);
+    }
+
+    protected function broadcastDefaultRefreshStreamables()
+    {
+        if (property_exists($this, 'broadcastRefreshesTo') && is_array($this->broadcastRefreshesTo) && isset($this->broadcastRefreshesTo['stream'])) {
+            return $this->broadcastRefreshesTo['stream'];
+        }
+
+        return $this->broadcastDefaultStreamableForCurrentModel(inserting: true);
     }
 
     protected function broadcastDefaultStreamableForCurrentModel(bool $inserting)
