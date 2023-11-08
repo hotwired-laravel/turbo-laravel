@@ -4,13 +4,13 @@ namespace HotwiredLaravel\TurboLaravel\Models;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use function HotwiredLaravel\TurboLaravel\dom_id;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Support\Collection;
 
-use function HotwiredLaravel\TurboLaravel\dom_id;
+use Illuminate\Support\Collection;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -56,21 +56,21 @@ trait Broadcasts
     public function broadcastAppend(): PendingBroadcast
     {
         return $this->broadcastAppendTo(
-            $this->brodcastDefaultStreamables(inserting: true)
+            $this->broadcastDefaultStreamables(inserting: true)
         );
     }
 
     public function broadcastPrepend(): PendingBroadcast
     {
         return $this->broadcastPrependTo(
-            $this->brodcastDefaultStreamables(inserting: true)
+            $this->broadcastDefaultStreamables(inserting: true)
         );
     }
 
     public function broadcastBefore(string $target, bool $inserting = true): PendingBroadcast
     {
         return $this->broadcastBeforeTo(
-            $this->brodcastDefaultStreamables($inserting),
+            $this->broadcastDefaultStreamables($inserting),
             $target
         );
     }
@@ -78,7 +78,7 @@ trait Broadcasts
     public function broadcastAfter(string $target, bool $inserting = true): PendingBroadcast
     {
         return $this->broadcastAfterTo(
-            $this->brodcastDefaultStreamables($inserting),
+            $this->broadcastDefaultStreamables($inserting),
             $target
         );
     }
@@ -90,7 +90,7 @@ trait Broadcasts
             : 'append';
 
         return $this->broadcastActionTo(
-            $this->brodcastDefaultStreamables(inserting: true),
+            $this->broadcastDefaultStreamables(inserting: true),
             $action,
             Rendering::forModel($this),
         );
@@ -99,21 +99,21 @@ trait Broadcasts
     public function broadcastReplace(): PendingBroadcast
     {
         return $this->broadcastReplaceTo(
-            $this->brodcastDefaultStreamables()
+            $this->broadcastDefaultStreamables()
         );
     }
 
     public function broadcastUpdate(): PendingBroadcast
     {
         return $this->broadcastUpdateTo(
-            $this->brodcastDefaultStreamables()
+            $this->broadcastDefaultStreamables()
         );
     }
 
     public function broadcastRemove(): PendingBroadcast
     {
         return $this->broadcastRemoveTo(
-            $this->brodcastDefaultStreamables()
+            $this->broadcastDefaultStreamables()
         );
     }
 
@@ -167,7 +167,7 @@ trait Broadcasts
 
     public function asTurboStreamBroadcastingChannel()
     {
-        return $this->toChannels(Collection::wrap($this->brodcastDefaultStreamables($this->wasRecentlyCreated)));
+        return $this->toChannels(Collection::wrap($this->broadcastDefaultStreamables($this->wasRecentlyCreated)));
     }
 
     protected function broadcastActionTo($streamables, string $action, Rendering $rendering, string $target = null): PendingBroadcast
@@ -183,10 +183,18 @@ trait Broadcasts
 
     protected function broadcastRefreshDefaultStreamables()
     {
-        return $this->brodcastDefaultStreamables(inserting: $this->wasRecentlyCreated, broadcastToProperty: 'broadcastRefreshesTo', broadcastsProperty: 'broadcastRefreshes');
+        return $this->broadcastDefaultStreamables(inserting: $this->wasRecentlyCreated, broadcastToProperty: 'broadcastRefreshesTo', broadcastsProperty: 'broadcastRefreshes');
     }
 
+    /**
+     * @deprecated There was a typo here. Use `broadcastDefaultStreamables` instead.
+     */
     protected function brodcastDefaultStreamables(bool $inserting = false, string $broadcastToProperty = 'broadcastsTo', string $broadcastsProperty = 'broadcasts')
+    {
+        return $this->broadcastDefaultStreamables($inserting, $broadcastToProperty, $broadcastsProperty);
+    }
+
+    protected function broadcastDefaultStreamables(bool $inserting = false, string $broadcastToProperty = 'broadcastsTo', string $broadcastsProperty = 'broadcasts')
     {
         if (property_exists($this, $broadcastToProperty)) {
             return Collection::wrap($this->{$broadcastToProperty})
