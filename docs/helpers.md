@@ -185,4 +185,4 @@ The `response()->turboStream()` macro works similarly to the `turbo_stream()` fu
 
 The `response()->turboStreamView()` macro works similarly to the `turbo_stream_view()` function above. It was only added to the response for convenience.
 
-[Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)
+[Continue to Turbo Frames...](/docs/{{version}}/turbo-frames)

@@ -4,6 +4,7 @@
     * [Conventions](/docs/{{version}}/conventions)
 * The Essentials
     * [Helpers](/docs/{{version}}/helpers)
+    * [Turbo Frames](/docs/{{version}}/turbo-frames)
     * [Turbo Streams](/docs/{{version}}/turbo-streams)
     * [Broadcasting](/docs/{{version}}/broadcasting)
     * [Livewire Integration](/docs/{{version}}/livewire)
