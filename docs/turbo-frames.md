@@ -32,4 +32,24 @@ Any other attribute passed to the Blade Component will get forwarded to the unde
 
 This will work for any other attribute you want to forward to the underlying component.
 
+## The `request()->wasFromTurboFrame()` Macro
+
+You may want to detect if a request came from a Turbo Frame in the backend. You may use the `wasFromTurboFrame()` method for that:
+
+```php
+if ($request->wasFromTurboFrame()) {
+    // ...
+}
+```
+
+When used like this, the macro will return `true` if the `X-Turbo-Frame` header is present in the request (which Turbo adds automatically), or `false` otherwise.
+
+You may also check if the request came from a specific Turbo Frame:
+
+```php
+if ($request->wasFromTurboFrame(dom_id($post, 'create_comment'))) {
+    // ...
+}
+```
+
 [Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)
