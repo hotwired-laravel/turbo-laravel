@@ -400,4 +400,4 @@ turbo_stream()
     ->broadcastToPresenceChannel('chat.123', fn ($broadcast) => $broadcast->toOthers());
 ```
 
-[Continue to Livewire Integration...](/docs/{{version}}/livewire)
+[Continue to Validation Response Redirects...](/docs/{{version}}/validation-response-redirects)
