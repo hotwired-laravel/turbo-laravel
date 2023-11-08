@@ -120,14 +120,7 @@ trait Broadcasts
     public function broadcastRefresh(): PendingBroadcast
     {
         return $this->broadcastRefreshTo(
-            $this->broadcastDefaultStreamablesForRefresh()
-        );
-    }
-
-    public function broadcastRefreshCreated(): PendingBroadcast
-    {
-        return $this->broadcastRefreshTo(
-            $this->broadcastDefaultRefreshStreamables(),
+            $this->broadcastRefreshDefaultStreamables()
         );
     }
 
@@ -188,37 +181,26 @@ trait Broadcasts
         )->cancelIf(static::isIgnoringTurboStreamBroadcasts());
     }
 
-    protected function broadcastDefaultStreamablesForRefresh()
+    protected function broadcastRefreshDefaultStreamables()
     {
-        if (property_exists($this, 'broadcastRefreshesTo')) {
-            return Collection::wrap($this->broadcastRefreshesTo)
-                ->map(fn ($related) => $this->{$related})
-                ->values()
-                ->all();
-        }
-
-        if (method_exists($this, 'broadcastRefreshesTo')) {
-            return $this->broadcastRefreshesTo();
-        }
-
-        return $this->broadcastDefaultStreamableForCurrentModel(inserting: $this->wasRecentlyCreated);
+        return $this->brodcastDefaultStreamables(inserting: $this->wasRecentlyCreated, broadcastToProperty: 'broadcastRefreshesTo', broadcastsProperty: 'broadcastRefreshes');
     }
 
-    protected function brodcastDefaultStreamables(bool $inserting = false)
+    protected function brodcastDefaultStreamables(bool $inserting = false, string $broadcastToProperty = 'broadcastsTo', string $broadcastsProperty = 'broadcasts')
     {
-        if (property_exists($this, 'broadcastsTo')) {
-            return Collection::wrap($this->broadcastsTo)
+        if (property_exists($this, $broadcastToProperty)) {
+            return Collection::wrap($this->{$broadcastToProperty})
                 ->map(fn ($related) => $this->{$related})
                 ->values()
                 ->all();
         }
 
-        if (method_exists($this, 'broadcastsTo')) {
-            return $this->broadcastsTo();
+        if (method_exists($this, $broadcastToProperty)) {
+            return $this->{$broadcastToProperty}();
         }
 
-        if ($inserting && is_array($this->broadcasts) && isset($this->broadcasts['stream'])) {
-            return $this->broadcasts['stream'];
+        if ($inserting && is_array($this->{$broadcastsProperty}) && isset($this->{$broadcastsProperty}['stream'])) {
+            return $this->{$broadcastsProperty}['stream'];
         }
 
         return $this->broadcastDefaultStreamableForCurrentModel($inserting);
