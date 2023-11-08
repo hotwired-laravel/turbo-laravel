@@ -42,7 +42,7 @@ if ($request->wasFromTurboFrame()) {
 }
 ```
 
-When used like this, the macro will return `true` if the `X-Turbo-Frame` header is present in the request (which Turbo adds automatically), or `false` otherwise.
+When used like this, the macro will return `true` if the `X-Turbo-Frame` custom HTTP header is present in the request (which Turbo adds automatically), or `false` otherwise.
 
 You may also check if the request came from a specific Turbo Frame:
 
