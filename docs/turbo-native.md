@@ -70,7 +70,7 @@ class TraysController extends Controller
 
     public function store()
     {
-        $tray = /** Create the Tray */;
+        // Tray creation...
 
         return $this->recedeOrRedirectTo(route('trays.show', $tray));
     }
