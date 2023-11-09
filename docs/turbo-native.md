@@ -53,9 +53,9 @@ For instance, if a form submission request came from a Turbo Native client, the 
 
 | Signal | Route| Description|
 |---|---|---|
-| `recede` | `/recede_historical_location` | TODO |
-| `resume` | `/resume_historical_location` | TODO |
-| `refresh`| `/refresh_historical_location` | TODO |
+| `recede` | `/recede_historical_location` | Go back to previous screen |
+| `resume` | `/resume_historical_location` | Stay on the current screen as is |
+| `refresh`| `/refresh_historical_location` | Stay on the current screen but refresh |
 
 Sending these signals is a matter of detecting if the request came from a Turbo Native client and, if so, redirect the user to these signal URLs instead. The Turbo Native client should detect the redirect was from one of these special routes and trigger the desired behavior.
 
