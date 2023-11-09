@@ -383,12 +383,12 @@ turbo_stream($comment)
 Similarly to using the Facade, you may also want to broadcast to private or presence string channels like so:
 
 ```php
-// To private channels...
+// Broadcast to private channels...
 turbo_stream()
     ->append('notifications', 'Hello World')
     ->broadcastToPrivateChannel('user.123', fn ($broadcast) => $broadcast->toOthers())
 
-// To presence channels...
+// Broadcast to presence channels...
 turbo_stream()
     ->append('notifications', 'Hello World')
     ->broadcastToPresenceChannel('chat.123', fn ($broadcast) => $broadcast->toOthers());
