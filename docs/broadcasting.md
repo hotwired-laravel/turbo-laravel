@@ -365,7 +365,7 @@ turbo_stream()
     ->broadcastTo('general');
 ```
 
-This will tap on the `PendingTurboStreamResponse` and create a `PendingBroadcast` from it. It's important to note that this will return the same `PendingTurboStreamResponse`, not the `PendingBroadcast`. If you want to configure the `PendingBroadcast` that will be generated, you must to that before calling the `broadcastTo()` method, but you may also pass a `Closure` as the second parameter:
+This will tap on the `PendingTurboStreamResponse` and create a `PendingBroadcast` from it. It's important to note that this will return the same `PendingTurboStreamResponse`, not the `PendingBroadcast`. If you want to configure the `PendingBroadcast` that will be generated, you must do that before calling the `broadcastTo()` method, but you may also pass a `Closure` as the second parameter:
 
 ```php
 turbo_stream()
