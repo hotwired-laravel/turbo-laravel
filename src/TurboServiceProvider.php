@@ -169,6 +169,18 @@ class TurboServiceProvider extends ServiceProvider
                 $this->headers->get('Content-Type'),
             );
         });
+
+        TestResponse::macro('assertRedirectRecede', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_recede_historical_location', $with);
+        });
+
+        TestResponse::macro('assertRedirectResume', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_resume_historical_location', $with);
+        });
+
+        TestResponse::macro('assertRedirectRefresh', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_refresh_historical_location', $with);
+        });
     }
 
     protected function configureMiddleware(): void
