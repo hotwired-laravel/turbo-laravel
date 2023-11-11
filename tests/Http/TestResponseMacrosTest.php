@@ -34,7 +34,7 @@ class TestResponseMacrosTest extends TestCase
     {
         $this->turboNative()->post(route('trays.store', 1), [
             'return_to' => $returnTo,
-            'with' => true
+            'with' => true,
         ])->assertRedirectToRoute($route, $with = [
             'status' => urlencode(__('Tray created.')),
         ])->{$method}($with);
