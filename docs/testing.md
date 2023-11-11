@@ -135,7 +135,7 @@ class CreateCommentsTest extends TestCase
 
 ## Asserting Turbo Stream HTTP Responses
 
-You can test if you got a Turbo Stream response by using the `assertTurboStream`. Similarly, you can assert that your response is _not_ a Turbo Stream response by using the `assertNotTurboStream()` macro:
+You may test if you got a Turbo Stream response by using the `assertTurboStream()` response helper macro. Similarly, you may assert that your response was _not_ a Turbo Stream response by using the `assertNotTurboStream()` response helper macro:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
@@ -147,22 +147,18 @@ class CreateTodosTest extends TestCase
     /** @test */
     public function creating_todo_from_turbo_request_returns_turbo_stream_response()
     {
-        $response = $this->turbo()->post(route('todos.store'), [
+        $this->turbo()->post(route('todos.store'), [
             'content' => 'Test the app',
-        ]);
-
-        $response->assertTurboStream();
+        ])->assertTurboStream();
     }
 
     /** @test */
     public function creating_todo_from_regular_request_does_not_return_turbo_stream_response()
     {
         // Notice we're not chaining the `$this->turbo()` method here.
-        $response = $this->post(route('todos.store'), [
+        $this->post(route('todos.store'), [
             'content' => 'Test the app',
-        ]);
-
-        $response->assertNotTurboStream();
+        ])->assertNotTurboStream();
     }
 }
 ```
@@ -179,7 +175,7 @@ class TodosController
         ]));
 
         if (request()->wantsTurboStream()) {
-            return response()->turboStream($todo);
+            return turbo_stream($todo);
         }
 
         return redirect()->route('todos.index');
@@ -187,9 +183,9 @@ class TodosController
 }
 ```
 
-## Fluent Turbo Stream Testing
+## Fluent Turbo Stream Assertions
 
-You can get specific on your Turbo Stream responses by passing a callback to the `assertTurboStream(fn)` method. This can be used to test that you have a specific Turbo Stream tag being returned, or that you're returning exactly 2 Turbo Stream tags, for instance:
+The `assertTurboStream()` macro accepts a callback which allows you to assert specific details about your returned Turbo Streams. The callback takes an instance of the `AssertableTurboStream` class, which has some matching methods to help you building your specific assertion. In the following example, we're asserting that 2 Turbo Streams were returned, as well as their targets, actions, and even HTML content:
 
 ```php
 /** @test */
@@ -214,7 +210,7 @@ public function create_todos()
 
 ## Testing Turbo Stream Broadcasts
 
-All broadcasts use the `TurboStream` Facade. You may want to fake it so you can that the broadcasts are being correctly sent:
+You may assert that Turbo Stream broadcasts were sent from any mechanism provided by Turbo Laravel by using the `TurboStream::fake()` abstraction. This allows you to capture any kind of Turbo Stream broadcasting that happens inside your application and assert on them:
 
 ```php
 use App\Models\Todo;
