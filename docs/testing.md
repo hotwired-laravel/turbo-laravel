@@ -4,22 +4,49 @@
 
 ## Introduction
 
-There are two aspects of your application using Turbo Laravel that are specific this approach itself:
+Testing a Hotwired app is like testing a regular Laravel app. However, Turbo Laravel comes with a set of helpers that may be used to ease testing some aspects that are specific to Turbo:
 
-1. **Turbo HTTP.** As you return Turbo Stream responses from your route handlers/controllers to be applied by Turbo itself; and
-1. **Turbo Stream Broadcasts.** Which is the side-effect of certain model changes, or when you call `$model->broadcastAppend()` on your models, or when you're using Handmade Turbo Stream broadcasts.
+1. **Turbo HTTP Request Helpers**. When you may want to mimic a Turbo visit, or a Turbo Native visit, or a request coming from a Turbo Frame.
+1. **Turbo Streams on HTTP Responses.** When you may want to test the Turbo Streams returned from HTTP requests.
+1. **Turbo Stream Broadcasts.** When you're either using the broadcast methods on your models using the `Broadcasts` trait, or when you're using [Handmade Turbo Stream Broadcasts](https://turbo-laravel.com/docs/2.x/broadcasting#content-handmade-broadcasts).
 
-We're going to cover both of these scenarios here.
+Let's dig into those aspects and how you may test them.
 
-## Making Turbo & Turbo Native HTTP requests
+## Turbo HTTP Request Helpers
 
-To enhance your testing capabilities when using Turbo, Turbo Laravel adds a couple of macros to the TestResponse that Laravel uses under the hood. The goal is that testing Turbo Stream responses is as convenient as testing regular HTTP responses.
+To enhance your testing capabilities when using Turbo, Turbo Laravel adds a few macros to the `TestResponse` that Laravel uses under the hood. It also ships with a `InteractsWithTurbo` trait that adds Turbo-specific testing helper methods. The goal is to allow mimicking a request and inspecting the response in a very Laravel way.
 
-To mimic Turbo requests, which means sending a request setting the correct Content-Type in the `Accept:` HTTP header, you need to use the `InteractsWithTurbo` trait to your testcase. Now you can mimic a Turbo HTTP request by using the `$this->turbo()` method before you make the HTTP call itself. You can also mimic Turbo Native specific requests by using the `$this->turboNative()` also before you make the HTTP call. The first method will add the correct Turbo Stream content type to the `Accept:` header, and the second method will add Turbo Native `User-Agent:` value.
+### Acting as Turbo Visits
 
-These methods are handy when you are conditionally returning Turbo Stream responses based on the `request()->wantsTurboStream()` helper, for instance. Or when using the `@turbonative` or `@unlessturbonative` Blade directives.
+Turbo visits are marked with a `Accept: text/vnd.turbo-stream.html, ...` header, which you may want to respond diferently (maybe returning a Turbo Streams document instead of plain HTML). To be able to make request adding that header, you may add the `InteractsWithTurbo` trait to your current test class (or to the base `TestCase`). Then, you may use the `$this->turbo()` method before issuing a request:
 
-## Making Turbo Frame requests
+```php
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+
+class CreateCommentsTest extends TestCase
+{
+    use InteractsWithTurbo;
+
+    /** @test */
+    public function creates_comments()
+    {
+        $post = Post::factory()->create();
+
+        $this->assertCount(0, $post->comments);
+
+        $this->turbo()->post(route('posts.comments.store', $post), [
+            'content' => 'Hello World',
+        ])->assertOk();
+
+        $this->assertCount(1, $post->refresh()->comments);
+        $this->assertEquals('Hello World', $post->comments->first()->content);
+    }
+}
+```
+
+When using this method, calls to `request()->wantsTurboStream()` will return `true`.
+
+## Acting as Turbo Frame Requests
 
 You may want to handle requests a bit differently based on whether they came from a request triggered inside a Turbo Frame or not. To mimic a request coming from a Turbo Frame, you may use the `fromTurboFrame()` helper from the `InteractsWithTurbo` trait:
 
@@ -34,7 +61,7 @@ class CreateCommentsTest extends TestCase
     public function create_comment()
     {
         $article = Article::factory()->create();
-        
+
         $this->fromTurboFrame(dom_id($article, 'create_comment'))
             ->post(route('articles.comments.store', $article), [...])
             ->assertRedirect();
@@ -42,7 +69,71 @@ class CreateCommentsTest extends TestCase
 }
 ```
 
-## Testing Turbo Stream HTTP Responses
+### Acting as Turbo Native
+
+Additionally, when you're building a Turbo Native mobile app, you may want to issue a request pretending to be sent from a Turbo Native client. That's done by setting the `User-Agent` header to something that mentions the word `Turbo Native`. The `InteractsWithTurbo` trait also has a `$this->turboNative()` method you may use that automatically sets the header correctly:
+
+```php
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+
+class CreateCommentsTest extends TestCase
+{
+    use InteractsWithTurbo;
+
+    /** @test */
+    public function creating_comments_from_native_recedes()
+    {
+        $post = Post::factory()->create();
+
+        $this->assertCount(0, $post->comments);
+
+        $this->turboNative()->post(route('posts.comments.store', $post), [
+            'content' => 'Hello World',
+        ])->assertOk();
+
+        $this->assertCount(1, $post->refresh()->comments);
+        $this->assertEquals('Hello World', $post->comments->first()->content);
+    }
+}
+```
+
+When using this method, calls to `request()->wasFromTurboNative()` will return `true`. Additionally, the `@turbonative` and `@unlessturbonative` Blade directives will render as expected.
+
+Additionally, a few macros were added to the `TestResponse` class to make it easier to assert based on the `recede`, `resume`, and `refresh` redirects using the specific assert methods:
+
+| Method | Descrition |
+|---|---|
+| `assertRedirectRecede(array $with = [])` | Asserts that a redirect was returned to the `/recede_historical_location` route. |
+| `assertRedirectResume(array $with = [])` | Asserts that a redirect was returned to the `/resume_historical_location` route. |
+| `assertRedirectRefresh(array $with = [])` | Asserts that a redirect was returned to the `/refresh_historical_location` route. |
+
+The `$with` param will ensure that not only the route is correct, but also any flashed message will be included in the query string:
+
+```php
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
+
+class CreateCommentsTest extends TestCase
+{
+    use InteractsWithTurbo;
+
+    /** @test */
+    public function creating_comments_from_native_recedes()
+    {
+        $post = Post::factory()->create();
+
+        $this->assertCount(0, $post->comments);
+
+        $this->turboNative()->post(route('posts.comments.store', $post), [
+            'content' => 'Hello World',
+        ])->assertRedirectRecede(['status' => __('Comment created.')]);
+
+        $this->assertCount(1, $post->refresh()->comments);
+        $this->assertEquals('Hello World', $post->comments->first()->content);
+    }
+}
+```
+
+## Asserting Turbo Stream HTTP Responses
 
 You can test if you got a Turbo Stream response by using the `assertTurboStream`. Similarly, you can assert that your response is _not_ a Turbo Stream response by using the `assertNotTurboStream()` macro:
 
