@@ -52,11 +52,11 @@ class ModelObserver
 
     private function shouldBroadcastRefresh(Model $model): bool
     {
-        if (property_exists($model, 'broadcastRefreshes')) {
+        if (property_exists($model, 'broadcastsRefreshes')) {
             return true;
         }
 
-        if (property_exists($model, 'broadcastRefreshesTo')) {
+        if (property_exists($model, 'broadcastsRefreshesTo')) {
             return true;
         }
 

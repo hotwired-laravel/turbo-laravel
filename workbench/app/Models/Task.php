@@ -12,7 +12,7 @@ class Task extends Model
     use Broadcasts;
     use HasFactory;
 
-    protected $broadcastRefreshesTo = 'board';
+    protected $broadcastsRefreshesTo = 'board';
 
     protected $guarded = [];
 

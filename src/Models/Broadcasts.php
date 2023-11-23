@@ -183,7 +183,7 @@ trait Broadcasts
 
     protected function broadcastRefreshDefaultStreamables()
     {
-        return $this->broadcastDefaultStreamables(inserting: $this->wasRecentlyCreated, broadcastToProperty: 'broadcastRefreshesTo', broadcastsProperty: 'broadcastRefreshes');
+        return $this->broadcastDefaultStreamables(inserting: $this->wasRecentlyCreated, broadcastToProperty: 'broadcastsRefreshesTo', broadcastsProperty: 'broadcastsRefreshes');
     }
 
     /**
@@ -216,8 +216,8 @@ trait Broadcasts
 
     protected function broadcastDefaultRefreshStreamables()
     {
-        if (property_exists($this, 'broadcastRefreshesTo') && is_array($this->broadcastRefreshesTo) && isset($this->broadcastRefreshesTo['stream'])) {
-            return $this->broadcastRefreshesTo['stream'];
+        if (property_exists($this, 'broadcastsRefreshesTo') && is_array($this->broadcastsRefreshesTo) && isset($this->broadcastsRefreshesTo['stream'])) {
+            return $this->broadcastsRefreshesTo['stream'];
         }
 
         return $this->broadcastDefaultStreamableForCurrentModel(inserting: true);
