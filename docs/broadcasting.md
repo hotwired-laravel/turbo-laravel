@@ -208,7 +208,6 @@ class Comment extends Model
 
 You may also do that by adding a `broadcastsTo()` method to your model instead of the `$broadcastsTo` property. The method must return either an Eloquent model, a Channel instance, or an array with a mix of those:
 
-
 ```php
 use Illuminate\Broadcasting\Channel;
 
@@ -237,6 +236,94 @@ class Comment extends Model
 ```
 
 Having a `$broadcastsTo` property or implementing the `broadcastsTo()` method in your model will have precedence over the `stream` key of the `$broadcasts` property.
+
+## Broadcasting Page Refreshes
+
+Similar to the `$broadcasts` property, you may want to automatically configure page refresh broadcasts on a modal. You may use the `$broadcastsRefreshes` property for that:
+
+```php
+use Illuminate\Broadcasting\Channel;
+
+class Comment extends Model
+{
+    use Broadcasts;
+
+    protected $broadcastsRefreshes = true;
+}
+```
+
+This is the same as doing:
+
+```php
+use Illuminate\Broadcasting\Channel;
+
+class Comment extends Model
+{
+    use Broadcasts;
+
+    public static function booted()
+    {
+        static::created(function ($comment) {
+            $comment->broadcastRefreshTo("comments")->later();
+        });
+
+        static::updated(function ($comment) {
+            $comment->broadcastRefresh()->later();
+        });
+
+        static::deleted(function ($comment) {
+            $comment->broadcastRefresh();
+        });
+    }
+}
+```
+
+You may want to broadcast page refreshes to a related model:
+
+```php
+use Illuminate\Broadcasting\Channel;
+
+class Comment extends Model
+{
+    use Broadcasts;
+
+    protected $broadcastsRefreshes = true;
+
+    protected $broadcastsRefreshesTo = ['post'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+}
+```
+
+This will send page refreshes broadcasts to the related `Post` model channel.
+
+Alternatively, you may specific a `broadcastsRefreshesTo` method instead of a property:
+
+```php
+use Illuminate\Broadcasting\Channel;
+
+class Comment extends Model
+{
+    use Broadcasts;
+
+    protected $broadcastsRefreshes = true;
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function broadcastsRefreshesTo()
+    {
+        return [$this->post];
+    }
+}
+```
+
+From this method, you may return an instance of an Eloquent model, a string representing the channel name, or an instance of a `Channel` class.
 
 ## Broadcasting Turbo Streams to Other Users Only
 
