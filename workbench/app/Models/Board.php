@@ -11,7 +11,7 @@ class Board extends Model
     use Broadcasts;
     use HasFactory;
 
-    protected $broadcastRefreshes = true;
+    protected $broadcastsRefreshes = true;
 
     protected $guarded = [];
 }
