@@ -611,4 +611,40 @@ class TurboStreamsBroadcastingTest extends TestCase
             return true;
         });
     }
+
+    /** @test */
+    public function can_disable_turbo_stream_broadcasts()
+    {
+        TurboStream::withoutBroadcasts(fn () => (
+            TurboStream::broadcastRemove('todo_123')
+        ));
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        TurboStream::broadcastRemove('todo_123');
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            return
+                $broadcast->target === 'todo_123'
+                && $broadcast->action === 'remove';
+        });
+    }
+
+    /** @test */
+    public function globally_disabling_turbo_stream_broadcasts_also_disable_models()
+    {
+        $article = ArticleFactory::new()->create()->fresh();
+
+        TurboStream::withoutBroadcasts(fn () => (
+            $article->broadcastAppend()
+        ));
+
+        TurboStream::assertNothingWasBroadcasted();
+
+        $article->broadcastAppend();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+            return $broadcast->target === 'articles' && $broadcast->action === 'append';
+        });
+    }
 }

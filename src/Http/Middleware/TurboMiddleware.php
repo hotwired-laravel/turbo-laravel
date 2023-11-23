@@ -47,6 +47,10 @@ class TurboMiddleware
             TurboFacade::setVisitingFromTurboNative();
         }
 
+        if ($requestId = $request->header('X-Turbo-Request-Id', null)) {
+            TurboFacade::setTurboTrackingRequestId($requestId);
+        }
+
         return $this->turboResponse($next($request), $request);
     }
 

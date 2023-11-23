@@ -4,17 +4,20 @@
 
 ## Introduction
 
-Hotwire also has a [mobile side](https://turbo.hotwired.dev/handbook/native), and the package provides some goodies on this front too.
+Hotwire also has a [mobile side](https://turbo.hotwired.dev/handbook/native) and Turbo Laravel provides some helpers to help integrating with that.
 
-Turbo Visits made by a Turbo Native client will send a custom `User-Agent` header. So we added another Blade helper you may use to toggle fragments or assets (such as mobile specific stylesheets) on and off depending on whether your page is being rendered for a Native app or a Web app:
+Turbo visits made by a Turbo Native client should send a custom `User-Agent` header. Using that header, we can detect in the backend that a request is coming from a Turbo Native client instead of a regular web browser.
+
+This is useful if you want to customize the behavior a little bit different based on that information. For instance,
+you may want to include some elements for mobile users, like a mobile-only CSS file include, for instance. To do that, you may use the `@turbonative` Blade directive in your Blade views:
 
 ```blade
 @turbonative
-    <h1>Hello, Turbo Native Users!</h1>
+    <link rel="stylesheet" href="mobile.css">
 @endturbonative
 ```
 
-Alternatively, you can check if it's not a Turbo Native visit using the `@unlessturbonative` Blade helpers:
+Alternatively, you may want to include some elements only if the client requesting it is _NOT_ a Turbo Native client using the `@unlessturbonative` Blade helpers:
 
 ```blade
 @unlessturbonative
@@ -42,9 +45,21 @@ if (Turbo::isTurboNativeVisit()) {
 
 ## Interacting With Turbo Native Navigation
 
-Turbo is built to work with native navigation principles and present those alongside what's required for the web. When you have Turbo Native clients running (see the Turbo iOS and Turbo Android projects for details), you can respond to native requests with three dedicated responses: `recede`, `resume`, `refresh`.
+Turbo Native will hook into Turbo's visits so it displays them on mobile mimicking the mobile way of stacking screens instead of just replace elements on the same screen. This helps the native feel of our hybrid app.
 
-You may want to use the provided `InteractsWithTurboNativeNavigation` trait on your controllers like so:
+However, sometimes we may need to customize the behavior of form request handler to avoid a weird screen jumping effect happening on the mobile client. Instead of regular redirects, we can send some signals by redirecting to specific routes that are detected by the Turbo Native client.
+
+For instance, if a form submission request came from a Turbo Native client, the form was probably rendered on a native modal, which is not part of the screen stack, so we can just tell Turbo to `refresh` the current screen it has on stack instead. There are 3 signals we can send to the Turbo Native client:
+
+| Signal | Route| Description|
+|---|---|---|
+| `recede` | `/recede_historical_location` | Go back to previous screen |
+| `resume` | `/resume_historical_location` | Stay on the current screen as is |
+| `refresh`| `/refresh_historical_location` | Stay on the current screen but refresh |
+
+Sending these signals is a matter of detecting if the request came from a Turbo Native client and, if so, redirect the user to these signal URLs instead. The Turbo Native client should detect the redirect was from one of these special routes and trigger the desired behavior.
+
+You may use the `InteractsWithTurboNativeNavigation` trait on your controllers to achieve this behavior and fallback to a regular redirect if the request wasn't from a Turbo Native client:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
@@ -55,14 +70,14 @@ class TraysController extends Controller
 
     public function store()
     {
-        $tray = /** Create the Tray */;
+        // Tray creation...
 
         return $this->recedeOrRedirectTo(route('trays.show', $tray));
     }
 }
 ```
 
-In this example, when the request to create trays comes from a Turbo Native request, we're going to redirect to the `turbo_recede_historical_location` URL route instead of the `trays.show` route. However, if the request was made from your web app, we're going to redirect the client to the `trays.show` route.
+In this example, when the request to create trays comes from a Turbo Native client, we're going to redirect to the `/turbo_recede_historical_location` URL instead of the `trays.show` route. However, if the request was made from your web app, we're going to redirect the client to the `trays.show` route.
 
 There are a couple of redirect helpers available:
 
@@ -75,9 +90,36 @@ $this->resumeOrRedirectBack(string $fallbackUrl, array $options = []);
 $this->refreshOrRedirectBack(string $fallbackUrl, array $options = []);
 ```
 
-The Turbo Native client should intercept navigations to these special routes and handle them separately. For instance, you may want to close a native modal that was showing a form after its submission and _recede_ to the previous screen dismissing the modal, and not by following the redirect as the web does.
+It's common to flash messages using the `->with()` method of the Redirect response in Laravel. However, since a Turbo Native request will never actually redirect somewhere where the flash message will be rendered, the behavior of the `->with()` method was slightly modified too.
 
-At the time of this writing, there aren't much information on how the mobile clients should interact with these routes. However, I wanted to be able to experiment with them, so I brought them to the package for parity (see this [comment here](https://github.com/hotwired/turbo-rails/issues/78#issuecomment-815897904)).
+If you're setting flash messages like this after a form submission:
+
+```php
+use HotwiredLaravel\TurboLaravel\Http\Controllers\Concerns\InteractsWithTurboNativeNavigation;
+
+class TraysController extends Controller
+{
+    use InteractsWithTurboNativeNavigation;
+
+    public function store()
+    {
+        // Tray creation...
+
+        return $this->recedeOrRedirectTo(route('trays.show', $tray))
+            ->with('status', __('Tray created.'));
+    }
+}
+```
+
+If a request was sent from a Turbo Native client, the flashed messages will be added to the query string instead of flashed into the session like they'd normally be. In this example, it would redirect like this:
+
+```
+/recede_historical_location?status=Tray%20created.
+```
+
+In the Turbo Native client, you should be able to intercept these redirects, retrieve the flash messages from the query string and create native toasts, if you'd like to.
+
+If the request wasn't from a Turbo Native client, the message would be flashed into the session as normal, and the client would receive a redirect to the `trays.show` route in this case.
 
 If you don't want these routes enabled, feel free to disable them by commenting out the feature on your `config/turbo-laravel.php` file (make sure the Turbo Laravel configs are published):
 

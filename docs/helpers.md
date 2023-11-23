@@ -2,7 +2,9 @@
 
 [TOC]
 
-## Blade Helpers
+Turbo Laravel has a set of Blade Directives, Components, helper functions, and request/response macros to help making the most out of Turbo in Laravel.
+
+## Blade Directives
 
 ### The `@domid()` Blade Directive
 
@@ -24,7 +26,9 @@ This will generate a DOM ID string using your model's basename and its ID, such 
 
 Which will generate a `comments_post_123` DOM ID, assuming your Post model has an ID of `123`.
 
-### Blade Components
+## Blade Components
+
+### The `<x-turbo-frame>` Blade Component
 
 You may also prefer using the `<x-turbo-frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
 
@@ -44,9 +48,50 @@ To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID
 
 Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo-frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered by the `<x-turbo-frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
 
+### The `<x-turbo-stream>` Blade Component
+
+If you're rendering a Turbo Stream inside a your Blade files, you may use the `<x-turbo-stream>` helper:
+
+```blade
+<x-turbo-stream :target="$post" action="update">
+    @include('posts._post', ['post' => $post])
+<x-turbo-stream>
+```
+
+Just like in the Turbo Frames' `:id` prop, the `:target` prop of the Turbo Stream component accepts a string, a model instance, or an array to resolve the DOM ID using the `dom_id()` function.
+
+### The `<x-turbo-refreshes-with>` Blade Component
+
+We can configure which update method Turbo should so to update the document:
+
+| Method | Description |
+|---|---|
+| `replace` | Updates the entire body of the document on Turbo Visits |
+| `morph` | Uses DOM morphing to update the document instead of replacing everything |
+
+You can also configure the scroll behavior on Turbo:
+
+| Behavior | Description |
+|---|---|
+| `reset` | Resets the scroll position to the top, mimicking for the browser handles new page visits |
+| `preserve` | Preserves the current scroll position (usually results in a better UX when used with the `morph` method) |
+
+You may use the `<x-turbo-refreshes-with />` component in your main layout's `<head>` tag or on specific pages to configure how Turbo should update the page. Here's an example:
+
+```blade
+<x-turbo-refreshes-with method="morph" scroll="preserve" />
+```
+
+This will render two HTML `<meta>` tags:
+
+```html
+<meta name="turbo-refresh-method" content="morph">
+<meta name="turbo-refresh-scroll" content="preserve">
+```
+
 ## Helper Functions
 
-The package ships with a set of helper functions. These functions are all namespaced under `HotwiredLaravel\\TurboLaravel\\` but we also add them globally for convenience.
+The package ships with a set of helper functions. These functions are all namespaced under `HotwiredLaravel\\TurboLaravel\\` but we also add them globally for convenience, so you may use them directly without the `use` statements (this is useful in contexts like Blade views, for instance).
 
 ### The `dom_id()`
 
@@ -106,10 +151,6 @@ return turbo_stream_view('comments.turbo.created', [
 ]);
 ```
 
----
-
-All these functions are also registered globally, so you may use it directly without the `use` statements (this is useful in contexts like Blade views, for instance).
-
 ## Request & Response Macros
 
 ### The `request()->wantsTurboStream()` macro
@@ -120,7 +161,15 @@ Turbo will add a `Accept: text/vnd.turbo-stream.html, ...` header to the request
 
 ### The `request()->wasFromTurboFrame()` macro
 
-The `request()->wasFromTurboFrame()` macro added to the request class will check if the request was made from a Turbo Frame. When used without the `$frame` optional parameter, it returns `true` if the request has a `Turbo-Frame` header, no matter which specific Turbo Frame. Aditionally, you may specific the optional `$frame` optional parameter, when that's the case, it will return `true` if it has a `Turbo-Frame` header where the value matches the specified `$frame`. Otherwise, it will return `false`.
+The `request()->wasFromTurboFrame()` macro added to the request class will check if the request was made from a Turbo Frame. When used with no parameters, it returns `true` if the request has a `Turbo-Frame` header, no matter which specific Turbo Frame.
+
+Aditionally, you may specific the optional `$frame` parameter. When that's passed, it returns `true` if it has a `Turbo-Frame` header where the value matches the specified `$frame`. Otherwise, it will return `false`:
+
+```php
+if (request()->wasFromTurboFrame(dom_id($post, 'create_comment'))) {
+    // ...
+}
+```
 
 ### The `request()->wasFromTurboNative()` macro
 
@@ -136,4 +185,4 @@ The `response()->turboStream()` macro works similarly to the `turbo_stream()` fu
 
 The `response()->turboStreamView()` macro works similarly to the `turbo_stream_view()` function above. It was only added to the response for convenience.
 
-[Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)
+[Continue to Turbo Frames...](/docs/{{version}}/turbo-frames)

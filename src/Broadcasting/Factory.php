@@ -2,6 +2,8 @@
 
 namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
+use HotwiredLaravel\TurboLaravel\Facades\Limiter;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +26,24 @@ class Factory
      * @var bool
      */
     protected $recordedStreams = [];
+
+    /**
+     * Whether the broadcasts should be sent or not (globally).
+     */
+    protected bool $isBroadcasting = true;
+
+    public function withoutBroadcasts(callable $callback)
+    {
+        $original = $this->isBroadcasting;
+
+        $this->isBroadcasting = false;
+
+        try {
+            return $callback();
+        } finally {
+            $this->isBroadcasting = $original;
+        }
+    }
 
     public function fake()
     {
@@ -67,6 +87,17 @@ class Factory
         return $this->broadcastAction('remove', null, $target, $targets, $channel, $attributes);
     }
 
+    public function broadcastRefresh(Channel|Model|Collection|array|string $channel = null)
+    {
+        return $this->broadcastAction(
+            action: 'refresh',
+            channel: $channel,
+            attributes: array_filter(['request-id' => $requestId = Turbo::currentRequestId()]),
+        )->lazyCancelIf(fn (PendingBroadcast $broadcast) => (
+            $this->shouldLimitPageRefreshesOn($broadcast->channels, $requestId)
+        ));
+    }
+
     public function broadcastAction(string $action, $content = null, Model|string $target = null, string $targets = null, Channel|Model|Collection|array|string $channel = null, array $attributes = [])
     {
         $broadcast = new PendingBroadcast(
@@ -82,7 +113,7 @@ class Factory
             $broadcast->fake($this);
         }
 
-        return $broadcast;
+        return $broadcast->cancelIf(! $this->isBroadcasting);
     }
 
     public function record(PendingBroadcast $broadcast)
@@ -90,6 +121,22 @@ class Factory
         $this->recordedStreams[] = $broadcast;
 
         return $this;
+    }
+
+    protected function shouldLimitPageRefreshesOn(array $channels, ?string $requestId): bool
+    {
+        return Limiter::shouldLimit($this->pageRefreshLimiterKeyFor($channels, $requestId));
+    }
+
+    protected function pageRefreshLimiterKeyFor(array $channels, ?string $requestId): string
+    {
+        $keys = array_map(fn (Channel $channel) => $channel->name, $channels);
+
+        sort($keys);
+
+        $key = sha1(implode('/', array_values($keys) + array_filter([$requestId])));
+
+        return 'turbo-refreshes-limiter-'.$key;
     }
 
     protected function resolveRendering($content)
@@ -130,6 +177,13 @@ class Factory
         return Name::forModel($model)->plural;
     }
 
+    public function clearRecordedBroadcasts(): self
+    {
+        $this->recordedStreams = [];
+
+        return $this;
+    }
+
     public function assertBroadcasted($callback)
     {
         $result = collect($this->recordedStreams)->filter($callback);
@@ -143,7 +197,13 @@ class Factory
     {
         $result = collect($this->recordedStreams)->filter($callback);
 
-        Assert::assertCount($times, $result, $message ?: sprintf('Expected to have broadcasted %s, but broadcasted %d instead.', trans_choice('{0} nothing|{1}a Turbo Stream|[2,*]:value Turbo Streams', $result->count()), $result->count()));
+        Assert::assertCount($times, $result, $message ?: sprintf(
+            'Expected to have broadcasted %d Turbo %s, but broadcasted %d Turbo %s instead.',
+            $times,
+            (string) str('Stream')->plural($times),
+            $result->count(),
+            (string) str('Stream')->plural($result->count()),
+        ));
 
         return $this;
     }

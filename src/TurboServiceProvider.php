@@ -4,6 +4,7 @@ namespace HotwiredLaravel\TurboLaravel;
 
 use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
 use HotwiredLaravel\TurboLaravel\Broadcasters\LaravelBroadcaster;
+use HotwiredLaravel\TurboLaravel\Broadcasting\Limiter;
 use HotwiredLaravel\TurboLaravel\Commands\TurboInstallCommand;
 use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
 use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
@@ -45,6 +46,7 @@ class TurboServiceProvider extends ServiceProvider
 
         $this->app->scoped(Turbo::class);
         $this->app->bind(Broadcaster::class, LaravelBroadcaster::class);
+        $this->app->scoped(Limiter::class);
     }
 
     private function configureComponents()
@@ -53,6 +55,7 @@ class TurboServiceProvider extends ServiceProvider
             ViewComponents\Frame::class,
             ViewComponents\Stream::class,
             ViewComponents\StreamFrom::class,
+            ViewComponents\RefreshesWith::class,
         ]);
     }
 
@@ -165,6 +168,18 @@ class TurboServiceProvider extends ServiceProvider
                 Turbo::TURBO_STREAM_FORMAT,
                 $this->headers->get('Content-Type'),
             );
+        });
+
+        TestResponse::macro('assertRedirectRecede', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_recede_historical_location', $with);
+        });
+
+        TestResponse::macro('assertRedirectResume', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_resume_historical_location', $with);
+        });
+
+        TestResponse::macro('assertRedirectRefresh', function (array $with = []) {
+            $this->assertRedirectToRoute('turbo_refresh_historical_location', $with);
         });
     }
 

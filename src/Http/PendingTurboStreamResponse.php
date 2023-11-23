@@ -4,6 +4,7 @@ namespace HotwiredLaravel\TurboLaravel\Http;
 
 use HotwiredLaravel\TurboLaravel\Broadcasting\PendingBroadcast;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Rendering;
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use HotwiredLaravel\TurboLaravel\Models\Naming\Name;
 use Illuminate\Contracts\Support\Htmlable;
@@ -31,6 +32,8 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
     private array $partialData = [];
 
     private $inlineContent = null;
+
+    private array $useCustomAttributes = [];
 
     public static function forModel(Model $model, string $action = null): self
     {
@@ -94,6 +97,13 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
     {
         $this->partialView = $view;
         $this->partialData = $data;
+
+        return $this;
+    }
+
+    public function attributes(array $attributes): self
+    {
+        $this->useCustomAttributes = $attributes;
 
         return $this;
     }
@@ -226,22 +236,30 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         );
     }
 
-    private function buildAction(string $action, Model|string $target, $content = null, Rendering $rendering = null)
+    public function refresh(): self
+    {
+        return $this->buildAction('refresh')
+            ->attributes(array_filter(['request-id' => Turbo::currentRequestId()]));
+    }
+
+    private function buildAction(string $action, Model|string $target = null, $content = null, Rendering $rendering = null, array $attributes = [])
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
         $this->partialView = $rendering?->partial;
         $this->partialData = $rendering?->data ?? [];
+        $this->useCustomAttributes = $attributes;
         $this->inlineContent = $content;
 
         return $this;
     }
 
-    private function buildActionAll(string $action, Model|string $targets, $content = null)
+    private function buildActionAll(string $action, Model|string $targets, $content = null, array $attributes = [])
     {
         $this->useAction = $action;
         $this->useTarget = null;
         $this->useTargets = $targets instanceof Model ? $this->resolveTargetFor($targets, resource: true) : $targets;
+        $this->useCustomAttributes = $attributes;
         $this->inlineContent = $content;
 
         return $this;
@@ -285,6 +303,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
             target: $this->useTarget,
             targets: $this->useTargets,
             channel: $channel,
+            attributes: $this->useCustomAttributes,
         )->rendering($this->contentAsRendering());
     }
 
@@ -308,7 +327,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
      */
     public function toResponse($request)
     {
-        if ($this->useAction !== 'remove' && ! $this->partialView && ! $this->inlineContent) {
+        if (! in_array($this->useAction, ['remove', 'refresh']) && ! $this->partialView && ! $this->inlineContent) {
             throw TurboStreamResponseFailedException::missingPartial();
         }
 
@@ -324,6 +343,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
             'partial' => $this->partialView,
             'partialData' => $this->partialData,
             'content' => $this->renderInlineContent(),
+            'attrs' => $this->useCustomAttributes,
         ])->render();
     }
 

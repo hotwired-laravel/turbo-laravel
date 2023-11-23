@@ -2,6 +2,7 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 
+use HotwiredLaravel\TurboLaravel\Facades\Turbo as FacadesTurbo;
 use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use HotwiredLaravel\TurboLaravel\Http\TurboStreamResponseFailedException;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
@@ -978,5 +979,42 @@ class ResponseMacrosTest extends TestCase
             ->target('example_target')
             ->action('replace')
             ->toResponse(new Request);
+    }
+
+    /** @test */
+    public function refresh_shorthand()
+    {
+        $response = response()
+            ->turboStream()
+            ->refresh()
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'refresh',
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
+    }
+
+    /** @test */
+    public function refresh_shorthand_with_request_id()
+    {
+        FacadesTurbo::setTurboTrackingRequestId('123');
+
+        $response = response()
+            ->turboStream()
+            ->refresh()
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'refresh',
+            'attrs' => [
+                'request-id' => '123',
+            ],
+        ])->render();
+
+        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 }

@@ -23,14 +23,16 @@ class ModelObserver
      */
     public function saved(Model $model)
     {
-        if (! $this->shouldBroadcast($model)) {
-            return;
+        if ($this->shouldBroadcastRefresh($model)) {
+            $model->broadcastRefresh()->later();
         }
 
-        if ($model->wasRecentlyCreated) {
-            $model->broadcastInsert()->later();
-        } else {
-            $model->broadcastReplace()->later();
+        if ($this->shouldBroadcast($model)) {
+            if ($model->wasRecentlyCreated) {
+                $model->broadcastInsert()->later();
+            } else {
+                $model->broadcastReplace()->later();
+            }
         }
     }
 
@@ -39,11 +41,26 @@ class ModelObserver
      */
     public function deleted(Model $model)
     {
-        if (! $this->shouldBroadcast($model)) {
-            return;
+        if ($this->shouldBroadcastRefresh($model)) {
+            $model->broadcastRefresh()->later();
         }
 
-        $model->broadcastRemove()->later();
+        if ($this->shouldBroadcast($model)) {
+            $model->broadcastRemove()->later();
+        }
+    }
+
+    private function shouldBroadcastRefresh(Model $model): bool
+    {
+        if (property_exists($model, 'broadcastRefreshes')) {
+            return true;
+        }
+
+        if (property_exists($model, 'broadcastRefreshesTo')) {
+            return true;
+        }
+
+        return false;
     }
 
     private function shouldBroadcast(Model $model): bool

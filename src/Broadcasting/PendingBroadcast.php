@@ -63,6 +63,13 @@ class PendingBroadcast
      */
     protected $recorder = null;
 
+    /**
+     * These cancel callbacks will run right before the broadcasting is fired on __destruct.
+     *
+     * @var array<callable>
+     */
+    protected array $deferredCancelCallbacks = [];
+
     public function __construct(array $channels, string $action, Rendering $rendering, string $target = null, string $targets = null, array $attributes = [])
     {
         $this->action = $action;
@@ -168,7 +175,14 @@ class PendingBroadcast
 
     public function cancelIf($condition)
     {
-        $this->wasCancelled = boolval(value($condition));
+        $this->wasCancelled = $this->wasCancelled || boolval(value($condition, $this));
+
+        return $this;
+    }
+
+    public function lazyCancelIf(callable $condition)
+    {
+        $this->deferredCancelCallbacks[] = $condition;
 
         return $this;
     }
@@ -200,7 +214,7 @@ class PendingBroadcast
 
     public function __destruct()
     {
-        if ($this->wasCancelled) {
+        if ($this->shouldBeCancelled()) {
             return;
         }
 
@@ -229,6 +243,21 @@ class PendingBroadcast
             $this->attributes,
             $socket,
         );
+    }
+
+    protected function shouldBeCancelled(): bool
+    {
+        if ($this->wasCancelled) {
+            return true;
+        }
+
+        foreach ($this->deferredCancelCallbacks as $condition) {
+            if (value($condition, $this)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function normalizeChannels($channel, $channelClass)
