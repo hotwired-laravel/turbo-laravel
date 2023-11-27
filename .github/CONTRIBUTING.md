@@ -4,6 +4,18 @@ Contributions are **welcome** and will be fully **credited**.
 
 Please read and understand the contribution guide before creating an issue or pull request.
 
+## Workbench
+
+We're using [Workbench](https://github.com/orchestral/workbench), so we have a companion Laravel app for local development of the package living in the [workbench/](./workbench/) at the root level.
+
+You may run the Workbench app like this:
+
+```bash
+composer serve
+```
+
+After that, the app should be available at [http://localhost:8000](http://localhost:8000).
+
 ## Etiquette
 
 This project is open source, and as such, the maintainers give their free time to build and maintain the source code
