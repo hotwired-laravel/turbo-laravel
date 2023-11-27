@@ -3,7 +3,7 @@
 Turbo Laravel can be installed via [Composer](https://getcomposer.org/):
 
 ```bash
-composer require hotwired-laravel/turbo-laravel:2.x-dev
+composer require hotwired-laravel/turbo-laravel:^2.0.0-beta1
 ```
 
 After installing the package, you may run the `turbo:install` Artisan command. This command will add the Turbo.js dependency to your `package.json` file (when you're using Vite and NPM) or to your `routes/importmap.php` file (when it detects that you're using [Importmap Laravel](https://github.com/tonysm/importmap-laravel)). It also publishes some files to your `resources/js` folder, which imports Turbo for you:
