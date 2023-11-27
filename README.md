@@ -19,7 +19,7 @@ This package was inspired by the [Turbo Rails gem](https://github.com/hotwired/t
 
 #### Bootcamp
 
-If you want a more hands-on introduction, head out to [Bootcamp](https://bootcamp.turbo-laravel.com). It covers building a multi-platform app in Turbo.
+If you want a more hands-on introduction, head out to [Bootcamp](https://turbo-laravel.com/guides). It covers building a multi-platform app in Turbo.
 
 ## Official Documentation
 
@@ -30,16 +30,6 @@ Documentation for Turbo Laravel can be found on the [Turbo Laravel website](http
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ### Contributing
-
-We're using [Workbench](https://github.com/orchestral/workbench), so we have a companion Laravel app for local development of the package living in the [workbench/](./workbench/) at the root level.
-
-You may run the Workbench app like this:
-
-```bash
-composer serve
-```
-
-After that, the app should be available at [http://localhost:8000](http://localhost:8000).
 
 Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
