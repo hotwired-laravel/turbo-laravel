@@ -1,3 +1,5 @@
+* Prologue
+    * [Upgrade Guide](/docs/{{version}}/upgrade)
 * Getting Started
     * [Installation](/docs/{{version}}/installation)
     * [Overview](/docs/{{version}}/overview)
