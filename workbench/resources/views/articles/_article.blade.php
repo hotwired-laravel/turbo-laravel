@@ -1,4 +1,4 @@
-<x-turbo-frame :id="$article" class="block relative">
+<x-turbo::frame :id="$article" class="block relative">
     <div class="absolute right-0 top-0 flex items-center justify-end space-x-4">
         <div class="p-1 rounded-full focus-within:ring focus-within:ring-inset focus-within:ring-indigo-500">
             <a data-controller="hotkeys" data-hotkeys-shortcut-value="e" href="{{ route('articles.edit', $article) }}" class="opacity-50 transition transform hover:opacity-100 focus:outline-none focus:ring-0" title="{{ __('Edit Article') }}">
@@ -27,4 +27,4 @@
     <h2 class="text-4xl font-semibold">{{ $article->title }}</h2>
 
     <p class="mt-4 prose">{{ $article->content }}</p>
-</x-turbo-frame>
+</x-turbo::frame>

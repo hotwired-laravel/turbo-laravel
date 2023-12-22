@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <x-turbo-frame :id="[$article, 'create_comment']">
+    <x-turbo::frame :id="[$article, 'create_comment']">
         <form action="{{ route('articles.comments.store', $article) }}" method="post">
             <div>
                 <label for="content">{{ __('Content') }}</label>
@@ -26,5 +26,5 @@
                 <button type="submit">Create</button>
             </div>
         </form>
-    </x-turbo-frame>
+    </x-turbo::frame>
 </x-app-layout>
