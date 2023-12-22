@@ -121,7 +121,7 @@ class ViewHelpersTest extends TestCase
     {
         $article = ArticleFactory::new()->create();
 
-        $renderedChannelName = Blade::render('<x-turbo-stream-from :source="$article" />', ['article' => $article]);
+        $renderedChannelName = Blade::render('<x-turbo::stream-from :source="$article" />', ['article' => $article]);
 
         $this->assertStringContainsString(
             sprintf('channel="Workbench.App.Models.Article.%s"', $article->getKey()),

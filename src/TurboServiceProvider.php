@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
+use Illuminate\View\Compilers\BladeCompiler;
 use PHPUnit\Framework\Assert;
 
 class TurboServiceProvider extends ServiceProvider
@@ -51,12 +52,9 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureComponents()
     {
-        $this->loadViewComponentsAs('turbo', [
-            ViewComponents\Frame::class,
-            ViewComponents\Stream::class,
-            ViewComponents\StreamFrom::class,
-            ViewComponents\RefreshesWith::class,
-        ]);
+        $this->callAfterResolving('blade.compiler', function (BladeCompiler $blade) {
+            $blade->anonymousComponentPath(__DIR__.'/../resources/views/components', 'turbo');
+        });
     }
 
     private function configurePublications()

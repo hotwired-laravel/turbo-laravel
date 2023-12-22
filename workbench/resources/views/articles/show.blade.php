@@ -18,8 +18,8 @@
     </div>
 
     <x-modal id="{{ dom_id($article, 'remove_modal') }}" :closable="false">
-        <x-turbo-frame class="mt-2" :id="[$article, 'remove_modal_frame']" loading="lazy" target="_top">
+        <x-turbo::frame class="mt-2" :id="[$article, 'remove_modal_frame']" loading="lazy" target="_top">
             <p class="text-gray-600">{{ __('Loading...') }}</p>
-        </x-turbo-frame>
+        </x-turbo::frame>
     </x-modal>
 </x-app-layout>

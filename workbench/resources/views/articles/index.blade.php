@@ -21,8 +21,8 @@
     </div>
 
     <x-modal id="create-article-modal" min-height="min-h-[30vh]">
-        <x-turbo-frame class="mt-2" id="create_article" loading="lazy">
+        <x-turbo::frame class="mt-2" id="create_article" loading="lazy">
             <p class="text-gray-600">{{ __('Loading...') }}</p>
-        </x-turbo-frame>
+        </x-turbo::frame>
     </x-modal>
 </x-app-layout>

@@ -17,12 +17,12 @@
         @endif
     </div>
 
-    <x-turbo-frame :id="$article" target="_top" class="block mt-4 rounded p-6 border bg-white shadow-sm">
+    <x-turbo::frame :id="$article" target="_top" class="block mt-4 rounded p-6 border bg-white shadow-sm">
         @include('articles._form', [
             'article' => $article,
             'redirectTo' => request()->hasHeader('Turbo-Frame')
                 ? null
                 : route('articles.show', $article),
         ])
-    </x-turbo-frame>
+    </x-turbo::frame>
 </x-app-layout>
