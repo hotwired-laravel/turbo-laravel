@@ -204,4 +204,18 @@ class ComponentsTest extends TestCase
             <x-turbo::refreshes-with :method="$method" :scroll="$scroll" />
         BLADE, ['method' => RefreshesWith::DEFAULT_METHOD, 'scroll' => 'invalid']);
     }
+
+    /** @test */
+    public function turbo_drive_components()
+    {
+        $this->blade(
+            <<<'BLADE'
+            <x-turbo::exempts-page-from-cache />
+            <x-turbo::exempts-page-from-preview />
+            <x-turbo::page-requires-reload />
+            BLADE)
+            ->assertSee('<meta name="turbo-cache-control" content="no-cache">', false)
+            ->assertSee('<meta name="turbo-cache-control" content="no-preview">', false)
+            ->assertSee('<meta name="turbo-visit-control" content="reload">', false);
+    }
 }
