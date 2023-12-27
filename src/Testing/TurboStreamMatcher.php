@@ -47,7 +47,7 @@ class TurboStreamMatcher
         return $matcher;
     }
 
-    public function matches(Closure $callback = null): bool
+    public function matches(?Closure $callback = null): bool
     {
         // We first pass the current instance to the callback given in the
         // `->assertTurboStream(fn)` call. This is where the `->where()`

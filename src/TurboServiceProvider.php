@@ -12,7 +12,6 @@ use HotwiredLaravel\TurboLaravel\Http\MultiplePendingTurboStreamResponse;
 use HotwiredLaravel\TurboLaravel\Http\PendingTurboStreamResponse;
 use HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream;
 use HotwiredLaravel\TurboLaravel\Testing\ConvertTestResponseToTurboStreamCollection;
-use HotwiredLaravel\TurboLaravel\Views\Components as ViewComponents;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -112,7 +111,7 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureRequestAndResponseMacros(): void
     {
-        ResponseFacade::macro('turboStream', function ($model = null, string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse {
+        ResponseFacade::macro('turboStream', function ($model = null, ?string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse {
             return turbo_stream($model, $action);
         });
 
@@ -132,7 +131,7 @@ class TurboServiceProvider extends ServiceProvider
             return TurboFacade::isTurboNativeVisit();
         });
 
-        Request::macro('wasFromTurboFrame', function (string $frame = null): bool {
+        Request::macro('wasFromTurboFrame', function (?string $frame = null): bool {
             if (! $frame) {
                 return $this->hasHeader('Turbo-Frame');
             }
@@ -147,7 +146,7 @@ class TurboServiceProvider extends ServiceProvider
             return;
         }
 
-        TestResponse::macro('assertTurboStream', function (callable $callback = null) {
+        TestResponse::macro('assertTurboStream', function (?callable $callback = null) {
             Assert::assertStringContainsString(
                 Turbo::TURBO_STREAM_FORMAT,
                 $this->headers->get('Content-Type'),

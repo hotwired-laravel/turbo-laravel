@@ -31,7 +31,7 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
 
     public bool $escapeInlineContent = true;
 
-    public function __construct(array $channels, string $action, string $target = null, string $targets = null, string $partial = null, ?array $partialData = [], string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [])
+    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [])
     {
         $this->channels = $channels;
         $this->action = $action;
