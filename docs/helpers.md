@@ -91,7 +91,11 @@ This will render two HTML `<meta>` tags:
 
 ### The `<x-turbo::exempts-page-from-cache />` Blade Component
 
-This component may be added to any page you don't want Turbo to keep a cache in the page cache.
+This component may be added to any page you don't want Turbo to keep a cache in the page cache. Example:
+
+```blade
+<x-turbo::exempts-page-from-cache />
+```
 
 It will render the HTML `<meta>` tag:
 
@@ -101,7 +105,11 @@ It will render the HTML `<meta>` tag:
 
 ### The `<x-turbo::exempts-page-from-preview />` Blade Component
 
-This component may be added to any page you don't want Turbo to show as a preview on regular navigation visits. No-preview pages will only be used in restoration visits (when you use the browser's back or forward buttons, or when when moving backward in the navigation stack).
+This component may be added to any page you don't want Turbo to show as a preview on regular navigation visits. No-preview pages will only be used in restoration visits (when you use the browser's back or forward buttons, or when when moving backward in the navigation stack). Example:
+
+```blade
+<x-turbo::exempts-page-from-preview />
+```
 
 It will render the HTML `<meta>` tag:
 
@@ -111,7 +119,11 @@ It will render the HTML `<meta>` tag:
 
 ### The `<x-turbo::page-requires-reload />` Blade Component
 
-This component may be added to any page you want Turbo to reload. This will break out of Turbo Frame navigations. May be used at a login screen, for instance. Useful in places like the login screen, for instance.
+This component may be added to any page you want Turbo to reload. This will break out of Turbo Frame navigations. May be used at a login screen, for instance. Useful in places like the login screen, for instance. Example:
+
+```blade
+<x-turbo::page-requires-reload />
+```
 
 It will render the HTML `<meta>` tag:
 
