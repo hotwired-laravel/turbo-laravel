@@ -16,7 +16,7 @@ class ComponentsTest extends TestCase
     public function frames()
     {
         // With all the attributes...
-        $this->blade('<x-turbo-frame id="todos" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [])
+        $this->blade('<x-turbo::frame id="todos" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [])
             ->assertSee('<turbo-frame', false)
             ->assertSee('id="todos"', false)
             ->assertSee(sprintf(' src="%s"', url('somewhere')), false)
@@ -27,7 +27,7 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-frame>', false);
 
         // Passing a model...
-        $this->blade('<x-turbo-frame :id="$model" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
+        $this->blade('<x-turbo::frame :id="$model" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
             'model' => $article = ArticleFactory::new()->create(),
         ])
             ->assertSee('<turbo-frame', false)
@@ -40,7 +40,7 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-frame>', false);
 
         // Passing a model and prefix...
-        $this->blade('<x-turbo-frame :id="[$model, \'comments\']" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
+        $this->blade('<x-turbo::frame :id="[$model, \'comments\']" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [
             'model' => $article = ArticleFactory::new()->create(),
         ])
             ->assertSee('<turbo-frame', false)
@@ -53,7 +53,7 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-frame>', false);
 
         // With only the required attributes...
-        $this->blade('<x-turbo-frame id="todos" />', [])
+        $this->blade('<x-turbo::frame id="todos" />', [])
             ->assertSee('<turbo-frame', false)
             ->assertSee('id="todos"', false)
             ->assertDontSee(sprintf(' src="%s"', url('somewhere')), false)
@@ -66,9 +66,9 @@ class ComponentsTest extends TestCase
     public function streams()
     {
         $this->blade(<<<'BLADE'
-            <x-turbo-stream target="todos" action="append">
+            <x-turbo::stream target="todos" action="append">
                 <p>Hello, World</p>
-            </x-turbo-stream>
+            </x-turbo::stream>
             BLADE)
             ->assertSee('<turbo-stream', false)
             ->assertSee('target="todos"', false)
@@ -78,9 +78,9 @@ class ComponentsTest extends TestCase
             ->assertDontSee('targets=');
 
         $this->blade(<<<'BLADE'
-            <x-turbo-stream :target="[$model, 'comments']" action="append">
+            <x-turbo::stream :target="[$model, 'comments']" action="append">
                 <p>Hello, World</p>
-            </x-turbo-stream>
+            </x-turbo::stream>
             BLADE, ['model' => $article = ArticleFactory::new()->create()])
             ->assertSee('<turbo-stream', false)
             ->assertSee('target="comments_article_'.$article->id.'"', false)
@@ -91,9 +91,9 @@ class ComponentsTest extends TestCase
 
         // Stream content is ignore when action is set to "remove"...
         $this->blade(<<<'BLADE'
-            <x-turbo-stream :target="$model" action="remove">
+            <x-turbo::stream :target="$model" action="remove">
                 <p>Hello, World</p>
-            </x-turbo-stream>
+            </x-turbo::stream>
             BLADE, ['model' => $article = ArticleFactory::new()->create()])
             ->assertSee('<turbo-stream', false)
             ->assertSee('target="article_'.$article->id.'"', false)
@@ -105,9 +105,9 @@ class ComponentsTest extends TestCase
             ->assertDontSee('targets=');
 
         $this->blade(<<<'BLADE'
-            <x-turbo-stream targets=".todos" action="append" >
+            <x-turbo::stream targets=".todos" action="append" >
                 <p>Hello, World</p>
-            </x-turbo-stream>
+            </x-turbo::stream>
             BLADE)
             ->assertSee('<turbo-stream', false)
             ->assertSee('targets=".todos"', false)
@@ -120,11 +120,11 @@ class ComponentsTest extends TestCase
     /** @test */
     public function stream_from()
     {
-        $this->blade('<x-turbo-stream-from :source="$model" />', [
+        $this->blade('<x-turbo::stream-from :source="$model" />', [
             'model' => $article = ArticleFactory::new()->create(),
         ])->assertSee('<turbo-echo-stream-source channel="Workbench.App.Models.Article.'.$article->id.'" type="private" ></turbo-echo-stream-source>', false);
 
-        $this->blade('<x-turbo-stream-from :source="$model" type="public" />', [
+        $this->blade('<x-turbo::stream-from :source="$model" type="public" />', [
             'model' => $article,
         ])->assertSee('<turbo-echo-stream-source channel="Workbench.App.Models.Article.'.$article->id.'" type="public" ></turbo-echo-stream-source>', false);
     }
@@ -135,9 +135,9 @@ class ComponentsTest extends TestCase
         $this->expectException(ViewException::class);
 
         $this->blade(<<<'BLADE'
-        <x-turbo-stream target="todo" targets=".todos" action="append" >
+        <x-turbo::stream target="todo" targets=".todos" action="append" >
             <p>Hello, World</p>
-        </x-turbo-stream>
+        </x-turbo::stream>
         BLADE);
     }
 
@@ -147,9 +147,9 @@ class ComponentsTest extends TestCase
         $this->expectException(ViewException::class);
 
         $this->blade(<<<'BLADE'
-        <x-turbo-stream action="append" >
+        <x-turbo::stream action="append" >
             <p>Hello, World</p>
-        </x-turbo-stream>
+        </x-turbo::stream>
         BLADE);
     }
 
@@ -157,8 +157,8 @@ class ComponentsTest extends TestCase
     public function allows_custom_actions_with_extra_attributes()
     {
         $this->blade(<<<'BLADE'
-            <x-turbo-stream action="console_log" hello="world">
-            </x-turbo-stream>
+            <x-turbo::stream action="console_log" hello="world">
+            </x-turbo::stream>
             BLADE)
             ->assertSee('<turbo-stream', false)
             ->assertSee('action="console_log"', false)
@@ -175,7 +175,7 @@ class ComponentsTest extends TestCase
         foreach (['replace', 'morph'] as $method) {
             foreach (['reset', 'preserve'] as $scroll) {
                 $this->blade(<<<'BLADE'
-                    <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+                    <x-turbo::refreshes-with :method="$method" :scroll="$scroll" />
                 BLADE, ['method' => $method, 'scroll' => $scroll])
                     ->assertSee('<meta name="turbo-refresh-method" content="'.$method.'">', false)
                     ->assertSee('<meta name="turbo-refresh-scroll" content="'.$scroll.'">', false);
@@ -190,7 +190,7 @@ class ComponentsTest extends TestCase
         $this->expectExceptionMessage('Invalid refresh method given "invalid". Allowed values are: replace or morph.');
 
         $this->blade(<<<'BLADE'
-            <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+            <x-turbo::refreshes-with :method="$method" :scroll="$scroll" />
         BLADE, ['method' => 'invalid', 'scroll' => RefreshesWith::DEFAULT_SCROLL]);
     }
 
@@ -201,7 +201,21 @@ class ComponentsTest extends TestCase
         $this->expectExceptionMessage('Invalid refresh scroll given "invalid". Allowed values are: reset or preserve.');
 
         $this->blade(<<<'BLADE'
-            <x-turbo-refreshes-with :method="$method" :scroll="$scroll" />
+            <x-turbo::refreshes-with :method="$method" :scroll="$scroll" />
         BLADE, ['method' => RefreshesWith::DEFAULT_METHOD, 'scroll' => 'invalid']);
+    }
+
+    /** @test */
+    public function turbo_drive_components()
+    {
+        $this->blade(
+            <<<'BLADE'
+            <x-turbo::exempts-page-from-cache />
+            <x-turbo::exempts-page-from-preview />
+            <x-turbo::page-requires-reload />
+            BLADE)
+            ->assertSee('<meta name="turbo-cache-control" content="no-cache">', false)
+            ->assertSee('<meta name="turbo-cache-control" content="no-preview">', false)
+            ->assertSee('<meta name="turbo-visit-control" content="reload">', false);
     }
 }

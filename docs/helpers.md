@@ -28,39 +28,39 @@ Which will generate a `comments_post_123` DOM ID, assuming your Post model has a
 
 ## Blade Components
 
-### The `<x-turbo-frame>` Blade Component
+### The `<x-turbo::frame>` Blade Component
 
-You may also prefer using the `<x-turbo-frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
+You may also prefer using the `<x-turbo::frame>` Blade component that ships with the package. This way, you don't need to worry about using the `@domid()` helper for your Turbo Frame:
 
 ```blade
-<x-turbo-frame :id="$post">
+<x-turbo::frame :id="$post">
     <!-- Content -->
-</x-turbo-frame>
+</x-turbo::frame>
 ```
 
 To the `:id` prop, you may pass a string, which will be used as-is as the DOM ID, an Eloquent model instance, which will be passed to the `dom_id()` function that ships with the package (the same one as the `@domid()` Blade directive uses behind the scenes), or an array tuple where the first item is an instance of an Eloquent model and the second is the prefix of the DOM ID, something like this:
 
 ```blade
-<x-turbo-frame :id="[$post, 'comments']">
+<x-turbo::frame :id="[$post, 'comments']">
     <!-- Comments -->
-</x-turbo-frame>
+</x-turbo::frame>
 ```
 
-Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo-frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered by the `<x-turbo-frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
+Additionally, you may also pass along any prop that is supported by the Turbo Frame custom Element to the `<x-turbo::frame>` Blade component, like `target`, `src`, or `loading`. These are the listed attributes, but any other attribute will also be forwarded to the `<turbo-frame>` tag that will be rendered by the `<x-turbo::frame>` component. For a full list of what's possible to do with Turbo Frames, see the [documentation](https://turbo.hotwired.dev/handbook/frames).
 
-### The `<x-turbo-stream>` Blade Component
+### The `<x-turbo::stream>` Blade Component
 
-If you're rendering a Turbo Stream inside a your Blade files, you may use the `<x-turbo-stream>` helper:
+If you're rendering a Turbo Stream inside a your Blade files, you may use the `<x-turbo::stream>` helper:
 
 ```blade
-<x-turbo-stream :target="$post" action="update">
+<x-turbo::stream :target="$post" action="update">
     @include('posts._post', ['post' => $post])
-<x-turbo-stream>
+<x-turbo::stream>
 ```
 
 Just like in the Turbo Frames' `:id` prop, the `:target` prop of the Turbo Stream component accepts a string, a model instance, or an array to resolve the DOM ID using the `dom_id()` function.
 
-### The `<x-turbo-refreshes-with>` Blade Component
+### The `<x-turbo::refreshes-with>` Blade Component
 
 We can configure which update method Turbo should so to update the document:
 
@@ -76,10 +76,10 @@ You can also configure the scroll behavior on Turbo:
 | `reset` | Resets the scroll position to the top, mimicking for the browser handles new page visits |
 | `preserve` | Preserves the current scroll position (usually results in a better UX when used with the `morph` method) |
 
-You may use the `<x-turbo-refreshes-with />` component in your main layout's `<head>` tag or on specific pages to configure how Turbo should update the page. Here's an example:
+You may use the `<x-turbo::refreshes-with />` component in your main layout's `<head>` tag or on specific pages to configure how Turbo should update the page. Here's an example:
 
 ```blade
-<x-turbo-refreshes-with method="morph" scroll="preserve" />
+<x-turbo::refreshes-with method="morph" scroll="preserve" />
 ```
 
 This will render two HTML `<meta>` tags:

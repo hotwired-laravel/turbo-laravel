@@ -16,7 +16,7 @@
         <p>{{ __('Response cookie: :value.', ['value' => request()->cookie('response-cookie', 'no-cookie')]) }}</p>
     </div>
 
-    <x-turbo-frame id="{{ request()->header('Turbo-Frame', dom_id($article)) }}" target="_top" class="block mt-4 rounded p-6 border bg-white shadow-sm">
+    <x-turbo::frame id="{{ request()->header('Turbo-Frame', dom_id($article)) }}" target="_top" class="block mt-4 rounded p-6 border bg-white shadow-sm">
         <form action="{{ route('articles.destroy', $article) }}" method="post">
             @method('DELETE')
 
@@ -29,5 +29,5 @@
                 <x-button type="submit" variant="danger">{{ __('Yes, delete it.') }}</x-button>
             </div>
         </form>
-    </x-turbo-frame>
+    </x-turbo::frame>
 </x-app-layout>

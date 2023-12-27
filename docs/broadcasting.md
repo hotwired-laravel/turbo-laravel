@@ -26,16 +26,16 @@ You may add this tag to any Blade view passing the channel you want to listen to
 />
 ```
 
-For convenience, you may prefer using the `<x-turbo-stream-from>` Blade component that ships with Turbo Laravel (it requires that you have a custom element named `<turbo-echo-stream-source>` available, since that's the tag this component will render). You may pass the model as the `source` prop to it, it will figure out the channel name for that specific model using [Laravel's conventions](https://laravel.com/docs/broadcasting#model-broadcasting-conventions):
+For convenience, you may prefer using the `<x-turbo::stream-from>` Blade component that ships with Turbo Laravel (it requires that you have a custom element named `<turbo-echo-stream-source>` available, since that's the tag this component will render). You may pass the model as the `source` prop to it, it will figure out the channel name for that specific model using [Laravel's conventions](https://laravel.com/docs/broadcasting#model-broadcasting-conventions):
 
 ```blade
-<x-turbo-stream-from :source="$post" />
+<x-turbo::stream-from :source="$post" />
 ```
 
 By default, it expects a private channel, so it must be used in a page where users are already authenticated. You may control the channel type in the tag with a `type` attribute.
 
 ```blade
-<x-turbo-stream-from :source="$post" type="public" />
+<x-turbo::stream-from :source="$post" type="public" />
 ```
 
 Make sure you have the Broadcast Auth Route for your models registered in your `routes/channels.php` file:
