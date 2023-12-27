@@ -170,7 +170,7 @@ trait Broadcasts
         return $this->toChannels(Collection::wrap($this->broadcastDefaultStreamables($this->wasRecentlyCreated)));
     }
 
-    protected function broadcastActionTo($streamables, string $action, Rendering $rendering, string $target = null): PendingBroadcast
+    protected function broadcastActionTo($streamables, string $action, Rendering $rendering, ?string $target = null): PendingBroadcast
     {
         return TurboStream::broadcastAction(
             action: $action,

@@ -70,7 +70,7 @@ class PendingBroadcast
      */
     protected array $deferredCancelCallbacks = [];
 
-    public function __construct(array $channels, string $action, Rendering $rendering, string $target = null, string $targets = null, array $attributes = [])
+    public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null, array $attributes = [])
     {
         $this->action = $action;
         $this->target = $target;

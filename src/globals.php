@@ -39,7 +39,7 @@ if (! function_exists('turbo_stream')) {
      * @param  Model|Collection|array|string|null  $model = null
      * @param  string|null  $action = null
      */
-    function turbo_stream($model = null, string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse
+    function turbo_stream($model = null, ?string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse
     {
         return base_turbo_stream($model, $action);
     }

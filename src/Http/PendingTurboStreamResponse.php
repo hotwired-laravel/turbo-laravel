@@ -35,7 +35,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     private array $useCustomAttributes = [];
 
-    public static function forModel(Model $model, string $action = null): self
+    public static function forModel(Model $model, ?string $action = null): self
     {
         $builder = new self();
 
@@ -242,7 +242,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
             ->attributes(array_filter(['request-id' => Turbo::currentRequestId()]));
     }
 
-    private function buildAction(string $action, Model|string $target = null, $content = null, Rendering $rendering = null, array $attributes = [])
+    private function buildAction(string $action, Model|string|null $target = null, $content = null, ?Rendering $rendering = null, array $attributes = [])
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
@@ -265,7 +265,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         return $this;
     }
 
-    public function broadcastTo($channel, callable $callback = null)
+    public function broadcastTo($channel, ?callable $callback = null)
     {
         $callback = $callback ?? function () {
         };
@@ -275,7 +275,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         });
     }
 
-    public function broadcastToPrivateChannel($channel, callable $callback = null)
+    public function broadcastToPrivateChannel($channel, ?callable $callback = null)
     {
         $callback = $callback ?? function () {
         };
@@ -286,7 +286,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         });
     }
 
-    public function broadcastToPresenceChannel($channel, callable $callback = null)
+    public function broadcastToPresenceChannel($channel, ?callable $callback = null)
     {
         $callback = $callback ?? function () {
         };

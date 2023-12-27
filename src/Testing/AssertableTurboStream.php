@@ -23,7 +23,7 @@ class AssertableTurboStream
         return $this;
     }
 
-    public function hasTurboStream(Closure $callback = null): self
+    public function hasTurboStream(?Closure $callback = null): self
     {
         $callback ??= fn ($matcher) => $matcher;
         $attrs = collect();

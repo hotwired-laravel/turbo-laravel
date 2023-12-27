@@ -151,7 +151,7 @@ class TurboMiddleware
     /**
      * @param  \Illuminate\Http\Request  $request
      */
-    private function guessFormRedirectUrl($request, string $defaultRedirectUrl = null)
+    private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
     {
         if ($this->inExceptArray($request)) {
             return $defaultRedirectUrl;
