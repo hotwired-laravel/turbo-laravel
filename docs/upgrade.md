@@ -10,7 +10,13 @@ First, update the namespaces from the previous package. You can either do it fro
 find app config resources tests -type f -exec sed -i 's/Tonysm\\TurboLaravel/HotwiredLaravel\\TurboLaravel/g' {} +
 ```
 
-Next, require the new package and remove the previous one:
+Next, update your views referencing the old components as `<x-turbo-*` to the new format which is `<x-turbo::*`. This command should be enough:
+
+```bash
+find app resources tests -type f -exec sed -i 's/x-turbo-/x-turbo::/g' {} +
+```
+
+Then, require the new package and remove the previous one:
 
 ```bash
 composer require hotwired-laravel/turbo-laravel:2.0.0-beta1
