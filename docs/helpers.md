@@ -119,7 +119,7 @@ It will render the HTML `<meta>` tag:
 
 ### The `<x-turbo::page-requires-reload />` Blade Component
 
-This component may be added to any page you want Turbo to reload. This will break out of Turbo Frame navigations. May be used at a login screen, for instance. Useful in places like the login screen, for instance. Example:
+This component may be added to any page you want Turbo to reload. This will break out of Turbo Frame navigations. May be used at a login screen, for instance. Example:
 
 ```blade
 <x-turbo::page-requires-reload />
