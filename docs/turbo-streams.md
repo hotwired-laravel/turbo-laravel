@@ -291,24 +291,24 @@ Remember, these are Blade views, so you have the full power of Blade at your han
 @endif
 ```
 
-Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things a bit. It has the same convention of figuring out the DOM ID when you're passing a model instance or an array as `target` attribute of the `<x-turbo-frame>` component. When using the component version, there's no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
+Similar to the `<x-turbo::frame>` Blade component, there's also a `<x-turbo::stream>` Blade component that can simplify things a bit. It has the same convention of figuring out the DOM ID when you're passing a model instance or an array as `target` attribute of the `<x-turbo::frame>` component. When using the component version, there's no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
 
 ```blade
 @include('layouts.turbo.flash_stream')
 
-<x-turbo-stream :target="[$comment->post, 'comments']" action="append">
+<x-turbo::stream :target="[$comment->post, 'comments']" action="append">
     @include('comments._comment', ['comment' => $comment])
-</x-turbo-stream>
+</x-turbo::stream>
 ```
 
 I hope you can see how powerful this can be to reusing views.
 
 ## Custom Actions
 
-You may also use the `<x-turbo-stream>` Blade component for your custom actions as well:
+You may also use the `<x-turbo::stream>` Blade component for your custom actions as well:
 
 ```blade
-<x-turbo-stream action="console_log" value="Hello World" />
+<x-turbo::stream action="console_log" value="Hello World" />
 ```
 
 Custom actions are only supported from Blade views. You cannot return those from controllers using the Pending Streams Builder.
