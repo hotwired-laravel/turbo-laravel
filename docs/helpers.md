@@ -89,6 +89,36 @@ This will render two HTML `<meta>` tags:
 <meta name="turbo-refresh-scroll" content="preserve">
 ```
 
+### The `<x-turbo::exempts-page-from-cache />` Blade Component
+
+This component may be added to any page you don't want Turbo to keep a cache in the page cache.
+
+It will render the HTML `<meta>` tag:
+
+```html
+<meta name="turbo-cache-control" content="no-cache">
+```
+
+### The `<x-turbo::exempts-page-from-preview />` Blade Component
+
+This component may be added to any page you don't want Turbo to show as a preview on regular navigation visits. No-preview pages will only be used in restoration visits (when you use the browser's back or forward buttons, or when when moving backward in the navigation stack).
+
+It will render the HTML `<meta>` tag:
+
+```html
+<meta name="turbo-cache-control" content="no-preview">
+```
+
+### The `<x-turbo::page-requires-reload />` Blade Component
+
+This component may be added to any page you want Turbo to reload. This will break out of Turbo Frame navigations. May be used at a login screen, for instance. Useful in places like the login screen, for instance.
+
+It will render the HTML `<meta>` tag:
+
+```html
+<meta name="turbo-visit-control" content="reload">
+```
+
 ## Helper Functions
 
 The package ships with a set of helper functions. These functions are all namespaced under `HotwiredLaravel\\TurboLaravel\\` but we also add them globally for convenience, so you may use them directly without the `use` statements (this is useful in contexts like Blade views, for instance).
