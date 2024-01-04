@@ -4,6 +4,7 @@ namespace HotwiredLaravel\TurboLaravel\Facades;
 
 use Closure;
 use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
+use HotwiredLaravel\TurboLaravel\NamesResolver;
 use HotwiredLaravel\TurboLaravel\Turbo as BaseTurbo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
@@ -31,7 +32,7 @@ class Turbo extends Facade
 
     public static function resolvePartialsPathUsing(string|Closure $pattern)
     {
-        config()->set('turbo-laravel.partials_path', $pattern);
+        NamesResolver::resolvePartialsPathUsing($pattern);
     }
 
     protected static function getFacadeAccessor()

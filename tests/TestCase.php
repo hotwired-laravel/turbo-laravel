@@ -2,6 +2,7 @@
 
 namespace HotwiredLaravel\TurboLaravel\Tests;
 
+use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Facades\TurboStream;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Concerns\WithWorkbench;
@@ -17,6 +18,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         TurboStream::fake();
+        Turbo::resolvePartialsPathUsing('{plural}._{singular}');
     }
 
     protected function defineEnvironment($app)
