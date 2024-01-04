@@ -17,9 +17,13 @@ class NamesResolver
     {
         $name = Name::forModel($model);
 
-        $resource = $name->plural;
-        $partial = $name->element;
+        $replacements = [
+            '{plural}' => $name->plural,
+            '{singular}' => $name->element,
+        ];
 
-        return "{$resource}._{$partial}";
+        $pattern = config('turbo-laravel.partials_path', '{plural}._{singular}');
+
+        return str_replace(array_keys($replacements), array_values($replacements), value($pattern, $model));
     }
 }
