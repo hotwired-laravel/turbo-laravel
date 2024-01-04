@@ -31,7 +31,7 @@ When using this config, the redirection behavior will still happen, but the pack
 
 You may want to split up your views in smaller chunks (aka. "partials"), such as a `comments/_comment.blade.php` to display a comment resource, or `comments/_form.blade.php` to display the form for both creating and updating comments. This allows you to reuse these _partials_ in [Turbo Streams](/docs/{{version}}/turbo-streams).
 
-Alternatively, you may override opt-in to a `{plural}.partials.{singular}` convention for your partials location by calling the `Turbo::usePartialsSubfolderPattern()` method of the Turbo Facade from your `AppServiceProvider::boot()` method:
+Alternatively, you may override the pattern to a `{plural}.partials.{singular}` convention for your partials location by calling the `Turbo::usePartialsSubfolderPattern()` method of the Turbo Facade from your `AppServiceProvider::boot()` method:
 
 ```php
 <?php
@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-You may also want to define your own pattern for partials, which you can do using the `Turbo::resolvePartialsUsing()` method also from the Turbo Facade. This method accepts either a string pattern or a Closure. If you specify a string, you'll have two placefolders available to resolve the pattern `{singular}` and `{plural}`, which will get replaced internally when resolving the pattern. If you specify a Closure, you will receive the model instance and must return a string using the dot notation for view definitions. The placeholders will still be replaced on the resulting string of the Closure. For instance, here's how we could achiave the subfolder pattern manually:
+You may also want to define your own pattern for partials, which you can do using the `Turbo::resolvePartialsUsing()` method. This method accepts either a string pattern or a Closure. If you pass a string pattern, you'll have two replaceholders available: `{singular}` and `{plural}`, which will get replaced with the model's singular and plural names, respectively, when the pattern is used. If you pass a Closure, you'll have the model instance available and you must return the view pattern using Laravel's dot notation convention. The pattern returned from the Closure will also get the placeholders applied, if you need that. Here's how you could manually define the partials subfolder pattern:
 
 ```php
 <?php
@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Turbo::resolvePartialsPathUsing('{plural}.partials.{singular}');
 
-        // Alternatively...
+        // Or...
 
         Turbo::resolvePartialsPathUsing(fn ($model) => 'partials.{singular}');
     }
