@@ -60,7 +60,7 @@ If you're rendering a Turbo Stream inside a your Blade files, you may use the `<
 
 Just like in the Turbo Frames' `:id` prop, the `:target` prop of the Turbo Stream component accepts a string, a model instance, or an array to resolve the DOM ID using the `dom_id()` function.
 
-### The `<x-turbo::refreshes-with>` Blade Component
+### The `<x-turbo::refresh-method method="morph" />` Blade Component
 
 We can configure which update method Turbo should so to update the document:
 
@@ -69,6 +69,20 @@ We can configure which update method Turbo should so to update the document:
 | `replace` | Updates the entire body of the document on Turbo Visits |
 | `morph` | Uses DOM morphing to update the document instead of replacing everything |
 
+Here's how you can use it:
+
+```blade
+<x-turbo::refresh-method method="morph" />
+```
+
+The output would be:
+
+```blade
+<meta name="turbo-refresh-method" content="morph">
+```
+
+### The `<x-turbo::refresh-scroll scroll="preserve" />` Blade Component
+
 You can also configure the scroll behavior on Turbo:
 
 | Behavior | Description |
@@ -76,7 +90,21 @@ You can also configure the scroll behavior on Turbo:
 | `reset` | Resets the scroll position to the top, mimicking for the browser handles new page visits |
 | `preserve` | Preserves the current scroll position (usually results in a better UX when used with the `morph` method) |
 
-You may use the `<x-turbo::refreshes-with />` component in your main layout's `<head>` tag or on specific pages to configure how Turbo should update the page. Here's an example:
+Here's how you can use it:
+
+```blade
+<x-turbo::refresh-scroll scroll="preserve" />
+```
+
+The output would be:
+
+```blade
+<meta name="turbo-refresh-scroll" content="preserve">
+```
+
+### The `<x-turbo::refreshes-with>` Blade Component
+
+You may configure both the refresh method and scroll behavior using the `<x-turbo::refreshes-with />` component in your main layout's `<head>` tag or on specific pages to configure how Turbo should update the page. Here's an example:
 
 ```blade
 <x-turbo::refreshes-with method="morph" scroll="preserve" />
