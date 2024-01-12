@@ -42,7 +42,7 @@
 
     {{-- Install Turbo via CDN --}}
     <script type="module">
-        import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo'
+        import * as Turbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.3.0'
         import { Application, Controller } from 'https://cdn.skypack.dev/@hotwired/stimulus'
         import { install, uninstall } from 'https://cdn.skypack.dev/@github/hotkey'
 
