@@ -15,8 +15,10 @@ jobs:
         include:
           - laravel: 10.*
             testbench: 8.*
+            workbench: 8.*
           - laravel: 11.*
             testbench: 9.*
+            workbench: 9.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -38,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:^2.64.1" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "orchestra/workbench:${{ matrix.workbench }}" "nesbot/carbon:^2.64.1" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
