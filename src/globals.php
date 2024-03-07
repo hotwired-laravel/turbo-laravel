@@ -36,8 +36,8 @@ if (! function_exists('turbo_stream')) {
     /**
      * Builds the Turbo Streams.
      *
-     * @param  Model|Collection|array|string|null  $model = null
-     * @param  string|null  $action = null
+     * @param  Model|Collection|array|string|null  $model  = null
+     * @param  string|null  $action  = null
      */
     function turbo_stream($model = null, ?string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse
     {
@@ -50,7 +50,7 @@ if (! function_exists('turbo_stream_view')) {
      * Renders a Turbo Stream view wrapped with the correct Content-Types in the response.
      *
      * @param  string|\Illuminate\View\View  $view
-     * @param  array  $data = [] the binding params to be passed to the view.
+     * @param  array  $data  = [] the binding params to be passed to the view.
      */
     function turbo_stream_view($view, array $data = []): Response|ResponseFactory
     {
