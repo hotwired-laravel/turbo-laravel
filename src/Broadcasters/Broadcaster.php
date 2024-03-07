@@ -8,13 +8,13 @@ interface Broadcaster
 {
     /**
      * @param  Channel[]  $channels
-     * @param  ?string  $target = null
-     * @param  ?string  $targets = null
-     * @param  ?string  $partial = null
-     * @param  ?array  $partialData = []
-     * @param  ?string  $inlineContent = null
-     * @param  bool  $escapeInlineContent = true
-     * @param  ?string  $exceptSocket = null
+     * @param  ?string  $target  = null
+     * @param  ?string  $targets  = null
+     * @param  ?string  $partial  = null
+     * @param  ?array  $partialData  = []
+     * @param  ?string  $inlineContent  = null
+     * @param  bool  $escapeInlineContent  = true
+     * @param  ?string  $exceptSocket  = null
      */
     public function broadcast(
         array $channels,

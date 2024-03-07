@@ -213,9 +213,11 @@ class ComponentsTest extends TestCase
             <x-turbo::exempts-page-from-cache />
             <x-turbo::exempts-page-from-preview />
             <x-turbo::page-requires-reload />
+            <x-turbo::page-view-transition />
             BLADE)
             ->assertSee('<meta name="turbo-cache-control" content="no-cache">', false)
             ->assertSee('<meta name="turbo-cache-control" content="no-preview">', false)
-            ->assertSee('<meta name="turbo-visit-control" content="reload">', false);
+            ->assertSee('<meta name="turbo-visit-control" content="reload">', false)
+            ->assertSee('<meta name="view-transition" content="same-origin" />', false);
     }
 }
