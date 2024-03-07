@@ -185,7 +185,6 @@ class TurboInstallCommand extends Command
         $this->existingLayoutFiles()->each(fn ($file) => (new Pipeline(app()))
             ->send($file)
             ->through(array_filter([
-                $this->option('jet') ? Tasks\EnsureLivewireTurboBridgeExists::class : null,
                 Tasks\EnsureCsrfTokenMetaTagExists::class,
             ]))
             ->thenReturn());
