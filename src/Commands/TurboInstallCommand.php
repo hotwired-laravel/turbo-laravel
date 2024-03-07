@@ -7,14 +7,12 @@ use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process as ProcessFacade;
 use RuntimeException;
+use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
 class TurboInstallCommand extends Command
 {
-    public $signature = 'turbo:install
-        {--alpine : To add Alpine as a JS dependency.}
-        {--jet : To update the Jetstream templates.}
-    ';
+    public $signature = 'turbo:install';
 
     public $description = 'Installs Turbo.';
 
@@ -35,12 +33,6 @@ class TurboInstallCommand extends Command
 
         File::copy(__DIR__.'/../../stubs/resources/js/libs/turbo.js', resource_path('js/libs/turbo.js'));
         File::copy(__DIR__.'/../../stubs/resources/js/elements/turbo-echo-stream-tag.js', resource_path('js/elements/turbo-echo-stream-tag.js'));
-
-        if ($this->option('jet')) {
-            File::copy(__DIR__.'/../../stubs/resources/js/libs/alpine-jet.js', resource_path('js/libs/alpine.js'));
-        } elseif ($this->option('alpine')) {
-            File::copy(__DIR__.'/../../stubs/resources/js/libs/alpine.js', resource_path('js/libs/alpine.js'));
-        }
 
         File::put(resource_path('js/app.js'), $this->appJsImportLines());
         File::put(resource_path('js/libs/index.js'), $this->libsIndexJsImportLines());
@@ -66,12 +58,6 @@ class TurboInstallCommand extends Command
         $imports[] = $this->usingImportmaps()
             ? "import 'libs/turbo';"
             : "import './turbo';";
-
-        if ($this->option('alpine') || $this->option('jet')) {
-            $imports[] = $this->usingImportmaps()
-                ? "import 'libs/alpine';"
-                : "import './alpine';";
-        }
 
         return implode("\n", $imports);
     }
@@ -138,17 +124,6 @@ class TurboInstallCommand extends Command
             '@hotwired/turbo' => '^8.0.0-beta.1',
             'laravel-echo' => '^1.15.0',
             'pusher-js' => '^8.0.1',
-        ] + $this->alpineDependencies();
-    }
-
-    private function alpineDependencies(): array
-    {
-        if (! $this->option('alpine') && ! $this->option('jet')) {
-            return [];
-        }
-
-        return [
-            'alpinejs' => '^3.11.1',
         ];
     }
 
@@ -195,5 +170,10 @@ class TurboInstallCommand extends Command
         return collect(['app', 'guest'])
             ->map(fn ($file) => resource_path("views/layouts/{$file}.blade.php"))
             ->filter(fn ($file) => File::exists($file));
+    }
+
+    private function phpBinary()
+    {
+        return (new PhpExecutableFinder())->find(false) ?: 'php';
     }
 }
