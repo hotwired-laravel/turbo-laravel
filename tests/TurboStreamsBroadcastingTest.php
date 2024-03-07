@@ -26,22 +26,15 @@ class TurboStreamsBroadcastingTest extends TestCase
         TurboStream::fake();
     }
 
-    public function turboStreamDefaultInsertActions()
-    {
-        return [
-            ['append'],
-            ['prepend'],
-            ['before'],
-            ['after'],
-            ['update'],
-            ['replace'],
-        ];
-    }
-
     /**
      * @test
      *
-     * @dataProvider turboStreamDefaultInsertActions
+     * @testWith ["append"]
+     *           ["prepend"]
+     *           ["before"]
+     *           ["after"]
+     *           ["update"]
+     *           ["replace"]
      */
     public function can_manually_broadcast_append_streams(string $action)
     {
