@@ -718,4 +718,53 @@ class BroadcastsModelTest extends TestCase
             return true;
         }, times: 1);
     }
+
+    /** @test */
+    public function broadcasts_with_extra_attributes_to_turbo_stream()
+    {
+        TurboStream::fake();
+
+        /** @var Board $board */
+        $board = Board::withoutTurboStreamBroadcasts(fn () => Board::create(['name' => 'Hello World']));
+
+        $board->broadcastActionTo(
+            $channel = 'messages',
+            $action = 'test',
+            attributes: $attributes = ['data-foo' => 'bar'],
+        );
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes) {
+            $this->assertEquals("private-{$channel}", $turboStream->channels[0]->name);
+            $this->assertEquals($action, $turboStream->action);
+            $this->assertEquals($attributes, $turboStream->attributes);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function broadcasts_with_extra_attributes_to_turbo_stream_with_rendering()
+    {
+        TurboStream::fake();
+
+        /** @var Board $board */
+        $board = Board::withoutTurboStreamBroadcasts(fn () => Board::create(['name' => 'Hello World']));
+
+        $board->broadcastActionTo(
+            $channel = 'messages',
+            $action = 'test',
+            attributes: $attributes = ['data-foo' => 'bar'],
+        )->view('boards.partials.board', [
+            'board' => $board,
+        ]);
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes) {
+            $this->assertEquals("private-{$channel}", $turboStream->channels[0]->name);
+            $this->assertEquals($action, $turboStream->action);
+            $this->assertEquals($attributes, $turboStream->attributes);
+            $this->assertStringContainsString('Hello World', $turboStream->render());
+
+            return true;
+        });
+    }
 }
