@@ -134,7 +134,12 @@ class PendingBroadcast
 
     public function partial(?string $partial, array $data = []): self
     {
-        return $this->rendering(new Rendering($partial, $data));
+        return $this->view($partial, $data);
+    }
+
+    public function view(?string $view, array $data = []): self
+    {
+        return $this->rendering(new Rendering($view, $data));
     }
 
     public function content($content)
