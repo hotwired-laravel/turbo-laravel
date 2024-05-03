@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The Turbo Stream tag that ships with Turbo can be used on your Blade views just like any other HTML tag:
+The Turbo Frame tag that ships with Turbo can be used on your Blade views just like any other HTML tag:
 
 ```blade
 <turbo-frame id="@domid($post, 'create_comment')">
