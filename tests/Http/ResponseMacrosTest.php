@@ -982,6 +982,25 @@ class ResponseMacrosTest extends TestCase
     }
 
     /** @test */
+    public function response_builder_doesnt_fail_when_partial_is_empty_string()
+    {
+        // $this->expectException(TurboStreamResponseFailedException::class);
+
+        $response = response()
+            ->turboStream()
+            ->update('example_target', '')
+            ->toResponse(new Request);
+
+        $expected = view('turbo-laravel::turbo-stream', [
+            'action' => 'update',
+            'target' => 'example_target',
+            'content' => '',
+        ])->render();
+
+        $this->assertTrue(true);
+    }
+
+    /** @test */
     public function refresh_shorthand()
     {
         $response = response()
