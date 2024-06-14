@@ -984,8 +984,6 @@ class ResponseMacrosTest extends TestCase
     /** @test */
     public function response_builder_doesnt_fail_when_partial_is_empty_string()
     {
-        // $this->expectException(TurboStreamResponseFailedException::class);
-
         $response = response()
             ->turboStream()
             ->update('example_target', '')
@@ -997,7 +995,7 @@ class ResponseMacrosTest extends TestCase
             'content' => '',
         ])->render();
 
-        $this->assertTrue(true);
+        $this->assertEquals(trim($expected), trim($response->getContent()));
     }
 
     /** @test */
