@@ -767,4 +767,67 @@ class BroadcastsModelTest extends TestCase
             return true;
         });
     }
+
+    /** @test */
+    public function broadcasts_replace_morph()
+    {
+        $article = ArticleFactory::new()->create();
+
+        $article->broadcastReplace()->morph();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals("article_{$article->id}", $broadcast->target);
+            $this->assertEquals('replace', $broadcast->action);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals(['method' => 'morph'], $broadcast->attributes);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function broadcasts_update_morph()
+    {
+        $article = ArticleFactory::new()->create();
+
+        $article->broadcastUpdate()->morph();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals("article_{$article->id}", $broadcast->target);
+            $this->assertEquals('update', $broadcast->action);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals(['method' => 'morph'], $broadcast->attributes);
+
+            return true;
+        });
+    }
+
+    /** @test */
+    public function unsets_method_when_overriding_with_null()
+    {
+        $article = ArticleFactory::new()->create();
+
+        $article->broadcastUpdate()->morph()->method();
+
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+            $this->assertCount(1, $broadcast->channels);
+            $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
+            $this->assertEquals("article_{$article->id}", $broadcast->target);
+            $this->assertEquals('update', $broadcast->action);
+            $this->assertEquals('articles._article', $broadcast->partialView);
+            $this->assertEquals(['article' => $article], $broadcast->partialData);
+            $this->assertNull($broadcast->targets);
+            $this->assertEquals([], $broadcast->attributes);
+
+            return true;
+        });
+    }
 }

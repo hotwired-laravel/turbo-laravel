@@ -154,6 +154,22 @@ class PendingBroadcast
         return $this;
     }
 
+    public function morph(): self
+    {
+        return $this->method('morph');
+    }
+
+    public function method(?string $method = null): self
+    {
+        if ($method) {
+            return $this->attributes(array_merge($this->attributes, [
+                'method' => $method,
+            ]));
+        }
+
+        return $this->attributes(Arr::except($this->attributes, 'method'));
+    }
+
     public function rendering(Rendering $rendering)
     {
         $this->partialView = $rendering->partial;
