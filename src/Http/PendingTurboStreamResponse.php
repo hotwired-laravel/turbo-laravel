@@ -12,6 +12,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
 
@@ -37,7 +38,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public static function forModel(Model $model, ?string $action = null): self
     {
-        $builder = new self();
+        $builder = new self;
 
         // We're treating soft-deleted models as they were deleted. In other words, we
         // will render the remove Turbo Stream. If you need to treat a soft-deleted
@@ -106,6 +107,22 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         $this->useCustomAttributes = $attributes;
 
         return $this;
+    }
+
+    public function morph(): self
+    {
+        return $this->method('morph');
+    }
+
+    public function method(?string $method = null): self
+    {
+        if ($method) {
+            return $this->attributes(array_merge($this->useCustomAttributes, [
+                'method' => $method,
+            ]));
+        }
+
+        return $this->attributes(Arr::except($this->useCustomAttributes, 'method'));
     }
 
     public function append(Model|string $target, $content = null): self
@@ -267,8 +284,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public function broadcastTo($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {
-        };
+        $callback = $callback ?? function () {};
 
         return tap($this, function () use ($channel, $callback) {
             $callback($this->asPendingBroadcast($channel));
@@ -277,8 +293,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public function broadcastToPrivateChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {
-        };
+        $callback = $callback ?? function () {};
 
         return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
             $broadcast->toPrivateChannel($channel);
@@ -288,8 +303,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public function broadcastToPresenceChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {
-        };
+        $callback = $callback ?? function () {};
 
         return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
             $callback($broadcast->toPresenceChannel($channel));

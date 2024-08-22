@@ -64,6 +64,33 @@ class FunctionsTest extends TestCase
             HTML),
             trim(turbo_stream($this->article)),
         );
+
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="article_{$this->article->id}" action="replace" method="morph">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(turbo_stream($this->article->fresh())->morph()),
+        );
+
+        // Unsets method
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="article_{$this->article->id}" action="replace">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(turbo_stream($this->article->fresh())->morph()->method()),
+        );
     }
 
     /** @test */
@@ -104,6 +131,33 @@ class FunctionsTest extends TestCase
             </turbo-stream>
             HTML),
             trim(\turbo_stream($this->article)),
+        );
+
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="article_{$this->article->id}" action="replace" method="morph">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(\turbo_stream($this->article->fresh())->morph()),
+        );
+
+        // Unsets method
+        $expected = trim(view('articles._article', [
+            'article' => $this->article,
+        ])->render());
+
+        $this->assertEquals(
+            trim(<<<HTML
+            <turbo-stream target="article_{$this->article->id}" action="replace">
+                <template>{$expected}</template>
+            </turbo-stream>
+            HTML),
+            trim(\turbo_stream($this->article->fresh())->morph()->method()),
         );
     }
 
