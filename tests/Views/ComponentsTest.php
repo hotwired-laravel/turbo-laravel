@@ -115,6 +115,14 @@ class ComponentsTest extends TestCase
             ->assertSee('<template><p>Hello, World</p></template>', false)
             ->assertSee('</turbo-stream>', false)
             ->assertDontSee('target=');
+
+        // Morphs...
+        $this->blade(<<<'BLADE'
+            <x-turbo::stream target="article_123" action="update" method="morph">
+                <p>Hello, World</p>
+            </x-turbo::stream>
+            BLADE)
+            ->assertSee('method="morph"', false);
     }
 
     /** @test */
