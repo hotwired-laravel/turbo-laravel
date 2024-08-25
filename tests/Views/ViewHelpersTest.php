@@ -56,7 +56,7 @@ class ViewHelpersTest extends TestCase
 
         $renderedDomId = Blade::render('<div id="@domid($article)"></div>', ['article' => $article]);
         $renderedDomIdWithPrefix = Blade::render('<div id="@domid($article, "favorites")"></div>', ['article' => $article]);
-        $rendersDomIdOfNewModel = Blade::render('<div id="@domid($article)"></div>', ['article' => new Article()]);
+        $rendersDomIdOfNewModel = Blade::render('<div id="@domid($article)"></div>', ['article' => new Article]);
 
         $this->assertEquals('<div id="article_'.$article->id.'"></div>', trim($renderedDomId));
         $this->assertEquals('<div id="favorites_article_'.$article->id.'"></div>', trim($renderedDomIdWithPrefix));
@@ -80,7 +80,7 @@ class ViewHelpersTest extends TestCase
 
         $renderedDomClass = Blade::render('<div class="@domclass($article)"></div>', ['article' => $article]);
         $renderedDomClassWithPrefix = Blade::render('<div class="@domclass($article, "favorites")"></div>', ['article' => $article]);
-        $rendersDomClassOfNewModel = Blade::render('<div class="@domclass($article)"></div>', ['article' => new Article()]);
+        $rendersDomClassOfNewModel = Blade::render('<div class="@domclass($article)"></div>', ['article' => new Article]);
 
         $this->assertEquals('<div class="article"></div>', trim($renderedDomClass));
         $this->assertEquals('<div class="favorites_article"></div>', trim($renderedDomClassWithPrefix));
@@ -113,7 +113,7 @@ class ViewHelpersTest extends TestCase
 
         $this->assertEquals('user_profile_'.$profile->id, dom_id($profile));
         $this->assertEquals('posts_user_profile_'.$profile->id, dom_id($profile, 'posts'));
-        $this->assertEquals('create_user_profile', dom_id(new Profile()));
+        $this->assertEquals('create_user_profile', dom_id(new Profile));
     }
 
     /** @test */

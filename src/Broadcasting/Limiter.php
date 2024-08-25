@@ -4,9 +4,7 @@ namespace HotwiredLaravel\TurboLaravel\Broadcasting;
 
 class Limiter
 {
-    public function __construct(protected array $keys = [], protected int $delay = 500)
-    {
-    }
+    public function __construct(protected array $keys = [], protected int $delay = 500) {}
 
     public function clear(): void
     {

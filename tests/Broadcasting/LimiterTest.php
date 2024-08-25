@@ -12,7 +12,7 @@ class LimiterTest extends TestCase
     {
         $this->freezeTime();
 
-        $debouncer = new Limiter();
+        $debouncer = new Limiter;
 
         $this->assertFalse($debouncer->shouldLimit('my-key'));
         $this->assertTrue($debouncer->shouldLimit('my-key'));

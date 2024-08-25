@@ -51,7 +51,7 @@ class Name
 
     public static function build(string $className)
     {
-        $name = new static();
+        $name = new static;
 
         $name->className = $className;
         $name->classNameWithoutRootNamespace = static::removeRootNamespaces($className);

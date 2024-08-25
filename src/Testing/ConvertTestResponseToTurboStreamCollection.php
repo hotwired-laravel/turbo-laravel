@@ -11,7 +11,7 @@ class ConvertTestResponseToTurboStreamCollection
     public function __invoke(TestResponse $response): Collection
     {
         libxml_use_internal_errors(true);
-        $document = tap(new DOMDocument())->loadHTML($response->content());
+        $document = tap(new DOMDocument)->loadHTML($response->content());
         $elements = $document->getElementsByTagName('turbo-stream');
 
         $streams = collect();

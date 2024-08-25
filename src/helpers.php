@@ -46,7 +46,7 @@ if (! function_exists('turbo_stream')) {
         }
 
         if ($model === null) {
-            return new PendingTurboStreamResponse();
+            return new PendingTurboStreamResponse;
         }
 
         return PendingTurboStreamResponse::forModel($model, $action);

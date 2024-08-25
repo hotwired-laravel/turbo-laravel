@@ -250,7 +250,7 @@ class ResponseMacrosTest extends TestCase
         $response = response()
             ->turboStream()
             ->append('some_dom_id', 'Hello World')
-            ->toResponse(new Request());
+            ->toResponse(new Request);
 
         $expected = <<<'HTML'
         <turbo-stream target="some_dom_id" action="append">
@@ -944,7 +944,7 @@ class ResponseMacrosTest extends TestCase
             response()->turboStream()->append($article)->target('append-target-id'),
             response()->turboStream()->prepend($article)->target('prepend-target-id'),
             response()->turboStream()->remove($article)->target('remove-target-id'),
-        ])->toResponse(new Request());
+        ])->toResponse(new Request);
 
         $expected = collect([
             view('turbo-laravel::turbo-stream', [

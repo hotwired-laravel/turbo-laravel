@@ -21,7 +21,7 @@ trait Broadcasts
 
     public static function bootBroadcasts()
     {
-        static::observe(new ModelObserver());
+        static::observe(new ModelObserver);
     }
 
     public static function withoutTurboStreamBroadcasts(callable $callback)
