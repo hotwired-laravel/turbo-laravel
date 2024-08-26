@@ -22,6 +22,8 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 {
     use Macroable;
 
+    private array $defaultActions = ['append', 'prepend', 'update', 'replace', 'before', 'after', 'remove', 'refresh'];
+
     private string $useAction;
 
     private ?string $useTarget = null;
@@ -341,7 +343,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
      */
     public function toResponse($request)
     {
-        if (! in_array($this->useAction, ['remove', 'refresh']) && ! $this->partialView && $this->inlineContent === null) {
+        if (! in_array($this->useAction, ['remove', 'refresh']) && in_array($this->useAction, $this->defaultActions) && ! $this->partialView && $this->inlineContent === null) {
             throw TurboStreamResponseFailedException::missingPartial();
         }
 

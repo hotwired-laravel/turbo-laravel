@@ -67,4 +67,26 @@ class TurboStreamResponseTest extends TestCase
                 ))
             ));
     }
+
+    /** @test */
+    public function turbo_allows_custom_actions_with_no_view()
+    {
+        $this->assertEquals(
+            <<<'HTML'
+            <turbo-stream target="contact-edit-drawer" action="close-drawer">
+            </turbo-stream>
+
+            HTML,
+            (string) turbo_stream()->action('close-drawer')->target('contact-edit-drawer'),
+        );
+
+        $this->assertEquals(
+            <<<'HTML'
+            <turbo-stream target="contact-edit-drawer" action="close-drawer">
+            </turbo-stream>
+
+            HTML,
+            turbo_stream()->action('close-drawer')->target('contact-edit-drawer')->toResponse(request())->getContent(),
+        );
+    }
 }
