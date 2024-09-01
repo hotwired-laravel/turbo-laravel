@@ -143,6 +143,40 @@ It will build a `remove` Turbo Stream if the model was just deleted (or if it wa
 return turbo_stream($comment, 'append');
 ```
 
+## Turbo Stream & Morph
+
+Both the `update` and `replace` Turbo Stream actions can specify a `[method="morph"]`, so the action will use DOM morphing instead of the default renderer.
+
+```php
+turbo_stream()->replace(dom_id($post, 'comments'), view('comments.partials.comment', [
+    'comment' => $comment,
+]))->morph();
+```
+
+This would generate the following Turbo Stream HTML:
+
+```html
+<turbo-stream action="replace" target="comments_post_123" method="morph">
+    <template>...</template>
+</turbo-stream>
+```
+
+And here's the `update` action version:
+
+```php
+turbo_stream()->update(dom_id($post, 'comments'), view('comments.partials.comment', [
+    'comment' => $comment,
+]))->morph();
+```
+
+This would generate the following Turbo Stream HTML:
+
+```html
+<turbo-stream action="update" target="comments_post_123" method="morph">
+    <template>...</template>
+</turbo-stream>
+```
+
 ## Target Multiple Elements
 
 Turbo Stream elements can either have a `target` with a DOM ID or a `targets` attribute with a CSS selector to [match multiple elements](https://turbo.hotwired.dev/reference/streams#targeting-multiple-elements). You may use the `xAll` shorthand methods to set the `targets` attribute instead of `target`:
