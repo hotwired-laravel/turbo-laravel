@@ -247,7 +247,7 @@ class CreatesCommentsTest extends TestCase
         TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($todo) {
             return $broadcast->target === 'comments'
                 && $broadcast->action === 'append'
-                && $broadcast->partialView === 'comments._comment'
+                && $broadcast->partialView === 'comments.partials.comment'
                 && $broadcast->partialData['comment']->is($todo->comments->first())
                 && count($broadcast->channels) === 1
                 && $broadcast->channels[0]->name === sprintf('private-%s', $todo->broadcastChannel());

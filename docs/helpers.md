@@ -54,7 +54,7 @@ If you're rendering a Turbo Stream inside a your Blade files, you may use the `<
 
 ```blade
 <x-turbo::stream :target="$post" action="update">
-    @include('posts._post', ['post' => $post])
+    @include('posts.partials.post', ['post' => $post])
 <x-turbo::stream>
 ```
 
