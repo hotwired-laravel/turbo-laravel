@@ -143,9 +143,11 @@ It will build a `remove` Turbo Stream if the model was just deleted (or if it wa
 return turbo_stream($comment, 'append');
 ```
 
-## Turbo Stream & Morph
+## Turbo Streams & Morph
 
-Both the `update` and `replace` Turbo Stream actions can specify a `[method="morph"]`, so the action will use DOM morphing instead of the default renderer.
+Both the `update` and `replace` Turbo Stream actions can specify a `[method="morph"]` attribute, so the action will use DOM morphing instead of the default renderer.
+
+To generate a Turbo Stream with the `[method="morph"]` attribute, chain the `morph()` method:
 
 ```php
 turbo_stream()->replace(dom_id($post, 'comments'), view('comments.partials.comment', [
