@@ -3,8 +3,10 @@
 namespace HotwiredLaravel\TurboLaravel\Tests\Views;
 
 use HotwiredLaravel\TurboLaravel\Facades\Turbo;
+use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\Blade;
+use PHPUnit\Framework\Attributes\Test;
 use Workbench\App\Models\Article;
 use Workbench\App\Models\ReviewStatus;
 use Workbench\App\Models\User\Profile;
@@ -15,37 +17,55 @@ use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class ViewHelpersTest extends TestCase
 {
+    use InteractsWithTurbo;
+
     /** @test */
-    public function renders_turbo_native_correctly()
+    public function renders_hotwire_native_correctly()
     {
         $article = ArticleFactory::new()->create();
 
-        $this->assertFalse(Turbo::isTurboNativeVisit());
-
         $this->get(route('articles.show', $article))
-            ->assertDontSee('Visiting From Turbo Native');
+            ->assertDontSee('Visiting From Hotwire Native');
 
-        Turbo::setVisitingFromTurboNative();
-        $this->assertTrue(Turbo::isTurboNativeVisit());
+        $this->turboNative()
+            ->get(route('articles.show', $article))
+            ->assertSee('Visiting From Hotwire Native');
 
-        $this->get(route('articles.show', $article))
-            ->assertSee('Visiting From Turbo Native');
+        $this->hotwireNative()
+            ->get(route('articles.show', $article))
+            ->assertSee('Visiting From Hotwire Native');
     }
 
     /** @test */
-    public function renders_unless_turbo_native()
+    public function renders_blade_native_helpers(): void
+    {
+        $this->assertEquals('Not Native', trim(Blade::render('@turbonative Yes Native @else Not Native @endturbonative')));
+        $this->assertEquals('Not Native', trim(Blade::render('@hotwirenative Yes Native @else Not Native @endhotwirenative')));
+        $this->assertEquals('Not Native', trim(Blade::render('@unlessturbonative Not Native @else Yes Native @endunlessturbonative')));
+        $this->assertEquals('Not Native', trim(Blade::render('@unlesshotwirenative Not Native @else Yes Native @endunlesshotwirenative')));
+
+        Turbo::setVisitingFromHotwireNative();
+
+        $this->assertEquals('Yes Native', trim(Blade::render('@turbonative Yes Native @else Not Native @endturbonative')));
+        $this->assertEquals('Yes Native', trim(Blade::render('@hotwirenative Yes Native @else Not Native @endhotwirenative')));
+        $this->assertEquals('Yes Native', trim(Blade::render('@unlessturbonative Not Native @else Yes Native @endunlessturbonative')));
+        $this->assertEquals('Yes Native', trim(Blade::render('@unlesshotwirenative Not Native @else Yes Native @endunlesshotwirenative')));
+    }
+
+    /** @test */
+    public function renders_unless_hotwire_native()
     {
         $article = ArticleFactory::new()->create();
-
-        $this->assertFalse(Turbo::isTurboNativeVisit());
 
         $this->get(route('articles.show', $article))
             ->assertSee('Index');
 
-        Turbo::setVisitingFromTurboNative();
-        $this->assertTrue(Turbo::isTurboNativeVisit());
+        $this->turboNative()
+            ->get(route('articles.show', $article))
+            ->assertDontSee('Back');
 
-        $this->get(route('articles.show', $article))
+        $this->hotwireNative()
+            ->get(route('articles.show', $article))
             ->assertDontSee('Back');
     }
 

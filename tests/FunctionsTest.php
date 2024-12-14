@@ -16,7 +16,7 @@ class FunctionsTest extends TestCase
 {
     private Article $article;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

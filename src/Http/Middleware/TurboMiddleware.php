@@ -43,8 +43,8 @@ class TurboMiddleware
     {
         $this->encryptedCookies = $request->cookies->all();
 
-        if ($this->turboNativeVisit($request)) {
-            TurboFacade::setVisitingFromTurboNative();
+        if ($this->hotwireNativeVisit($request)) {
+            TurboFacade::setVisitingFromHotwireNative();
         }
 
         if ($requestId = $request->header('X-Turbo-Request-Id', null)) {
@@ -57,9 +57,9 @@ class TurboMiddleware
     /**
      * @param  \Illuminate\Http\Request  $request
      */
-    private function turboNativeVisit($request): bool
+    private function hotwireNativeVisit($request): bool
     {
-        return Str::contains($request->userAgent(), 'Turbo Native');
+        return Str::contains($request->userAgent(), ['Hotwire Native', 'Turbo Native']);
     }
 
     /**
@@ -68,7 +68,7 @@ class TurboMiddleware
      */
     private function turboResponse($response, Request $request)
     {
-        if (! $this->turboVisit($request) && ! $this->turboNativeVisit($request)) {
+        if (! $this->turboVisit($request) && ! $this->hotwireNativeVisit($request)) {
             return $response;
         }
 
@@ -88,7 +88,7 @@ class TurboMiddleware
 
         // When throwing a ValidationException and the app uses named routes convention, we can guess
         // the form route for the current endpoint, make an internal request there, and return the
-        // response body with the form over a 422 status code, which is better for Turbo Native.
+        // response body with the form over a 422 status code (works better for Hotwire Native).
 
         if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->guessFormRedirectUrl($request, $response->exception->redirectTo))) {
             $response->setTargetUrl($formRedirectUrl);

@@ -48,13 +48,18 @@ class TurboMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function can_detect_turbo_native_visits()
+    public function can_detect_hotwire_native_visits()
     {
         ArticleFactory::new()->times(3)->create();
 
         $this->assertFalse(
             TurboFacade::isTurboNativeVisit(),
-            'Expected to not have started saying it is a Turbo Native visit, but it said it is.'
+            'Expected to not have started saying it is a Hotwire Native visit, but it said it is.'
+        );
+
+        $this->assertFalse(
+            TurboFacade::isHotwireNativeVisit(),
+            'Expected to not have started saying it is a Hotwire Native visit, but it said it is.'
         );
 
         $this->get('/articles', [
@@ -65,9 +70,22 @@ class TurboMiddlewareTest extends TestCase
             ],
         ]);
 
+        $this->get('/articles', [
+            'User-Agent' => 'Hotwire Native Android',
+        ])->assertJsonStructure([
+            'data' => [
+                '*' => ['id', 'title', 'content', 'created_at', 'updated_at'],
+            ],
+        ]);
+
         $this->assertTrue(
             TurboFacade::isTurboNativeVisit(),
-            'Expected to have detected a Turbo Native visit, but it did not.'
+            'Expected to have detected a Hotwire Native visit, but it did not.'
+        );
+
+        $this->assertTrue(
+            TurboFacade::isHotwireNativeVisit(),
+            'Expected to have detected a Hotwire Native visit, but it did not.'
         );
     }
 

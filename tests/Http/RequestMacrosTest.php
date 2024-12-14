@@ -35,6 +35,16 @@ class RequestMacrosTest extends TestCase
     }
 
     /** @test */
+    public function was_from_hotwire_native()
+    {
+        $request = Request::create('/hello');
+        $this->assertFalse($request->wasFromHotwireNative());
+
+        TurboFacade::setVisitingFromTurboNative();
+        $this->assertTrue($request->wasFromHotwireNative());
+    }
+
+    /** @test */
     public function was_from_turbo_frame()
     {
         $request = Request::create('/hello', server: [
