@@ -6,7 +6,7 @@
 
 Testing a Hotwired app is like testing a regular Laravel app. However, Turbo Laravel comes with a set of helpers that may be used to ease testing some aspects that are specific to Turbo:
 
-1. **Turbo HTTP Request Helpers**. When you may want to mimic a Turbo visit, or a Turbo Native visit, or a request coming from a Turbo Frame.
+1. **Turbo HTTP Request Helpers**. When you may want to mimic a Turbo visit, or a Hotwire Native visit, or a request coming from a Turbo Frame.
 1. **Turbo Streams on HTTP Responses.** When you may want to test the Turbo Streams returned from HTTP requests.
 1. **Turbo Stream Broadcasts.** When you're either using the broadcast methods on your models using the `Broadcasts` trait, or when you're using [Handmade Turbo Stream Broadcasts](https://turbo-laravel.com/docs/2.x/broadcasting#content-handmade-broadcasts).
 
@@ -69,9 +69,9 @@ class CreateCommentsTest extends TestCase
 }
 ```
 
-### Acting as Turbo Native
+### Acting as Hotwire Native
 
-Additionally, when you're building a Turbo Native mobile app, you may want to issue a request pretending to be sent from a Turbo Native client. That's done by setting the `User-Agent` header to something that mentions the word `Turbo Native`. The `InteractsWithTurbo` trait also has a `$this->turboNative()` method you may use that automatically sets the header correctly:
+Additionally, when you're building a Hotwire Native mobile app, you may want to issue a request pretending to be sent from a Hotwire Native client. That's done by setting the `User-Agent` header to something that mentions the word `Hotwire Native`. The `InteractsWithTurbo` trait also has a `$this->hotwireNative()` method you may use that automatically sets the header correctly:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
@@ -87,7 +87,7 @@ class CreateCommentsTest extends TestCase
 
         $this->assertCount(0, $post->comments);
 
-        $this->turboNative()->post(route('posts.comments.store', $post), [
+        $this->hotwireNative()->post(route('posts.comments.store', $post), [
             'content' => 'Hello World',
         ])->assertOk();
 
@@ -97,9 +97,9 @@ class CreateCommentsTest extends TestCase
 }
 ```
 
-When using this method, calls to `request()->wasFromTurboNative()` will return `true`. Additionally, the `@turbonative` and `@unlessturbonative` Blade directives will render as expected.
+When using this method, calls to `request()->wasFromHotwireNative()` will return `true`. Additionally, the `@hotwirenative` and `@unlesshotwirenative` Blade directives will render as expected.
 
-Additionally, a few macros were added to the `TestResponse` class to make it easier to assert based on the `recede`, `resume`, and `refresh` redirects using the specific assert methods:
+A few other macros were added to the `TestResponse` class to make it easier to assert based on the `recede`, `resume`, and `refresh` redirects using the specific assert methods:
 
 | Method | Descrition |
 |---|---|
@@ -107,7 +107,7 @@ Additionally, a few macros were added to the `TestResponse` class to make it eas
 | `assertRedirectResume(array $with = [])` | Asserts that a redirect was returned to the `/resume_historical_location` route. |
 | `assertRedirectRefresh(array $with = [])` | Asserts that a redirect was returned to the `/refresh_historical_location` route. |
 
-The `$with` param will ensure that not only the route is correct, but also any flashed message will be included in the query string:
+The `$with` argument will ensure that not only the route is correct, but also any flashed message will be included in the query string:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
@@ -123,7 +123,7 @@ class CreateCommentsTest extends TestCase
 
         $this->assertCount(0, $post->comments);
 
-        $this->turboNative()->post(route('posts.comments.store', $post), [
+        $this->hotwireNative()->post(route('posts.comments.store', $post), [
             'content' => 'Hello World',
         ])->assertRedirectRecede(['status' => __('Comment created.')]);
 

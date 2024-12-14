@@ -10,10 +10,10 @@ class Turbo
     const TURBO_STREAM_FORMAT = 'text/vnd.turbo-stream.html';
 
     /**
-     * This will be used to detect if the request being made is coming from a Turbo Native visit
+     * This will be used to detect if the request being made is coming from a Hotwire Native visit
      * instead of a regular visit. This property will be set on the TurboMiddleware.
      */
-    private bool $visitFromTurboNative = false;
+    private bool $visitFromHotwireNative = false;
 
     /**
      * Whether or not the events should broadcast to other users only or to all.
@@ -25,14 +25,30 @@ class Turbo
      */
     private ?string $turboRequestId = null;
 
+    /**
+     * @deprecated use isHotwireNativeVisit
+     */
     public function isTurboNativeVisit(): bool
     {
-        return $this->visitFromTurboNative;
+        return $this->isHotwireNativeVisit();
     }
 
+    /**
+     * @deprecated use setVisitingFromHotwireNative
+     */
     public function setVisitingFromTurboNative(): self
     {
-        $this->visitFromTurboNative = true;
+        return $this->setVisitingFromHotwireNative();
+    }
+
+    public function isHotwireNativeVisit(): bool
+    {
+        return $this->visitFromHotwireNative;
+    }
+
+    public function setVisitingFromHotwireNative(): self
+    {
+        $this->visitFromHotwireNative = true;
 
         return $this;
     }

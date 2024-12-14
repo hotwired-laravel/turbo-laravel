@@ -2,11 +2,11 @@
     <x-slot name="title">{{ __('Delete Article') }}</x-slot>
 
     <div class="flex items-center space-x-4">
-        @unlessturbonative
+        @unlesshotwirenative
         <x-button-link variant="secondary" href="{{ route('articles.show', $article) }}" icon="arrow-uturn-left">
             <span>{{ __('Back') }}</span>
         </x-button-link>
-        @endturbonative
+        @endhotwirenative
 
         <h1 class="my-4 text-4xl font-semibold font-cursive">{{ __('Delete Article') }}</h1>
     </div>
