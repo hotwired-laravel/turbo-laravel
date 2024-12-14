@@ -241,11 +241,11 @@ if (request()->wasFromTurboFrame(dom_id($post, 'create_comment'))) {
 }
 ```
 
-### The `request()->wasFromTurboNative()` macro
+### The `request()->wasFromHotwireNative()` macro
 
-The `request()->wasFromTurboNative()` macro added to the request class will check if the request came from a Turbo Native client and returns `true` or `false` accordingly.
+The `request()->wasFromHotwireNative()` macro added to the request class will check if the request came from a Hotwire Native client and returns `true` or `false` accordingly.
 
-Turbo Native clients are encouraged to override the `User-Agent` header in the WebViews to mention the words `Turbo Native` on them. This is what this macro uses to detect if it came from a Turbo Native client.
+Hotwire Native clients are encouraged to override the `User-Agent` header in the WebViews to mention the words `Hotwire Native` on them. This is what this macro uses to detect if it came from a Hotwire Native client.
 
 ### The `response()->turboStream()` macro
 

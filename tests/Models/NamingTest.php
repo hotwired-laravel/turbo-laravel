@@ -19,13 +19,13 @@ class NamingTest extends TestCase
     }
 
     /** @test */
-    public function className()
+    public function class_name()
     {
         $this->assertEquals(Models\User\Profile::class, $this->modelName->className);
     }
 
     /** @test */
-    public function classNameWithoutRootNamespace()
+    public function class_name_without_root_namespace()
     {
         $this->assertEquals('User\\Profile', $this->modelName->classNameWithoutRootNamespace);
     }

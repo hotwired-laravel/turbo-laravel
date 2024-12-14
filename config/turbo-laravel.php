@@ -58,7 +58,7 @@ return [
      |
      */
     'features' => [
-        Features::turboNativeRoutes(),
+        Features::hotwireNativeRoutes(),
     ],
 
     /*

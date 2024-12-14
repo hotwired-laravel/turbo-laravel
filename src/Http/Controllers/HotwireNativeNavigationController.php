@@ -4,7 +4,7 @@ namespace HotwiredLaravel\TurboLaravel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 
-class TurboNativeNavigationController extends Controller
+class HotwireNativeNavigationController extends Controller
 {
     public function recede()
     {

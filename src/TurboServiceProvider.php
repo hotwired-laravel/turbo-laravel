@@ -89,11 +89,19 @@ class TurboServiceProvider extends ServiceProvider
     private function configureMacros(): void
     {
         Blade::if('turbonative', function () {
-            return TurboFacade::isTurboNativeVisit();
+            return TurboFacade::isHotwireNativeVisit();
         });
 
         Blade::if('unlessturbonative', function () {
-            return ! TurboFacade::isTurboNativeVisit();
+            return ! TurboFacade::isHotwireNativeVisit();
+        });
+
+        Blade::if('hotwirenative', function () {
+            return TurboFacade::isHotwireNativeVisit();
+        });
+
+        Blade::if('unlesshotwirenative', function () {
+            return ! TurboFacade::isHotwireNativeVisit();
         });
 
         Blade::directive('domid', function ($expression) {
@@ -128,7 +136,11 @@ class TurboServiceProvider extends ServiceProvider
         });
 
         Request::macro('wasFromTurboNative', function (): bool {
-            return TurboFacade::isTurboNativeVisit();
+            return TurboFacade::isHotwireNativeVisit();
+        });
+
+        Request::macro('wasFromHotwireNative', function (): bool {
+            return TurboFacade::isHotwireNativeVisit();
         });
 
         Request::macro('wasFromTurboFrame', function (?string $frame = null): bool {

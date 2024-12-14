@@ -2,9 +2,9 @@
     <x-slot name="title">{{ __('New Article') }}</x-slot>
 
     <div class="flex items-center space-x-4">
-        @unlessturbonative
+        @unlesshotwirenative
         <x-back-link :href="route('articles.index')">{{ __('Index') }}</x-back-link>
-        @endturbonative
+        @endhotwirenative
 
         <h1 class="my-4 text-4xl font-semibold font-cursive">{{ __('New Article') }}</h1>
     </div>

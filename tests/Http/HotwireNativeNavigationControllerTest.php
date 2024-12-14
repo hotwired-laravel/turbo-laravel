@@ -5,7 +5,7 @@ namespace HotwiredLaravel\TurboLaravel\Tests\Http;
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
-class TurboNativeNavigationControllerTest extends TestCase
+class HotwireNativeNavigationControllerTest extends TestCase
 {
     use InteractsWithTurbo;
 
@@ -29,6 +29,9 @@ class TurboNativeNavigationControllerTest extends TestCase
             ->assertRedirect(route('trays.show', 1));
 
         $this->turboNative()->post(route('trays.store'), ['return_to' => "{$action}_or_redirect"])
+            ->assertRedirect(route("turbo_{$action}_historical_location"));
+
+        $this->hotwireNative()->post(route('trays.store'), ['return_to' => "{$action}_or_redirect"])
             ->assertRedirect(route("turbo_{$action}_historical_location"));
     }
 
@@ -60,14 +63,32 @@ class TurboNativeNavigationControllerTest extends TestCase
             ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]))
             ->assertSessionMissing('status');
 
+        // Hotwire Native redirect with only flash...
+        $this->hotwireNative()
+            ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true])
+            ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]))
+            ->assertSessionMissing('status');
+
         // Turbo Native redirect with only flash & fragments...
         $this->turboNative()
             ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true])
             ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
             ->assertSessionMissing('status');
 
+        // Hotwire Native redirect with only flash & fragments...
+        $this->hotwireNative()
+            ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true])
+            ->assertRedirect(route("turbo_{$action}_historical_location", ['status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
+            ->assertSessionMissing('status');
+
         // Turbo Native redirect with only flash & fragments & query...
         $this->turboNative()
+            ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true, 'query' => true])
+            ->assertRedirect(route("turbo_{$action}_historical_location", ['lorem' => 'ipsum', 'status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
+            ->assertSessionMissing('status');
+
+        // Hotwire Native redirect with only flash & fragments & query...
+        $this->hotwireNative()
             ->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true, 'fragment' => true, 'query' => true])
             ->assertRedirect(route("turbo_{$action}_historical_location", ['lorem' => 'ipsum', 'status' => urlencode(__('Tray created.'))]).'#newly-created-tray')
             ->assertSessionMissing('status');
@@ -87,6 +108,9 @@ class TurboNativeNavigationControllerTest extends TestCase
             ->assertRedirect(url('/past_place'));
 
         $this->turboNative()->from(url('/past_place'))->post(route('trays.store'), ['return_to' => "{$action}_or_redirect_back"])
+            ->assertRedirect(route("turbo_{$action}_historical_location"));
+
+        $this->hotwireNative()->from(url('/past_place'))->post(route('trays.store'), ['return_to' => "{$action}_or_redirect_back"])
             ->assertRedirect(route("turbo_{$action}_historical_location"));
     }
 

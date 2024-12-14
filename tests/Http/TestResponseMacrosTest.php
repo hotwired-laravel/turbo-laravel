@@ -21,6 +21,10 @@ class TestResponseMacrosTest extends TestCase
         $this->turboNative()->post(route('trays.store', 1), [
             'return_to' => $returnTo,
         ])->assertRedirectToRoute($route)->{$method}();
+
+        $this->hotwireNative()->post(route('trays.store', 1), [
+            'return_to' => $returnTo,
+        ])->assertRedirectToRoute($route)->{$method}();
     }
 
     /**
@@ -33,6 +37,13 @@ class TestResponseMacrosTest extends TestCase
     public function asserts_historical_locations_with_flashes($returnTo, $route, $method)
     {
         $this->turboNative()->post(route('trays.store', 1), [
+            'return_to' => $returnTo,
+            'with' => true,
+        ])->assertRedirectToRoute($route, $with = [
+            'status' => urlencode(__('Tray created.')),
+        ])->{$method}($with);
+
+        $this->hotwireNative()->post(route('trays.store', 1), [
             'return_to' => $returnTo,
             'with' => true,
         ])->assertRedirectToRoute($route, $with = [

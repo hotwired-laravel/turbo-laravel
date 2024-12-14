@@ -11,6 +11,6 @@
     * [Broadcasting](/docs/{{version}}/broadcasting)
     * [Validation Response Redirects](/docs/{{version}}/validation-response-redirects)
     * [CSRF Protection](/docs/{{version}}/csrf)
-    * [Turbo Native](/docs/{{version}}/turbo-native)
+    * [Hotwire Native](/docs/{{version}}/hotwire-native)
     * [Testing](/docs/{{version}}/testing)
     * [Known Issues](/docs/{{version}}/known-issues)

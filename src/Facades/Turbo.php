@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Facade;
  *
  * @mixin \HotwiredLaravel\TurboLaravel\Turbo
  *
- * @method static bool isTurboNativeVisit()
- * @method static self setVisitingFromTurboNative()
+ * @method static bool isHotwireNativeVisit()
+ * @method static self setVisitingFromHotwireNative()
  * @method static mixed broadcastToOthers(bool|\Closure $toOthers = true)
  * @method static bool shouldBroadcastToOthers
  * @method static string domId(Model $model, string $prefix = "")
