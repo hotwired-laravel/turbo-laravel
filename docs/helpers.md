@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Helpers
 description: All the helpers the package provides
 order: 5

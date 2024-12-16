@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Upgrade Guide
 description: Upgrade from 1.x to 2.x
 order: 1

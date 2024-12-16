@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Validation Response
 description: Validation Responses in Laravel and Hotwire
 order: 9

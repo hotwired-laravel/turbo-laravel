@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Broadcasting
 description: Broadcasting Turbo Streams
 order: 8
