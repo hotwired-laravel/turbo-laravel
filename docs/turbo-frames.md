@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Turbo Frames
 description: The Turbo Frames Components and Helpers
 order: 6

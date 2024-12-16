@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Overview
 description: A quick overview of Hotwire
 order: 3

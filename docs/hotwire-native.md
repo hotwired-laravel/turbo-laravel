@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Hotwire Native
 description: Hotwire Native Helpers
 order: 11

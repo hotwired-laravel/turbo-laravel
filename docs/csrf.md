@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: CSRF Protection
 description: CSRF Protection
 order: 10

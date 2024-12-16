@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Known Issues
 description: Known Issues
 order: 13

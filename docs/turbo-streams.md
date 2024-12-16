@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Turbo Streams
 description: The Turbo Streams Components and Helpers 
 order: 7

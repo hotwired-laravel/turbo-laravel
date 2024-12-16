@@ -1,5 +1,5 @@
 ---
-layout: _layouts.docs
+extends: _layouts.docs
 title: Installation
 description: Install Turbo Laravel in your Laravel app
 order: 2
