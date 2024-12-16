@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Broadcasting
+description: Broadcasting Turbo Streams
+order: 8
+---
+
 # Broadcasting Turbo Streams Over WebSockets With Laravel Echo
-
-[TOC]
-
-## Introduction
 
 So far, we've seen how to generate Turbo Streams to either add it to our Blade views or return them from controllers after a form submission over HTTP. In addition to that, you may also broadcast model changes over WebSockets (or Server-Sent Events) to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
 

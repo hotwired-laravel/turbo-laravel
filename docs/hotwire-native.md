@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Hotwire Native
+description: Hotwire Native Helpers
+order: 11
+---
+
 # Hotwire Native
-
-[TOC]
-
-## Introduction
 
 Hotwire also has a [mobile side](https://native.hotwired.dev/) and Turbo Laravel provides some helpers to help integrating with that.
 

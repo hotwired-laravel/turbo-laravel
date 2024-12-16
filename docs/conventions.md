@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Convetions
+description: All the (optional) conventions and recommendations
+order: 4
+---
+
 # Conventions
-
-[TOC]
-
-## Introduction
 
 The conventions described below are **NOT mandatory**. Feel free to pick what you like and also come up with your own conventions. With that out of the way, here's a list of conventions you may find helpful.
 

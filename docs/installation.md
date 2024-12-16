@@ -1,3 +1,10 @@
+---
+layout: _layouts.docs
+title: Installation
+description: Install Turbo Laravel in your Laravel app
+order: 2
+---
+
 # Installation
 
 Turbo Laravel can be installed via [Composer](https://getcomposer.org/):

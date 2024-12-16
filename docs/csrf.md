@@ -1,3 +1,10 @@
+---
+layout: _layouts.docs
+title: CSRF Protection
+description: CSRF Protection
+order: 10
+---
+
 # CSRF Protection
 
 Laravel has built-in CSRF protection in place. It prevents our app from processing any non-GET requests that doesn't include a valid CSRF Token that was generated in our backend.
