@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Testing
+description: Testing Helpers
+order: 12
+---
+
 # Testing
-
-[TOC]
-
-## Introduction
 
 Testing a Hotwired app is like testing a regular Laravel app. However, Turbo Laravel comes with a set of helpers that may be used to ease testing some aspects that are specific to Turbo:
 

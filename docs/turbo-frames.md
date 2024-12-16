@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Turbo Frames
+description: The Turbo Frames Components and Helpers
+order: 6
+---
+
 # Turbo Frames
-
-[TOC]
-
-## Introduction
 
 The Turbo Frame tag that ships with Turbo can be used on your Blade views just like any other HTML tag:
 

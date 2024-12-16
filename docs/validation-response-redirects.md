@@ -1,8 +1,11 @@
+---
+layout: _layouts.docs
+title: Validation Response
+description: Validation Responses in Laravel and Hotwire
+order: 9
+---
+
 # Validation Response
-
-[TOC]
-
-## Introduction
 
 By default, Laravel redirects failed validation exceptions "back" to the page where the request came from. This isn't usually a problem, in fact it's the expected behavior, since that page usually is the one where the form which triggered the request renders.
 

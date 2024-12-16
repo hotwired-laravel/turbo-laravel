@@ -1,6 +1,11 @@
-# Helpers
+---
+layout: _layouts.docs
+title: Helpers
+description: All the helpers the package provides
+order: 5
+---
 
-[TOC]
+# Helpers
 
 Turbo Laravel has a set of Blade Directives, Components, helper functions, and request/response macros to help making the most out of Turbo in Laravel.
 

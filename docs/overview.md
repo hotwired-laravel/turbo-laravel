@@ -1,3 +1,10 @@
+---
+layout: _layouts.docs
+title: Overview
+description: A quick overview of Hotwire
+order: 3
+---
+
 # Overview
 
 It's recommended to read the entire [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction) before diving here. But here's a quick intro.
