@@ -1,5 +1,5 @@
 ---
-layout: _layouts.v1-docs
+extends: _layouts.v1-docs
 title: Blade Directives
 description: Blade Directives
 order: 4

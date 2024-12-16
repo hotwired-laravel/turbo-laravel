@@ -1,5 +1,5 @@
 ---
-layout: _layouts.v1-docs
+extends: _layouts.v1-docs
 title: Helper Functions
 description: All the helper functions the package provides
 order: 5

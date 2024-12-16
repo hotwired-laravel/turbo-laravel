@@ -1,5 +1,5 @@
 ---
-layout: _layouts.v1-docs
+extends: _layouts.v1-docs
 title: Turbo Native
 description: Turbo Native Helpers
 order: 11

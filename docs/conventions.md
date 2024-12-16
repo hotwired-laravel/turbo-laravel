@@ -1,5 +1,5 @@
 ---
-layout: _layouts.v1-docs
+extends: _layouts.v1-docs
 title: Convetions
 description: All the (optional) conventions and recommendations
 order: 3

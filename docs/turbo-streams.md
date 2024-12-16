@@ -1,5 +1,5 @@
 ---
-layout: _layouts.v1-docs
+extends: _layouts.v1-docs
 title: Turbo Streams
 description: The Turbo Streams Components and Helpers 
 order: 6
