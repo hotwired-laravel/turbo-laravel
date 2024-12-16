@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Helper Functions
+description: All the helper functions the package provides
+order: 5
+---
+
 # Helper Functions
-
-[TOC]
-
-## Introduction
 
 The package ships with a set of helper functions. These functions are all namespaced under `Tonysm\\TurboLaravel\\` but we also add them globally for convenience.
 

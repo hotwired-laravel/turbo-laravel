@@ -1,3 +1,10 @@
+---
+layout: _layouts.v1-docs
+title: Installation
+description: Installation
+order: 1
+---
+
 # Installation
 
 Turbo Laravel may be installed via Composer:

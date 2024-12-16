@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Validation Response
+description: Validation Response
+order: 9
+---
+
 # Validation Response
-
-[TOC]
-
-## Introduction
 
 By default, Laravel will redirect failed validation exceptions "back" to the page the triggered the request. This is a bit problematic when it comes to Turbo Frames, since a form might be included in a page that don't render the form initially, and after a failed validation exception from a form submission we would want to re-render the form with the invalid messages.
 

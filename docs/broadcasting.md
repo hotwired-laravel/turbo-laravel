@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Broadcasting
+description: Broadcasting Turbo Streams
+order: 7
+---
+
 # Broadcasting Turbo Streams Over WebSockets With Laravel Echo
-
-[TOC]
-
-## Introduction
 
 So far, we have used Turbo Streams over HTTP to handle the case of updating multiple parts of the page for a single user after a form submission. In addition to that, you may want to broadcast model changes over WebSockets to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
 

@@ -1,6 +1,11 @@
-# Blade Directives and Components
+---
+layout: _layouts.v1-docs
+title: Blade Directives
+description: Blade Directives
+order: 4
+---
 
-[TOC]
+# Blade Directives and Components
 
 ## The `@domid()` Blade Directive
 

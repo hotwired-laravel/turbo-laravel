@@ -1,6 +1,11 @@
-# Livewire
+---
+layout: _layouts.v1-docs
+title: Livewire
+description: Livewire Integration
+order: 8
+---
 
-[TOC]
+# Livewire
 
 Hotwire and Livewire can be used together. However, you need to add a JS plugin to make this happen.
 

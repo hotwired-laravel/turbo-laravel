@@ -1,3 +1,10 @@
+---
+layout: _layouts.v1-docs
+title: CSRF Protection
+description: CSRF Protection
+order: 10
+---
+
 # CSRF Protection
 
 Laravel has built-in CSRF protection in place. It essentially prevents our app from processing any non-GET requests that don't have a valid CSRF Token in them. So, to allow a POST form to be processed, we usually need to add a `@csrf` Blade directive to our forms:

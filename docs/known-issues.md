@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Known Issues
+description: Known Issues
+order: 13
+---
+
 # Known Issues
-
-[TOC]
-
-## Introduction
 
 If you ever encounter an issue with the package, look here first for documented solutions.
 

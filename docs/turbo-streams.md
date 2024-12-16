@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Turbo Streams
+description: The Turbo Streams Components and Helpers 
+order: 6
+---
+
 # Turbo Streams
-
-[TOC]
-
-## Introduction
 
 Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight back-end integration.
 

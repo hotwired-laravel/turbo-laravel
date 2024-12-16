@@ -1,8 +1,11 @@
+---
+layout: _layouts.v1-docs
+title: Testing
+description: Testing Helpers
+order: 12
+---
+
 # Testing
-
-[TOC]
-
-## Introduction
 
 There are two aspects of your application using Turbo Laravel that are specific this approach itself:
 
