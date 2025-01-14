@@ -51,5 +51,3 @@ As mentioned earlier, you may also trigger a Turbo Frame with forms and links th
 You could also "hide" this link and trigger a "click" event with JavaScript programmatically to trigger the Turbo Frame to reload, for example.
 
 So far, all vanilla Hotwire and Turbo.
-
-[Continue to Conventions...](/docs/{{version}}/conventions)

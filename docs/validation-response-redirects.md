@@ -26,7 +26,7 @@ Examples:
 
 If a guessed route name doesn't exist (which will always happen if you don't use the route resource convention), the middleware will not change the default handling of validation errors.
 
-When you're not using the [resource route naming convention](/docs/{{version}}/conventions), you can override redirect behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
+When you're not using the [resource route naming convention](/1.x/docs/conventions), you can override redirect behavior by catching the `ValidationException` yourself and re-throwing it overriding the redirect with the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it.
 
 Here's how you may set the `redirectTo` property:
 
@@ -82,5 +82,3 @@ class Kernel extends HttpKernel
     ];
 }
 ```
-
-[Continue to CSRF Protection...](/docs/{{version}}/csrf)

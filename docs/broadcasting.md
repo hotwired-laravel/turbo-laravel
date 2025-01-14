@@ -5,7 +5,7 @@ description: Broadcasting Turbo Streams
 order: 7
 ---
 
-# Broadcasting Turbo Streams Over WebSockets With Laravel Echo
+# Broadcasting Turbo Streams
 
 So far, we have used Turbo Streams over HTTP to handle the case of updating multiple parts of the page for a single user after a form submission. In addition to that, you may want to broadcast model changes over WebSockets to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
 
@@ -179,7 +179,7 @@ class Comment extends Model
 
 This will also automatically hook into the model events, but instead of broadcasting new instances as `append` it will use `prepend`.
 
-Secondly, it will send all changes to this model's broadacsting channel, except for when the model is created (since no one would be listening to its direct channel). In our case, we want to direct the broadcasts to the post linked to this model instead. We can achieve that by adding a `$broadcastsTo` property to the model, like so:
+Secondly, it will send all changes to this model's broadcasting channel, except for when the model is created (since no one would be listening to its direct channel). In our case, we want to direct the broadcasts to the post linked to this model instead. We can achieve that by adding a `$broadcastsTo` property to the model, like so:
 
 ```php
 class Comment extends Model
@@ -230,7 +230,7 @@ class Comment extends Model
 }
 ```
 
-Newly created models using the auto-broadcasting feature will be broadcasted to a pluralized version of the model's basename. So if you have a `App\Models\PostComment`, you may expect broadcasts of newly created models to be sent to a private channel called `post_comments`. Again, this convention is only valid for newly created models. Updates/Removals will still be sent to the model's own private channel by default using Laravel's convention for channel names. You may want to specify the channel name for newly created models to be broadcasted to with the `stream` key:
+Newly created models using the auto-broadcasting feature will be broadcasted to a pluralized version of the model's basename. So if you have a `App\Models\PostComment`, you may expect broadcasts of newly created models to be sent to a private channel called `post_comments`. Again, this convention is only valid for newly created models. Updates/Removals will still be sent to the model's own private channel by default using Laravel's convention for channel names. You may want to specify the channel name for newly created models to be broadcast to with the `stream` key:
 
 ```php
 class Comment extends Model
@@ -247,7 +247,7 @@ Having a `$broadcastsTo` property or implementing the `broadcastsTo()` method in
 
 ## Broadcasting Turbo Streams to Other Users Only
 
-As mentioned erlier, you may want to feed the current user with Turbo Streams using HTTP requests and only send the broadcasts to other users. There are a couple ways you can achieve that.
+As mentioned earlier, you may want to feed the current user with Turbo Streams using HTTP requests and only send the broadcasts to other users. There are a couple ways you can achieve that.
 
 First, you can chain on the broadcasting methods, like so:
 
@@ -268,7 +268,7 @@ Turbo::broadcastToOthers(function () {
 
 This way, any broadcast that happens inside the scope of the Closure will only be sent to other users.
 
-Third, you may use that same method but without the Closure inside a ServiceProvider, for instance, to instruct the package to only send turbo stream broadcasts to other users globally:
+Third, you may use that same method but without the Closure inside a `ServiceProvider`, for instance, to instruct the package to only send turbo stream broadcasts to other users globally:
 
 ```php
 <?php
@@ -366,7 +366,7 @@ TurboStream::broadcastAction('scroll_to', target: 'todo_123');
 
 ## Handmade Broadcasting Using The `turbo_stream()` Response Builder
 
-Alternatively to use the `TurboStream` Facade (or Factory type-hint), you may also broadcast directly from the `turbo_stream()` function response builder:
+Alternatively to using the `TurboStream` Facade (or Factory type-hint), you may also broadcast directly from the `turbo_stream()` function response builder:
 
 ```php
 turbo_stream()
@@ -389,7 +389,7 @@ turbo_stream($comment)
     ->broadcastTo($comment->post, fn ($broadcast) => $broadcast->toOthers());
 ```
 
-Similarly to using the Facade, you may also want to broadcast to private or presence string channels like so:
+Similar to using the Facade, you may also want to broadcast to private or presence string channels like so:
 
 ```php
 // To private channels...
@@ -402,5 +402,3 @@ turbo_stream()
     ->append('notifications', 'Hello World')
     ->broadcastToPresenceChannel('chat.123', fn ($broadcast) => $broadcast->toOthers());
 ```
-
-[Continue to Livewire Integration...](/docs/{{version}}/livewire)

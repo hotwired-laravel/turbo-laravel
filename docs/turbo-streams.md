@@ -1,7 +1,7 @@
 ---
 extends: _layouts.v1-docs
 title: Turbo Streams
-description: The Turbo Streams Components and Helpers 
+description: The Turbo Streams Components and Helpers
 order: 6
 ---
 
@@ -57,7 +57,7 @@ Here's what the HTML response will look like:
 </turbo-stream>
 ```
 
-Most of these things were "guessed" based on the [naming conventions](/docs/{{version}}/conventions) we talked about earlier. But you can override most things, like so:
+Most of these things were "guessed" based on the [naming conventions](/1.x/docs/conventions) we talked about earlier. But you can override most things, like so:
 
 ```php
 return turbo_stream($comment)->target('post_comments');
@@ -94,7 +94,7 @@ turbo_stream()->remove($comment);
 
 For these shorthand stream builders, you may pass an instance of an Eloquent model, which will be used to figure out things like `target`, `action`, and the `view` partial as well as the view data passed to them.
 
-Alternativelly, you may also pass strings to the shorthand stream builders, which will be used as the target, and an optional content string, which will be rendered instead of a partial, for instance:
+Alternatively, you may also pass strings to the shorthand stream builders, which will be used as the target, and an optional content string, which will be rendered instead of a partial, for instance:
 
 ```php
 turbo_stream()->append('statuses', __('Comment was successfully created!'));
@@ -249,7 +249,7 @@ class ChirpsController extends Controller
                 turbo_stream()->append('notifications', view('layouts.notification', [
                     'message' => __('Chirp deleted.'),
                 ])),
-                turbo_stream()->flash(__('Chirp deleted.')), // [tl! remove:-3,3 add]
+                turbo_stream()->flash(__('Chirp deleted.')),
             ]);
         }
 
@@ -316,7 +316,7 @@ Remember, these are Blade views, so you have the full power of Blade at your han
 @endif
 ```
 
-Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things a bit. It has the same convention of figureing out the DOM ID when you're passing a model instance or an array as the `<x-turbo-frame>` component applied to the `target` attribute. When using the component version, there's also no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
+Similar to the `<x-turbo-frame>` Blade component, there's also a `<x-turbo-stream>` Blade component that can simplify things a bit. It has the same convention of figuring out the DOM ID when you're passing a model instance or an array as the `<x-turbo-frame>` component applied to the `target` attribute. When using the component version, there's also no need to specify the template wrapper for the Turbo Stream tag, as that will be added by the component itself. So, the same example would look something like this:
 
 ```blade
 @include('layouts.turbo.flash_stream')
@@ -347,5 +347,3 @@ Turbo.StreamActions.console_log = function () {
 ```
 
 Custom actions are only supported from Blade views. You cannot return those from controllers using the Pending Streams Builder, for instance.
-
-[Continue to Broadcasting...](/docs/{{version}}/broadcasting)

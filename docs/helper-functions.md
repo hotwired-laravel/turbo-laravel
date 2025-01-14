@@ -35,7 +35,7 @@ dom_class($comment);
 
 This function will generate the DOM class named based on your model's classname. If you have an instance of a `App\Models\Comment` model, it will generate a `comment` DOM class.
 
-Similarly to the `dom_id()` function, you may also pass a context prefix as the second parameter:
+Similar to the `dom_id()` function, you may also pass a context prefix as the second parameter:
 
 ```php
 dom_class($comment, 'reactions_list');
@@ -67,8 +67,4 @@ return turbo_stream_view('comments.turbo.created', [
 ]);
 ```
 
----
-
 All these functions are also registered globally, so you may use it directly without the `use` statements (this is useful in contexts like Blade views, for instance).
-
-[Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)

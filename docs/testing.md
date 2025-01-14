@@ -149,6 +149,4 @@ class CreatesCommentsTest extends TestCase
 }
 ```
 
-*Note: If you're using the automatic model changes broadcasting, make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
-
-[Continue to Known Issues...](/docs/{{version}}/known-issues)
+*Note: If you're using the automatic model changes broadcasting, make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is committed, which never happens in tests since they run inside a transaction.*

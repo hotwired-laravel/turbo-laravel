@@ -91,5 +91,3 @@ return [
     ],
 ];
 ```
-
-[Continue to Testing...](/docs/{{version}}/testing)

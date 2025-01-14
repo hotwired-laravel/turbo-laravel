@@ -24,5 +24,3 @@ Since Turbo.js intercepts form submissions and converts those to fetch requests 
 ```
 
 With that being said, you may still want to use the `@csrf` Blade directive if you want to support users with JavaScript disabled, since the forms will still work if they contain the CSRF token.
-
-[Continue to Turbo Native...](/docs/{{version}}/turbo-native)

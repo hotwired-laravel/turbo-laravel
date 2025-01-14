@@ -105,5 +105,3 @@ Now, we can use this element in a page where we want to have the integration bet
 That's it! With that, we got Livewire to generate Turbo Streams, dispatch it as a browser event, which gets intercepted by our custom HTML element and applied to the page!
 
 This is only an example of what a deeper integration could look like.
-
-[Continue to Validation Response Redirects...](/docs/{{version}}/validation-response-redirects)

@@ -40,5 +40,3 @@ php artisan turbo:install --alpine
 ```
 
 _Note: the `--jet` option also adds all the necessary Alpine dependencies since Jetstream depends on Alpine._
-
-[Continue to Overview...](/docs/{{version}}/overview)
