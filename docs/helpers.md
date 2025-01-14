@@ -192,7 +192,7 @@ use function HotwiredLaravel\TurboLaravel\dom_class;
 dom_class($comment);
 ```
 
-This function will generate the DOM class named based on your model's classname. If you have an instance of a `App\Models\Comment` model, it will generate a `comment` DOM class.
+This function will generate the DOM class named based on your model's class name. If you have an instance of a `App\Models\Comment` model, it will generate a `comment` DOM class.
 
 Similarly to the `dom_id()` function, you may also pass a context prefix as the second parameter:
 
@@ -238,7 +238,7 @@ Turbo will add a `Accept: text/vnd.turbo-stream.html, ...` header to the request
 
 The `request()->wasFromTurboFrame()` macro added to the request class will check if the request was made from a Turbo Frame. When used with no parameters, it returns `true` if the request has a `Turbo-Frame` header, no matter which specific Turbo Frame.
 
-Aditionally, you may specific the optional `$frame` parameter. When that's passed, it returns `true` if it has a `Turbo-Frame` header where the value matches the specified `$frame`. Otherwise, it will return `false`:
+Additionally, you may specific the optional `$frame` parameter. When that's passed, it returns `true` if it has a `Turbo-Frame` header where the value matches the specified `$frame`. Otherwise, it will return `false`:
 
 ```php
 if (request()->wasFromTurboFrame(dom_id($post, 'create_comment'))) {
@@ -259,5 +259,3 @@ The `response()->turboStream()` macro works similarly to the `turbo_stream()` fu
 ### The `response()->turboStreamView()` macro
 
 The `response()->turboStreamView()` macro works similarly to the `turbo_stream_view()` function above. It was only added to the response for convenience.
-
-[Continue to Turbo Frames...](/docs/{{version}}/turbo-frames)

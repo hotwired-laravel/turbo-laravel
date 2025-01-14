@@ -9,7 +9,7 @@ order: 7
 
 Out of everything Turbo provides, it's Turbo Streams that benefits the most from a tight backend integration.
 
-Turbo Laravel offers helper functions, Blade Components, and [Model traits](/docs/{{version}}/broadcasting) to generate Turbo Streams. Turbo will add a new `Content-Type` to the HTTP Accept header (`Accept: text/vnd.turbo-stream.html, ...`) on Form submissions. This is a signal to the backend that we can return a Turbo Stream response for that form submission instead of an HTML document, if we want to.
+Turbo Laravel offers helper functions, Blade Components, and [Model traits](/docs/broadcasting) to generate Turbo Streams. Turbo will add a new `Content-Type` to the HTTP Accept header (`Accept: text/vnd.turbo-stream.html, ...`) on Form submissions. This is a signal to the backend that we can return a Turbo Stream response for that form submission instead of an HTML document, if we want to.
 
 Here's an example of a route handler detecting and returning a Turbo Stream response to a form submission:
 
@@ -41,7 +41,7 @@ Here's what the HTML response will look like:
 </turbo-stream>
 ```
 
-Most of these things were "guessed" based on the [conventions](/docs/{{version}}/conventions) we talked about earlier. But you can override most things, like so:
+Most of these things were "guessed" based on the [conventions](/docs/conventions) we talked about earlier. But you can override most things, like so:
 
 ```php
 turbo_stream($comment)->target('post_comments');
@@ -83,9 +83,9 @@ turbo_stream()->refresh();
 
 You may pass an instance of an Eloquent model to all these shorthand methods, except the `refresh` one, which will be used to figure things out like `target`, the `view`, and will also pass that model instance to the view.
 
-For a model `App\Models\Comment`, the [convention] says that the view is located at `resources/views/comments/_comment.blade.php`. Based on the model's class basename, it will figure out the name of the variable that the view should depend on, which would be `$comment` in this case, so it would pass the model instance down to the view automatically. For that reason, when using the convention (which is optional), the model view must only depend on the model instance to be available (no globals or other locals with no defaults).
+For a model `App\Models\Comment`, the [convention](/docs/conventions) says that the view is located at `resources/views/comments/_comment.blade.php`. Based on the model's class basename, it will figure out the name of the variable that the view should depend on, which would be `$comment` in this case, so it would pass the model instance down to the view automatically. For that reason, when using the convention (which is optional), the model view must only depend on the model instance to be available (no globals or other locals with no defaults).
 
-Alternativelly, you may also pass strings to the shorthand stream builders, which will be used as the target, and an optional content string, which will be rendered instead of a partial, for instance:
+Alternatively, you may also pass strings to the shorthand stream builders, which will be used as the target, and an optional content string, which will be rendered instead of a partial, for instance:
 
 ```php
 turbo_stream()->append('statuses', __('Comment created!'));
@@ -196,7 +196,7 @@ turbo_stream()->afterAll('.comment', 'Some content');
 turbo_stream()->removeAll('.comment');
 ```
 
-With the exception of the `removeAll` method, the `xAll` methods accept astring of inline content, an instance of a View (which may be created using the `view()` function provided by Laravel), or an instance of the `HtmlSafe` class as the second parameter.
+With the exception of the `removeAll` method, the `xAll` methods accept a string of inline content, an instance of a View (which may be created using the `view()` function provided by Laravel), or an instance of the `HtmlSafe` class as the second parameter.
 
 When creating Turbo Streams using the builders, you may also specify the CSS class using the `targets()` (plural) method instead of the `target()` (singular) version:
 
@@ -267,7 +267,7 @@ class ChirpsController extends Controller
                 turbo_stream()->append('notifications', view('layouts.notification', [
                     'message' => __('Chirp deleted.'),
                 ])),
-                turbo_stream()->flash(__('Chirp deleted.')), // [tl! remove:-3,3 add]
+                turbo_stream()->flash(__('Chirp deleted.')),
             ]);
         }
 
@@ -351,5 +351,3 @@ You may also use the `<x-turbo::stream>` Blade component for your custom actions
 ```
 
 Custom actions are only supported from Blade views. You cannot return those from controllers using the Pending Streams Builder.
-
-[Continue to Broadcasting...](/docs/{{version}}/broadcasting)

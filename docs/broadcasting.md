@@ -5,17 +5,19 @@ description: Broadcasting Turbo Streams
 order: 8
 ---
 
-# Broadcasting Turbo Streams Over WebSockets With Laravel Echo
+# Broadcasting Turbo Streams
 
-So far, we've seen how to generate Turbo Streams to either add it to our Blade views or return them from controllers after a form submission over HTTP. In addition to that, you may also broadcast model changes over WebSockets (or Server-Sent Events) to all users that are viewing the same page. Although nice, **you don't have to use WebSockets if you don't have the need for it. You may still benefit from Turbo Streams over HTTP.**
+So far, we've seen how we may generate Turbo Streams to either add it to our Blade views or return them from controllers after a form submission over HTTP. In addition to that, we may also broadcast model changes over WebSockets (or [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)).
 
-The key here is that we'd broadcast those exact same Turbo Stream tags we've seen before. Remember, "HTML over the wire." Turbo Stream Broadcasts use [Laravel Echo](https://github.com/laravel/echo) and [Laravel's Broadcasting](https://laravel.com/docs/broadcasting) system.
+It's important to mention that this is an optional feature of Turbo and Turbo Laravel. **You don't have to use Turbo Streams Broadcasting if you don't have the need for it** in order to use Turbo.
 
-Since broadcasts are commonly triggered after a form submission from one user, I'd still recommend feeding that specific user back with Turbo Streams (or a redirect and let Turbo refresh/morph) and only send the Turbo Stream broadcasts to _other_ users most of the time. This way, the user making the change will have an instant feedback compared to having to wait for a background worker to pick up the job and send it to them over WebSockets.
+We can make our model changes generate Turbo Streams. Yes, the exact same Turbo Streams tags we're used to. Remember, "HTML over the wire." Turbo Streams Broadcasting use [Laravel Echo](https://github.com/laravel/echo) and [Laravel's Broadcasting](https://laravel.com/docs/broadcasting) component.
+
+Broadcasts are usually triggered after a form submission. You may still return Turbo Streams over HTTP to the user that triggered the form submission, and only send the Turbo Stream Broadcasting to _other_ users. This way, the user making the change will have an instant feedback compared to having to wait for the broadcasting over WebSockets, which may involve queue workers.
 
 ## Configuration
 
-Broadcasting Turbo Streams relies heavily on [Laravel's Broadcasting](https://laravel.com/docs/broadcasting)  component. This means you need to configure Laravel Echo in the frontend and either use [Pusher](https://pusher.com/) or any other open-source Pusher alternatives you may prefer. If you're not using Pusher, we recommend [Soketi](https://docs.soketi.app/) since it's easy to setup.
+Broadcasting Turbo Streams relies heavily on [Laravel's Broadcasting](https://laravel.com/docs/broadcasting)  component. This means you need to configure Laravel Echo in the frontend and either [Laravel Reverb](https://reverb.laravel.com/) or a paid service like [Pusher](https://pusher.com/).
 
 ## Listening to Broadcasts
 
@@ -29,7 +31,7 @@ You may add this tag to any Blade view passing the channel you want to listen to
 />
 ```
 
-For convenience, you may prefer using the `<x-turbo::stream-from>` Blade component that ships with Turbo Laravel (it requires that you have a custom element named `<turbo-echo-stream-source>` available, since that's the tag this component will render). You may pass the model as the `source` prop to it, it will figure out the channel name for that specific model using [Laravel's conventions](https://laravel.com/docs/broadcasting#model-broadcasting-conventions):
+For convenience, you may prefer using the `<x-turbo::stream-from>` Blade component that ships with Turbo Laravel (it requires that you have a custom element named `<turbo-echo-stream-source>` available, since that's the tag this component will render in HTML). You may pass the model as the `source` prop to it, it will figure out the channel name for that specific model using [Laravel's conventions](https://laravel.com/docs/broadcasting#model-broadcasting-conventions):
 
 ```blade
 <x-turbo::stream-from :source="$post" />
@@ -68,7 +70,7 @@ class Comment extends Model
 }
 ```
 
-This trait will augment any model with Turbo Stream broadacsting methods that you may use to trigger broadcasts. Here's how you can broadcast an `append` Turbo Stream for a newly created comment to all users visiting the post page:
+This trait will augment any model with Turbo Stream broadcasting methods that you may use to trigger broadcasts _manually_. Here's how you can broadcast an `append` Turbo Stream for a newly created comment to all users visiting the post page:
 
 ```php
 Route::post('posts/{post}/comments', function (Post $post) {
@@ -97,7 +99,9 @@ $comment->broadcastRemove();
 $comment->broadcastRefresh();
 ```
 
-These methods will assume you want to broadcast to your model's channel. However, you may want to send these broadcasts to a related model's channel instead:
+These methods will assume you want to broadcast to your model's channel. In this case, it would broadcast the Turbo Streams to a private channel named `App.Models.Comments.{id}`.
+
+Additionally, you may send these broadcasts to any other model's channel:
 
 ```php
 $comment->broadcastAppendTo($post);
@@ -110,7 +114,9 @@ $comment->broadcastRemoveTo($post);
 $comment->broadcastRefreshTo($post);
 ```
 
-These `broadcastXTo()` methods accept either a model, an instance of the [`Channel`](https://github.com/laravel/framework/blob/10.x/src/Illuminate/Broadcasting/Channel.php) class, or an array containing both of these. When it receives a model, it will guess the channel name using Laravel's [Broadcasting channel naming convention](https://laravel.com/docs/broadcasting#model-broadcasting-conventions).
+These `broadcastXTo()` methods accept either a model, an instance of the [`Channel`](https://github.com/laravel/framework/blob/10.x/src/Illuminate/Broadcasting/Channel.php) class, or an array containing both of these.
+
+When it receives a model, it will guess the channel name using Laravel's [Broadcasting channel naming convention](https://laravel.com/docs/broadcasting#model-broadcasting-conventions).
 
 All of these broadcasting methods return an instance of the `PendingBroadcast` class that will only dispatch the broadcasting job when that pending object is being garbage collected. Which means you may make changes to this pending broadcast by chaining on the returned object:
 
@@ -125,7 +131,7 @@ $comment->broadcastAppend()
     ->later(); // Don't send it now, dispatch a job to send in background instead...
 ```
 
-You may want to hook these broadcasts from your [model's events](https://laravel.com/docs/10.x/eloquent#events) to trigger Turbo Stream broadcasts whenever your models are changed in any context:
+You may want to hook these broadcasts from your [model's events](https://laravel.com/docs/eloquent#events) to trigger Turbo Stream broadcasts whenever your models are changed in any context:
 
 ```php
 class Comment extends Model
@@ -149,7 +155,7 @@ class Comment extends Model
 }
 ```
 
-For convenience, instead of adding all these lines to achieve this set of broadcasting, you may add a `$broadcasts = true` property to your model class. This property instructs the `Brodcasts` trait to automatically hook the model Tubro Stram broadcasts on the correct events:
+For convenience, instead of adding all these lines to achieve this set of broadcasting, you may add a `$broadcasts = true` property to your model class. This property instructs the `Brodcasts` trait to automatically hook the model Turbo Stream broadcasts on the correct events:
 
 ```php
 class Comment extends Model
@@ -189,7 +195,7 @@ class Comment extends Model
 
 This will send the Turbo Stream broadcast to private channel called `my-comments` when a new comment is created.
 
-Alternatively, you may also set a `$broadcastsTo` proprety with either a string with the name of the relationship to be used to resolve the channel, or an array of relationships if you want to send the broadcast to multiple related model's channels:
+Alternatively, you may also set a `$broadcastsTo` property with either a string with the name of the relationship to be used to resolve the channel, or an array of relationships if you want to send the broadcast to multiple related model's channels:
 
 ```php
 class Comment extends Model
@@ -330,13 +336,13 @@ From this method, you may return an instance of an Eloquent model, a string repr
 
 ## Broadcasting Turbo Streams to Other Users Only
 
-As mentioned erlier, you may want to feed the current user with Turbo Streams using HTTP requests and only send the broadcasts to other users. You may achieve that by chaining on the pending broadcast object that returns from all `broadcastX` methods:
+As mentioned earlier, you may want to feed the current user with Turbo Streams using HTTP requests and only send the broadcasts to other users. You may achieve that by chaining on the pending broadcast object that returns from all `broadcastX` methods:
 
 ```php
 $comment->broadcastAppendTo($post)->toOthers();
 ```
 
-Alternatively, you may use the Turbo Facade like so to configure a scope where all brodcasted Turbo Streams will be sent to other users only:
+Alternatively, you may use the Turbo Facade like so to configure a scope where all broadcast Turbo Streams triggered inside of it will be sent to other users only:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Facades\Turbo;
@@ -365,7 +371,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-This only applies to broadcasts generated in an HTTP request, because this relies on having the `X-Socket-ID` header in the request, which Laravel Echo sets automatically. Any broadcast generate from a queue worker, for instance, will always be broadcasted to all users listening on the broadcasted channels.
+This only applies to broadcasts generated in an HTTP request, because this relies on having the `X-Socket-ID` header in the request, which Laravel Echo sets automatically. Any broadcast generate from a queue worker, for instance, will always be broadcast to all users listening on the broadcast channels.
 
 ## Handmade Broadcasts
 
@@ -483,5 +489,3 @@ turbo_stream()
     ->append('notifications', 'Hello World')
     ->broadcastToPresenceChannel('chat.123', fn ($broadcast) => $broadcast->toOthers());
 ```
-
-[Continue to Validation Response Redirects...](/docs/{{version}}/validation-response-redirects)

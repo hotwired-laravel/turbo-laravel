@@ -15,7 +15,7 @@ The Turbo Frame tag that ships with Turbo can be used on your Blade views just l
 </turbo-frame>
 ```
 
-In this case, the `@domid()` directive is being used to create a dom ID that looks like this `create_comment_post_123`. There's also a Blade Component that ships with Turbo Laravel and can be used like this:
+In this case, the `@domid()` directive is being used to create a DOM ID that looks like this `create_comment_post_123`. There's also a Blade Component that ships with Turbo Laravel and can be used like this:
 
 ```blade
 <x-turbo::frame :id="[$post, 'create_comment']">
@@ -28,7 +28,11 @@ When using the Blade Component, you don't have to worry about using the `@domid(
 Any other attribute passed to the Blade Component will get forwarded to the underlying `<turbo-frame>` element, so if you want to turn a Turbo Frame into a lazy-loading Turbo Frame using the Blade Component, you can do it like so:
 
 ```blade
-<x-turbo::frame :id="[$post, 'create_comment']" loading="lazy" :src="route('post.comments.create', $post)">
+<x-turbo::frame
+    :id="[$post, 'create_comment']"
+    :src="route('post.comments.create', $post)"
+    loading="lazy"
+>
     <p>Loading...</p>
 </x-turbo::frame>
 ```
@@ -54,5 +58,3 @@ if ($request->wasFromTurboFrame(dom_id($post, 'create_comment'))) {
     // ...
 }
 ```
-
-[Continue to Turbo Streams...](/docs/{{version}}/turbo-streams)
