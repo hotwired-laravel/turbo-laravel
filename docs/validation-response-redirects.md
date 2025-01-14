@@ -15,7 +15,7 @@ In other words, we can't redirect "back" to display the form again with the erro
 
 Turbo Laravel automatically prepends a `TurboMiddleware` on the web route group. The middleware will intercept the response when it detects that Laravel is responding after a `ValidationException`. Instead of letting it send the "redirect back" response, it will try to guess where the form for that request usually renders and send an internal request back to the app to render the form, then update the status code so it renders as a 422 instead of 200.
 
-To guess where the form is located at we rely on the route resource naming convention. For any route name ending in `.store`, it will guess that the form can be located in a similar route ending with `.create` for the same resource. Similarly, for any route ending with `.update`, it will guess the form is located at a route ending with `.edit`. Addittionaly, for any route ending with `.destroy`, it will guess the form is located at a route ending with `.delete` (this is the only convention that is not there by default in Laravel's conventions.)
+To guess where the form is located at we rely on the route resource naming convention. For any route name ending in `.store`, it will guess that the form can be located in a similar route ending with `.create` for the same resource. Similarly, for any route ending with `.update`, it will guess the form is located at a route ending with `.edit`. Additionally, for any route ending with `.destroy`, it will guess the form is located at a route ending with `.delete` (this is the only convention that is not there by default in Laravel's conventions.)
 
 For this internal request, the middleware will pass along any resource the current route has as well as any query string that was passed.
 
@@ -27,7 +27,7 @@ Here are some examples:
 
 If a guessed route name doesn't exist (which will always happen if you don't use the route resource convention), the middleware will not change the default handling of validation errors, so the regular "redirect back" behavior will act.
 
-When you're not using the [resource route naming convention](/docs/{{version}}/conventions), you may override redirect behavior by catching the `ValidationException` and re-throwing it setting the correct location where the form renders using the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it:
+When you're not using the [resource route naming convention](/docs/conventions), you may override redirect behavior by catching the `ValidationException` and re-throwing it setting the correct location where the form renders using the `redirectTo` method. If the exception has that, the middleware will respect it and make a GET request to that location instead of trying to guess it:
 
 ```php
 public function store()
@@ -79,5 +79,3 @@ class Kernel extends HttpKernel
     ];
 }
 ```
-
-[Continue to CSRF Protection...](/docs/{{version}}/csrf)

@@ -11,7 +11,7 @@ Testing a Hotwired app is like testing a regular Laravel app. However, Turbo Lar
 
 1. **Turbo HTTP Request Helpers**. When you may want to mimic a Turbo visit, or a Hotwire Native visit, or a request coming from a Turbo Frame.
 1. **Turbo Streams on HTTP Responses.** When you may want to test the Turbo Streams returned from HTTP requests.
-1. **Turbo Stream Broadcasts.** When you're either using the broadcast methods on your models using the `Broadcasts` trait, or when you're using [Handmade Turbo Stream Broadcasts](https://turbo-laravel.com/docs/2.x/broadcasting#content-handmade-broadcasts).
+1. **Turbo Stream Broadcasts.** When you're either using the broadcast methods on your models using the `Broadcasts` trait, or when you're using [Handmade Turbo Stream Broadcasts](/docs/broadcasting#content-handmade-broadcasts).
 
 Let's dig into those aspects and how you may test them.
 
@@ -21,7 +21,7 @@ To enhance your testing capabilities when using Turbo, Turbo Laravel adds a few 
 
 ### Acting as Turbo Visits
 
-Turbo visits are marked with a `Accept: text/vnd.turbo-stream.html, ...` header, which you may want to respond diferently (maybe returning a Turbo Streams document instead of plain HTML). To be able to make request adding that header, you may add the `InteractsWithTurbo` trait to your current test class (or to the base `TestCase`). Then, you may use the `$this->turbo()` method before issuing a request:
+Turbo visits are marked with a `Accept: text/vnd.turbo-stream.html, ...` header, which you may want to respond differently (maybe returning a Turbo Streams document instead of plain HTML). To be able to make request adding that header, you may add the `InteractsWithTurbo` trait to your current test class (or to the base `TestCase`). Then, you may use the `$this->turbo()` method before issuing a request:
 
 ```php
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
@@ -259,6 +259,4 @@ class CreatesCommentsTest extends TestCase
 }
 ```
 
-*Note: If you're using the automatic model changes broadcasting, make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is commited, which never happens in tests since they run inside a transaction.*
-
-[Continue to Known Issues...](/docs/{{version}}/known-issues)
+*Note: If you're using the automatic model changes broadcasting, make sure your `turbo-laravel.queue` config key is set to false, otherwise actions may not be dispatched during test because the model observer only fires them after the transaction is committed, which never happens in tests since they run inside a transaction.*

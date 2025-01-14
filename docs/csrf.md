@@ -14,7 +14,6 @@ So, to allow a POST form to be processed, we usually need to add a `@csrf` Blade
 ```blade
 <form action="{{ route('chirps.store') }}" method="post">
     @csrf
-
     <!-- ... -->
 </form>
 ```
@@ -26,5 +25,3 @@ Since Turbo.js intercepts form submissions and converts those to fetch requests 
 ```
 
 With that being said, you may still want to use the `@csrf` Blade directive if you want to support users with JavaScript disabled, since the forms will still work if they contain the CSRF token.
-
-[Continue to Hotwire Native...](/docs/{{version}}/hotwire-native)

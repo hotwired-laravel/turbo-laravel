@@ -11,8 +11,7 @@ Hotwire also has a [mobile side](https://native.hotwired.dev/) and Turbo Laravel
 
 Turbo visits made by a Hotwire Native client should send a custom `User-Agent` header. Using that header, we can detect in the backend that a request is coming from a Hotwire Native client instead of a regular web browser.
 
-This is useful if you want to customize the behavior a little bit different based on that information. For instance,
-you may want to include some elements for mobile users, like a mobile-only CSS file include, for instance. To do that, you may use the `@hotwirenative` Blade directive in your Blade views:
+This is useful if you want to customize the behavior a little bit different based on that information. For instance, you may want to include some elements for mobile users, like a mobile-only CSS stylesheet, for instance. To do so, you may use the `@hotwirenative` Blade directive in your Blade views:
 
 ```blade
 @hotwirenative
@@ -133,5 +132,3 @@ return [
     ],
 ];
 ```
-
-[Continue to Testing...](/docs/{{version}}/testing)

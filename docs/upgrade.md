@@ -26,7 +26,7 @@ find app resources tests -type f -exec sed -i 's/x-turbo-/x-turbo::/g' {} +
 Then, require the new package and remove the previous one:
 
 ```bash
-composer require hotwired-laravel/turbo-laravel:2.0.0-beta1
+composer require hotwired-laravel/turbo-laravel:^2.0
 
 composer remove hotwired/turbo-laravel
 ```
