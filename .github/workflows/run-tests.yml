@@ -47,12 +47,8 @@ jobs:
         run: vendor/bin/phpunit
 
   trigger-workflow:
-    needs: test
     runs-on: ubuntu-latest
-    if: |
-        success() && 
-        github.ref == 'refs/heads/2.x' && 
-        contains(github.event.head_commit.modified, 'docs/')
+    if: github.ref == 'refs/heads/2.x' && contains(github.event.head_commit.modified, 'docs/')
     steps:
       - name: Trigger site workflow
         run: |
