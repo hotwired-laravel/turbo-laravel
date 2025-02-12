@@ -56,5 +56,5 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            -d '{"ref":"main","event_type":"publish-workflow"}' \
+            -d '{"ref":"main"}' \
             https://api.github.com/repos/hotwired-laravel/turbo-laravel-site/actions/workflows/publish.yml/dispatches
