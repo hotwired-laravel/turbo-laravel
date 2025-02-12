@@ -47,7 +47,7 @@ jobs:
         run: vendor/bin/phpunit
 
   trigger-workflow:
-    needs: test  # This makes it wait for test job to complete
+    needs: test
     runs-on: ubuntu-latest
     if: |
         success() && 
