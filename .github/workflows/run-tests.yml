@@ -45,3 +45,6 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit
+
+      - name: Trigger site workflow
+        uses: hotwired-laravel/turbo-laravel-site/.github/workflows/publish.yml@main
