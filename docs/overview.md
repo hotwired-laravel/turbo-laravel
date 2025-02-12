@@ -7,7 +7,7 @@ order: 3
 
 # Overview
 
-It's highly recommended that you read the [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction) first before continuing here. However, a quick intro will be provided here and we'll link to the Turbo documentations when relevant.
+Testing It's highly recommended that you read the [Turbo Handbook](https://turbo.hotwired.dev/handbook/introduction) first before continuing here. However, a quick intro will be provided here and we'll link to the Turbo documentations when relevant.
 
 Turbo is the heart of Hotwire. In essence, it's a JavaScript library that turns regular web applications (aka. multi-page web applications) into something that _feels_ like a single-page application (SPA).
 
