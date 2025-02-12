@@ -46,6 +46,14 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit
 
+  trigger-workflow:
+    needs: test  # This makes it wait for test job to complete
+    runs-on: ubuntu-latest
+    if: |
+        success() && 
+        github.ref == 'refs/heads/2.x' && 
+        contains(github.event.head_commit.modified, 'docs/')
+    steps:
       - name: Trigger site workflow
         run: |
           curl -L \
