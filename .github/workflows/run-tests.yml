@@ -48,6 +48,7 @@ jobs:
 
   trigger-workflow:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/2.x'
     steps:
       - name: Trigger site workflow
         run: |
