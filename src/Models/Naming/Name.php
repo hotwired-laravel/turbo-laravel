@@ -49,7 +49,7 @@ class Name
         return static::$nameInstanceCache[$class] ??= static::build($class);
     }
 
-    public static function build(string $className)
+    public static function build(string $className): static
     {
         $name = new static;
 

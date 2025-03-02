@@ -6,12 +6,12 @@ use InvalidArgumentException;
 
 class TurboStreamTargetException extends InvalidArgumentException
 {
-    public static function targetMissing()
+    public static function targetMissing(): static
     {
         return new static('No target was specified');
     }
 
-    public static function multipleTargets()
+    public static function multipleTargets(): static
     {
         return new static('Must specify either target or targets attributes, but never both.');
     }

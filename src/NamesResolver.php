@@ -11,7 +11,7 @@ class NamesResolver
 {
     protected static $partialsPathResolver = '{plural}._{singular}';
 
-    public static function resolvePartialsPathUsing(string|Closure $resolver)
+    public static function resolvePartialsPathUsing(string|Closure $resolver): void
     {
         static::$partialsPathResolver = $resolver;
     }

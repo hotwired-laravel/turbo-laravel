@@ -9,7 +9,7 @@ class UnidentifiableRecordException extends RuntimeException
     public static function missingGetKeyMethod(object $model): self
     {
         return new self(
-            sprintf('[%s] must implement a getKey() method.', get_class($model))
+            sprintf('[%s] must implement a getKey() method.', $model::class)
         );
     }
 }

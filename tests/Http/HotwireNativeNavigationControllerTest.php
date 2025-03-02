@@ -9,7 +9,7 @@ class HotwireNativeNavigationControllerTest extends TestCase
 {
     use InteractsWithTurbo;
 
-    public static function actionsDataProvider()
+    public static function actionsDataProvider(): array
     {
         return [
             ['recede'],
@@ -18,12 +18,9 @@ class HotwireNativeNavigationControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider actionsDataProvider
-     */
-    public function recede_resume_or_refresh_when_native_or_redirect_when_not_without_flash(string $action)
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('actionsDataProvider')]
+    public function recede_resume_or_refresh_when_native_or_redirect_when_not_without_flash(string $action): void
     {
         $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect"])
             ->assertRedirect(route('trays.show', 1));
@@ -35,12 +32,9 @@ class HotwireNativeNavigationControllerTest extends TestCase
             ->assertRedirect(route("turbo_{$action}_historical_location"));
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider actionsDataProvider
-     */
-    public function recede_resume_or_refresh_when_native_or_redirect_when_not_with_flash(string $action)
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('actionsDataProvider')]
+    public function recede_resume_or_refresh_when_native_or_redirect_when_not_with_flash(string $action): void
     {
         // Non-Turbo Native redirect with only flash...
         $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect", 'with' => true])
@@ -94,12 +88,9 @@ class HotwireNativeNavigationControllerTest extends TestCase
             ->assertSessionMissing('status');
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider actionsDataProvider
-     */
-    public function recede_resume_or_refresh_when_native_or_redirect_back(string $action)
+    #[\PHPUnit\Framework\Attributes\Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('actionsDataProvider')]
+    public function recede_resume_or_refresh_when_native_or_redirect_back(string $action): void
     {
         $this->post(route('trays.store'), ['return_to' => "{$action}_or_redirect_back"])
             ->assertRedirect(route('trays.show', 5));
@@ -114,8 +105,8 @@ class HotwireNativeNavigationControllerTest extends TestCase
             ->assertRedirect(route("turbo_{$action}_historical_location"));
     }
 
-    /** @test */
-    public function historical_location_url_responds_with_html()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function historical_location_url_responds_with_html(): void
     {
         $this->get(route('turbo_recede_historical_location'))
             ->assertOk()

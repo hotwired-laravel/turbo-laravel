@@ -10,13 +10,12 @@ class TestResponseMacrosTest extends TestCase
     use InteractsWithTurbo;
 
     /**
-     * @test
-     *
      * @testWith ["recede_or_redirect", "turbo_recede_historical_location", "assertRedirectRecede"]
      *           ["resume_or_redirect", "turbo_resume_historical_location", "assertRedirectResume"]
      *           ["refresh_or_redirect", "turbo_refresh_historical_location", "assertRedirectRefresh"]
      */
-    public function asserts_historical_locations_without_flashes($returnTo, $route, $method)
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function asserts_historical_locations_without_flashes($returnTo, $route, $method): void
     {
         $this->turboNative()->post(route('trays.store', 1), [
             'return_to' => $returnTo,
@@ -28,13 +27,12 @@ class TestResponseMacrosTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @testWith ["recede_or_redirect", "turbo_recede_historical_location", "assertRedirectRecede"]
      *           ["resume_or_redirect", "turbo_resume_historical_location", "assertRedirectResume"]
      *           ["refresh_or_redirect", "turbo_refresh_historical_location", "assertRedirectRefresh"]
      */
-    public function asserts_historical_locations_with_flashes($returnTo, $route, $method)
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function asserts_historical_locations_with_flashes($returnTo, $route, $method): void
     {
         $this->turboNative()->post(route('trays.store', 1), [
             'return_to' => $returnTo,

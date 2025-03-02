@@ -9,23 +9,9 @@ use Illuminate\Support\HtmlString;
 
 class Rendering
 {
-    public ?string $partial = null;
+    public function __construct(public ?string $partial = null, public ?array $data = [], public ?string $inlineContent = null, public bool $escapeInlineContent = true) {}
 
-    public ?array $data = [];
-
-    public ?string $inlineContent = null;
-
-    public bool $escapeInlineContent = true;
-
-    public function __construct(?string $partial = null, ?array $data = [], ?string $inlineContent = null, ?bool $escapeInlineContent = true)
-    {
-        $this->partial = $partial;
-        $this->data = $data;
-        $this->inlineContent = $inlineContent;
-        $this->escapeInlineContent = $escapeInlineContent;
-    }
-
-    public static function forContent(View|HtmlString|string $content)
+    public static function forContent(View|HtmlString|string $content): static
     {
         if ($content instanceof View) {
             return new static(partial: $content->name(), data: $content->getData());

@@ -21,7 +21,7 @@ class ModelObserver
     /**
      * @param  Model|Broadcasts  $model
      */
-    public function saved(Model $model)
+    public function saved(Model $model): void
     {
         if ($this->shouldBroadcastRefresh($model)) {
             $model->broadcastRefresh()->later();
@@ -39,7 +39,7 @@ class ModelObserver
     /**
      * @param  Model|Broadcasts  $model
      */
-    public function deleted(Model $model)
+    public function deleted(Model $model): void
     {
         if ($this->shouldBroadcastRefresh($model)) {
             $model->broadcastRefresh()->later();
@@ -56,11 +56,7 @@ class ModelObserver
             return true;
         }
 
-        if (property_exists($model, 'broadcastsRefreshesTo')) {
-            return true;
-        }
-
-        return false;
+        return property_exists($model, 'broadcastsRefreshesTo');
     }
 
     private function shouldBroadcast(Model $model): bool

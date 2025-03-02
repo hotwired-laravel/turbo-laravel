@@ -19,7 +19,7 @@ trait Broadcasts
 {
     protected static $ignoreTurboStreamBroadcastsOn = [];
 
-    public static function bootBroadcasts()
+    public static function bootBroadcasts(): void
     {
         static::observe(new ModelObserver);
     }
@@ -40,7 +40,7 @@ trait Broadcasts
         }
     }
 
-    public static function isIgnoringTurboStreamBroadcasts($class = null)
+    public static function isIgnoringTurboStreamBroadcasts($class = null): bool
     {
         $class = $class ?: static::class;
 
@@ -236,7 +236,7 @@ trait Broadcasts
 
     protected function toChannels(Collection $streamables): array
     {
-        return $streamables->filter()->map(function ($streamable) {
+        return $streamables->filter()->map(function ($streamable): \Illuminate\Broadcasting\Channel|\Illuminate\Broadcasting\PrivateChannel {
             if ($streamable instanceof Channel) {
                 return $streamable;
             }

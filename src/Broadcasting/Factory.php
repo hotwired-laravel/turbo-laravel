@@ -45,7 +45,7 @@ class Factory
         }
     }
 
-    public function fake()
+    public function fake(): static
     {
         $this->recording = true;
 
@@ -93,7 +93,7 @@ class Factory
             action: 'refresh',
             channel: $channel,
             attributes: array_filter(['request-id' => $requestId = Turbo::currentRequestId()]),
-        )->lazyCancelIf(fn (PendingBroadcast $broadcast) => (
+        )->lazyCancelIf(fn (PendingBroadcast $broadcast): bool => (
             $this->shouldLimitPageRefreshesOn($broadcast->channels, $requestId)
         ));
     }
@@ -116,7 +116,7 @@ class Factory
         return $broadcast->cancelIf(! $this->isBroadcasting);
     }
 
-    public function record(PendingBroadcast $broadcast)
+    public function record(PendingBroadcast $broadcast): static
     {
         $this->recordedStreams[] = $broadcast;
 
@@ -151,9 +151,7 @@ class Factory
     protected function resolveChannels(Channel|Model|Collection|array|string $channel)
     {
         if (is_array($channel) || $channel instanceof Collection) {
-            return collect($channel)->flatMap(function ($channel) {
-                return $this->resolveChannels($channel);
-            })->values()->filter()->all();
+            return collect($channel)->flatMap(fn ($channel) => $this->resolveChannels($channel))->values()->filter()->all();
         }
 
         if (is_string($channel)) {
@@ -184,7 +182,7 @@ class Factory
         return $this;
     }
 
-    public function assertBroadcasted($callback)
+    public function assertBroadcasted(?callable $callback): static
     {
         $result = collect($this->recordedStreams)->filter($callback);
 
@@ -193,7 +191,7 @@ class Factory
         return $this;
     }
 
-    public function assertBroadcastedTimes($callback, $times = 1, $message = null)
+    public function assertBroadcastedTimes(?callable $callback, $times = 1, $message = null): static
     {
         $result = collect($this->recordedStreams)->filter($callback);
 
@@ -210,8 +208,6 @@ class Factory
 
     public function assertNothingWasBroadcasted()
     {
-        return $this->assertBroadcastedTimes(function () {
-            return true;
-        }, 0, sprintf('Expected to not have broadcasted any Turbo Stream, but broadcasted %d instead.', count($this->recordedStreams)));
+        return $this->assertBroadcastedTimes(fn (): true => true, 0, sprintf('Expected to not have broadcasted any Turbo Stream, but broadcasted %d instead.', count($this->recordedStreams)));
     }
 }

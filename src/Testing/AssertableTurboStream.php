@@ -30,7 +30,7 @@ class AssertableTurboStream
 
         $matches = $this->turboStreams
             ->mapInto(TurboStreamMatcher::class)
-            ->filter(function (TurboStreamMatcher $matcher) use ($callback, $attrs) {
+            ->filter(function (TurboStreamMatcher $matcher) use ($callback, $attrs): bool {
                 $matcher = $callback($matcher);
 
                 if (! $matcher->matches()) {

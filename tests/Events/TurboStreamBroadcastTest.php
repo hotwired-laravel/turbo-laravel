@@ -9,8 +9,8 @@ use Workbench\Database\Factories\ArticleFactory;
 
 class TurboStreamBroadcastTest extends TestCase
 {
-    /** @test */
-    public function renders_turbo_stream()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_turbo_stream(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 
@@ -35,8 +35,8 @@ class TurboStreamBroadcastTest extends TestCase
         $this->assertEquals(trim($expected), trim($event->render()));
     }
 
-    /** @test */
-    public function renders_turbo_stream_targets()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_turbo_stream_targets(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 

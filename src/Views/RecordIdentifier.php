@@ -12,7 +12,7 @@ class RecordIdentifier
     const DELIMITER = '_';
 
     /** @var Model */
-    private $record;
+    private readonly object $record;
 
     public function __construct(object $record)
     {
