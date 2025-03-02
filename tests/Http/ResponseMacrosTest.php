@@ -21,8 +21,8 @@ use function HotwiredLaravel\TurboLaravel\dom_id;
 
 class ResponseMacrosTest extends TestCase
 {
-    /** @test */
-    public function streams_model_on_create()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_model_on_create(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -35,16 +35,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($article)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_broadcastable_models_for_create()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_broadcastable_models_for_create(): void
     {
-        $comment = Comment::withoutEvents(function () {
-            return CommentFactory::new()->create();
-        });
+        $comment = Comment::withoutEvents(fn () => CommentFactory::new()->create());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'append',
@@ -55,16 +53,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($comment)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_model_on_update()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_model_on_update(): void
     {
-        $userProfile = Profile::withoutEvents(function () {
-            return ProfileFactory::new()->create()->fresh();
-        });
+        $userProfile = Profile::withoutEvents(fn () => ProfileFactory::new()->create()->fresh());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'replace',
@@ -75,16 +71,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($userProfile)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_broadcastable_models_for_update()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_broadcastable_models_for_update(): void
     {
-        $comment = Comment::withoutEvents(function () {
-            return CommentFactory::new()->create()->fresh();
-        });
+        $comment = Comment::withoutEvents(fn () => CommentFactory::new()->create()->fresh());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'replace',
@@ -95,16 +89,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($comment)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_model_on_delete()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_model_on_delete(): void
     {
-        $article = Article::withoutEvents(function () {
-            return tap(ArticleFactory::new()->create()->fresh())->delete();
-        });
+        $article = Article::withoutEvents(fn () => tap(ArticleFactory::new()->create()->fresh())->delete());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
@@ -113,16 +105,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($article)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_model_on_soft_delete()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_model_on_soft_delete(): void
     {
-        $userProfile = Profile::withoutEvents(function () {
-            return tap(ProfileFactory::new()->create()->fresh())->delete();
-        });
+        $userProfile = Profile::withoutEvents(fn () => tap(ProfileFactory::new()->create()->fresh())->delete());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
@@ -131,16 +121,14 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($userProfile)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_broadcastable_models_for_deleted()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_broadcastable_models_for_deleted(): void
     {
-        $comment = Comment::withoutEvents(function () {
-            return tap(CommentFactory::new()->create()->fresh())->delete();
-        });
+        $comment = Comment::withoutEvents(fn () => tap(CommentFactory::new()->create()->fresh())->delete());
 
         $expected = view('turbo-laravel::turbo-stream', [
             'action' => 'remove',
@@ -149,12 +137,12 @@ class ResponseMacrosTest extends TestCase
 
         $resp = response()->turboStream($comment)->toResponse(new Request);
 
-        $this->assertEquals(trim($expected), trim($resp->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function streams_custom_view()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams_custom_view(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -166,12 +154,12 @@ class ResponseMacrosTest extends TestCase
             'article' => $article,
         ]);
 
-        $this->assertEquals($expected, trim($resp->getContent()));
+        $this->assertEquals($expected, trim((string) $resp->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $resp->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function can_manually_build_turbo_stream_response()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_build_turbo_stream_response(): void
     {
         $builder = response()->turboStream();
 
@@ -179,8 +167,8 @@ class ResponseMacrosTest extends TestCase
         $this->assertInstanceOf(Responsable::class, $builder);
     }
 
-    /** @test */
-    public function can_configure_manually_turbo_stream_rendering()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_configure_manually_turbo_stream_rendering(): void
     {
         $response = response()
             ->turboStream()
@@ -198,12 +186,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => $partialData,
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function can_use_view_instead_of_partial()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_use_view_instead_of_partial(): void
     {
         $response = response()
             ->turboStream()
@@ -221,12 +209,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => $partialData,
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_shorthand_for_response_builder()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_shorthand_for_response_builder(): void
     {
         $response = response()
             ->turboStream()
@@ -240,12 +228,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_shorthand_passing_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_shorthand_passing_string(): void
     {
         $response = response()
             ->turboStream()
@@ -258,12 +246,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_shorthand_passing_html_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_shorthand_passing_html_string(): void
     {
         $response = response()
             ->turboStream()
@@ -276,12 +264,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_shorthand_passing_string_with_view_partial()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_shorthand_passing_string_with_view_partial(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -298,12 +286,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_shorthand_passing_as_string_and_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_shorthand_passing_as_string_and_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -316,12 +304,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -334,30 +322,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->appendAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="append">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function append_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function append_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -370,12 +358,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function prepend_shorthand_for_response_builder()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prepend_shorthand_for_response_builder(): void
     {
         $response = response()
             ->turboStream()
@@ -389,12 +377,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function prepend_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prepend_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -407,12 +395,12 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Hello World',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function prepend_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prepend_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -425,30 +413,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function prepend_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prepend_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->prependAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="prepend">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function prepend_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function prepend_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -461,12 +449,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function update_shorthand_for_response_builder()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function update_shorthand_for_response_builder(): void
     {
         $response = response()
             ->turboStream()
@@ -480,12 +468,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function update_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function update_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -498,12 +486,12 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Hello World',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function update_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function update_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -516,30 +504,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function update_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function update_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->updateAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="update">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function update_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function update_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -552,12 +540,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function replace_shorthand_for_response_builder()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function replace_shorthand_for_response_builder(): void
     {
         $response = response()
             ->turboStream()
@@ -571,12 +559,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function replace_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function replace_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -589,12 +577,12 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Hello World',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function replace_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function replace_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -607,30 +595,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function replace_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function replace_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->replaceAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="replace">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function replace_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function replace_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -643,12 +631,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function remove_shorthand_for_response_builder()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function remove_shorthand_for_response_builder(): void
     {
         $response = response()
             ->turboStream()
@@ -660,12 +648,12 @@ class ResponseMacrosTest extends TestCase
             'target' => dom_id($article),
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function remove_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function remove_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -677,12 +665,12 @@ class ResponseMacrosTest extends TestCase
             'target' => 'test_models_target',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function remove_shorthand_accepts_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function remove_shorthand_accepts_string(): void
     {
         $response = response()
             ->turboStream()
@@ -694,12 +682,12 @@ class ResponseMacrosTest extends TestCase
             'target' => 'target_dom_id',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function remove_all()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function remove_all(): void
     {
         $response = response()
             ->turboStream()
@@ -711,12 +699,12 @@ class ResponseMacrosTest extends TestCase
             'targets' => '.test_models',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_shorthand()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_shorthand(): void
     {
         $response = response()
             ->turboStream()
@@ -731,12 +719,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -749,12 +737,12 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Hello World',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_shorthand_passing_as_string_target_and_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_shorthand_passing_as_string_target_and_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -767,12 +755,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -785,30 +773,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->beforeAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="before">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function before_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function before_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -821,12 +809,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function after_shorthand()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function after_shorthand(): void
     {
         $response = response()
             ->turboStream()
@@ -841,12 +829,12 @@ class ResponseMacrosTest extends TestCase
             'partialData' => ['article' => $article],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function after_shorthand_as_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function after_shorthand_as_string(): void
     {
         $response = response()
             ->turboStream()
@@ -859,12 +847,12 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Hello World',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function after_all_with_inline_content_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function after_all_with_inline_content_string(): void
     {
         $response = response()
             ->turboStream()
@@ -877,30 +865,30 @@ class ResponseMacrosTest extends TestCase
             'content' => 'Some inline content',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function after_all_passing_html_safe_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function after_all_passing_html_safe_string(): void
     {
         $response = response()
             ->turboStream()
             ->afterAll('.test_models', new HtmlString('<div>Some safe HTML content</div>'))
             ->toResponse(new Request);
 
-        $expected = <<<'HTML'
+        $expected = <<<'HTML_WRAP'
         <turbo-stream targets=".test_models" action="after">
             <template><div>Some safe HTML content</div></template>
         </turbo-stream>
-        HTML;
+        HTML_WRAP;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function after_all_passing_view_as_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function after_all_passing_view_as_content(): void
     {
         $response = response()
             ->turboStream()
@@ -913,12 +901,12 @@ class ResponseMacrosTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function targets()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function targets(): void
     {
         $response = response()
             ->turboStream()
@@ -931,12 +919,12 @@ class ResponseMacrosTest extends TestCase
             'targets' => '.some_dom_class',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function builds_multiple_turbo_stream_responses()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function builds_multiple_turbo_stream_responses(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -965,12 +953,12 @@ class ResponseMacrosTest extends TestCase
             ])->render(),
         ])->implode(PHP_EOL);
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function response_builder_fails_when_partial_is_missing_and_not_a_remove_action(): void
     {
         $this->expectException(TurboStreamResponseFailedException::class);
 
@@ -981,8 +969,8 @@ class ResponseMacrosTest extends TestCase
             ->toResponse(new Request);
     }
 
-    /** @test */
-    public function response_builder_doesnt_fail_when_partial_is_empty_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function response_builder_doesnt_fail_when_partial_is_empty_string(): void
     {
         $response = response()
             ->turboStream()
@@ -995,11 +983,11 @@ class ResponseMacrosTest extends TestCase
             'content' => '',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
     }
 
-    /** @test */
-    public function refresh_shorthand()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function refresh_shorthand(): void
     {
         $response = response()
             ->turboStream()
@@ -1010,12 +998,12 @@ class ResponseMacrosTest extends TestCase
             'action' => 'refresh',
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 
-    /** @test */
-    public function refresh_shorthand_with_request_id()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function refresh_shorthand_with_request_id(): void
     {
         FacadesTurbo::setTurboTrackingRequestId('123');
 
@@ -1031,7 +1019,7 @@ class ResponseMacrosTest extends TestCase
             ],
         ])->render();
 
-        $this->assertEquals(trim($expected), trim($response->getContent()));
+        $this->assertEquals(trim($expected), trim((string) $response->getContent()));
         $this->assertEquals(Turbo::TURBO_STREAM_FORMAT, $response->headers->get('Content-Type'));
     }
 }

@@ -74,16 +74,18 @@ class Turbo
         if (is_bool($toOthers)) {
             $this->broadcastToOthersOnly = $toOthers;
 
-            return;
+            return null;
         }
 
         $this->broadcastToOthersOnly = true;
 
         if ($toOthers instanceof Closure) {
-            return tap($toOthers(), function () {
+            return tap($toOthers(), function (): void {
                 $this->broadcastToOthersOnly = false;
             });
         }
+
+        return null;
     }
 
     public function shouldBroadcastToOthers(): bool

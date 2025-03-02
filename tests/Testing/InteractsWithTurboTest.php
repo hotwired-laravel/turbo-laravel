@@ -10,8 +10,8 @@ class InteractsWithTurboTest extends TestCase
 {
     use InteractsWithTurbo;
 
-    /** @test */
-    public function was_from_turbo_frame_works_when_no_frame_set()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function was_from_turbo_frame_works_when_no_frame_set(): void
     {
         $article = ArticleFactory::new()->create();
 

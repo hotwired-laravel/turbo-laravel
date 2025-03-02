@@ -30,7 +30,7 @@ class HotwireNativeRedirectResponse extends RedirectResponse
         $params = $this->getQueryString();
 
         return $this->withoutQueryStrings()
-            ->setTargetUrl($this->getTargetUrl().'?'.http_build_query($params + [$key => urlencode($value)]));
+            ->setTargetUrl($this->getTargetUrl().'?'.http_build_query($params + [$key => urlencode((string) $value)]));
     }
 
     /**

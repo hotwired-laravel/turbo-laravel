@@ -25,12 +25,12 @@ use Illuminate\Support\Facades\Facade;
  */
 class Turbo extends Facade
 {
-    public static function usePartialsSubfolderPattern()
+    public static function usePartialsSubfolderPattern(): void
     {
         static::resolvePartialsPathUsing('{plural}.partials.{singular}');
     }
 
-    public static function resolvePartialsPathUsing(string|Closure $pattern)
+    public static function resolvePartialsPathUsing(string|Closure $pattern): void
     {
         NamesResolver::resolvePartialsPathUsing($pattern);
     }

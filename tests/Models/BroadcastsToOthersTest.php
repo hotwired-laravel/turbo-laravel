@@ -7,20 +7,20 @@ use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class BroadcastsToOthersTest extends TestCase
 {
-    /** @test */
-    public function should_broadcast_to_others()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function should_broadcast_to_others(): void
     {
         $this->assertFalse(Turbo::shouldBroadcastToOthers());
 
-        Turbo::broadcastToOthers(function () {
+        Turbo::broadcastToOthers(function (): void {
             $this->assertTrue(Turbo::shouldBroadcastToOthers());
         });
 
         $this->assertFalse(Turbo::shouldBroadcastToOthers());
     }
 
-    /** @test */
-    public function should_broadcast_to_others_forever()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function should_broadcast_to_others_forever(): void
     {
         $this->assertFalse(Turbo::shouldBroadcastToOthers());
 

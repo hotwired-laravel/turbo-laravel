@@ -18,12 +18,6 @@ class PendingBroadcast
     /** @var Channel[] */
     public array $channels;
 
-    public string $action;
-
-    public ?string $target = null;
-
-    public ?string $targets = null;
-
     public ?string $partialView = null;
 
     public ?array $partialData = [];
@@ -31,8 +25,6 @@ class PendingBroadcast
     public ?string $inlineContent = null;
 
     public bool $escapeInlineContent = true;
-
-    public array $attributes = [];
 
     /**
      * Whether we should broadcast only to other users and
@@ -61,7 +53,7 @@ class PendingBroadcast
      *
      * @var ?\HotwiredLaravel\TurboLaravel\Broadcasting\Factory = null
      */
-    protected $recorder = null;
+    protected $recorder;
 
     /**
      * These cancel callbacks will run right before the broadcasting is fired on __destruct.
@@ -70,13 +62,8 @@ class PendingBroadcast
      */
     protected array $deferredCancelCallbacks = [];
 
-    public function __construct(array $channels, string $action, Rendering $rendering, ?string $target = null, ?string $targets = null, array $attributes = [])
+    public function __construct(array $channels, public string $action, Rendering $rendering, public ?string $target = null, public ?string $targets = null, public array $attributes = [])
     {
-        $this->action = $action;
-        $this->target = $target;
-        $this->targets = $targets;
-        $this->attributes = $attributes;
-
         $this->to($channels);
         $this->rendering($rendering);
     }
@@ -142,12 +129,12 @@ class PendingBroadcast
         return $this->rendering(new Rendering($view, $data));
     }
 
-    public function content($content)
+    public function content(\Illuminate\Contracts\View\View|\Illuminate\Support\HtmlString|string $content)
     {
         return $this->rendering(Rendering::forContent($content));
     }
 
-    public function attributes(array $attributes)
+    public function attributes(array $attributes): static
     {
         $this->attributes = $attributes;
 
@@ -170,7 +157,7 @@ class PendingBroadcast
         return $this->attributes(Arr::except($this->attributes, 'method'));
     }
 
-    public function rendering(Rendering $rendering)
+    public function rendering(Rendering $rendering): static
     {
         $this->partialView = $rendering->partial;
         $this->partialData = $rendering->data;
@@ -187,28 +174,28 @@ class PendingBroadcast
         return $this;
     }
 
-    public function cancel()
+    public function cancel(): static
     {
         $this->wasCancelled = true;
 
         return $this;
     }
 
-    public function cancelIf($condition)
+    public function cancelIf($condition): static
     {
         $this->wasCancelled = $this->wasCancelled || boolval(value($condition, $this));
 
         return $this;
     }
 
-    public function lazyCancelIf(callable $condition)
+    public function lazyCancelIf(callable $condition): static
     {
         $this->deferredCancelCallbacks[] = $condition;
 
         return $this;
     }
 
-    public function fake($recorder = null)
+    public function fake($recorder = null): static
     {
         $this->isRecording = true;
         $this->recorder = $recorder;

@@ -31,8 +31,8 @@ class BroadcastsModelTest extends TestCase
         TurboStream::fake();
     }
 
-    /** @test */
-    public function manually_broadcast_append()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_append(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -40,7 +40,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastAppend();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-articles', $broadcast->channels[0]->name);
             $this->assertEquals('articles', $broadcast->target);
@@ -53,8 +53,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_append_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_append_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -65,7 +65,7 @@ class BroadcastsModelTest extends TestCase
             ->target('some_other_target')
             ->partial('another_partial', ['lorem' => 'ipsum']);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('some_other_target', $broadcast->target);
@@ -78,8 +78,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_before_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_before_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -92,7 +92,7 @@ class BroadcastsModelTest extends TestCase
                 'lorem' => 'ipsum',
             ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('articles_card', $broadcast->target);
@@ -105,8 +105,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_after_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_after_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -119,7 +119,7 @@ class BroadcastsModelTest extends TestCase
                 'lorem' => 'ipsum',
             ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('article_cards', $broadcast->target);
@@ -132,8 +132,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_before_to_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_before_to_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -145,7 +145,7 @@ class BroadcastsModelTest extends TestCase
                 'lorem' => 'ipsum',
             ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('example_dom_id_target', $broadcast->target);
@@ -158,8 +158,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_after_to_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_after_to_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -171,7 +171,7 @@ class BroadcastsModelTest extends TestCase
                 'lorem' => 'ipsum',
             ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article, $channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('example_dom_id_target', $broadcast->target);
@@ -184,8 +184,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_replace()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_replace(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -193,7 +193,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastReplace();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals("article_{$article->id}", $broadcast->target);
@@ -206,8 +206,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_remove()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_remove(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -215,7 +215,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastRemove();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals("article_{$article->id}", $broadcast->target);
@@ -228,12 +228,12 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function can_auto_broadcast()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_auto_broadcast(): void
     {
         $comment = CommentFactory::new()->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-'.$comment->article->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('comments', $broadcast->target);
@@ -246,12 +246,12 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function can_auto_broadcast_with_custom_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_auto_broadcast_with_custom_overrides(): void
     {
         $company = CompanyFactory::new()->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-custom-channel', $broadcast->channels[0]->name);
             $this->assertEquals('companies', $broadcast->target);
@@ -264,8 +264,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function can_configure_auto_broadcast_to_parent_model_using_a_method()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_configure_auto_broadcast_to_parent_model_using_a_method(): void
     {
         $company = Company::withoutEvents(fn () => CompanyFactory::new()->create());
 
@@ -273,7 +273,7 @@ class BroadcastsModelTest extends TestCase
             'company_id' => $company,
         ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company, $contact) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($company, $contact): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $company->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals('contacts', $broadcast->target);
@@ -286,8 +286,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_append_targets()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_append_targets(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -296,7 +296,7 @@ class BroadcastsModelTest extends TestCase
         $article->broadcastAppend()
             ->targets('.test_targets');
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-articles', $broadcast->channels[0]->name);
             $this->assertNull($broadcast->target);
@@ -309,8 +309,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcasts_on_model_touching()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_on_model_touching(): void
     {
         $oldUpdatedAt = now()->subDays(10);
 
@@ -329,7 +329,7 @@ class BroadcastsModelTest extends TestCase
         // Must have updated the parent timestamps...
         $this->assertFalse($comment->fresh()->updated_at->isSameDay($oldUpdatedAt));
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment): true {
             $this->assertCount(1, $broadcast->channels);
             // The comment model is configured to broadacst to the article's channel...
             $this->assertEquals('private-'.$comment->article->broadcastChannel(), $broadcast->channels[0]->name);
@@ -345,8 +345,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_refresh()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_refresh(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -354,7 +354,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastRefresh();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-articles', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -367,8 +367,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_refresh_with_overrides()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_refresh_with_overrides(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -376,7 +376,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastRefresh()->to($channel = new Channel('hello'));
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('refresh', $broadcast->action);
@@ -389,8 +389,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_refresh_with_current_request_id()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_refresh_with_current_request_id(): void
     {
         Turbo::setTurboTrackingRequestId('123');
 
@@ -400,7 +400,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastRefresh()->to($channel = new Channel('hello'));
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('refresh', $broadcast->action);
@@ -414,8 +414,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function manually_broadcast_refresh_to()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_refresh_to(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -423,7 +423,7 @@ class BroadcastsModelTest extends TestCase
 
         $article->broadcastRefreshTo($channel = new Channel('hello'));
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($channel): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame($channel, $broadcast->channels[0]);
             $this->assertEquals('refresh', $broadcast->action);
@@ -437,14 +437,14 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_on_create()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_on_create(): void
     {
         TurboStream::assertNothingWasBroadcasted();
 
         BoardFactory::new()->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-boards', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -458,8 +458,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_on_create_with_current_request_id()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_on_create_with_current_request_id(): void
     {
         Turbo::setTurboTrackingRequestId('123');
 
@@ -467,7 +467,7 @@ class BroadcastsModelTest extends TestCase
 
         BoardFactory::new()->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-boards', $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -481,8 +481,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_on_update()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_on_update(): void
     {
         TurboStream::assertNothingWasBroadcasted();
 
@@ -492,7 +492,7 @@ class BroadcastsModelTest extends TestCase
 
         $board->update(['name' => 'Updated']);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -506,8 +506,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_on_delete()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_on_delete(): void
     {
         TurboStream::assertNothingWasBroadcasted();
 
@@ -518,7 +518,7 @@ class BroadcastsModelTest extends TestCase
 
         $board->delete();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -532,8 +532,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_to_on_create()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_to_on_create(): void
     {
         $board = Board::withoutEvents(fn () => BoardFactory::new()->create()->fresh());
 
@@ -541,7 +541,7 @@ class BroadcastsModelTest extends TestCase
 
         TaskFactory::new()->for($board)->create();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -555,10 +555,10 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_to_on_update()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_to_on_update(): void
     {
-        [$board, $task] = Model::withoutEvents(fn () => [
+        [$board, $task] = Model::withoutEvents(fn (): array => [
             $board = BoardFactory::new()->create()->fresh(),
             TaskFactory::new()->for($board)->create()->fresh(),
         ]);
@@ -567,7 +567,7 @@ class BroadcastsModelTest extends TestCase
 
         $task->update(['title' => 'Updated']);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -581,10 +581,10 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_to_on_delete()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_to_on_delete(): void
     {
-        [$board, $task] = Model::withoutEvents(fn () => [
+        [$board, $task] = Model::withoutEvents(fn (): array => [
             $board = BoardFactory::new()->create()->fresh(),
             TaskFactory::new()->for($board)->create()->fresh(),
         ]);
@@ -593,7 +593,7 @@ class BroadcastsModelTest extends TestCase
 
         $task->delete();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -607,8 +607,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function auto_broadcast_refreshes_to_on_create_debouncing()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function auto_broadcast_refreshes_to_on_create_debouncing(): void
     {
         $this->freezeTime();
 
@@ -621,7 +621,7 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -643,7 +643,7 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -657,8 +657,8 @@ class BroadcastsModelTest extends TestCase
         }, times: 1);
     }
 
-    /** @test */
-    public function can_disable_manual_broadcasts()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_disable_manual_broadcasts(): void
     {
         /** @var Board $board */
         $board = Board::withoutEvents(fn () => BoardFactory::new()->create());
@@ -673,7 +673,7 @@ class BroadcastsModelTest extends TestCase
 
         $board->broadcastAppend();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals('private-boards', $broadcast->channels[0]->name);
             $this->assertEquals('boards', $broadcast->target);
@@ -686,8 +686,8 @@ class BroadcastsModelTest extends TestCase
         }, times: 1);
     }
 
-    /** @test */
-    public function can_disable_auto_broadcasts()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_disable_auto_broadcasts(): void
     {
         $board = Board::withoutEvents(fn () => BoardFactory::new()->create()->fresh());
 
@@ -705,7 +705,7 @@ class BroadcastsModelTest extends TestCase
             ->for($board)
             ->create();
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use ($board): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertSame('private-'.$board->broadcastChannel(), $broadcast->channels[0]->name);
             $this->assertEquals('refresh', $broadcast->action);
@@ -719,8 +719,8 @@ class BroadcastsModelTest extends TestCase
         }, times: 1);
     }
 
-    /** @test */
-    public function broadcasts_with_extra_attributes_to_turbo_stream()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_with_extra_attributes_to_turbo_stream(): void
     {
         TurboStream::fake();
 
@@ -733,7 +733,7 @@ class BroadcastsModelTest extends TestCase
             attributes: $attributes = ['data-foo' => 'bar'],
         );
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes): true {
             $this->assertEquals("private-{$channel}", $turboStream->channels[0]->name);
             $this->assertEquals($action, $turboStream->action);
             $this->assertEquals($attributes, $turboStream->attributes);
@@ -742,8 +742,8 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcasts_with_extra_attributes_to_turbo_stream_with_rendering()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_with_extra_attributes_to_turbo_stream_with_rendering(): void
     {
         TurboStream::fake();
 
@@ -758,7 +758,7 @@ class BroadcastsModelTest extends TestCase
             'board' => $board,
         ]);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $turboStream) use ($channel, $action, $attributes): true {
             $this->assertEquals("private-{$channel}", $turboStream->channels[0]->name);
             $this->assertEquals($action, $turboStream->action);
             $this->assertEquals($attributes, $turboStream->attributes);
@@ -768,14 +768,14 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcasts_replace_morph()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_replace_morph(): void
     {
         $article = ArticleFactory::new()->create();
 
         $article->broadcastReplace()->morph();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals("article_{$article->id}", $broadcast->target);
@@ -789,14 +789,14 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcasts_update_morph()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_update_morph(): void
     {
         $article = ArticleFactory::new()->create();
 
         $article->broadcastUpdate()->morph();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals("article_{$article->id}", $broadcast->target);
@@ -810,14 +810,14 @@ class BroadcastsModelTest extends TestCase
         });
     }
 
-    /** @test */
-    public function unsets_method_when_overriding_with_null()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function unsets_method_when_overriding_with_null(): void
     {
         $article = ArticleFactory::new()->create();
 
         $article->broadcastUpdate()->morph()->method();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertCount(1, $broadcast->channels);
             $this->assertEquals(sprintf('private-%s', $article->broadcastChannel()), $broadcast->channels[0]->name);
             $this->assertEquals("article_{$article->id}", $broadcast->target);

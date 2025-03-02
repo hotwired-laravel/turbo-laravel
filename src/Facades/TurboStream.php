@@ -32,7 +32,7 @@ class TurboStream extends Facade
 
     public static function fake($callback = null)
     {
-        return tap(static::getFacadeRoot(), function ($fake) use ($callback) {
+        return tap(static::getFacadeRoot(), function ($fake) use ($callback): void {
             static::swap($fake->fake($callback));
         });
     }

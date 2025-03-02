@@ -16,7 +16,7 @@ class TurboInstallCommand extends Command
 
     public $description = 'Installs Turbo.';
 
-    public function handle()
+    public function handle(): void
     {
         $this->updateLayouts();
         $this->publishJsFiles();
@@ -26,7 +26,7 @@ class TurboInstallCommand extends Command
         $this->components->info('Turbo Laravel was installed successfully.');
     }
 
-    private function publishJsFiles()
+    private function publishJsFiles(): void
     {
         File::ensureDirectoryExists(resource_path('js/elements'));
         File::ensureDirectoryExists(resource_path('js/libs'));
@@ -38,7 +38,7 @@ class TurboInstallCommand extends Command
         File::put(resource_path('js/libs/index.js'), $this->libsIndexJsImportLines());
     }
 
-    private function appJsImportLines()
+    private function appJsImportLines(): string
     {
         $prefix = $this->usingImportmaps() ? '' : './';
 
@@ -51,7 +51,7 @@ class TurboInstallCommand extends Command
         return implode("\n", $imports);
     }
 
-    private function libsIndexJsImportLines()
+    private function libsIndexJsImportLines(): string
     {
         $imports = [];
 
@@ -62,7 +62,7 @@ class TurboInstallCommand extends Command
         return implode("\n", $imports);
     }
 
-    private function installJsDependencies()
+    private function installJsDependencies(): void
     {
         if ($this->usingImportmaps()) {
             $this->updateImportmapsDependencies();
@@ -74,9 +74,7 @@ class TurboInstallCommand extends Command
 
     private function updateNpmDependencies(): void
     {
-        $this->updateNodePackages(function ($packages) {
-            return $this->jsDependencies() + $packages;
-        });
+        static::updateNodePackages(fn ($packages): array => $this->jsDependencies() + $packages);
     }
 
     private function runInstallAndBuildCommand(): void
@@ -92,7 +90,7 @@ class TurboInstallCommand extends Command
         }
     }
 
-    private function runCommands($commands): void
+    private function runCommands(array $commands): void
     {
         $process = Process::fromShellCommandline(implode(' && ', $commands), null, null, null, null);
 
@@ -104,7 +102,7 @@ class TurboInstallCommand extends Command
             }
         }
 
-        $process->run(function ($type, $line) {
+        $process->run(function ($type, string $line): void {
             $this->output->write('    '.$line);
         });
     }
@@ -174,7 +172,7 @@ class TurboInstallCommand extends Command
             ->filter(fn ($file) => File::exists($file));
     }
 
-    private function phpBinary()
+    private function phpBinary(): string
     {
         return (new PhpExecutableFinder)->find(false) ?: 'php';
     }

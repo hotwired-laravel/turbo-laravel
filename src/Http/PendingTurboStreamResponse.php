@@ -18,7 +18,7 @@ use Illuminate\Support\Traits\Macroable;
 
 use function HotwiredLaravel\TurboLaravel\dom_id;
 
-class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
+class PendingTurboStreamResponse implements \Stringable, Htmlable, Renderable, Responsable
 {
     use Macroable;
 
@@ -34,7 +34,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     private array $partialData = [];
 
-    private $inlineContent = null;
+    private $inlineContent;
 
     private array $useCustomAttributes = [];
 
@@ -261,7 +261,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
             ->attributes(array_filter(['request-id' => Turbo::currentRequestId()]));
     }
 
-    private function buildAction(string $action, Model|string|null $target = null, $content = null, ?Rendering $rendering = null, array $attributes = [])
+    private function buildAction(string $action, Model|string|null $target = null, $content = null, ?Rendering $rendering = null, array $attributes = []): static
     {
         $this->useAction = $action;
         $this->useTarget = $target instanceof Model ? $this->resolveTargetFor($target) : $target;
@@ -273,7 +273,7 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
         return $this;
     }
 
-    private function buildActionAll(string $action, Model|string $targets, $content = null, array $attributes = [])
+    private function buildActionAll(string $action, Model|string $targets, $content = null, array $attributes = []): static
     {
         $this->useAction = $action;
         $this->useTarget = null;
@@ -286,18 +286,18 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public function broadcastTo($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback ??= function (): void {};
 
-        return tap($this, function () use ($channel, $callback) {
+        return tap($this, function () use ($channel, $callback): void {
             $callback($this->asPendingBroadcast($channel));
         });
     }
 
     public function broadcastToPrivateChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback ??= function (): void {};
 
-        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
+        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback): void {
             $broadcast->toPrivateChannel($channel);
             $callback($broadcast);
         });
@@ -305,9 +305,9 @@ class PendingTurboStreamResponse implements Htmlable, Renderable, Responsable
 
     public function broadcastToPresenceChannel($channel, ?callable $callback = null)
     {
-        $callback = $callback ?? function () {};
+        $callback ??= function (): void {};
 
-        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback) {
+        return $this->broadcastTo(null, function (PendingBroadcast $broadcast) use ($channel, $callback): void {
             $callback($broadcast->toPresenceChannel($channel));
         });
     }
