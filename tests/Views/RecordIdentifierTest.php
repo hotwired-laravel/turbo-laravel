@@ -8,9 +8,9 @@ use Workbench\App\Models\Article;
 
 class RecordIdentifierTest extends TestCase
 {
-    private $model;
+    private \Workbench\App\Models\Article $model;
 
-    private $singular;
+    private string $singular;
 
     protected function setUp(): void
     {
@@ -20,48 +20,48 @@ class RecordIdentifierTest extends TestCase
         $this->singular = 'article';
     }
 
-    /** @test */
-    public function dom_id_of_new_record()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_new_record(): void
     {
         $this->assertEquals("create_{$this->singular}", (new RecordIdentifier($this->model))->domId());
     }
 
-    /** @test */
-    public function dom_id_of_new_record_with_custom_prefix()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_new_record_with_custom_prefix(): void
     {
         $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domId('custom_prefix'));
     }
 
-    /** @test */
-    public function dom_id_of_saved_record()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_saved_record(): void
     {
         $this->model->save();
 
         $this->assertEquals("{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId());
     }
 
-    /** @test */
-    public function dom_id_of_saved_record_with_custom_prefix()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_saved_record_with_custom_prefix(): void
     {
         $this->model->save();
 
         $this->assertEquals("custom_prefix_{$this->singular}_{$this->model->getKey()}", (new RecordIdentifier($this->model))->domId('custom_prefix'));
     }
 
-    /** @test */
-    public function dom_class()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_class(): void
     {
         $this->assertEquals($this->singular, (new RecordIdentifier($this->model))->domClass());
     }
 
-    /** @test */
-    public function dom_class_with_custom_prefix()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_class_with_custom_prefix(): void
     {
         $this->assertEquals("custom_prefix_{$this->singular}", (new RecordIdentifier($this->model))->domClass('custom_prefix'));
     }
 
-    /** @test */
-    public function channel_name_for_model()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function channel_name_for_model(): void
     {
         $this->model->save();
 

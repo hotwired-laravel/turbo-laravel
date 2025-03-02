@@ -26,7 +26,7 @@ use PHPUnit\Framework\Assert;
 
 class TurboServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $this->configurePublications();
         $this->configureRoutes();
@@ -40,7 +40,7 @@ class TurboServiceProvider extends ServiceProvider
         $this->configureMiddleware();
     }
 
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/turbo-laravel.php', 'turbo-laravel');
 
@@ -49,14 +49,14 @@ class TurboServiceProvider extends ServiceProvider
         $this->app->scoped(Limiter::class);
     }
 
-    private function configureComponents()
+    private function configureComponents(): void
     {
-        $this->callAfterResolving('blade.compiler', function (BladeCompiler $blade) {
+        $this->callAfterResolving('blade.compiler', function (BladeCompiler $blade): void {
             $blade->anonymousComponentPath(__DIR__.'/../resources/views/components', 'turbo');
         });
     }
 
-    private function configurePublications()
+    private function configurePublications(): void
     {
         if (! $this->app->runningInConsole()) {
             return;
@@ -88,60 +88,34 @@ class TurboServiceProvider extends ServiceProvider
 
     private function configureMacros(): void
     {
-        Blade::if('turbonative', function () {
-            return TurboFacade::isHotwireNativeVisit();
-        });
+        Blade::if('turbonative', fn () => TurboFacade::isHotwireNativeVisit());
 
-        Blade::if('unlessturbonative', function () {
-            return ! TurboFacade::isHotwireNativeVisit();
-        });
+        Blade::if('unlessturbonative', fn (): bool => ! TurboFacade::isHotwireNativeVisit());
 
-        Blade::if('hotwirenative', function () {
-            return TurboFacade::isHotwireNativeVisit();
-        });
+        Blade::if('hotwirenative', fn () => TurboFacade::isHotwireNativeVisit());
 
-        Blade::if('unlesshotwirenative', function () {
-            return ! TurboFacade::isHotwireNativeVisit();
-        });
+        Blade::if('unlesshotwirenative', fn (): bool => ! TurboFacade::isHotwireNativeVisit());
 
-        Blade::directive('domid', function ($expression) {
-            return "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_id($expression)); ?>";
-        });
+        Blade::directive('domid', fn ($expression): string => "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_id($expression)); ?>");
 
-        Blade::directive('domclass', function ($expression) {
-            return "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_class($expression)); ?>";
-        });
+        Blade::directive('domclass', fn ($expression): string => "<?php echo e(\\HotwiredLaravel\\TurboLaravel\\dom_class($expression)); ?>");
 
-        Blade::directive('channel', function ($expression) {
-            return "<?php echo {$expression}->broadcastChannel(); ?>";
-        });
+        Blade::directive('channel', fn ($expression): string => "<?php echo {$expression}->broadcastChannel(); ?>");
     }
 
     private function configureRequestAndResponseMacros(): void
     {
-        ResponseFacade::macro('turboStream', function ($model = null, ?string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse {
-            return turbo_stream($model, $action);
-        });
+        ResponseFacade::macro('turboStream', fn ($model = null, ?string $action = null): MultiplePendingTurboStreamResponse|PendingTurboStreamResponse => turbo_stream($model, $action));
 
-        ResponseFacade::macro('turboStreamView', function ($view, array $data = []): Response|ResponseFactory {
-            return turbo_stream_view($view, $data);
-        });
+        ResponseFacade::macro('turboStreamView', fn ($view, array $data = []): Response|ResponseFactory => turbo_stream_view($view, $data));
 
-        Request::macro('wantsTurboStream', function (): bool {
-            return Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT);
-        });
+        Request::macro('wantsTurboStream', fn (): bool => Str::contains($this->header('Accept'), Turbo::TURBO_STREAM_FORMAT));
 
-        Request::macro('wantsTurboStreams', function (): bool {
-            return $this->wantsTurboStream();
-        });
+        Request::macro('wantsTurboStreams', fn (): bool => $this->wantsTurboStream());
 
-        Request::macro('wasFromTurboNative', function (): bool {
-            return TurboFacade::isHotwireNativeVisit();
-        });
+        Request::macro('wasFromTurboNative', fn (): bool => TurboFacade::isHotwireNativeVisit());
 
-        Request::macro('wasFromHotwireNative', function (): bool {
-            return TurboFacade::isHotwireNativeVisit();
-        });
+        Request::macro('wasFromHotwireNative', fn (): bool => TurboFacade::isHotwireNativeVisit());
 
         Request::macro('wasFromTurboFrame', function (?string $frame = null): bool {
             if (! $frame) {
@@ -152,13 +126,13 @@ class TurboServiceProvider extends ServiceProvider
         });
     }
 
-    private function configureTestResponseMacros()
+    private function configureTestResponseMacros(): void
     {
         if (! app()->environment('testing')) {
             return;
         }
 
-        TestResponse::macro('assertTurboStream', function (?callable $callback = null) {
+        TestResponse::macro('assertTurboStream', function (?callable $callback = null): void {
             Assert::assertStringContainsString(
                 Turbo::TURBO_STREAM_FORMAT,
                 $this->headers->get('Content-Type'),
@@ -172,22 +146,22 @@ class TurboServiceProvider extends ServiceProvider
             $callback(new AssertableTurboStream($turboStreams));
         });
 
-        TestResponse::macro('assertNotTurboStream', function () {
+        TestResponse::macro('assertNotTurboStream', function (): void {
             Assert::assertStringNotContainsString(
                 Turbo::TURBO_STREAM_FORMAT,
                 $this->headers->get('Content-Type'),
             );
         });
 
-        TestResponse::macro('assertRedirectRecede', function (array $with = []) {
+        TestResponse::macro('assertRedirectRecede', function (array $with = []): void {
             $this->assertRedirectToRoute('turbo_recede_historical_location', $with);
         });
 
-        TestResponse::macro('assertRedirectResume', function (array $with = []) {
+        TestResponse::macro('assertRedirectResume', function (array $with = []): void {
             $this->assertRedirectToRoute('turbo_resume_historical_location', $with);
         });
 
-        TestResponse::macro('assertRedirectRefresh', function (array $with = []) {
+        TestResponse::macro('assertRedirectRefresh', function (array $with = []): void {
             $this->assertRedirectToRoute('turbo_refresh_historical_location', $with);
         });
     }

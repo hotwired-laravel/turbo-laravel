@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 
 class RequestMacrosTest extends TestCase
 {
-    /** @test */
-    public function wants_turbo_stream()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function wants_turbo_stream(): void
     {
         $request = Request::create('/hello');
         $this->assertFalse($request->wantsTurboStream(), 'Expected request to not want a turbo stream response, but it did.');
@@ -24,8 +24,8 @@ class RequestMacrosTest extends TestCase
         $this->assertTrue($request->wantsTurboStreams(), 'Expected request to want a turbo stream response, but it did not.');
     }
 
-    /** @test */
-    public function was_from_turbo_native()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function was_from_turbo_native(): void
     {
         $request = Request::create('/hello');
         $this->assertFalse($request->wasFromTurboNative());
@@ -34,8 +34,8 @@ class RequestMacrosTest extends TestCase
         $this->assertTrue($request->wasFromTurboNative());
     }
 
-    /** @test */
-    public function was_from_hotwire_native()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function was_from_hotwire_native(): void
     {
         $request = Request::create('/hello');
         $this->assertFalse($request->wasFromHotwireNative());
@@ -44,8 +44,8 @@ class RequestMacrosTest extends TestCase
         $this->assertTrue($request->wasFromHotwireNative());
     }
 
-    /** @test */
-    public function was_from_turbo_frame()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function was_from_turbo_frame(): void
     {
         $request = Request::create('/hello', server: [
             'HTTP_Turbo-Frame' => 'testing',

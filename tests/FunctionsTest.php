@@ -25,8 +25,8 @@ class FunctionsTest extends TestCase
         $this->article = Article::create(['title' => 'Hello World']);
     }
 
-    /** @test */
-    public function namespaced_turbo_stream_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function namespaced_turbo_stream_fn(): void
     {
         $this->assertEquals(
             trim(<<<'HTML'
@@ -93,8 +93,8 @@ class FunctionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function global_turbo_stream_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function global_turbo_stream_fn(): void
     {
         $this->assertEquals(
             trim(<<<'HTML'
@@ -161,8 +161,8 @@ class FunctionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function namespace_turbo_stream_htmlable()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function namespace_turbo_stream_htmlable(): void
     {
         $this->assertEquals(
             trim(<<<'HTML'
@@ -192,8 +192,8 @@ class FunctionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function global_turbo_stream_htmlable()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function global_turbo_stream_htmlable(): void
     {
         $this->assertEquals(
             trim(<<<'HTML'
@@ -223,32 +223,32 @@ class FunctionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function namespaced_dom_id_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function namespaced_dom_id_fn(): void
     {
         $this->assertEquals("article_{$this->article->id}", dom_id($this->article));
     }
 
-    /** @test */
-    public function global_dom_id_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function global_dom_id_fn(): void
     {
         $this->assertEquals("article_{$this->article->id}", \dom_id($this->article));
     }
 
-    /** @test */
-    public function namespaced_dom_class_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function namespaced_dom_class_fn(): void
     {
         $this->assertEquals('article', dom_class($this->article));
     }
 
-    /** @test */
-    public function global_dom_class_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function global_dom_class_fn(): void
     {
         $this->assertEquals('article', \dom_class($this->article));
     }
 
-    /** @test */
-    public function namespaced_turbo_stream_view_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function namespaced_turbo_stream_view_fn(): void
     {
         $response = turbo_stream_view('functions.turbo_stream_view', [
             'title' => 'Post Using Namespaced Function',
@@ -261,8 +261,8 @@ class FunctionsTest extends TestCase
         );
     }
 
-    /** @test */
-    public function global_turbo_stream_view_fn()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function global_turbo_stream_view_fn(): void
     {
         $response = \turbo_stream_view('functions.turbo_stream_view', [
             'title' => 'Post Global',

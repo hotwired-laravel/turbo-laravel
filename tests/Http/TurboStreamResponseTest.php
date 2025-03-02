@@ -11,8 +11,8 @@ class TurboStreamResponseTest extends TestCase
 {
     use InteractsWithTurbo;
 
-    /** @test */
-    public function turbo_stream_response()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function turbo_stream_response(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -23,8 +23,8 @@ class TurboStreamResponseTest extends TestCase
             ->assertTurboStream();
     }
 
-    /** @test */
-    public function not_turbo_response()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function not_turbo_response(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -34,26 +34,26 @@ class TurboStreamResponseTest extends TestCase
             ->assertNotTurboStream();
     }
 
-    /** @test */
-    public function turbo_assert_count_of_turbo_streams()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function turbo_assert_count_of_turbo_streams(): void
     {
         $article = ArticleFactory::new()->create();
 
         $this->turbo()
             ->post(route('articles.comments.store', $article), ['content' => 'Hello World'])
-            ->assertTurboStream(fn (AssertableTurboStream $turboStream) => (
+            ->assertTurboStream(fn (AssertableTurboStream $turboStream): \HotwiredLaravel\TurboLaravel\Testing\AssertableTurboStream => (
                 $turboStream->has(2)
             ));
     }
 
-    /** @test */
-    public function turbo_assert_has_turbo_stream()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function turbo_assert_has_turbo_stream(): void
     {
         $article = ArticleFactory::new()->create();
 
         $this->turbo()
             ->post(route('articles.comments.store', $article), ['content' => 'Hello World'])
-            ->assertTurboStream(fn (AssertableTurboStream $turboStreams) => (
+            ->assertTurboStream(fn (AssertableTurboStream $turboStreams): true => (
                 $turboStreams->has(2)
                 && $turboStreams->hasTurboStream(fn ($turboStream) => (
                     $turboStream->where('target', 'comments')
@@ -68,8 +68,8 @@ class TurboStreamResponseTest extends TestCase
             ));
     }
 
-    /** @test */
-    public function turbo_allows_custom_actions_with_no_view()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function turbo_allows_custom_actions_with_no_view(): void
     {
         $this->assertEquals(
             <<<'HTML'

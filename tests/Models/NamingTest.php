@@ -8,8 +8,7 @@ use Workbench\App\Models;
 
 class NamingTest extends TestCase
 {
-    /** @var Name */
-    private $modelName;
+    private \HotwiredLaravel\TurboLaravel\Models\Naming\Name $modelName;
 
     protected function setUp(): void
     {
@@ -18,32 +17,32 @@ class NamingTest extends TestCase
         $this->modelName = Name::build(Models\User\Profile::class);
     }
 
-    /** @test */
-    public function class_name()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function class_name(): void
     {
         $this->assertEquals(Models\User\Profile::class, $this->modelName->className);
     }
 
-    /** @test */
-    public function class_name_without_root_namespace()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function class_name_without_root_namespace(): void
     {
         $this->assertEquals('User\\Profile', $this->modelName->classNameWithoutRootNamespace);
     }
 
-    /** @test */
-    public function singular()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function singular(): void
     {
         $this->assertEquals('user_profile', $this->modelName->singular);
     }
 
-    /** @test */
-    public function plural()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function plural(): void
     {
         $this->assertEquals('user_profiles', $this->modelName->plural);
     }
 
-    /** @test */
-    public function element()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function element(): void
     {
         $this->assertEquals('profile', $this->modelName->element);
     }

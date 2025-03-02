@@ -11,8 +11,8 @@ use Workbench\Database\Factories\CommentFactory;
 
 class TurboMiddlewareTest extends TestCase
 {
-    /** @test */
-    public function doesnt_change_redirect_response_when_not_turbo_visit()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function doesnt_change_redirect_response_when_not_turbo_visit(): void
     {
         $this->from('/articles')
             ->post('/articles', [])
@@ -20,8 +20,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertStatus(302);
     }
 
-    /** @test */
-    public function handles_invalid_forms_with_an_internal_redirect()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function handles_invalid_forms_with_an_internal_redirect(): void
     {
         $this->from('/articles')
             ->post('/articles', headers: [
@@ -32,8 +32,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertStatus(422);
     }
 
-    /** @test */
-    public function handles_invalid_forms_with_an_internal_redirect_when_using_form_requests()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function handles_invalid_forms_with_an_internal_redirect_when_using_form_requests(): void
     {
         $article = Article::create(['title' => 'Hello World']);
 
@@ -47,8 +47,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertStatus(422);
     }
 
-    /** @test */
-    public function can_detect_hotwire_native_visits()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_detect_hotwire_native_visits(): void
     {
         ArticleFactory::new()->times(3)->create();
 
@@ -89,8 +89,8 @@ class TurboMiddlewareTest extends TestCase
         );
     }
 
-    /** @test */
-    public function uses_the_redirect_to_when_guessed_route_doesnt_exist()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function uses_the_redirect_to_when_guessed_route_doesnt_exist(): void
     {
         $comment = CommentFactory::new()->create();
 
@@ -104,8 +104,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertUnprocessable();
     }
 
-    /** @test */
-    public function can_prevent_redirect_route()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_prevent_redirect_route(): void
     {
         config()->set('turbo-laravel.redirect_guessing_exceptions', [
             '/articles*',
@@ -118,8 +118,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertRedirectToRoute('articles.index');
     }
 
-    /** @test */
-    public function sends_an_internal_redirect_to_resource_create_routes_on_failed_validation_follows_laravel_conventions_and_returns_422_status_code()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function sends_an_internal_redirect_to_resource_create_routes_on_failed_validation_follows_laravel_conventions_and_returns_422_status_code(): void
     {
         $this
             ->from(route('articles.index'))
@@ -131,8 +131,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertUnprocessable();
     }
 
-    /** @test */
-    public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function redirects_back_to_resource_edit_routes_on_failed_validation_follows_laravel_conventions(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -145,8 +145,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertUnprocessable();
     }
 
-    /** @test */
-    public function redirects_include_query_params()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function redirects_include_query_params(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -160,8 +160,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertUnprocessable();
     }
 
-    /** @test */
-    public function only_guess_route_on_resource_routes()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function only_guess_route_on_resource_routes(): void
     {
         $this->from(route('login'))
             ->post(route('login.store'), headers: [
@@ -171,8 +171,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertStatus(303);
     }
 
-    /** @test */
-    public function passes_the_request_cookies_to_the_internal_request()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function passes_the_request_cookies_to_the_internal_request(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -187,8 +187,8 @@ class TurboMiddlewareTest extends TestCase
             ->assertUnprocessable();
     }
 
-    /** @test */
-    public function sets_turbo_tracking_request_id()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function sets_turbo_tracking_request_id(): void
     {
         $this->get('request-id')
             ->assertJson(['turbo_request_id' => null]);

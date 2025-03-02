@@ -12,8 +12,8 @@ class ComponentsTest extends TestCase
 {
     use InteractsWithViews;
 
-    /** @test */
-    public function frames()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function frames(): void
     {
         // With all the attributes...
         $this->blade('<x-turbo::frame id="todos" :src="url(\'somewhere\')" loading="lazy" target="_top" class="block" data-controller="test" />', [])
@@ -62,8 +62,8 @@ class ComponentsTest extends TestCase
             ->assertSee('</turbo-frame>', false);
     }
 
-    /** @test */
-    public function streams()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function streams(): void
     {
         $this->blade(<<<'BLADE'
             <x-turbo::stream target="todos" action="append">
@@ -125,8 +125,8 @@ class ComponentsTest extends TestCase
             ->assertSee('method="morph"', false);
     }
 
-    /** @test */
-    public function stream_from()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function stream_from(): void
     {
         $this->blade('<x-turbo::stream-from :source="$model" />', [
             'model' => $article = ArticleFactory::new()->create(),
@@ -137,8 +137,8 @@ class ComponentsTest extends TestCase
         ])->assertSee('<turbo-echo-stream-source channel="Workbench.App.Models.Article.'.$article->id.'" type="public" ></turbo-echo-stream-source>', false);
     }
 
-    /** @test */
-    public function stream_target_targets_should_throw_exception()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function stream_target_targets_should_throw_exception(): void
     {
         $this->expectException(ViewException::class);
 
@@ -149,8 +149,8 @@ class ComponentsTest extends TestCase
         BLADE);
     }
 
-    /** @test */
-    public function stream_null_target_targets_should_throw_exception()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function stream_null_target_targets_should_throw_exception(): void
     {
         $this->expectException(ViewException::class);
 
@@ -161,8 +161,8 @@ class ComponentsTest extends TestCase
         BLADE);
     }
 
-    /** @test */
-    public function allows_custom_actions_with_extra_attributes()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function allows_custom_actions_with_extra_attributes(): void
     {
         $this->blade(<<<'BLADE'
             <x-turbo::stream action="console_log" hello="world">
@@ -177,8 +177,8 @@ class ComponentsTest extends TestCase
             ->assertDontSee('target=', false);
     }
 
-    /** @test */
-    public function refresh_strategy()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function refresh_strategy(): void
     {
         foreach (['replace', 'morph'] as $method) {
             foreach (['reset', 'preserve'] as $scroll) {
@@ -191,8 +191,8 @@ class ComponentsTest extends TestCase
         }
     }
 
-    /** @test */
-    public function invalid_refresh_method()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function invalid_refresh_method(): void
     {
         $this->expectException(ViewException::class);
         $this->expectExceptionMessage('Invalid refresh method given "invalid". Allowed values are: replace or morph.');
@@ -202,8 +202,8 @@ class ComponentsTest extends TestCase
         BLADE, ['method' => 'invalid', 'scroll' => RefreshesWith::DEFAULT_SCROLL]);
     }
 
-    /** @test */
-    public function invalid_refresh_scroll()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function invalid_refresh_scroll(): void
     {
         $this->expectException(ViewException::class);
         $this->expectExceptionMessage('Invalid refresh scroll given "invalid". Allowed values are: reset or preserve.');
@@ -213,8 +213,8 @@ class ComponentsTest extends TestCase
         BLADE, ['method' => RefreshesWith::DEFAULT_METHOD, 'scroll' => 'invalid']);
     }
 
-    /** @test */
-    public function turbo_drive_components()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function turbo_drive_components(): void
     {
         $this->blade(
             <<<'BLADE'

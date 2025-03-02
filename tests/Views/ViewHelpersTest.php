@@ -6,7 +6,6 @@ use HotwiredLaravel\TurboLaravel\Facades\Turbo;
 use HotwiredLaravel\TurboLaravel\Testing\InteractsWithTurbo;
 use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 use Illuminate\Support\Facades\Blade;
-use PHPUnit\Framework\Attributes\Test;
 use Workbench\App\Models\Article;
 use Workbench\App\Models\ReviewStatus;
 use Workbench\App\Models\User\Profile;
@@ -19,8 +18,8 @@ class ViewHelpersTest extends TestCase
 {
     use InteractsWithTurbo;
 
-    /** @test */
-    public function renders_hotwire_native_correctly()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_hotwire_native_correctly(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -36,7 +35,7 @@ class ViewHelpersTest extends TestCase
             ->assertSee('Visiting From Hotwire Native');
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function renders_blade_native_helpers(): void
     {
         $this->assertEquals('Not Native', trim(Blade::render('@turbonative Yes Native @else Not Native @endturbonative')));
@@ -52,8 +51,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('Yes Native', trim(Blade::render('@unlesshotwirenative Not Native @else Yes Native @endunlesshotwirenative')));
     }
 
-    /** @test */
-    public function renders_unless_hotwire_native()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_unless_hotwire_native(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -69,8 +68,8 @@ class ViewHelpersTest extends TestCase
             ->assertDontSee('Back');
     }
 
-    /** @test */
-    public function renders_dom_id()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_dom_id(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -83,8 +82,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div id="create_article"></div>', trim($rendersDomIdOfNewModel));
     }
 
-    /** @test */
-    public function dom_id_with_regular_classes()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_with_regular_classes(): void
     {
         $renderedDomId = Blade::render('<div id="@domid($status)"></div>', ['status' => ReviewStatus::Approved]);
         $renderedDomIdWithPrefix = Blade::render('<div id="@domid($status, "favorites")"></div>', ['status' => ReviewStatus::Approved]);
@@ -93,8 +92,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div id="favorites_review_status_approved"></div>', trim($renderedDomIdWithPrefix));
     }
 
-    /** @test */
-    public function renders_dom_class()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_dom_class(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -107,8 +106,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div class="article"></div>', trim($rendersDomClassOfNewModel));
     }
 
-    /** @test */
-    public function renders_streamable_dom_class()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function renders_streamable_dom_class(): void
     {
         $renderedDomClass = Blade::render('<div class="@domclass($status)"></div>', ['status' => ReviewStatus::Approved]);
         $renderedDomClassWithPrefix = Blade::render('<div class="@domclass($status, "favorites")"></div>', ['status' => ReviewStatus::Approved]);
@@ -117,8 +116,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('<div class="favorites_review_status"></div>', trim($renderedDomClassWithPrefix));
     }
 
-    /** @test */
-    public function can_use_helper_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_use_helper_function(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -126,8 +125,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('favorites_article_'.$article->id, dom_id($article, 'favorites'));
     }
 
-    /** @test */
-    public function generates_model_ids_for_models_in_nested_folders()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function generates_model_ids_for_models_in_nested_folders(): void
     {
         $profile = ProfileFactory::new()->create();
 
@@ -136,8 +135,8 @@ class ViewHelpersTest extends TestCase
         $this->assertEquals('create_user_profile', dom_id(new Profile));
     }
 
-    /** @test */
-    public function generates_channel_for_model()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function generates_channel_for_model(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -149,8 +148,8 @@ class ViewHelpersTest extends TestCase
         );
     }
 
-    /** @test */
-    public function configure_refresh_strategy()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function configure_refresh_strategy(): void
     {
         $this->get(route('trays.index'))
             ->assertSee('<meta name="turbo-refresh-method" content="morph">', false)

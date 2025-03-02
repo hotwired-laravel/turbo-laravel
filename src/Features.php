@@ -4,7 +4,7 @@ namespace HotwiredLaravel\TurboLaravel;
 
 class Features
 {
-    public static function enabled(string $feature)
+    public static function enabled(string $feature): bool
     {
         return in_array($feature, config('turbo-laravel.features', []));
     }

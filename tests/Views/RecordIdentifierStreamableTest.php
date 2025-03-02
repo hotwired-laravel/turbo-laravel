@@ -10,9 +10,9 @@ use Workbench\App\Models\ReviewStatus;
 
 class RecordIdentifierStreamableTest extends TestCase
 {
-    private $streamable;
+    private \Workbench\App\Models\ReviewStatus $streamable;
 
-    private $singular;
+    private string $singular;
 
     protected function setUp(): void
     {
@@ -22,20 +22,20 @@ class RecordIdentifierStreamableTest extends TestCase
         $this->singular = 'review_status';
     }
 
-    /** @test */
-    public function dom_id_of_streamable()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_streamable(): void
     {
         $this->assertEquals("{$this->singular}_{$this->streamable->value}", (new RecordIdentifier($this->streamable))->domId());
     }
 
-    /** @test */
-    public function dom_id_of_streamable_with_custom_prefix()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function dom_id_of_streamable_with_custom_prefix(): void
     {
         $this->assertEquals("custom_prefix_{$this->singular}_{$this->streamable->value}", (new RecordIdentifier($this->streamable))->domId('custom_prefix'));
     }
 
-    /** @test */
-    public function exception_is_thrown_when_given_non_streamable_instance()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function exception_is_thrown_when_given_non_streamable_instance(): void
     {
         $this->expectException(UnidentifiableRecordException::class);
 

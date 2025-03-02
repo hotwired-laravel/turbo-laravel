@@ -3,23 +3,16 @@
 namespace HotwiredLaravel\TurboLaravel\Testing;
 
 use Closure;
-use DOMElement;
 use Illuminate\View\ComponentAttributeBag;
 use PHPUnit\Framework\Assert;
 
 class TurboStreamMatcher
 {
-    /** @var \DOMElement */
-    private $turboStream;
-
     private array $wheres = [];
 
     private array $contents = [];
 
-    public function __construct(DOMElement $turboStream)
-    {
-        $this->turboStream = $turboStream;
-    }
+    public function __construct(private \DOMElement $turboStream) {}
 
     public function where(string $prop, string $value): self
     {
@@ -53,7 +46,7 @@ class TurboStreamMatcher
         // `->assertTurboStream(fn)` call. This is where the `->where()`
         // and `->see()` methods will be called by the developers.
 
-        if ($callback) {
+        if ($callback instanceof \Closure) {
             return $callback($this)->matches();
         }
 
@@ -73,7 +66,7 @@ class TurboStreamMatcher
         return $this->makeAttributes($this->wheres);
     }
 
-    private function matchesProps()
+    private function matchesProps(): bool
     {
         foreach ($this->wheres as $prop => $value) {
             $propValue = $this->turboStream->getAttribute($prop);
@@ -86,9 +79,9 @@ class TurboStreamMatcher
         return true;
     }
 
-    private function matchesContents()
+    private function matchesContents(): bool
     {
-        if (empty($this->contents)) {
+        if ($this->contents === []) {
             return true;
         }
 

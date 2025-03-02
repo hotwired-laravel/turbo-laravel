@@ -8,10 +8,10 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
-class MultiplePendingTurboStreamResponse implements Htmlable, Renderable, Responsable
+class MultiplePendingTurboStreamResponse implements \Stringable, Htmlable, Renderable, Responsable
 {
     /** @var Collection|PendingTurboStreamResponse[] */
-    private Collection $pendingStreams;
+    private readonly Collection $pendingStreams;
 
     /**
      * @param  Collection  $pendingStreams
@@ -43,9 +43,7 @@ class MultiplePendingTurboStreamResponse implements Htmlable, Renderable, Respon
     public function render(): string
     {
         return $this->pendingStreams
-            ->map(function (PendingTurboStreamResponse $pendingStream) {
-                return $pendingStream->render();
-            })
+            ->map(fn (PendingTurboStreamResponse $pendingStream): string => $pendingStream->render())
             ->implode(PHP_EOL);
     }
 

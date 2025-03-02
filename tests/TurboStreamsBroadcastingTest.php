@@ -27,8 +27,6 @@ class TurboStreamsBroadcastingTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * @testWith ["append"]
      *           ["prepend"]
      *           ["before"]
@@ -36,7 +34,8 @@ class TurboStreamsBroadcastingTest extends TestCase
      *           ["update"]
      *           ["replace"]
      */
-    public function can_manually_broadcast_append_streams(string $action)
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_broadcast_append_streams(string $action): void
     {
         $method = sprintf('broadcast%s', ucfirst($action));
 
@@ -65,8 +64,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('general', $broadcasting->channels[0]->name);
     }
 
-    /** @test */
-    public function manually_broadcast_remove_stream()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function manually_broadcast_remove_stream(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             channel: 'general',
@@ -84,8 +83,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('general', $broadcasting->channels[0]->name);
     }
 
-    /** @test */
-    public function can_broadcast_to_multiple_public_channels()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_broadcast_to_multiple_public_channels(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             channel: ['general', 'todolist.123'],
@@ -101,8 +100,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('todolist.123', $broadcasting->channels[1]->name);
     }
 
-    /** @test */
-    public function can_manually_broadcast_to_private_channels()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_broadcast_to_private_channels(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
@@ -112,8 +111,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('private-user.123', $broadcasting->channels[0]->name);
     }
 
-    /** @test */
-    public function can_manually_broadcast_to_multiple_private_channels()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_broadcast_to_multiple_private_channels(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
@@ -128,8 +127,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('private-todolist.123', $broadcasting->channels[1]->name);
     }
 
-    /** @test */
-    public function can_manually_broadcast_to_presence_channels()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_broadcast_to_presence_channels(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
@@ -139,8 +138,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('presence-user.123', $broadcasting->channels[0]->name);
     }
 
-    /** @test */
-    public function can_manually_broadcast_to_multiple_presence_channels()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_manually_broadcast_to_multiple_presence_channels(): void
     {
         $broadcasting = TurboStream::broadcastRemove(
             target: 'todo_123',
@@ -155,20 +154,20 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals('presence-todolist.123', $broadcasting->channels[1]->name);
     }
 
-    /** @test */
-    public function can_assert_nothing_was_broadcasted()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_assert_nothing_was_broadcasted(): void
     {
         TurboStream::assertNothingWasBroadcasted();
     }
 
-    /** @test */
-    public function can_assert_broadcasted()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_assert_broadcasted(): void
     {
         TurboStream::broadcastRemove('todo_123');
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use (&$called): bool {
             $called = true;
 
             return
@@ -179,15 +178,15 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'The given filter callback was not called.');
     }
 
-    /** @test */
-    public function can_assert_broadcasted_times()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_assert_broadcasted_times(): void
     {
         TurboStream::broadcastRemove('todo_123');
         TurboStream::broadcastRemove('todo_123');
 
         $called = 0;
 
-        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called) {
+        TurboStream::assertBroadcastedTimes(function (PendingBroadcast $broadcast) use (&$called): bool {
             $called++;
 
             return $broadcast->target === 'todo_123' && $broadcast->action === 'remove';
@@ -196,8 +195,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals(2, $called, 'The given filter callback was not called.');
     }
 
-    /** @test */
-    public function broadcast_inline_content()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_inline_content(): void
     {
         $broadcast = TurboStream::broadcastUpdate(
             channel: 'general',
@@ -214,8 +213,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals(trim($expected), trim($broadcast->render()));
     }
 
-    /** @test */
-    public function broadcast_inline_content_escaped()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_inline_content_escaped(): void
     {
         $broadcast = TurboStream::broadcastAppend(
             channel: 'general',
@@ -232,8 +231,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals(trim($expected), trim($broadcast->render()));
     }
 
-    /** @test */
-    public function broadcast_inline_content_as_html_string()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_inline_content_as_html_string(): void
     {
         $broadcast = TurboStream::broadcastAppend(
             channel: 'general',
@@ -250,38 +249,32 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals(trim($expected), trim($broadcast->render()));
     }
 
-    /** @test */
-    public function can_cancel_broadcasting()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_cancel_broadcasting(): void
     {
         TurboStream::broadcastRemove('todo_123')->cancel();
 
         TurboStream::assertNothingWasBroadcasted();
     }
 
-    /** @test */
-    public function can_conditionally_cancel_broadcasting()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_conditionally_cancel_broadcasting(): void
     {
         TurboStream::broadcastRemove('todo_123')->cancelIf(true);
 
-        TurboStream::broadcastRemove('todo_123')->cancelIf(function () {
-            return true;
-        });
+        TurboStream::broadcastRemove('todo_123')->cancelIf(fn (): true => true);
 
         TurboStream::assertNothingWasBroadcasted();
 
         TurboStream::broadcastRemove('todo_123')->cancelIf(false);
 
-        TurboStream::broadcastRemove('todo_123')->cancelIf(function () {
-            return false;
-        });
+        TurboStream::broadcastRemove('todo_123')->cancelIf(fn (): false => false);
 
-        TurboStream::assertBroadcastedTimes(function ($broadcast) {
-            return $broadcast->action === 'remove' && $broadcast->target === 'todo_123';
-        }, 2);
+        TurboStream::assertBroadcastedTimes(fn ($broadcast): bool => $broadcast->action === 'remove' && $broadcast->target === 'todo_123', 2);
     }
 
-    /** @test */
-    public function can_pass_model_without_broadcasts_trait_as_channel()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_pass_model_without_broadcasts_trait_as_channel(): void
     {
         $message = MessageFactory::new()->create();
 
@@ -289,7 +282,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function ($broadcast) use ($message, &$called) {
+        TurboStream::assertBroadcasted(function ($broadcast) use ($message, &$called): bool {
             $called = true;
 
             return count($broadcast->channels) === 1
@@ -299,8 +292,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'Expected callback to be called, but it was not.');
     }
 
-    /** @test */
-    public function can_pass_model_with_broadcasts_trait_as_channel()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_pass_model_with_broadcasts_trait_as_channel(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -308,7 +301,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called) {
+        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called): bool {
             $called = true;
 
             return count($broadcast->channels) === 1
@@ -318,8 +311,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'Expected callback to be called, but it was not.');
     }
 
-    /** @test */
-    public function can_pass_recently_created_model_as_target()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_pass_recently_created_model_as_target(): void
     {
         $article = ArticleFactory::new()->create();
 
@@ -327,7 +320,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called) {
+        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called): bool {
             $called = true;
 
             return $broadcast->target === Name::forModel($article)->plural;
@@ -336,8 +329,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'Expected callback to be called, but it was not.');
     }
 
-    /** @test */
-    public function can_pass_existing_model_as_target()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_pass_existing_model_as_target(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 
@@ -345,7 +338,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called) {
+        TurboStream::assertBroadcasted(function ($broadcast) use ($article, &$called): bool {
             $called = true;
 
             return $broadcast->target === dom_id($article);
@@ -354,8 +347,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'Expected callback to be called, but it was not.');
     }
 
-    /** @test */
-    public function broadcast_custom_action()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_custom_action(): void
     {
         $broadcast = TurboStream::broadcastAction('console_log', attributes: [
             'value' => 'Hello World',
@@ -373,7 +366,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $called = false;
 
-        TurboStream::assertBroadcasted(function ($broadcast) use (&$called) {
+        TurboStream::assertBroadcasted(function ($broadcast) use (&$called): bool {
             $called = true;
 
             return $broadcast->action === 'console_log' && $broadcast->attributes == [
@@ -384,8 +377,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($called, 'Expected callback to be called, but it was not.');
     }
 
-    /** @test */
-    public function pass_attributes_via_setter_method()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function pass_attributes_via_setter_method(): void
     {
         $broadcast = TurboStream::broadcastAction('console_log')->attributes([
             'value' => 'Testing',
@@ -399,8 +392,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertEquals(trim($expected), trim($broadcast->render()));
     }
 
-    /** @test */
-    public function override_action_and_content_via_setter_methods()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function override_action_and_content_via_setter_methods(): void
     {
         $broadcast = TurboStream::broadcastAction('console_log')
             ->action('update_title')
@@ -412,11 +405,11 @@ class TurboStreamsBroadcastingTest extends TestCase
         </turbo-stream>
         HTML;
 
-        $this->assertEquals(trim($expected), trim($broadcast->render()));
+        $this->assertEquals(trim($expected), trim((string) $broadcast->render()));
     }
 
-    /** @test */
-    public function send_to_others()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function send_to_others(): void
     {
         $broadcast = TurboStream::broadcastAppend('Hello World');
 
@@ -427,8 +420,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         $this->assertTrue($broadcast->sendToOthers);
     }
 
-    /** @test */
-    public function broadcasts_using_the_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcasts_using_the_response_builder_function(): void
     {
         $response = turbo_stream()
             ->append('notifications', 'Hello World')
@@ -436,7 +429,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -448,8 +441,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_to_private_channels_using_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_to_private_channels_using_response_builder_function(): void
     {
         $response = turbo_stream()
             ->append('notifications', 'Hello World')
@@ -457,7 +450,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -469,8 +462,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_to_presence_channels_using_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_to_presence_channels_using_response_builder_function(): void
     {
         $response = turbo_stream()
             ->append('notifications', 'Hello World')
@@ -478,7 +471,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -490,8 +483,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_to_model_channel_using_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_to_model_channel_using_response_builder_function(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 
@@ -501,7 +494,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -513,8 +506,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_to_model_as_private_channel_using_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_to_model_as_private_channel_using_response_builder_function(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 
@@ -524,7 +517,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($article): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -536,8 +529,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_to_model_as_presence_channel_using_response_builder_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_to_model_as_presence_channel_using_response_builder_function(): void
     {
         $message = MessageFactory::new()->create()->fresh();
 
@@ -547,7 +540,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($message) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($message): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('Hello World', $broadcast->inlineContent);
             $this->assertCount(1, $broadcast->channels);
@@ -559,8 +552,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_model_changes_using_function()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_model_changes_using_function(): void
     {
         $message = MessageFactory::new()->create();
 
@@ -569,7 +562,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($message) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($message): true {
             $this->assertEquals('append', $broadcast->action);
             $this->assertEquals('messages._message', $broadcast->partialView);
             $this->assertEquals(['message' => $message], $broadcast->partialData);
@@ -582,8 +575,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function broadcast_passing_model_with_broadcasts_trait_to_channel()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function broadcast_passing_model_with_broadcasts_trait_to_channel(): void
     {
         $comment = Comment::withoutEvents(fn () => CommentFactory::new()->create()->fresh());
 
@@ -592,7 +585,7 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $this->assertInstanceOf(PendingTurboStreamResponse::class, $response);
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment) {
+        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) use ($comment): true {
             $this->assertEquals('replace', $broadcast->action);
             $this->assertEquals('comments._comment', $broadcast->partialView);
             $this->assertEquals(['comment' => $comment], $broadcast->partialData);
@@ -605,8 +598,8 @@ class TurboStreamsBroadcastingTest extends TestCase
         });
     }
 
-    /** @test */
-    public function can_disable_turbo_stream_broadcasts()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function can_disable_turbo_stream_broadcasts(): void
     {
         TurboStream::withoutBroadcasts(fn () => (
             TurboStream::broadcastRemove('todo_123')
@@ -616,15 +609,12 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         TurboStream::broadcastRemove('todo_123');
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
-            return
-                $broadcast->target === 'todo_123'
-                && $broadcast->action === 'remove';
-        });
+        TurboStream::assertBroadcasted(fn (PendingBroadcast $broadcast): bool => $broadcast->target === 'todo_123'
+        && $broadcast->action === 'remove');
     }
 
-    /** @test */
-    public function globally_disabling_turbo_stream_broadcasts_also_disable_models()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function globally_disabling_turbo_stream_broadcasts_also_disable_models(): void
     {
         $article = ArticleFactory::new()->create()->fresh();
 
@@ -636,8 +626,6 @@ class TurboStreamsBroadcastingTest extends TestCase
 
         $article->broadcastAppend();
 
-        TurboStream::assertBroadcasted(function (PendingBroadcast $broadcast) {
-            return $broadcast->target === 'articles' && $broadcast->action === 'append';
-        });
+        TurboStream::assertBroadcasted(fn (PendingBroadcast $broadcast): bool => $broadcast->target === 'articles' && $broadcast->action === 'append');
     }
 }

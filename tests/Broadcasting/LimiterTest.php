@@ -7,8 +7,8 @@ use HotwiredLaravel\TurboLaravel\Tests\TestCase;
 
 class LimiterTest extends TestCase
 {
-    /** @test */
-    public function debounces()
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function debounces(): void
     {
         $this->freezeTime();
 

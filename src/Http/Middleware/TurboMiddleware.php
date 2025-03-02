@@ -93,7 +93,7 @@ class TurboMiddleware
         if ($response->exception instanceof ValidationException && ($formRedirectUrl = $this->guessFormRedirectUrl($request, $response->exception->redirectTo))) {
             $response->setTargetUrl($formRedirectUrl);
 
-            return tap($this->handleRedirectInternally($request, $response), function () use ($request) {
+            return tap($this->handleRedirectInternally($request, $response), function () use ($request): void {
                 App::instance('request', $request);
                 Facade::clearResolvedInstance('request');
             });
@@ -108,11 +108,10 @@ class TurboMiddleware
     }
 
     /**
-     * @param  Request  $request
      * @param  Response  $response
      * @return Response
      */
-    private function handleRedirectInternally($request, $response)
+    private function handleRedirectInternally(\Illuminate\Http\Request $request, \Illuminate\Http\RedirectResponse $response)
     {
         $kernel = $this->kernel();
 
@@ -140,18 +139,14 @@ class TurboMiddleware
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    private function turboVisit($request)
+    private function turboVisit(\Illuminate\Http\Request $request)
     {
         return Str::contains($request->header('Accept', ''), Turbo::TURBO_STREAM_FORMAT);
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     */
-    private function guessFormRedirectUrl($request, ?string $defaultRedirectUrl = null)
+    private function guessFormRedirectUrl(\Illuminate\Http\Request $request, ?string $defaultRedirectUrl = null)
     {
         if ($this->inExceptArray($request)) {
             return $defaultRedirectUrl;

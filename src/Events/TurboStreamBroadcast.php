@@ -12,44 +12,25 @@ class TurboStreamBroadcast implements ShouldBroadcastNow
 {
     use InteractsWithSockets;
 
-    /** @var Channel[] */
-    public array $channels;
-
-    public string $action;
-
-    public ?string $target = null;
-
-    public ?string $targets = null;
-
-    public ?string $partial = null;
-
-    public ?array $partialData = [];
-
-    public ?string $inlineContent = null;
-
-    public array $attrs = [];
-
-    public bool $escapeInlineContent = true;
-
-    public function __construct(array $channels, string $action, ?string $target = null, ?string $targets = null, ?string $partial = null, ?array $partialData = [], ?string $inlineContent = null, bool $escapeInlineContent = true, array $attributes = [])
-    {
-        $this->channels = $channels;
-        $this->action = $action;
-        $this->target = $target;
-        $this->targets = $targets;
-        $this->partial = $partial;
-        $this->partialData = $partialData;
-        $this->inlineContent = $inlineContent;
-        $this->escapeInlineContent = $escapeInlineContent;
-        $this->attrs = $attributes;
-    }
+    public function __construct(
+        /** @var Channel[] */
+        public array $channels,
+        public string $action,
+        public ?string $target = null,
+        public ?string $targets = null,
+        public ?string $partial = null,
+        public ?array $partialData = [],
+        public ?string $inlineContent = null,
+        public bool $escapeInlineContent = true,
+        public array $attrs = []
+    ) {}
 
     public function broadcastOn()
     {
         return $this->channels;
     }
 
-    public function broadcastWith()
+    public function broadcastWith(): array
     {
         return [
             'message' => $this->render(),
