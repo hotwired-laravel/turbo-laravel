@@ -17,5 +17,7 @@ class PublishBoostGuidelineCommand extends Command
 
         File::ensureDirectoryExists(base_path(implode(DIRECTORY_SEPARATOR, ['.ai', 'guidelines'])), recursive: true);
         File::copy($from, base_path(implode(DIRECTORY_SEPARATOR, ['.ai', 'guidelines', 'hotwire.blade.php'])));
+
+        $this->info('Boost guideline was published!');
     }
 }
