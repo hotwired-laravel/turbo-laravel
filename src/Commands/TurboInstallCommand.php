@@ -121,9 +121,9 @@ class TurboInstallCommand extends Command
     private function jsDependencies(): array
     {
         return [
-            '@hotwired/turbo' => '^8.0.4',
-            'laravel-echo' => '^1.15.0',
-            'pusher-js' => '^8.0.1',
+            '@hotwired/turbo' => '^8.0.13',
+            'laravel-echo' => '^2.2.0',
+            'pusher-js' => '^8.4.0',
         ];
     }
 
