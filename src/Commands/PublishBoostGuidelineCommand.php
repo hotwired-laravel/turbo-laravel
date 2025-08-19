@@ -13,7 +13,7 @@ class PublishBoostGuidelineCommand extends Command
 
     public function handle(): void
     {
-        $from = dirname(__DIR__, levels: 2) . DIRECTORY_SEPARATOR . '.ai' . DIRECTORY_SEPARATOR . 'hotwire.blade.php';
+        $from = dirname(__DIR__, levels: 2).DIRECTORY_SEPARATOR.'.ai'.DIRECTORY_SEPARATOR.'hotwire.blade.php';
 
         File::ensureDirectoryExists(base_path(implode(DIRECTORY_SEPARATOR, ['.ai', 'guidelines'])), recursive: true);
         File::copy($from, base_path(implode(DIRECTORY_SEPARATOR, ['.ai', 'guidelines', 'hotwire.blade.php'])));
