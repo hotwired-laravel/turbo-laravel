@@ -170,10 +170,10 @@
     </div>
     ```
 @endverbatim
-- Use `data-turbo-preload` to prefetch pages on hover for near-instant navigation:
+- Preloading is automatically enabled on all links. You may disable it for specific links with the `data-turbo-preload` attribute (if you need to):
 @verbatim
     ```blade
-    <a href="{{ route('posts.show', $post) }}" data-turbo-preload>
+    <a href="{{ route('posts.show', $post) }}" data-turbo-preload="false">
         {{ $post->title }}
     </a>
     ```
