@@ -61,10 +61,14 @@
     {
         $post = Post::create($request->validated());
 
-        return turbo_stream([
-            turbo_stream()->append('posts', view('posts.partials.post', ['post' => $post])),
-            turbo_stream()->update('create_post', view('posts.partials.form', ['post' => new Post()])),
-        ]);
+        if ($request->wantsTurboStream()) {
+            return turbo_stream([
+                turbo_stream()->append('posts', view('posts.partials.post', ['post' => $post])),
+                turbo_stream()->update('create_post', view('posts.partials.form', ['post' => new Post()])),
+            ]);
+        }
+
+        return back();
     }
 </code-snippet>
 @endverbatim
