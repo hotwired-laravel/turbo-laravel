@@ -4,8 +4,7 @@
 - Use Turbo Drive for smooth page transitions without full page reloads.
 - Decompose pages with Turbo Frames for independent sections that update separately.
 - Use Turbo Streams for real-time updates and dynamic content changes.
-- Leverage Stimulus for progressive JavaScript enhancement when Turbo isn't sufficient.
-- Keep Stimulus controllers focused and simple
+- Leverage Stimulus for progressive JavaScript enhancement when Turbo isn't sufficient (if Stimulus is available)
 - Prefer server-side template rendering and state management over client-side frameworks.
 - Enable "morphing" for seamless page updates that preserve scroll position and focus.
 - Use data attributes for JavaScript hooks
@@ -125,37 +124,6 @@
     $post->broadcastUpdate();
     $post->broadcastRemove();
 </code-snippet>
-@endverbatim
-
-## Stimulus Integration
-- Use Stimulus for client-side interactivity that requires JavaScript (when Turbo's server-side approach isn't sufficient):
-@verbatim
-<code-snippet name="Stimulus controller for form enhancements" lang="javascript">
-    import { Controller } from "@hotwired/stimulus"
-
-    export default class extends Controller {
-        static targets = ["input", "counter"]
-
-        connect() {
-            this.updateCounter()
-        }
-
-        updateCounter() {
-            const length = this.inputTarget.value.length
-            this.counterTarget.textContent = `${length}/280`
-        }
-    }
-</code-snippet>
-@endverbatim
-- Connect Stimulus controllers with proper data attributes:
-@verbatim
-    ```blade
-    <div data-controller="character-counter">
-        <textarea data-character-counter-target="input"
-                  data-action="input->character-counter#updateCounter"></textarea>
-        <span data-character-counter-target="counter">0/280</span>
-    </div>
-    ```
 @endverbatim
 
 ## Form Handling & Validation
