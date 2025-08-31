@@ -39,7 +39,7 @@ Any other attribute passed to the Blade Component will get forwarded to the unde
 
 This will work for any other attribute you want to forward to the underlying component.
 
-## The `request()->wasFromTurboFrame()` Macro
+## Turbo Frame Request Macro
 
 You may want to detect if a request came from a Turbo Frame in the backend. You may use the `wasFromTurboFrame()` method for that:
 
