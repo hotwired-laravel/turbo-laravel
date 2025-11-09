@@ -1,40 +1,36 @@
 ## Hotwire/Turbo Core Principles
 - For standard application development, use Hotwire (Turbo + Stimulus)
-- Send HTML over the wire instead of JSON. Keep complexity on the server side.
-- Use Turbo Drive for smooth page transitions without full page reloads.
-- Decompose pages with Turbo Frames for independent sections that update separately.
-- Use Turbo Streams for real-time updates and dynamic content changes.
+- For most interactions, use regular links and form submits (Turbo Drive will make them fast and dynamic)
+- Decompose pages with Turbo Frames for independent sections that update separately
+- Use Turbo Streams for real-time updates and dynamic content changes
 - Leverage Stimulus for progressive JavaScript enhancement when Turbo isn't sufficient (if Stimulus is available)
-- Prefer server-side template rendering and state management over client-side frameworks.
-- Enable "morphing" for seamless page updates that preserve scroll position and focus.
-- Use data attributes for JavaScript hooks
-- For more complex JavaScript dependencies, use Importmap Laravel
+- Prefer server-side template rendering and state management over client-side frameworks and state
+- Use data attributes for JavaScript hooks and CSS styling for as much as possible
 
-## Turbo Setup & Base Helpers
+## Base Helpers
 @verbatim
 - Turbo automatically handles page navigation, form submissions, and CSRF protection
-- Enable morphing in your layout (preserves DOM state during page updates): `<x-turbo::refresh-method method="morph" />`
-- Configure scroll behavior in your layout: `<x-turbo::refresh-scroll scroll="preserve" />`
-- Enable both morphing and scroll preservation with a single component: `<x-turbo::refreshes-with method="morph" scroll="preserve" />`
-- Generate unique DOM IDs from models: use function `dom_id($model, 'optional_prefix')` or Blade directive `@domid($model, 'optional_prefix')`
-- Generate CSS classes from models: use function `dom_class($model, 'optional_prefix')` or Blade directive `@domclass($model, 'optional_prefix')`
+- You may configure morphing and scroll preservation for a page (or layout) with: `<x-turbo::refreshes-with method="morph" scroll="preserve" />`
+- Generate unique DOM IDs from models: use the `dom_id($model, 'optional_prefix')` global function or Blade directive `@domid($model, 'optional_prefix')`
+- Generate CSS classes from models: use the `dom_class($model, 'optional_prefix')` global function or Blade directive `@domclass($model, 'optional_prefix')`
 @endverbatim
 
 ## Turbo Frames Best Practices
-- Use frames to decompose pages into independent sections that can update without full page reloads:
+- Use frames to decompose pages into independent sections that can update without full page reloads
+- Forms and links inside frames automatically target their containing frame (no configuration needed)
+- You may override the default frame target of a link or form with `[data-turbo-frame]` attribute:
+  - Use a frame's DOM ID to target a specific frame
+  - Use the value `_top` to break out of frames and navigate the full page
+- The `[:id]` prop accepts models and automatically generates DOM IDs for them
+- The `[:src]` prop accepts a URL to lazy-load from content. Optionally, you may pair it with a `[loading=lazy]` so it only loads when the element is visible in the viewport
+
+Example:
 @verbatim
     ```blade
     <x-turbo::frame :id="$post">
         <h3>{{ $post->title }}</h3>
         <p>{{ $post->content }}</p>
-        <a href="{{ route('posts.edit', $post) }}">Edit</a>
-    </x-turbo::frame>
-    ```
-@endverbatim
-- Forms and links inside frames automatically target their containing frame (no configuration needed):
-@verbatim
-    ```blade
-    <x-turbo::frame :id="$post">
+        <a href="{{ route('posts.edit', $post) }}" data-turbo-frame="_top">Edit</a>
         <form action="{{ route('posts.store') }}" method="POST">
             @csrf
             <input type="text" name="title" required>
@@ -43,17 +39,10 @@
     </x-turbo::frame>
     ```
 @endverbatim
-- Override default frame targeting with `data-turbo-frame` attribute:
-  - Use a frame's DOM ID to target a specific frame
-  - Use `_top` to break out of frames and navigate the full page:
-@verbatim
-    ```blade
-    <a href="{{ route('posts.show', $post) }}" data-turbo-frame="_top">View Full Post</a>
-    ```
-@endverbatim
 
 ## Turbo Streams for Dynamic Updates
-- Return Turbo Stream responses from controllers to update specific page elements without full page reload:
+
+- You may return Turbo Streams from controllers after form submissions to update specific page elements (always check if the request accepts Turbo Streams for resilience)
 @verbatim
 <code-snippet name="Controller returning Turbo Streams" lang="php">
     public function store(Request $request)
@@ -64,6 +53,11 @@
             return turbo_stream([
                 turbo_stream()->append('posts', view('posts.partials.post', ['post' => $post])),
                 turbo_stream()->update('create_post', view('posts.partials.form', ['post' => new Post()])),
+                // turbo_stream()->prepend('some_dom_id', view('posts.partials.post', ['post' => $post])),
+                // turbo_stream()->before('some_dom_id', view('...'))
+                // turbo_stream()->after('some_dom_id', view('...'))
+                // turbo_stream()->replace('some_dom_id', view('...'))
+                // turbo_stream()->remove('some_dom_id')
             ]);
         }
 
@@ -71,46 +65,18 @@
     }
 </code-snippet>
 @endverbatim
-- Available Turbo Stream actions for manipulating DOM elements:
+- Turbo Streams can also be broadcasted using Laravel Echo for real-time updates to all users connected to a channel:
 @verbatim
-<code-snippet name="Turbo Stream actions" lang="php">
-    // Append content
-    turbo_stream()->append($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Prepend content
-    turbo_stream()->prepend($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Insert before
-    turbo_stream()->before($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Insert after
-    turbo_stream()->after($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Replace content (swaps the target element)
-    turbo_stream()->replace($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Update content (keeps the target element and only updates its contents)
-    turbo_stream()->update($comment, view('comments.partials.comment', [
-        'comment' => $comment,
-    ]));
-
-    // Removes content
-    turbo_stream()->remove($comment);
+<code-snippet name="Listening to Broadcasts" lang="blade">
+    <x-turbo::stream-from :source="$post" />
 </code-snippet>
-@endverbatim
-- Broadcast Turbo Streams over WebSockets to push real-time updates to all connected users:
-@verbatim
+
 <code-snippet name="Broadcasting Turbo Streams" lang="php">
+    // Ensure the channel is defined in `routes/channels.php`:
+    Broadcast::channel(Post::class, function (User $user, Post $post) {
+        return $user->belongsToProject($post->project);
+    });
+
     // Add the trait to the model:
     use HotwiredLaravel\TurboLaravel\Models\Broadcasts;
 
@@ -120,9 +86,9 @@
     }
 
     // When you want to trigger the broadcasting from anywhere (including model events)...
-    $post->broadcastAppend()->to('posts');
     $post->broadcastUpdate();
     $post->broadcastRemove();
+    $post->broadcastAppend()->to('posts');
 </code-snippet>
 @endverbatim
 
