@@ -5,7 +5,6 @@ namespace HotwiredLaravel\TurboLaravel;
 use HotwiredLaravel\TurboLaravel\Broadcasters\Broadcaster;
 use HotwiredLaravel\TurboLaravel\Broadcasters\LaravelBroadcaster;
 use HotwiredLaravel\TurboLaravel\Broadcasting\Limiter;
-use HotwiredLaravel\TurboLaravel\Commands\PublishBoostGuidelineCommand;
 use HotwiredLaravel\TurboLaravel\Commands\TurboInstallCommand;
 use HotwiredLaravel\TurboLaravel\Facades\Turbo as TurboFacade;
 use HotwiredLaravel\TurboLaravel\Http\Middleware\TurboMiddleware;
@@ -77,7 +76,6 @@ class TurboServiceProvider extends ServiceProvider
 
         $this->commands([
             TurboInstallCommand::class,
-            PublishBoostGuidelineCommand::class,
         ]);
     }
 
