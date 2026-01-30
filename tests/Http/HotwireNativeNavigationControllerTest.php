@@ -110,19 +110,22 @@ class HotwireNativeNavigationControllerTest extends TestCase
     #[Test]
     public function historical_location_url_responds_with_html(): void
     {
-        $this->get(route('turbo_recede_historical_location'))
+        $response = $this->get(route('turbo_recede_historical_location'))
             ->assertOk()
-            ->assertSee('Going back...')
-            ->assertHeader('Content-Type', 'text/html; charset=utf-8');
+            ->assertSee('Going back...');
 
-        $this->get(route('turbo_resume_historical_location'))
-            ->assertOk()
-            ->assertSee('Staying put...')
-            ->assertHeader('Content-Type', 'text/html; charset=utf-8');
+        $this->assertEqualsIgnoringCase('text/html; charset=utf-8', $response->baseResponse->headers->get('Content-Type'));
 
-        $this->get(route('turbo_refresh_historical_location'))
+        $response = $this->get(route('turbo_resume_historical_location'))
             ->assertOk()
-            ->assertSee('Refreshing...')
-            ->assertHeader('Content-Type', 'text/html; charset=utf-8');
+            ->assertSee('Staying put...');
+
+        $this->assertEqualsIgnoringCase('text/html; charset=utf-8', $response->baseResponse->headers->get('Content-Type'));
+
+        $response = $this->get(route('turbo_refresh_historical_location'))
+            ->assertOk()
+            ->assertSee('Refreshing...');
+
+        $this->assertEqualsIgnoringCase('text/html; charset=utf-8', $response->baseResponse->headers->get('Content-Type'));
     }
 }
