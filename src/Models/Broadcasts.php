@@ -21,7 +21,13 @@ trait Broadcasts
 
     public static function bootBroadcasts(): void
     {
-        static::observe(new ModelObserver);
+        if (method_exists(static::class, 'whenBooted')) {
+            static::whenBooted(function () {
+                static::observe(new ModelObserver);
+            });
+        } else {
+            static::observe(new ModelObserver);
+        }
     }
 
     public static function withoutTurboStreamBroadcasts(callable $callback)
