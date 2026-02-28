@@ -1,6 +1,12 @@
 ---
 name: developing-with-turbo-tests
-description: Basics of testing out Turbo-specific aspects of web applications. Activate when working on projects that utilize Turbo for testing specific Turbo Frames, Turbo Streams, or Turbo Native behavior.
+description: >-
+  Tests Turbo Laravel features in PHPUnit or Pest. Activates when using the InteractsWithTurbo trait; simulating requests with
+  $this->turbo(), $this->fromTurboFrame(), or $this->hotwireNative(); asserting responses with assertTurboStream(),
+  assertNotTurboStream(), assertRedirectRecede(), assertRedirectResume(), or assertRedirectRefresh(); faking broadcasts
+  with TurboStream::fake(), assertBroadcasted(), assertNothingWasBroadcasted(), or assertBroadcastedTimes(); writing
+  feature tests for Turbo Stream responses; or when the user mentions testing Turbo, testing broadcasts, or Turbo test
+  assertions.
 ---
 
 # Testing Turbo Laravel

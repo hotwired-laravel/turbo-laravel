@@ -1,6 +1,11 @@
 ---
 name: developing-with-turbo-basics
-description: Basics of developing with Turbo in web applications. Activate when working on projects that utilize Turbo for enhancing user experience through partial page updates, real-time interactions, and seamless navigation without full page reloads.
+description: >-
+  Basics of developing with Turbo Laravel. Activates when starting a new Turbo Laravel project; using dom_id, dom_class,
+  turbo_stream(), or turbo_stream_view() helpers; working with Blade components like x-turbo::frame, x-turbo::stream,
+  x-turbo::stream-from, or x-turbo::refreshes-with; using @domid, @domclass, @channel, or @turbonative directives;
+  checking wantsTurboStream(), wasFromTurboFrame(), or wasFromHotwireNative() request macros; or when the user mentions
+  Hotwire, Turbo, HTML over the wire, or partial page updates.
 ---
 
 # Turbo Laravel Basics

@@ -1,6 +1,12 @@
 ---
 name: developing-with-turbo-streams
-description: Basics of developing with Turbo Streams in web applications. Activate when working on projects that utilize Turbo Streams for enhancing user experience through real-time updates, dynamic content changes, and partial page updates without full reloads.
+description: >-
+  Develops with Turbo Streams for partial page updates and real-time broadcasting. Activates when using turbo_stream() or
+  turbo_stream_view() helpers; working with stream actions like append, prepend, replace, update, remove, before, after,
+  or refresh; using the Broadcasts trait, broadcastAppend, broadcastPrepend, broadcastReplace, broadcastRemove, or
+  broadcastRefresh methods; listening with x-turbo::stream-from; using the TurboStream facade for handmade broadcasts;
+  combining multiple streams; or when the user mentions Turbo Stream, broadcasting, real-time updates, WebSocket streams,
+  or partial page changes.
 ---
 
 # Turbo Streams

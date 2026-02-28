@@ -1,6 +1,11 @@
 ---
 name: developing-with-turbo-drive
-description: Basics of developing with Turbo Drive in web applications. Activate when working on projects that utilize Turbo Drive for enhancing user experience through faster navigation by intercepting link clicks and form submissions to avoid full page reloads.
+description: >-
+  Develops with Turbo Drive for SPA-like navigation. Activates when configuring page morphing with x-turbo::refreshes-with;
+  working with data-turbo, data-turbo-track, data-turbo-permanent, or data-turbo-preload attributes; managing cache control
+  with x-turbo::exempts-page-from-cache, x-turbo::exempts-page-from-preview, or x-turbo::page-requires-reload; enabling
+  view transitions with x-turbo::page-view-transition; handling form redirects with TurboMiddleware; customizing the progress
+  bar; or when the user mentions Turbo Drive, navigation, page morphing, prefetching, or asset tracking.
 ---
 
 # Turbo Drive

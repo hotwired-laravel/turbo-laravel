@@ -1,6 +1,11 @@
 ---
 name: developing-with-turbo-frames
-description: Basics of developing with Turbo Frames in web applications. Activate when working on projects that utilize Turbo Frames for enhancing user experience through partial page updates, scoped navigation, and lazy loading of content within specific sections of a web page.
+description: >-
+  Develops with Turbo Frames for scoped navigation and lazy loading. Activates when using the x-turbo::frame Blade
+  component or turbo-frame HTML element; working with data-turbo-frame targeting, frame lazy loading via src attribute,
+  or data-turbo-action for URL updates; detecting frame requests with wasFromTurboFrame(); using frame morphing with
+  refresh="morph"; or when the user mentions Turbo Frame, turbo frame, scoped navigation, inline editing, lazy loading
+  frames, or breaking out of a frame with _top.
 ---
 
 # Turbo Frames
