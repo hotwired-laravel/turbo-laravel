@@ -1,17 +1,21 @@
 ---
 name: developing-with-turbo-streams
-description: >-
-  Develops with Turbo Streams for partial page updates and real-time broadcasting. Activates when using turbo_stream() or
-  turbo_stream_view() helpers; working with stream actions like append, prepend, replace, update, remove, before, after,
-  or refresh; using the Broadcasts trait, broadcastAppend, broadcastPrepend, broadcastReplace, broadcastRemove, or
-  broadcastRefresh methods; listening with x-turbo::stream-from; using the TurboStream facade for handmade broadcasts;
-  combining multiple streams; or when the user mentions Turbo Stream, broadcasting, real-time updates, WebSocket streams,
-  or partial page changes.
+description: "Develops with Turbo Streams for partial page updates and real-time broadcasting. Activates when using turbo_stream() or turbo_stream_view() helpers; working with stream actions like append, prepend, replace, update, remove, before, after, or refresh; using the Broadcasts trait, broadcastAppend, broadcastPrepend, broadcastReplace, broadcastRemove, or broadcastRefresh methods; listening with x-turbo::stream-from; using the TurboStream facade for handmade broadcasts; combining multiple streams; or when the user mentions Turbo Stream, broadcasting, real-time updates, WebSocket streams, or partial page changes."
 ---
 
 # Turbo Streams
 
 Turbo Streams let you change any part of the page using eight actions: `append`, `prepend`, `replace`, `update`, `remove`, `before`, `after`, and `refresh`. They work as HTTP responses (after form submissions) and as real-time broadcasts over WebSocket.
+
+## Quick Start
+
+1. Check `$request->wantsTurboStream()` in your controller to detect Turbo Stream requests
+2. Return `turbo_stream($model)` for auto-detected actions (created=append, updated=replace, deleted=remove)
+3. For broadcasting: add `use Broadcasts` trait to your model, set `protected $broadcasts = true`
+4. In views, add `<x-turbo::stream-from :source="$model" />` to listen for broadcasts
+5. Define channel authorization in `routes/channels.php`
+
+IMPORTANT: If broadcasts aren't received, verify channel auth in `routes/channels.php`, confirm Laravel Echo is configured, and check the WebSocket connection in browser dev tools.
 
 ## HTTP Turbo Streams
 

@@ -1,33 +1,11 @@
 ---
 name: developing-with-turbo-basics
-description: >-
-  Basics of developing with Turbo Laravel. Activates when starting a new Turbo Laravel project; using dom_id, dom_class,
-  turbo_stream(), or turbo_stream_view() helpers; working with Blade components like x-turbo::frame, x-turbo::stream,
-  x-turbo::stream-from, or x-turbo::refreshes-with; using @domid, @domclass, @channel, or @turbonative directives;
-  checking wantsTurboStream(), wasFromTurboFrame(), or wasFromHotwireNative() request macros; or when the user mentions
-  Hotwire, Turbo, HTML over the wire, or partial page updates.
+description: "Implements Turbo Streams, configures Turbo Frames, and integrates Hotwire patterns in Laravel applications. Activates when starting a new Turbo Laravel project; using dom_id, dom_class, turbo_stream(), or turbo_stream_view() helpers; working with Blade components like x-turbo::frame, x-turbo::stream, x-turbo::stream-from, or x-turbo::refreshes-with; using @domid, @domclass, @channel, or @turbonative directives; checking wantsTurboStream(), wasFromTurboFrame(), or wasFromHotwireNative() request macros; or when the user mentions Hotwire, Turbo, HTML over the wire, or partial page updates."
 ---
 
 # Turbo Laravel Basics
 
 Turbo Laravel is a package that integrates Turbo, a set of technologies for building modern web applications, with the Laravel framework. Turbo enhances user experience by enabling partial page updates, real-time interactions, and seamless navigation without full page reloads and with minimal JavaScript.
-
-## Philosophy: HTML Over the Wire
-
-Hotwire (HTML Over the Wire) sends HTML instead of JSON from the server, letting the server handle rendering while keeping the browser's job simple. It combines four techniques:
-
-1. **Turbo Drive** — Accelerates links and forms by replacing the `<body>` without full page loads.
-2. **Turbo Frames** — Decomposes pages into independent segments that scope navigation and can lazy-load.
-3. **Turbo Streams** — Delivers partial page changes over WebSocket, SSE, or in response to form submissions using eight actions (append, prepend, replace, update, remove, before, after, refresh).
-4. **Stimulus** — A modest JavaScript framework for the HTML you already have, connecting behavior via `data-controller`, `data-action`, and `data-target` attributes.
-
-Turbo Laravel provides the server-side tooling (Blade components, helpers, broadcasting, and testing utilities) to make these techniques work seamlessly with Laravel.
-
-## Turbo Drive
-
-Turbo Drive intercepts all clicks on `<a href>` links to the same domain and all form submissions, turning them into `fetch` requests. It replaces the `<body>` and merges the `<head>`, keeping the JavaScript `window` and `document` objects persistent across navigations. This gives SPA-like speed without client-side routing.
-
-Same deal with forms — their submissions become fetch requests and Turbo Drive follows the redirect and renders the HTML response.
 
 IMPORTANT: Activate the `developing-with-turbo-drive` skill when starting out working on a feature.
 

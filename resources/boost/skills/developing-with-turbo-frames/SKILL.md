@@ -1,16 +1,20 @@
 ---
 name: developing-with-turbo-frames
-description: >-
-  Develops with Turbo Frames for scoped navigation and lazy loading. Activates when using the x-turbo::frame Blade
-  component or turbo-frame HTML element; working with data-turbo-frame targeting, frame lazy loading via src attribute,
-  or data-turbo-action for URL updates; detecting frame requests with wasFromTurboFrame(); using frame morphing with
-  refresh="morph"; or when the user mentions Turbo Frame, turbo frame, scoped navigation, inline editing, lazy loading
-  frames, or breaking out of a frame with _top.
+description: "Develops with Turbo Frames for scoped navigation and lazy loading. Activates when using the x-turbo::frame Blade component or turbo-frame HTML element; working with data-turbo-frame targeting, frame lazy loading via src attribute, or data-turbo-action for URL updates; detecting frame requests with wasFromTurboFrame(); using frame morphing with refresh=\"morph\"; or when the user mentions Turbo Frame, turbo frame, scoped navigation, inline editing, lazy loading frames, or breaking out of a frame with _top."
 ---
 
 # Turbo Frames
 
 Turbo Frames decompose pages into independent segments that scope navigation. Clicking links or submitting forms inside a `<turbo-frame>` only updates that frame, keeping the rest of the page intact.
+
+## Quick Start
+
+1. Add a `<x-turbo::frame>` to your show/index view wrapping the content to scope
+2. Create the corresponding edit/detail view with a matching `<x-turbo::frame>` using the same `:id`
+3. Links and forms inside the frame automatically target that frame
+4. On the server, detect frame requests with `$request->wasFromTurboFrame()` to return frame-only responses
+
+IMPORTANT: The frame `id` must match between the source and destination pages. A mismatch causes Turbo to log a console error and leave the frame unchanged.
 
 ## The Frame Component
 

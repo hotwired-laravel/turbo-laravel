@@ -1,12 +1,6 @@
 ---
 name: developing-with-turbo-tests
-description: >-
-  Tests Turbo Laravel features in PHPUnit or Pest. Activates when using the InteractsWithTurbo trait; simulating requests with
-  $this->turbo(), $this->fromTurboFrame(), or $this->hotwireNative(); asserting responses with assertTurboStream(),
-  assertNotTurboStream(), assertRedirectRecede(), assertRedirectResume(), or assertRedirectRefresh(); faking broadcasts
-  with TurboStream::fake(), assertBroadcasted(), assertNothingWasBroadcasted(), or assertBroadcastedTimes(); writing
-  feature tests for Turbo Stream responses; or when the user mentions testing Turbo, testing broadcasts, or Turbo test
-  assertions.
+description: "Tests Turbo Laravel features in PHPUnit or Pest. Activates when using the InteractsWithTurbo trait; simulating requests with $this->turbo(), $this->fromTurboFrame(), or $this->hotwireNative(); asserting responses with assertTurboStream(), assertNotTurboStream(), assertRedirectRecede(), assertRedirectResume(), or assertRedirectRefresh(); faking broadcasts with TurboStream::fake(), assertBroadcasted(), assertNothingWasBroadcasted(), or assertBroadcastedTimes(); writing feature tests for Turbo Stream responses; or when the user mentions testing Turbo, testing broadcasts, or Turbo test assertions."
 ---
 
 # Testing Turbo Laravel
@@ -210,3 +204,8 @@ TurboStream::assertBroadcastedTimes(
 </code-snippet>
 
 @endverbatim
+
+## Troubleshooting
+
+- **`assertTurboStream()` fails**: Inspect the response with `$response->getContent()` to see the actual HTML returned. Verify the controller checks `$request->wantsTurboStream()` and returns a Turbo Stream response.
+- **Broadcast assertions fail**: Ensure `TurboStream::fake()` is called before the action that triggers the broadcast. Check that the model uses the `Broadcasts` trait and has `$broadcasts = true` or calls broadcast methods explicitly.

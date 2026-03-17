@@ -1,27 +1,16 @@
 ---
 name: developing-with-turbo-drive
-description: >-
-  Develops with Turbo Drive for SPA-like navigation. Activates when configuring page morphing with x-turbo::refreshes-with;
-  working with data-turbo, data-turbo-track, data-turbo-permanent, or data-turbo-preload attributes; managing cache control
-  with x-turbo::exempts-page-from-cache, x-turbo::exempts-page-from-preview, or x-turbo::page-requires-reload; enabling
-  view transitions with x-turbo::page-view-transition; handling form redirects with TurboMiddleware; customizing the progress
-  bar; or when the user mentions Turbo Drive, navigation, page morphing, prefetching, or asset tracking.
+description: "Develops with Turbo Drive for SPA-like navigation. Activates when configuring page morphing with x-turbo::refreshes-with; working with data-turbo, data-turbo-track, data-turbo-permanent, or data-turbo-preload attributes; managing cache control with x-turbo::exempts-page-from-cache, x-turbo::exempts-page-from-preview, or x-turbo::page-requires-reload; enabling view transitions with x-turbo::page-view-transition; handling form redirects with TurboMiddleware; customizing the progress bar; or when the user mentions Turbo Drive, navigation, page morphing, prefetching, or asset tracking."
 ---
 
 # Turbo Drive
 
-Turbo Drive accelerates navigation by intercepting link clicks and form submissions, making them as `fetch` requests. It replaces the `<body>` and merges the `<head>` without tearing down the JavaScript environment, giving SPA-like speed with server-rendered HTML.
-
-## How It Works
-
-- **Link clicks**: Turbo intercepts clicks on `<a href>` links to the same domain, updates the URL via the History API, fetches the new page, and renders the HTML response.
-- **Form submissions**: Form submissions become `fetch` requests. Turbo follows the redirect and renders the response.
-- **Rendering**: Replaces `<body>`, merges `<head>`. The `window`, `document`, and `<html>` element persist across navigations.
+Turbo Drive intercepts link clicks and form submissions as `fetch` requests, replacing the `<body>` and merging the `<head>` while keeping the JavaScript environment persistent.
 
 ## Navigation Types
 
-- **Application Visits** (advance/replace): Initiated by clicking a link or calling `Turbo.visit()`. Issues a fetch, renders HTML. Advance pushes to history; replace modifies the current entry.
-- **Restoration Visits**: Triggered by the browser Back/Forward buttons. Turbo restores from cache if available, otherwise fetches fresh content.
+- **Application Visits** (advance/replace): Initiated by clicking a link or calling `Turbo.visit()`. Advance pushes to history; replace modifies the current entry.
+- **Restoration Visits**: Triggered by Back/Forward buttons. Restores from cache if available, otherwise fetches fresh content.
 
 ## Page Refreshes with Morphing
 
